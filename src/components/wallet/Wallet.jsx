@@ -24,7 +24,7 @@ const Wallet = () => {
                 <div className="balance-glow"></div>
                 <div className="balance-content">
                     <span className="balance-label">Total Balance</span>
-                    <h1 className="balance-amount">
+                    <h1 className="balance-amount-wallet">
                         <span className="currency-icon">💰</span>
                         {walletData.balance.toLocaleString()}
                         <span className="currency-name">{walletData.currency}</span>
