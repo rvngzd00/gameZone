@@ -1,0 +1,167 @@
+/* TopBar styles with casino-modern theme */
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: linear-gradient(
+    to right,
+    rgba(26, 26, 46, 0.95),
+    rgba(38, 38, 76, 0.95),
+    rgba(26, 26, 46, 0.95)
+  );
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  box-shadow: 
+    0 2px 15px rgba(255, 209, 102, 0.1),
+    0 1px 6px rgba(0, 0, 0, 0.2);
+}
+
+.top-bar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 209, 102, 0.3),
+    rgba(255, 209, 102, 0.5),
+    rgba(255, 209, 102, 0.3),
+    transparent
+  );
+}
+
+.top-bar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.balance-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 209, 102, 0.1);
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 209, 102, 0.2);
+  transition: all 0.3s ease;
+}
+
+.balance-display:hover {
+  border-color: rgba(255, 209, 102, 0.4);
+  box-shadow: 0 0 15px rgba(255, 209, 102, 0.15);
+}
+
+.coin-icon {
+  animation: coinRotate 8s linear infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes coinRotate {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+.balance-amount {
+  color: #FFD700;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-shadow: 0 0 10px rgba(255, 209, 102, 0.3);
+}
+
+.top-bar-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 209, 102, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.login-btn {
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.1), rgba(255, 209, 102, 0.05));
+}
+
+.register-btn {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  border: none;
+  color: #1a1a2e;
+  font-weight: 600;
+}
+
+.top-bar-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 15px rgba(255, 209, 102, 0.2);
+}
+
+.login-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.2), rgba(255, 209, 102, 0.1));
+  border-color: rgba(255, 209, 102, 0.5);
+}
+
+.register-btn:hover {
+  background: linear-gradient(135deg, #FFE066, #FFB732);
+  box-shadow: 
+    0 0 20px rgba(255, 209, 102, 0.3),
+    0 0 40px rgba(255, 209, 102, 0.1);
+}
+
+.profile-btn {
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.15), rgba(255, 209, 102, 0.05));
+}
+
+.logout-btn {
+  background: linear-gradient(135deg, rgba(255, 77, 77, 0.1), rgba(255, 77, 77, 0.05));
+  border-color: rgba(255, 77, 77, 0.3);
+  color: rgba(255, 77, 77, 0.9);
+}
+
+.logout-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 77, 77, 0.2), rgba(255, 77, 77, 0.1));
+  border-color: rgba(255, 77, 77, 0.5);
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.2);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .top-bar {
+    height: 44px;
+  }
+
+  .balance-amount {
+    font-size: 0.85rem;
+  }
+
+  .top-bar-btn {
+    padding: 4px 12px;
+    font-size: 0.85rem;
+  }
+
+  .balance-display {
+    padding: 4px 10px;
+  }
+
+  .coin-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+}

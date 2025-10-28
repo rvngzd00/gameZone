@@ -1,0 +1,465 @@
+@keyframes floatAnimation {
+    0% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-10px) rotate(1deg); }
+    75% { transform: translateY(5px) rotate(-1deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+}
+
+@keyframes glowPulse {
+    0% { opacity: 0.3; filter: blur(20px); transform: scale(1); }
+    50% { opacity: 0.8; filter: blur(25px); transform: scale(1.2); }
+    100% { opacity: 0.3; filter: blur(20px); transform: scale(1); }
+}
+
+@keyframes shimmerGradient {
+    0% { background-position: 200% center; filter: hue-rotate(0deg); }
+    50% { filter: hue-rotate(15deg); }
+    100% { background-position: -200% center; filter: hue-rotate(0deg); }
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes rotateGlow {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes borderGlow {
+    0%, 100% { border-color: rgba(255,215,0,0.1); }
+    50% { border-color: rgba(255,215,0,0.3); }
+}
+
+@keyframes cardHover {
+    0% { transform: perspective(1000px) rotateX(0) rotateY(0); }
+    100% { transform: perspective(1000px) rotateX(10deg) rotateY(10deg); }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.wallet-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    color: white;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* Balance Card */
+.balance-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+    border-radius: 25px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,215,0,0.1);
+    animation: fadeInUp 0.8s ease-out, borderGlow 3s ease-in-out infinite;
+    transition: transform 0.3s ease;
+}
+
+.balance-card::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    background: linear-gradient(45deg, transparent, rgba(255,215,0,0.1), transparent);
+    animation: rotateGlow 10s linear infinite;
+    pointer-events: none;
+}
+
+.balance-card:hover {
+    animation: floatAnimation 6s ease-in-out infinite;
+}
+
+.balance-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* Add sparkles */
+.balance-card::after {
+    content: '✨';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    animation: sparkle 2s ease-in-out infinite;
+    opacity: 0;
+}
+
+.balance-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.balance-label {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.balance-amount {
+    font-size: 3.5rem;
+    margin: 1rem 0;
+    background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmerGradient 3s linear infinite;
+}
+
+.currency-icon {
+    font-size: 2.5rem;
+    margin-right: 0.5rem;
+}
+
+.currency-name {
+    font-size: 2rem;
+    margin-left: 0.5rem;
+    opacity: 0.8;
+}
+
+.balance-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.action-btn {
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 50%);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.5s ease-out;
+}
+
+.action-btn:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.action-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+
+.action-btn .btn-icon {
+    transition: transform 0.3s ease;
+}
+
+.action-btn:hover .btn-icon {
+    transform: scale(1.2);
+}
+
+.deposit {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: #1a1a2e;
+}
+
+.withdraw {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+/* Wallet Grid */
+.wallet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+    animation-delay: 0.3s;
+}
+
+.wallet-section {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.wallet-section h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+    color: #FFD700;
+}
+
+/* Payment Cards */
+.cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.payment-card {
+    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    border-radius: 15px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    animation: slideInFromRight 0.5s ease-out forwards;
+    opacity: 0;
+    transition: all 0.3s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.payment-card:hover {
+    animation: cardHover 0.3s ease forwards;
+}
+
+.payment-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(125deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.payment-card:hover::before {
+    transform: translateX(100%);
+}
+
+.payment-card.gold {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    animation-delay: 0.4s;
+    box-shadow: 0 10px 20px rgba(255,215,0,0.1);
+}
+
+.payment-card.silver {
+    background: linear-gradient(45deg, #C0C0C0, #808080);
+    animation-delay: 0.6s;
+    box-shadow: 0 10px 20px rgba(192,192,192,0.1);
+}
+
+.payment-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(125deg, transparent, rgba(255,255,255,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.payment-card:hover::after {
+    opacity: 1;
+}
+
+.card-chip {
+    width: 40px;
+    height: 30px;
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.card-number {
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.add-card-btn {
+    background: rgba(255,255,255,0.05);
+    border: 2px dashed rgba(255,255,255,0.2);
+    border-radius: 15px;
+    padding: 1rem;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    animation: slideInFromRight 0.5s ease-out forwards;
+    animation-delay: 0.8s;
+    opacity: 0;
+}
+
+.add-card-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.3);
+}
+
+/* Transactions */
+.transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    padding: 1rem;
+    transition: transform 0.3s ease;
+    animation: slideInFromRight 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+.transaction-item:nth-child(1) { animation-delay: 0.4s; }
+.transaction-item:nth-child(2) { animation-delay: 0.6s; }
+.transaction-item:nth-child(3) { animation-delay: 0.8s; }
+.transaction-item:nth-child(4) { animation-delay: 1s; }
+
+.transaction-item:hover {
+    transform: translateX(5px);
+    background: rgba(255,255,255,0.05);
+}
+
+.transaction-icon {
+    font-size: 1.5rem;
+}
+
+.transaction-details {
+    flex: 1;
+}
+
+.transaction-title {
+    display: block;
+    font-weight: 500;
+}
+
+.transaction-time {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+}
+
+.transaction-amount {
+    text-align: right;
+}
+
+.amount {
+    display: block;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.amount.win { color: #2ed573; }
+.amount.deposit { color: #FFD700; }
+.amount.loss { color: #ff4757; }
+
+.amount-currency {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .wallet-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .balance-amount {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .wallet-container {
+        padding: 1rem;
+    }
+    
+    .balance-actions {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .balance-amount {
+        font-size: 2rem;
+    }
+    
+    .currency-name {
+        font-size: 1.5rem;
+    }
+    
+    .wallet-section {
+        padding: 1.5rem;
+    }
+    
+    .transaction-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .transaction-amount {
+        text-align: center;
+    }
+}
