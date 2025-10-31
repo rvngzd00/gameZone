@@ -19,10 +19,9 @@
 }
 
 .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(2rem, 4vw, 4rem);
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     width: 100%;
 }
 
@@ -151,9 +150,17 @@
 
 /* Floating animation for game preview */
 @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
 }
 
 .game-preview {
@@ -161,13 +168,15 @@
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
+@media (max-width: 1077px) {
     .hero-text h1 {
         font-size: 3rem;
     }
-}
 
-@media (max-width: 1024px) {
+    .hero-text p {
+        font-size: 1.1rem;
+    }
+
     .hero-section {
         min-height: auto;
         padding: clamp(2rem, 4vw, 3rem) 0;
@@ -178,13 +187,45 @@
     }
 
     .game-preview {
-        max-width: 500px;
+        width: 500px;
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 990px) {
+    .hero-text h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-text p {
+        font-size: 0.9rem;
+        width: 87%;
+    }
+
+    .game-preview {
+        width: 400px;
+    }
+
+    .game-card {
+        width: 150px !important;
+        height: 150px !important;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        width: 370px;
+    }
+}
+
+@media (max-width: 870px) {
+    .hero-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 570px;
+    }
+
     .hero-grid {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: 3rem;
         text-align: center;
     }
@@ -195,21 +236,54 @@
     }
 
     .cta-buttons {
+        width: 570px;
         justify-content: center;
     }
 
     .game-preview {
-        max-width: 450px;
-        aspect-ratio: 1;
-        margin-top: 1rem;
+        width: 100%;
     }
 
     .game-card {
-        transform: none !important;
+        width: 200px !important;
+        height: 200px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 370px;
     }
 
-    .game-card-img {
-        transform: none;
+    .hero-grid {
+        flex-direction: column;
+        gap: 3rem;
+        text-align: center;
+    }
+
+    .hero-features {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .cta-buttons {
+        width: 370px;
+        justify-content: center;
+    }
+
+    .game-preview {
+        width: 340px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .game-card {
+        width: 300px !important;
+        height: 300px !important;
     }
 }
 
