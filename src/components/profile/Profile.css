@@ -54,6 +54,8 @@
 .avatar-frame {
     width: 120px;
     height: 120px;
+    left: 67px;
+    top: 67px;
     border-radius: 50%;
     background: linear-gradient(45deg, #FFD700, #FFA500);
     padding: 3px;

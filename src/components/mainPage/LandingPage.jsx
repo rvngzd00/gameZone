@@ -1,6 +1,5 @@
 import React from 'react';
 import './LandingPage.css';
-import Galaxy from '../CustomBackground/Galaxy';
 import dominoesImg from '../../assets/game-images/Dominoes Image.png';
 import backgammonImg from '../../assets/game-images/BackGammon Image.png';
 import chessImg from '../../assets/game-images/Chess Image.png';

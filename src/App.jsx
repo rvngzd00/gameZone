@@ -8,6 +8,7 @@ import Login from './components/auth/Login'
 import Register from './components/auth/Register'
 import Footer from './components/mainLayout/Footer'
 import Games from './components/games/Games'
+import Tournaments from './components/tournaments/Tournaments'
 import Profile from './components/profile/Profile'
 import Wallet from './components/wallet/Wallet'
 
@@ -23,7 +24,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/games" element={<Games />} />
-              <Route path="/tournaments" element={<LandingPage />} />
+              <Route path="/tournaments" element={<Tournaments />} />
               <Route path="/wallet" element={<Wallet />} />
               <Route path="/profile" element={<Profile />} />
             </Routes>

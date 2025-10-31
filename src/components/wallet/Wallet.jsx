@@ -4,7 +4,7 @@ import './Wallet.css';
 const Wallet = () => {
     // Mock data - replace with real data from your context
     const walletData = {
-        balance: 15000,
+        balance: 7777,
         currency: 'Coins',
         transactions: [
             { id: 1, type: 'win', amount: 500, game: 'Poker', time: '2h ago' },
@@ -23,11 +23,10 @@ const Wallet = () => {
             <div className="balance-card">
                 <div className="balance-glow"></div>
                 <div className="balance-content">
-                    <span className="balance-label">Total Balance</span>
+                    <span className="balance-label">Balance</span>
                     <h1 className="balance-amount-wallet">
                         <span className="currency-icon">💰</span>
                         {walletData.balance.toLocaleString()}
-                        <span className="currency-name">{walletData.currency}</span>
                     </h1>
                     <div className="balance-actions">
                         <button className="action-btn deposit">
@@ -42,8 +41,8 @@ const Wallet = () => {
                 </div>
             </div>
 
-            <div className="wallet-grid">
-                <section className="wallet-section cards-section">
+            {/* <div className="wallet-grid"> */}
+                {/* <section className="wallet-section cards-section">
                     <h2>Payment Methods</h2>
                     <div className="cards-container">
                         {walletData.cards.map(card => (
@@ -61,7 +60,7 @@ const Wallet = () => {
                             Add New Card
                         </button>
                     </div>
-                </section>
+                </section> */}
 
                 <section className="wallet-section history-section">
                     <h2>Recent Transactions</h2>
@@ -88,7 +87,7 @@ const Wallet = () => {
                     </div>
                 </section>
             </div>
-        </div>
+        // </div>
     );
 };
 

@@ -89,10 +89,10 @@ export default function Games() {
       {GAMES.map(game => (
         <GameCard key={game.id} game={game} />
       ))}
-      <header className="games-header">
-        {/* <h1>Table Games</h1> */}
-        {/* <p className="intro">Choose a game and test your luck — every table promises golden rewards.</p> */}
-      </header>
+      {/* <header className="games-header">
+        <h1>Table Games</h1>
+        <p className="intro">Choose a game and test your luck — every table promises golden rewards.</p>
+      </header> */}
 
       {/* <div className="games-grid">
         {GAMES.map((g) => (
