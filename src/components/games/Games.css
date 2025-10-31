@@ -69,7 +69,7 @@
 
 @media (max-width:900px) {
   .game-art {
-    height: 150px
+    height: 170px
   }
 
   .game-svg {
@@ -79,8 +79,13 @@
 }
 
 @media (max-width:600px) {
+  .game-card {
+    height: 130px!important;
+    width: 130px!important;
+  }
+
   .game-art {
-    height: 130px
+    height: 107px
   }
 
   .game-svg {
@@ -88,5 +93,4 @@
     height: 86%
   }
 
-  /* .games-page{ padding: 18px 12px } */
 }

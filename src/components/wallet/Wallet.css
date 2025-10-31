@@ -203,10 +203,7 @@
     transform: scale(1.2);
 }
 
-.deposit {
-    background: linear-gradient(45deg, #FFD700, #FFA500);
-    color: #1a1a2e;
-}
+
 
 .withdraw {
     background: rgba(255,255,255,0.1);
@@ -418,7 +415,7 @@
     }
     
     .balance-amount-wallet {
-        font-size: 2.5rem;
+        font-size: 55px;
     }
 }
 
@@ -439,7 +436,7 @@
 
 @media (max-width: 480px) {
     .balance-amount-wallet {
-        font-size: 2rem;
+        font-size: 55px;
     }
     
     .currency-name {

@@ -6,7 +6,7 @@ const GAMES = [
   { id: 'dominoes', name: 'Dominoes' },
   { id: 'durak', name: 'Durak' },
   { id: 'okay', name: 'Okay' },
-  { id: 'turkish-backgammon', name: 'Turkish Backgammon' },
+  { id: 'backgammon', name: 'Backgammon' },
   { id: 'blackjack', name: 'Blackjack' },
   { id: 'poker', name: 'Poker' },
   { id: 'baccarat', name: 'Baccarat' }
@@ -43,7 +43,7 @@ function GameCard({ game }) {
           </svg>
         )}
 
-        {game.id === 'turkish-backgammon' && (
+        {game.id === 'backgammon' && (
           <svg viewBox="0 0 48 48" className="game-svg" xmlns="http://www.w3.org/2000/svg">
             <rect x="4" y="8" width="40" height="32" rx="6" fill="#ffc857" />
             <g fill="#1a1a2e">
@@ -85,20 +85,22 @@ function GameCard({ game }) {
 
 export default function Games() {
   return (
-    <section className="games-page">
-      {GAMES.map(game => (
-        <GameCard key={game.id} game={game} />
-      ))}
-      {/* <header className="games-header">
+    <div className="container">
+      <section className="games-page">
+        {GAMES.map(game => (
+          <GameCard key={game.id} game={game} />
+        ))}
+        {/* <header className="games-header">
         <h1>Table Games</h1>
         <p className="intro">Choose a game and test your luck — every table promises golden rewards.</p>
       </header> */}
 
-      {/* <div className="games-grid">
+        {/* <div className="games-grid">
         {GAMES.map((g) => (
           <GameCard key={g.id} game={g} />
         ))}
       </div> */}
-    </section>
+      </section>
+    </div>
   );
 }

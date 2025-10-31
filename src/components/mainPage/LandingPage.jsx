@@ -7,7 +7,8 @@ import durakImg from '../../assets/game-images/Durak Image.png';
 
 const LandingPage = () => {
     return (
-        <section className="hero-section">
+        <div className="container">
+        <section className="hero-section ">
             
             <div className="hero-content">
                 <div className="hero-grid">
@@ -51,6 +52,7 @@ const LandingPage = () => {
                 </div>
             </div>
         </section>
+        </div>
     );
 };
 

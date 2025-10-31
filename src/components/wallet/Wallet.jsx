@@ -11,11 +11,11 @@ const Wallet = () => {
             { id: 2, type: 'deposit', amount: 1000, source: 'Bank Transfer', time: '1d ago' },
             { id: 3, type: 'loss', amount: 200, game: 'Blackjack', time: '2d ago' },
             { id: 4, type: 'win', amount: 750, game: 'Dominoes', time: '3d ago' },
-        ],
-        cards: [
-            { id: 1, type: 'gold', number: '**** **** **** 4582', expires: '12/26' },
-            { id: 2, type: 'silver', number: '**** **** **** 1234', expires: '09/25' }
         ]
+        // cards: [
+        //     { id: 1, type: 'gold', number: '**** **** **** 4582', expires: '12/26' },
+        //     { id: 2, type: 'silver', number: '**** **** **** 1234', expires: '09/25' }
+        // ]
     };
 
     return (
@@ -25,7 +25,7 @@ const Wallet = () => {
                 <div className="balance-content">
                     <span className="balance-label">Balance</span>
                     <h1 className="balance-amount-wallet">
-                        <span className="currency-icon">💰</span>
+                        {/* <span className="currency-icon">💰</span> */}
                         {walletData.balance.toLocaleString()}
                     </h1>
                     <div className="balance-actions">
