@@ -6,6 +6,14 @@ const SAMPLE_MESSAGES = [
     { id: 2, text: "Salam, Tebiiki TOFIQ ENKE PEYSERDIR", sender: "user", time: "10:31 AM" },
     { id: 3, text: "Siz POX yeyirsiniz, ENKE PEYSER TOFIQIN OGLU ILQARDIR", sender: "admin", time: "10:31 AM" },
     { id: 4, text: "Cox duz deyirsiniz.", sender: "user", time: "10:32 AM" },
+    { id: 5, text: "Salam, Siz Dusunursunuzki Tofiq Peyserdir ?", sender: "admin", time: "10:30 AM" },
+    { id: 6, text: "Salam, Tebiiki TOFIQ ENKE PEYSERDIR", sender: "user", time: "10:31 AM" },
+    { id: 7, text: "Siz POX yeyirsiniz, ENKE PEYSER TOFIQIN OGLU ILQARDIR", sender: "admin", time: "10:31 AM" },
+    { id: 8, text: "Cox duz deyirsiniz.", sender: "user", time: "10:32 AM" },
+    { id: 9, text: "Salam, Siz Dusunursunuzki Tofiq Peyserdir ?", sender: "admin", time: "10:30 AM" },
+    { id: 11, text: "Salam, Tebiiki TOFIQ ENKE PEYSERDIR", sender: "user", time: "10:31 AM" },
+    { id: 12, text: "Siz POX yeyirsiniz, ENKE PEYSER TOFIQIN OGLU ILQARDIR", sender: "admin", time: "10:31 AM" },
+    { id: 13, text: "Cox duz deyirsiniz.", sender: "user", time: "10:32 AM" },
 ];
 
 export default function Chat() {

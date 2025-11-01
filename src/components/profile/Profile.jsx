@@ -1,6 +1,6 @@
 import React from 'react';
 import './Profile.css';
-
+import profilePhoto from '../../assets/game-images/profilePhoto.png';
 const Profile = () => {
     // Mock data - replace with real data from your context/API
     const profileData = {
@@ -28,6 +28,9 @@ const Profile = () => {
                     <div className="profile-avatar">
                         <div className="avatar-frame">
                             <span className="level-badge">{profileData.level}</span>
+                            <div className="avatar-image">
+                                <img src={profilePhoto} alt="Profile" />
+                            </div>
                         </div>
                     </div>
                     <div className="profile-info">
