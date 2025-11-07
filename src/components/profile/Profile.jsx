@@ -4,7 +4,7 @@ import profilePhoto from '../../assets/game-images/profilePhoto.png';
 const Profile = () => {
     // Mock data - replace with real data from your context/API
     const profileData = {
-        username: "Elnar",
+        username: "John",
         level: 11,
         coins: 746,
         winRate: "11%",
