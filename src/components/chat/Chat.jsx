@@ -2,10 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import './Chat.css';
 
 const SAMPLE_MESSAGES = [
-    { id: 1, text: "Salam, Siz Dusunursunuzki Ilqar Transdir ?", sender: "admin", time: "10:30 AM" },
-    { id: 2, text: "Salam, Tebiiki Ilqar ENKE Transdir", sender: "user", time: "10:31 AM" },
-    { id: 3, text: "OFFF O COX SIKILESI SEYDI", sender: "admin", time: "10:31 AM" },
-    { id: 4, text: "Cox duz deyirsiniz.", sender: "user", time: "10:32 AM" },
+    { id: 1, text: "Salam, Saytimiza Xos Gelmisiniz ?", sender: "admin", time: "10:30 AM" },
+    { id: 2, text: "Salam, Balans Artirmaq isdeyirdim", sender: "user", time: "10:31 AM" },
+    { id: 3, text: "Zehmet olmasa ceki gonderin", sender: "admin", time: "10:31 AM" },
+    { id: 4, text: "Tesekkurler.", sender: "user", time: "10:32 AM" },
 ];
 
 export default function Chat() {
