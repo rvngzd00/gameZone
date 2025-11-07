@@ -83,7 +83,7 @@ export default function Chat() {
                         </svg>
                     </div>
                     <div className="admin-details">
-                        <h2>Tofiqin Yeke Siki</h2>
+                        <h2>Admin</h2>
                         <span className="admin-status">Online</span>
                     </div>
                 </div>
