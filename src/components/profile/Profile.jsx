@@ -4,11 +4,11 @@ import profilePhoto from '../../assets/game-images/profilePhoto.png';
 const Profile = () => {
     // Mock data - replace with real data from your context/API
     const profileData = {
-        username: "fUCKERtOFIQ31",
-        level: 31,
-        coins: 316972,
-        winRate: "31%",
-        gamesPlayed: 69,
+        username: "Elnar",
+        level: 11,
+        coins: 746,
+        winRate: "11%",
+        gamesPlayed: 75,
         // achievements: [
         //     { id: 1, name: "First Win", icon: "🏆", description: "Won your first game" },
         //     { id: 2, name: "High Roller", icon: "💰", description: "Won 1000 coins in a single game" },
