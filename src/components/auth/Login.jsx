@@ -1,22 +1,32 @@
-import React, { useState } from 'react';
-import './AuthForms.css';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import "./AuthForms.css";
+import { Link } from "react-router-dom";
+import { useAppContext } from "../../context/AppContext";
+
+
 
 const Login = () => {
+    const { login } = useAppContext();
     const [formData, setFormData] = useState({
-        email: '',
-        password: ''
+        userNameOrEmail: "",
+        password: "",
     });
+    const [error, setError] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle login logic here
+        setError("");
+
+        const result = await login(formData);
+        if (!result.success) {
+            setError(result.error || "Login failed");
+        }
     };
 
     const handleChange = (e) => {
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         });
     };
 
@@ -30,19 +40,19 @@ const Login = () => {
 
                 <form className="auth-form" onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="userNameOrEmail">Username or Email</label>
                         <div className="input-wrapper">
                             <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                                 <path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6ZM20 6L12 11L4 6H20ZM20 18H4V8L12 13L20 8V18Z"
                                     fill="currentColor" />
                             </svg>
                             <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formData.email}
+                                type="text"
+                                id="userNameOrEmail"
+                                name="userNameOrEmail"
+                                value={formData.userNameOrEmail}
                                 onChange={handleChange}
-                                placeholder="Enter your email"
+                                placeholder="Enter your username or email"
                                 required
                             />
                         </div>
@@ -67,23 +77,12 @@ const Login = () => {
                         </div>
                     </div>
 
-                    <div className="form-footer">
-                        <label className="remember-me">
-                            <input type="checkbox" /> Remember me
-                        </label>
-                        <Link to="/forgot" className="forgot-password">Forgot Password?</Link>
-                    </div>
+                    {error && <p className="error-message">{error}</p>}
 
                     <button type="submit" className="auth-submit">
                         Login
-                        <svg className="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 4L10.59 5.41L16.17 11H4V13H16.17L10.59 18.59L12 20L20 12L12 4Z"
-                                fill="currentColor" />
-                        </svg>
                     </button>
                 </form>
-
-
 
                 <p className="auth-switch">
                     Don't have an account? <Link to="/register">Register Here</Link>

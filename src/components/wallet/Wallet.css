@@ -63,7 +63,7 @@
     padding: 37px 0;
     /* max-width: 1200px; */
     margin: 0 auto;
-    color: white;
+    color: var(--text-primary);
     animation: fadeInUp 0.8s ease-out;
 }
 
@@ -125,14 +125,14 @@
 
 .balance-label {
     font-size: 27px;
-    color: rgba(255,255,255,0.7);
+    color: rgba(224,224,224,0.7);
     margin-bottom: 17px;
     display: block;
 }
 
 .balance-amount-wallet {
     font-size: 57px;
-    background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
+    background: linear-gradient(90deg, var(--accent), var(--accent), var(--accent));
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
@@ -207,7 +207,7 @@
 
 .withdraw {
     background: rgba(255,255,255,0.1);
-    color: white;
+    color: var(--white);
     border: 2px solid rgba(255,255,255,0.2);
 }
 
@@ -231,7 +231,7 @@
 .wallet-section h2 {
     margin: 0 0 1.5rem 0;
     font-size: 1.5rem;
-    color: #FFD700;
+    color: var(--accent);
 }
 
 /* Payment Cards */
@@ -272,13 +272,13 @@
 }
 
 .payment-card.gold {
-    background: linear-gradient(45deg, #FFD700, #FFA500);
+    background: linear-gradient(45deg, var(--accent), var(--accent));
     animation-delay: 0.4s;
     box-shadow: 0 10px 20px rgba(255,215,0,0.1);
 }
 
 .payment-card.silver {
-    background: linear-gradient(45deg, #C0C0C0, #808080);
+    background: linear-gradient(45deg, var(--muted-2), var(--muted));
     animation-delay: 0.6s;
     box-shadow: 0 10px 20px rgba(192,192,192,0.1);
 }
@@ -302,7 +302,7 @@
 .card-chip {
     width: 40px;
     height: 30px;
-    background: linear-gradient(45deg, #FFD700, #FFA500);
+    background: linear-gradient(45deg, var(--accent), var(--accent));
     border-radius: 5px;
     margin-bottom: 1rem;
 }
@@ -324,7 +324,7 @@
     border: 2px dashed rgba(255,255,255,0.2);
     border-radius: 15px;
     padding: 1rem;
-    color: white;
+    color: var(--white);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -399,9 +399,9 @@
     font-size: 1.1rem;
 }
 
-.amount.win { color: #2ed573; }
-.amount.deposit { color: #FFD700; }
-.amount.loss { color: #ff4757; }
+.amount.win { color: var(--success-dark); }
+.amount.deposit { color: var(--accent); }
+.amount.loss { color: var(--danger-dark); }
 
 .amount-currency {
     font-size: 0.9rem;

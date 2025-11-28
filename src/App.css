@@ -10,14 +10,17 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  background: linear-gradient(135deg, var(--black), var(--bg-dark-2));
 }
 
 .main-content {
   flex: 1;
+  width: 100%;
   padding-top: 48px; /* Height of TopBar */
   padding-bottom: 65px; /* Height of Navbar */
   min-height: calc(100vh - 113px); /* 100vh - (TopBar + Navbar) */
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
 }

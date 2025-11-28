@@ -17,10 +17,10 @@ function Navbar() {
         <Link to="/chat" className="nav-item" aria-label="Chat">
           <div className="nav-icon" aria-hidden>
             <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18 1H4c-1.1 0-2 .9-2 2v14l3.5-3.5h12.5c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2z" fill="white" />
-              <rect x="6" y="4.5" width="10" height="1.2" rx="0.6" fill="#666666" />
-              <rect x="6" y="7.5" width="7.5" height="1.2" rx="0.6" fill="#666666" />
-              <rect x="6" y="10.5" width="8.5" height="1.2" rx="0.6" fill="#666666" />
+              <path d="M18 1H4c-1.1 0-2 .9-2 2v14l3.5-3.5h12.5c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2z" fill="var(--text-primary)" />
+              <rect x="6" y="4.5" width="10" height="1.2" rx="0.6" fill="var(--text-primary)" />
+              <rect x="6" y="7.5" width="7.5" height="1.2" rx="0.6" fill="var(--text-primary)" />
+              <rect x="6" y="10.5" width="8.5" height="1.2" rx="0.6" fill="var(--text-primary)" />
             </svg>
           </div>
           <span>Chat</span>

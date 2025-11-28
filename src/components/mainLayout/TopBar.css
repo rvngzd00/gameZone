@@ -5,16 +5,18 @@
   left: 0;
   right: 0;
   height: 48px;
-  background: linear-gradient(
+  /* background: linear-gradient(
     to right,
     rgba(26, 26, 46, 0.95),
     rgba(38, 38, 76, 0.95),
     rgba(26, 26, 46, 0.95)
-  );
+  ); */
+  background: linear-gradient(135deg, var(--black), var(--bg-dark-2));
+
   backdrop-filter: blur(8px);
   z-index: 1000;
   box-shadow: 
-    0 2px 15px rgba(255, 209, 102, 0.1),
+  0 2px 15px rgba(255, 215, 0, 0.1),
     0 1px 6px rgba(0, 0, 0, 0.2);
 }
 
@@ -28,9 +30,9 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 209, 102, 0.3),
-    rgba(255, 209, 102, 0.5),
-    rgba(255, 209, 102, 0.3),
+  rgba(255, 215, 0, 0.3),
+  rgba(255, 215, 0, 0.5),
+  rgba(255, 215, 0, 0.3),
     transparent
   );
 }
@@ -55,16 +57,16 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 209, 102, 0.1);
+  background: var(--accent-opaque-01);
   padding: 6px 12px;
   border-radius: 20px;
-  border: 1px solid rgba(255, 209, 102, 0.2);
+  border: 1px solid var(--accent-opaque-02);
   transition: all 0.3s ease;
 }
 
 .balance-display:hover {
-  border-color: rgba(255, 209, 102, 0.4);
-  box-shadow: 0 0 15px rgba(255, 209, 102, 0.15);
+  border-color: rgba(255, 215, 0, 0.4);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
 }
 
 .coin-icon {
@@ -78,15 +80,16 @@
 }
 
 .balance-amount {
-  color: #FFD700;
+  color: var(--accent);
   font-weight: 600;
   font-size: 0.95rem;
-  text-shadow: 0 0 10px rgba(255, 209, 102, 0.3);
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
 .top-bar-btn {
+  text-decoration: none;
   background: transparent;
-  border: 1px solid rgba(255, 209, 102, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.3);
   color: rgba(255, 255, 255, 0.9);
   padding: 6px 16px;
   border-radius: 20px;
@@ -97,36 +100,36 @@
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-.login-btn {
-  background: linear-gradient(135deg, rgba(255, 209, 102, 0.1), rgba(255, 209, 102, 0.05));
+.login-btn-t {
+  background: linear-gradient(135deg, var(--accent-opaque-01), var(--accent-opaque-05));
 }
 
-.register-btn {
-  background: linear-gradient(135deg, #FFD700, #FFA500);
+.register-btn-t {
+  background: linear-gradient(135deg, var(--accent), var(--accent));
   border: none;
-  color: #1a1a2e;
+  color: var(--text-on-accent);
   font-weight: 600;
 }
 
 .top-bar-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 15px rgba(255, 209, 102, 0.2);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
 }
 
-.login-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 209, 102, 0.2), rgba(255, 209, 102, 0.1));
-  border-color: rgba(255, 209, 102, 0.5);
+.login-btn-t:hover {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+  border-color: rgba(255, 215, 0, 0.5);
 }
 
-.register-btn:hover {
-  background: linear-gradient(135deg, #FFE066, #FFB732);
+.register-btn-t:hover {
+  background: linear-gradient(135deg, var(--accent-5), var(--accent-6));
   box-shadow: 
-    0 0 20px rgba(255, 209, 102, 0.3),
-    0 0 40px rgba(255, 209, 102, 0.1);
+  0 0 20px rgba(255, 215, 0, 0.3),
+  0 0 40px rgba(255, 215, 0, 0.1);
 }
 
 .profile-btn {
-  background: linear-gradient(135deg, rgba(255, 209, 102, 0.15), rgba(255, 209, 102, 0.05));
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
 }
 
 .logout-btn {

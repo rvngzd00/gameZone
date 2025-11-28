@@ -1,42 +1,55 @@
 .hero-section {
-    min-height: 100vh;
+    /* min-height: 100vh; */
     display: flex;
     align-items: center;
-    padding: 2rem;
+    /* padding: 2rem; */
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    /* background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); */
+    margin: 27px 0 27px 0;
+
 }
 
 .hero-content {
     width: 100%;
     max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    color: #fff;
+    margin: 27px auto;
+    /* padding: 0 1rem; */
+    color: var(--text-primary);
     position: relative;
     z-index: 2;
 }
 
-.hero-grid {
+.hero-content-1{
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
+    justify-content: space-around;
 }
+.hero-text {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
+    /* gap: clamp(1rem, 2vw, 1.5rem); */
+}
 .hero-text h1 {
-    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-size: 2rem;
     font-weight: 700;
     margin-bottom: clamp(1rem, 2vw, 1.5rem);
     line-height: 1.2;
+    text-align: center;
+    
 }
 
 .hero-text p {
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    font-size: 17px;
     line-height: 1.6;
+    max-width: 527px;
     margin-bottom: clamp(1.5rem, 2vw, 2rem);
     opacity: 0.9;
+    text-align: center;
+
 }
 
 .hero-features {
@@ -62,7 +75,8 @@
 }
 
 .btn {
-    padding: 1rem 2rem;
+    text-decoration: none;
+    padding: 1rem 4rem;
     border-radius: 50px;
     font-size: 1.1rem;
     font-weight: 600;
@@ -75,8 +89,8 @@
 }
 
 .btn-primary {
-    background: linear-gradient(45deg, #4f46e5, #7c3aed);
-    color: white;
+    background: linear-gradient(45deg, var(--purple-1), var(--purple-2));
+        color: var(--text-primary);
     border: none;
     box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
 }
@@ -87,7 +101,7 @@
 
 .btn-secondary {
     background: transparent;
-    color: white;
+    color: var(--white);
     border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
@@ -98,16 +112,15 @@
 .hero-image {
     position: relative;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
+
+
 .game-preview {
-    width: 100%;
-    max-width: 600px;
-    aspect-ratio: 4/3;
-    border-radius: clamp(12px, 2vw, 20px);
+    /* width: 100%; */
+    max-width: 570px;
+    /* aspect-ratio: 4/3; */
+    border-radius: 17px;
     background: rgba(231, 209, 209, 0.1);
     backdrop-filter: blur(10px);
     padding: clamp(0.75rem, 2vw, 1.25rem);
@@ -269,9 +282,10 @@
         flex-wrap: wrap;
     }
 
-    .cta-buttons {
-        width: 370px;
+    .cta-buttons,.btn-primary {
+        width: 270px!important;
         justify-content: center;
+        align-items: center;
     }
 
     .game-preview {
@@ -288,6 +302,9 @@
 }
 
 @media (max-width: 480px) {
+     .hero-text {
+        width: 350px;
+    }
     .hero-section {
         padding: 1.5rem 0;
     }

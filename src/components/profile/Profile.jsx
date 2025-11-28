@@ -1,13 +1,14 @@
 import React from 'react';
 import './Profile.css';
 import profilePhoto from '../../assets/game-images/profilePhoto.png';
+import { useAppContext } from '../../context/AppContext';
+
 const Profile = () => {
-    // Mock data - replace with real data from your context/API
+    // // Mock data - replace with real data from your context/API
     const profileData = {
         username: "fUCKERtOFIQ31",
-        level: 31,
+        // level: 31,
         coins: 316972,
-        winRate: "31%",
         gamesPlayed: 69,
         // achievements: [
         //     { id: 1, name: "First Win", icon: "🏆", description: "Won your first game" },
@@ -20,35 +21,35 @@ const Profile = () => {
             { id: 3, game: "Dominoes", result: "Loss", coins: "-200", date: "8h ago" }
         ]
     };
-
+    const { isAuthenticated, balance, logout, user } = useAppContext();
     return (
         <div className="container">
             <div className="profile-container">
                 <div className="profile-header">
                     <div className="profile-avatar">
                         <div className="avatar-frame">
-                            <span className="level-badge">{profileData.level}</span>
+                            {/* <span className="level-badge">{profileData.level}</span> */}
                             <div className="avatar-image">
                                 <img src={profilePhoto} alt="Profile" />
                             </div>
                         </div>
                     </div>
                     <div className="profile-info">
-                        <h1>{profileData.username}</h1>
+                        <h1>{user?.username || "Loading..."}</h1>
                         <div className="profile-stats">
                             <div className="stat-item">
                                 <span className="stat-icon">🎲</span>
                                 <span className="stat-value">{profileData.gamesPlayed}</span>
                                 <span className="stat-label">Games</span>
                             </div>
-                            <div className="stat-item">
+                            {/* <div className="stat-item">
                                 <span className="stat-icon">⚡</span>
                                 <span className="stat-value">{profileData.winRate}</span>
                                 <span className="stat-label">Win Rate</span>
-                            </div>
+                            </div> */}
                             <div className="stat-item">
                                 <span className="stat-icon">🪙</span>
-                                <span className="stat-value">{profileData.coins}</span>
+                                <span className="stat-value">{balance}</span>
                                 <span className="stat-label">Coins</span>
                             </div>
                         </div>
@@ -56,7 +57,7 @@ const Profile = () => {
                 </div>
 
                 {/* <div className="profile-content"> */}
-                    {/* <div className="profile-section achievements-section">
+                {/* <div className="profile-section achievements-section">
                         <h2>Achievements</h2>
                         <div className="achievements-grid">
                             {profileData.achievements.map(achievement => (
@@ -69,27 +70,27 @@ const Profile = () => {
                         </div>
                     </div> */}
 
-                    <div className="profile-section recent-games-section">
-                        <h2>Recent Games</h2>
-                        <div className="games-history">
-                            {profileData.recentGames.map(game => (
-                                <div key={game.id} className="game-history-item">
-                                    <div className="game-info">
-                                        <span className="game-name">{game.game}</span>
-                                        <span className="game-date">{game.date}</span>
-                                    </div>
-                                    <div className="game-result">
-                                        <span className={`result-badge ${game.result.toLowerCase()}`}>
-                                            {game.result}
-                                        </span>
-                                        <span className={`coins ${game.coins.startsWith('+') ? 'positive' : 'negative'}`}>
-                                            {game.coins}
-                                        </span>
-                                    </div>
+                <div className="profile-section recent-games-section">
+                    <h2>Recent Games</h2>
+                    <div className="games-history">
+                        {profileData.recentGames.map(game => (
+                            <div key={game.id} className="game-history-item">
+                                <div className="game-info">
+                                    <span className="game-name">{game.game}</span>
+                                    <span className="game-date">{game.date}</span>
                                 </div>
-                            ))}
-                        </div>
+                                <div className="game-result">
+                                    <span className={`result-badge ${game.result.toLowerCase()}`}>
+                                        {game.result}
+                                    </span>
+                                    <span className={`coins ${game.coins.startsWith('+') ? 'positive' : 'negative'}`}>
+                                        {game.coins}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
                     </div>
+                </div>
                 {/* </div> */}
 
                 <div className="profile-actions">

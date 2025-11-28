@@ -19,12 +19,12 @@ const TopBar = () => {
               <div className="balance-display" title={`Balance: ${balance}`}>
                 <div className="coin-icon" aria-hidden>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" fill="url(#coinGradient)" stroke="#FFB800" strokeWidth="1.5"/>
-                    <path d="M12 6V18M15 9H9M15 15H9" stroke="#FFB800" strokeWidth="1.5" strokeLinecap="round"/>
+                    <circle cx="12" cy="12" r="10" fill="url(#coinGradient)" stroke="var(--accent)" strokeWidth="1.5"/>
+                    <path d="M12 6V18M15 9H9M15 15H9" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round"/>
                     <defs>
                       <linearGradient id="coinGradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#FFD700"/>
-                        <stop offset="1" stopColor="#FFA500"/>
+                        <stop stopColor="var(--accent)"/>
+                        <stop offset="1" stopColor="var(--accent)"/>
                       </linearGradient>
                     </defs>
                   </svg>
@@ -36,8 +36,8 @@ const TopBar = () => {
             </>
           ) : (
             <>
-              <Link to="/login" className="top-bar-btn login-btn">Login</Link>
-              <Link to="/register" className="top-bar-btn register-btn">Register</Link>
+              <Link to="/login" className="top-bar-btn login-btn-t">Login</Link>
+              <Link to="/register" className="top-bar-btn register-btn-t">Register</Link>
             </>
           )}
         </div>

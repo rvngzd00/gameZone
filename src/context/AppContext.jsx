@@ -1,77 +1,152 @@
-import React, { createContext, useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const AppContext = createContext(null);
+export const AppContext = createContext(null);
+
+// Custom hook to use the AppContext
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useAppContext must be used within an AppProvider');
+  }
+  return context;
+};
+
+// 🔗 Backend URL-ni burda dəyiş
+const API_BASE = "http://192.168.30.27:5063/";
 
 export function AppProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [balance, setBalance] = useState(7777);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [balance, setBalance] = useState(0);
   const navigate = useNavigate();
 
+  // 🔧 Axios instance
+  const api = axios.create({
+    baseURL: API_BASE,
+    withCredentials: true,
+  });
+
+  // 🧩 Token interceptor
+  api.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+
+  // 🚀 İlk açılışda token varsa user-i çək
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsAuthenticated(true);
+      getUserProfile();
+    }
+  }, []);
+
+  // 👤 USER məlumatlarını çək
+  const getUserProfile = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get("/api/Auths/GetCurrentUser/current");
+      console.log("User data:", res.data);
+      setUser(res.data);
+      setBalance(res.data.balance || 0);
+    } catch (err) {
+      console.error("User fetch error:", err);
+      setIsAuthenticated(false);
+      localStorage.removeItem("token");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔑 LOGIN
   const login = async (credentials) => {
     try {
-      // Here you would make your API call
-      // For now, we'll simulate a successful login
-      setUser({
-        id: '1',
-        username: credentials.email,
-        // other user data
-      });
-      setBalance(1000); // Example initial balance
-      setIsAuthenticated(true);
-      navigate('/');
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
+      setLoading(true);
+      const res = await api.post("/api/Auths/Login", credentials);
+      const token = typeof res.data === "string" ? res.data : res.data.token;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        setIsAuthenticated(true);
+        await getUserProfile();
+        navigate("/");
+        return { success: true };
+      } else {
+        return { success: false, error: "Token tapılmadı" };
+      }
+    } catch (err) {
+      console.error("Login error:", err.response?.data || err.message);
+      return { success: false, error: err.response?.data || err.message };
+    } finally {
+      setLoading(false);
     }
   };
 
+  // 📝 REGISTER
   const register = async (userData) => {
     try {
-      // Here you would make your API call
-      // For now, we'll simulate a successful registration
-      setUser({
-        id: '1',
-        username: userData.email,
-        // other user data
-      });
-      setBalance(500); // Example initial balance for new users
-      setIsAuthenticated(true);
-      navigate('/');
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
+      setLoading(true);
+      const res = await api.post("/api/Auths/Register", userData);
+      const token = typeof res.data === "string" ? res.data : res.data.token;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        setIsAuthenticated(true);
+        await getUserProfile();
+        navigate("/");
+        return { success: true };
+      } else {
+        return { success: false, error: "Token tapılmadı" };
+      }
+    } catch (err) {
+      console.error("Register error:", err.response?.data || err.message);
+      return { success: false, error: err.response?.data || err.message };
+    } finally {
+      setLoading(false);
     }
   };
 
+  // 🚪 LOGOUT
   const logout = () => {
+    localStorage.removeItem("token");
     setUser(null);
     setBalance(0);
     setIsAuthenticated(false);
-    navigate('/');
+    navigate("/login");
   };
 
+  // 💰 BALANCE update
   const updateBalance = (newBalance) => {
     setBalance(newBalance);
+    setUser((prev) => ({ ...prev, balance: newBalance }));
+  };
+
+  // ⚙️ USER update (məs: profil şəkli, ad, email və s.)
+  const updateUser = (newData) => {
+    setUser((prev) => ({ ...prev, ...newData }));
   };
 
   const value = {
     user,
-    setUser,
     balance,
-    updateBalance,
     isAuthenticated,
+    loading,
+    token:localStorage.getItem("token"),
     login,
     register,
-    logout
+    logout,
+    updateBalance,
+    updateUser,
+    getUserProfile,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
-}
-
-export function useAppContext() {
-  return useContext(AppContext);
 }
 
 export default AppContext;
