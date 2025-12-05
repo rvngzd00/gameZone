@@ -14,7 +14,7 @@ export const useAppContext = () => {
 };
 
 // 🔗 Backend URL-ni burda dəyiş
-const API_BASE = "http://192.168.30.27:5063/";
+const API_BASE = "https://nehemiah-paginal-alan.ngrok-free.dev/";
 
 export function AppProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -49,6 +49,7 @@ export function AppProvider({ children }) {
 
   // 👤 USER məlumatlarını çək
   const getUserProfile = async () => {
+    
     try {
       setLoading(true);
       const res = await api.get("/api/Auths/GetCurrentUser/current");
@@ -67,6 +68,7 @@ export function AppProvider({ children }) {
   // 🔑 LOGIN
   const login = async (credentials) => {
     try {
+
       setLoading(true);
       const res = await api.post("/api/Auths/Login", credentials);
       const token = typeof res.data === "string" ? res.data : res.data.token;
@@ -137,7 +139,7 @@ export function AppProvider({ children }) {
     balance,
     isAuthenticated,
     loading,
-    token:localStorage.getItem("token"),
+    token: localStorage.getItem("token"),
     login,
     register,
     logout,

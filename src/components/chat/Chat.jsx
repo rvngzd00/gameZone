@@ -15,7 +15,8 @@ export default function Chat() {
         messagesEndRef.current?.scrollIntoView();
     };
 
-    const BASE_URL = "http://192.168.30.27:5063";
+    const BASE_URL = "https://nehemiah-paginal-alan.ngrok-free.dev";
+
 
     const token =
         localStorage.getItem("token") ||

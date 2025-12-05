@@ -19,7 +19,7 @@ function BackgammonGame() {
     const [rooms, setRooms] = useState([]);
     const [currentRoom, setCurrentRoom] = useState(null);
     const [myColor, setMyColor] = useState(null);
-    const [myName, setMyName] = useState(user?.fullName || user?.username || 'Player');
+    const [myName, setMyName] = useState(user?.username || 'Player');
     const [isMyTurn, setIsMyTurn] = useState(false);
     const [gameBoard, setGameBoard] = useState({
         points: {},
@@ -32,7 +32,9 @@ function BackgammonGame() {
     const [betAmount, setBetAmount] = useState(0);
     const [player1, setPlayer1] = useState({ name: 'Oyunçu 1', avatar: '?' });
     const [player2, setPlayer2] = useState({ name: 'Oyunçu 2', avatar: '?' });
-
+    useEffect(() => {
+        console.log("myName changed →", myName);
+    }, [myName]);
     // UI State
     const [notification, setNotification] = useState({ show: false, message: '', type: 'info' });
     const [chatOpen, setChatOpen] = useState(false);
@@ -51,12 +53,13 @@ function BackgammonGame() {
         if (!token) return;
 
         const conn = new signalR.HubConnectionBuilder()
-            .withUrl("http://192.168.30.27:5063/backgammonhub", {
+            .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/backgammonhub", {
                 accessTokenFactory: () => token
             })
             .withAutomaticReconnect()
             .build();
-
+        console.log("SignalR connection objesi:", conn);
+        console.log("Başlanğıc state:", conn.state);
         conn.start()
             .then(() => {
                 console.log("✅ SignalR Connected");
@@ -78,7 +81,8 @@ function BackgammonGame() {
         if (!connection) return;
 
         connection.on("UserData", (data) => {
-            setMyName(data.fullName || data.username);
+            console.log("Received UserData:", data);
+            setMyName(data.username);
             updateBalance(data.balance);
         });
 
@@ -125,7 +129,8 @@ function BackgammonGame() {
         });
 
         connection.on("PlayerJoined", (data) => {
-            showNotification(`${data.name} qoşuldu! Oyun başlayır...`, 'info');
+            console.log("PlayerJoined data:", data);
+            showNotification(`${data.username} qoşuldu! Oyun başlayır...`, 'info');
             updatePlayerInfo(data.name, data.color);
         });
 
@@ -163,11 +168,33 @@ function BackgammonGame() {
             showNotification(`♟️ ${moveText}`, 'success');
         });
 
-        connection.on("TurnChanged", (data) => {
-            setIsMyTurn(data.currentPlayer === myName);
+        
+                connection.on("TurnChanged", (data) => {
+            console.log("TurnChanged received:", data);
+            console.log("My name:", myName, "Current player:", data.currentPlayer);
+            console.log("Comparing:", {
+                dataCurrentPlayer: data.currentPlayer,
+                myNameState: myName,
+                areEqual: data.currentPlayer === myName,
+                dataType: typeof data.currentPlayer,
+                myNameType: typeof myName
+            });
+            
+            // ƏSAS DÜZƏLİŞ: username və fullName hər ikisinə bax
+            const isMyTurnNow = data.currentPlayer === myName || 
+                                data.currentPlayer === user?.username || 
+                                data.currentPlayer === user?.fullName;
+            
+            console.log("Is my turn now?", isMyTurnNow);
+            
+            setIsMyTurn(isMyTurnNow);
             setShowDice(false);
-            if (data.currentPlayer === myName) {
+            setSelectedPoint(null);
+            
+            if (isMyTurnNow) {
                 showNotification('🎯 Sizin növbənizdir!', 'info');
+            } else {
+                showNotification('⏳ Rəqibin növbəsidir...', 'info');
             }
         });
 
@@ -639,144 +666,151 @@ function BackgammonGame() {
 
                     {/* Players Status Bar */}
                     <div className="players-status-bar">
+                        {/* Player 1 (White) */}
                         <div className={`player-status-card player-white ${(myColor === 'white' ? isMyTurn : !isMyTurn) ? 'active-turn' : ''}`}>
-                            <div className="player-status-avatar">
-                                {player1.avatar}
-                            </div>
                             <div className="player-status-info">
                                 <h3>{player1.name}</h3>
                                 <div className="player-status-meta">
-                                    <span className="player-stone">⚪ White</span>
+                                    <span className="player-stone">
+                                        ⚪ <span className="stone-text">White</span>
+                                    </span>
                                     <span className="player-home">🏠 {gameBoard.home?.white || 0}/15</span>
                                 </div>
                             </div>
-                            <div className="player-action-zone">
-                                <button
-                                    className="player-emoji-action-btn"
-                                    onClick={() => setEmojiPopup({
-                                        show: emojiPopup.player === 'player1' ? !emojiPopup.show : true,
-                                        player: 'player1',
-                                        tab: 'emoji'
-                                    })}
-                                    title="Send emoji or quick message"
-                                >
-                                    💬
-                                </button>
-                                {emojiPopup.show && emojiPopup.player === 'player1' && (
-                                    <div className="emoji-action-popup">
-                                        <div className="emoji-popup-nav">
-                                            <button
-                                                className={`emoji-nav-btn ${emojiPopup.tab === 'emoji' ? 'active' : ''}`}
-                                                onClick={() => setEmojiPopup(prev => ({ ...prev, tab: 'emoji' }))}
-                                            >
-                                                😊
-                                            </button>
-                                            <button
-                                                className={`emoji-nav-btn ${emojiPopup.tab === 'message' ? 'active' : ''}`}
-                                                onClick={() => setEmojiPopup(prev => ({ ...prev, tab: 'message' }))}
-                                            >
-                                                💬
-                                            </button>
+
+                            {/* ƏSAS DƏYİŞİKLİK: Yalnız player1 cari oyunçudursa düyməni göstər */}
+                            {player1.name === myName && (
+                                <div className="player-action-zone">
+                                    <button
+                                        className="player-emoji-action-btn"
+                                        onClick={() => setEmojiPopup({
+                                            show: emojiPopup.player === 'player1' ? !emojiPopup.show : true,
+                                            player: 'player1',
+                                            tab: 'emoji'
+                                        })}
+                                        title="Send emoji or quick message"
+                                    >
+                                        💬
+                                    </button>
+                                    {emojiPopup.show && emojiPopup.player === 'player1' && (
+                                        <div className="emoji-action-popup">
+                                            <div className="emoji-popup-nav">
+                                                <button
+                                                    className={`emoji-nav-btn ${emojiPopup.tab === 'emoji' ? 'active' : ''}`}
+                                                    onClick={() => setEmojiPopup(prev => ({ ...prev, tab: 'emoji' }))}
+                                                >
+                                                    😊
+                                                </button>
+                                                <button
+                                                    className={`emoji-nav-btn ${emojiPopup.tab === 'message' ? 'active' : ''}`}
+                                                    onClick={() => setEmojiPopup(prev => ({ ...prev, tab: 'message' }))}
+                                                >
+                                                    💬
+                                                </button>
+                                            </div>
+                                            {emojiPopup.tab === 'emoji' ? (
+                                                <div className="emoji-picker">
+                                                    {['👋', '😊', '😂', '❤️', '👍', '👏', '🙏', '🔥', '✨', '🎉', '💯', '🤔', '😍', '😎', '😢', '😡', '🤩', '🥳'].map(emoji => (
+                                                        <button key={emoji} className="emoji-item" onClick={() => sendQuickEmoji(emoji)}>
+                                                            {emoji}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="quick-messages-popup">
+                                                    {['Salam! 👋', 'Uğurlar! 🍀', 'Yaxşı oyun! 🎯', 'Təşəkkürlər 🙏', 'Gözəl! 👏', 'Ups... 😅', 'GG! 🎊'].map(msg => (
+                                                        <button key={msg} className="quick-msg-item-btn" onClick={() => sendQuickMessage(msg)}>
+                                                            {msg}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
-                                        {emojiPopup.tab === 'emoji' ? (
-                                            <div className="emoji-picker">
-                                                {['👋', '😊', '😂', '❤️', '👍', '👏', '🙏', '🔥', '✨', '🎉', '💯', '🤔', '😍', '😎', '😢', '😡', '🤩', '🥳'].map(emoji => (
-                                                    <button key={emoji} className="emoji-item" onClick={() => sendQuickEmoji(emoji)}>
-                                                        {emoji}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <div className="quick-messages-popup">
-                                                {['Salam! 👋', 'Uğurlar! 🍀', 'Yaxşı oyun! 🎯', 'Təşəkkürlər 🙏', 'Gözəl! 👏', 'Ups... 😅', 'GG! 🎊'].map(msg => (
-                                                    <button key={msg} className="quick-msg-item-btn" onClick={() => sendQuickMessage(msg)}>
-                                                        {msg}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                                {playerEmojis.player1 && (
-                                    <div className="floating-emoji-display">
-                                        {playerEmojis.player1}
-                                    </div>
-                                )}
-                            </div>
+                                    )}
+                                    {playerEmojis.player1 && (
+                                        <div className="floating-emoji-display">
+                                            {playerEmojis.player1}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                         {/* Game Header with Bet */}
-                        {/* <div className="game-header-section">
+                        <div className="game-header-section">
                             <div className="bet-display">
                                 <span className="bet-icon">🏆</span>
                                 <span className="bet-text">Match Pot:</span>
                                 <span className="bet-amount-large">{betAmount} 💰</span>
                             </div>
-                        </div> */}
+                        </div>
+                        {/* Player 2 (Black) */}
                         <div className={`player-status-card player-black ${(myColor === 'black' ? isMyTurn : !isMyTurn) ? 'active-turn' : ''}`}>
-                            <div className="player-status-avatar">
-                                {player2.avatar}
-                            </div>
                             <div className="player-status-info">
                                 <h3>{player2.name}</h3>
                                 <div className="player-status-meta">
-                                    <span className="player-stone">⚫ Black</span>
+                                    <span className="player-stone">
+                                        ⚫ <span className="stone-text">Black</span>
+                                    </span>
                                     <span className="player-home">🏠 {gameBoard.home?.black || 0}/15</span>
                                 </div>
                             </div>
-                            {/* IKINCI PLAYERIN MESAJ HISSESI GORSENMEMELIDIR  */}
-                            <div className="player-action-zone">
-                                <button
-                                    className="player-emoji-action-btn"
-                                    onClick={() => setEmojiPopup({
-                                        show: emojiPopup.player === 'player2' ? !emojiPopup.show : true,
-                                        player: 'player2',
-                                        tab: 'emoji'
-                                    })}
-                                    title="Send emoji or quick message"
-                                >
-                                    💬
-                                </button>
-                                {emojiPopup.show && emojiPopup.player === 'player2' && (
-                                    <div className="emoji-action-popup">
-                                        <div className="emoji-popup-nav">
-                                            <button
-                                                className={`emoji-nav-btn ${emojiPopup.tab === 'emoji' ? 'active' : ''}`}
-                                                onClick={() => setEmojiPopup(prev => ({ ...prev, tab: 'emoji' }))}
-                                            >
-                                                😊
-                                            </button>
-                                            <button
-                                                className={`emoji-nav-btn ${emojiPopup.tab === 'message' ? 'active' : ''}`}
-                                                onClick={() => setEmojiPopup(prev => ({ ...prev, tab: 'message' }))}
-                                            >
-                                                💬
-                                            </button>
+
+                            {/* ƏSAS DƏYİŞİKLİK: Yalnız player2 cari oyunçudursa düyməni göstər */}
+                            {player2.name === myName && (
+                                <div className="player-action-zone">
+                                    <button
+                                        className="player-emoji-action-btn"
+                                        onClick={() => setEmojiPopup({
+                                            show: emojiPopup.player === 'player1' ? !emojiPopup.show : true,
+                                            player: 'player1',
+                                            tab: 'emoji'
+                                        })}
+                                        title="Send emoji or quick message"
+                                    >
+                                        💬
+                                    </button>
+                                    {emojiPopup.show && emojiPopup.player === 'player1' && (
+                                        <div className="emoji-action-popup">
+                                            <div className="emoji-popup-nav">
+                                                <button
+                                                    className={`emoji-nav-btn ${emojiPopup.tab === 'emoji' ? 'active' : ''}`}
+                                                    onClick={() => setEmojiPopup(prev => ({ ...prev, tab: 'emoji' }))}
+                                                >
+                                                    😊
+                                                </button>
+                                                <button
+                                                    className={`emoji-nav-btn ${emojiPopup.tab === 'message' ? 'active' : ''}`}
+                                                    onClick={() => setEmojiPopup(prev => ({ ...prev, tab: 'message' }))}
+                                                >
+                                                    💬
+                                                </button>
+                                            </div>
+                                            {emojiPopup.tab === 'emoji' ? (
+                                                <div className="emoji-picker">
+                                                    {['👋', '😊', '😂', '❤️', '👍', '👏', '🙏', '🔥', '✨', '🎉', '💯', '🤔', '😍', '😎', '😢', '😡', '🤩', '🥳'].map(emoji => (
+                                                        <button key={emoji} className="emoji-item" onClick={() => sendQuickEmoji(emoji)}>
+                                                            {emoji}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="quick-messages-popup">
+                                                    {['Salam! 👋', 'Uğurlar! 🍀', 'Yaxşı oyun! 🎯', 'Təşəkkürlər 🙏', 'Gözəl! 👏', 'Ups... 😅', 'GG! 🎊'].map(msg => (
+                                                        <button key={msg} className="quick-msg-item-btn" onClick={() => sendQuickMessage(msg)}>
+                                                            {msg}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
-                                        {emojiPopup.tab === 'emoji' ? (
-                                            <div className="emoji-picker">
-                                                {['👋', '😊', '😂', '❤️', '👍', '👏', '🙏', '🔥', '✨', '🎉', '💯', '🤔', '😍', '😎', '😢', '😡', '🤩', '🥳'].map(emoji => (
-                                                    <button key={emoji} className="emoji-item" onClick={() => sendQuickEmoji(emoji)}>
-                                                        {emoji}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <div className="quick-messages-popup">
-                                                {['Salam! 👋', 'Uğurlar! 🍀', 'Yaxşı oyun! 🎯', 'Təşəkkürlər 🙏', 'Gözəl! 👏', 'Ups... 😅', 'GG! 🎊'].map(msg => (
-                                                    <button key={msg} className="quick-msg-item-btn" onClick={() => sendQuickMessage(msg)}>
-                                                        {msg}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                                {playerEmojis.player2 && (
-                                    <div className="floating-emoji-display">
-                                        {playerEmojis.player2}
-                                    </div>
-                                )}
-                            </div>
+                                    )}
+                                    {playerEmojis.player1 && (
+                                        <div className="floating-emoji-display">
+                                            {playerEmojis.player1}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -897,7 +931,7 @@ function Point({ num, position, gameBoard, selectedPoint, handlePointClick }) {
             onClick={() => handlePointClick(num)}
         >
             <div className="point-triangle" />
-            
+
             <div className="point-label">{num}</div>
 
             {pieces.length > 0 && (
