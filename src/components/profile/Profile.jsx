@@ -1,3 +1,4 @@
+
 import React from 'react';
 import './Profile.css';
 import profilePhoto from '../../assets/game-images/profilePhoto.png';
