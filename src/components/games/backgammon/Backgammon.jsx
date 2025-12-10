@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as signalR from '@microsoft/signalr';
-import { useAppContext } from '../../../context/AppContext'; // AppContext-dən token çəkmək üçün
-
+import { useAppContext } from '../../../context/AppContext';
 import './Backgammon.css';
 
-
+// ==================== CONSTANTS ====================
+const NOTIFICATION_DURATION = 5000;
+const EMOJI_DISPLAY_DURATION = 2000;
+const MESSAGE_DISPLAY_DURATION = 3000;
+const ROOM_REFRESH_INTERVAL = 3000;
 
 // ==================== BACKGAMMON GAME ====================
 function BackgammonGame() {
@@ -19,7 +22,9 @@ function BackgammonGame() {
     const [rooms, setRooms] = useState([]);
     const [currentRoom, setCurrentRoom] = useState(null);
     const [myColor, setMyColor] = useState(null);
-    const [myName, setMyName] = useState(user?.username || 'Player');
+    const [myName, setMyName] = useState(user?.username || 'Player'); // ✅ username ilə başla
+    const [myUsername, setMyUsername] = useState(user?.username || 'Player'); // ✅ ƏSAS: username-i ayrıca saxla
+    const [myFullName, setMyFullName] = useState(''); // ✅ fullName ayrıca
     const [isMyTurn, setIsMyTurn] = useState(false);
     const [gameBoard, setGameBoard] = useState({
         points: {},
@@ -29,12 +34,13 @@ function BackgammonGame() {
     const [selectedPoint, setSelectedPoint] = useState(null);
     const [dice, setDice] = useState([null, null]);
     const [showDice, setShowDice] = useState(false);
+    const [rollingDice, setRollingDice] = useState([false, false]);
+    const [displayDice, setDisplayDice] = useState([1, 1]);
+    const [diceRolled, setDiceRolled] = useState(false); // ✅ Zər atıldı flag
     const [betAmount, setBetAmount] = useState(0);
     const [player1, setPlayer1] = useState({ name: 'Oyunçu 1', avatar: '?' });
     const [player2, setPlayer2] = useState({ name: 'Oyunçu 2', avatar: '?' });
-    useEffect(() => {
-        console.log("myName changed →", myName);
-    }, [myName]);
+
     // UI State
     const [notification, setNotification] = useState({ show: false, message: '', type: 'info' });
     const [chatOpen, setChatOpen] = useState(false);
@@ -45,8 +51,19 @@ function BackgammonGame() {
     const [emojiPopup, setEmojiPopup] = useState({ show: false, player: null, tab: 'emoji' });
     const [playerEmojis, setPlayerEmojis] = useState({ player1: null, player2: null });
 
+    // Refs
     const messagesEndRef = useRef(null);
     const notificationTimerRef = useRef(null);
+    const connectionRef = useRef(null);
+
+    // ==================== Sync myName with user ====================
+    useEffect(() => {
+        if (user?.username && !myUsername) {
+            setMyUsername(user.username);
+            setMyFullName(user.fullName || user.username);
+            setMyName(user.fullName || user.username);
+        }
+    }, [user]);
 
     // ==================== SignalR Setup ====================
     useEffect(() => {
@@ -58,8 +75,26 @@ function BackgammonGame() {
             })
             .withAutomaticReconnect()
             .build();
-        console.log("SignalR connection objesi:", conn);
-        console.log("Başlanğıc state:", conn.state);
+
+        connectionRef.current = conn;
+
+        conn.onreconnecting((error) => {
+            console.log("🔄 Reconnecting...", error);
+            showNotification('Bağlantı yenidən qurulur...', 'info');
+        });
+
+        conn.onreconnected((connectionId) => {
+            console.log("✅ Reconnected:", connectionId);
+            showNotification('Bağlantı yeniləndi!', 'success');
+            refreshRooms();
+        });
+
+        conn.onclose((error) => {
+            console.log("❌ Connection closed:", error);
+            setConnected(false);
+            showNotification('Bağlantı kəsildi!', 'error');
+        });
+
         conn.start()
             .then(() => {
                 console.log("✅ SignalR Connected");
@@ -72,22 +107,34 @@ function BackgammonGame() {
             });
 
         return () => {
-            if (conn) conn.stop();
+            if (conn && conn.state === signalR.HubConnectionState.Connected) {
+                conn.stop();
+            }
         };
     }, [token]);
 
-    // ==================== SignalR Event Handlers ====================
+    // ==================== SignalR Event Handlers (Only Once) ====================
     useEffect(() => {
         if (!connection) return;
 
-        connection.on("UserData", (data) => {
-            console.log("Received UserData:", data);
-            setMyName(data.username);
+        const handleUserData = (data) => {
+            console.log("👤 UserData received:", data);
+            // ✅ ƏSAS: username və fullName ayrı-ayrı saxla
+            const username = data.username;
+            const fullName = data.fullName || data.username;
+            
+            console.log("👤 Username:", username);
+            console.log("👤 FullName:", fullName);
+            
+            setMyUsername(username); // Backend bununla müqayisə edir
+            setMyFullName(fullName); // UI-da göstərmək üçün
+            setMyName(fullName); // Display name
             updateBalance(data.balance);
-        });
+        };
 
-        connection.on("ChatMessage", (data) => {
-            const isOwn = data.sender === myName;
+        const handleChatMessage = (data) => {
+            // ✅ username ilə müqayisə
+            const isOwn = data.sender === myUsername || data.sender === myFullName;
             setChatMessages(prev => [...prev, {
                 sender: data.sender,
                 message: data.message,
@@ -97,67 +144,78 @@ function BackgammonGame() {
             if (!chatOpen && !isOwn) {
                 setUnreadCount(prev => prev + 1);
             }
-        });
+        };
 
-        connection.on("QuickEmoji", (data) => {
+        const handleQuickEmoji = (data) => {
             displayPlayerEmoji(data.sender, data.emoji);
-        });
+        };
 
-        connection.on("QuickMessage", (data) => {
+        const handleQuickMessage = (data) => {
             displayPlayerQuickMessage(data.sender, data.message);
-        });
+        };
 
-        connection.on("BackgammonRoomCreated", () => {
+        const handleBackgammonRoomCreated = () => {
             refreshRooms();
-        });
+        };
 
-        connection.on("JoinedRoom", (data) => {
+        const handleJoinedRoom = (data) => {
             setCurrentRoom(data.roomId);
             setMyColor(data.color);
             setBetAmount(data.betAmount);
             setView('game');
 
+            // ✅ Display name istifadə et (fullName)
+            const myInfo = { name: myFullName || myUsername, avatar: (myFullName || myUsername).charAt(0).toUpperCase() };
             if (data.color === 'white') {
-                setPlayer1({ name: myName, avatar: myName.charAt(0).toUpperCase() });
+                setPlayer1(myInfo);
             } else {
-                setPlayer2({ name: myName, avatar: myName.charAt(0).toUpperCase() });
+                setPlayer2(myInfo);
             }
 
             if (data.waitingForOpponent) {
                 showNotification(`⏳ Rəqib gözlənilir... (${data.color === 'white' ? '⚪ Ağ' : '⚫ Qara'})`, 'info');
             }
-        });
+        };
 
-        connection.on("PlayerJoined", (data) => {
+        const handlePlayerJoined = (data) => {
             console.log("PlayerJoined data:", data);
-            showNotification(`${data.username} qoşuldu! Oyun başlayır...`, 'info');
+            showNotification(`${data.name} qoşuldu! Oyun başlayır...`, 'info');
             updatePlayerInfo(data.name, data.color);
-        });
+        };
 
-        connection.on("OpponentInfo", (data) => {
+        const handleOpponentInfo = (data) => {
             updatePlayerInfo(data.name, data.color);
-        });
+        };
 
-        connection.on("GameStarting", (data) => {
+        const handleGameStarting = (data) => {
             showNotification(
                 `${data.player1.name} atdı ${data.player1.dice} 🎲\n${data.player2.name} atdı ${data.player2.dice} 🎲\n\n🏁 ${data.starter} başlayır!`,
                 'success'
             );
-        });
+        };
 
-        connection.on("GameStarted", (data) => {
+        const handleGameStarted = (data) => {
             setIsMyTurn(data.isMyTurn);
             setGameBoard(data.board || { points: {}, bar: { white: 0, black: 0 }, home: { white: 0, black: 0 } });
             showNotification(data.message || 'Oyun başladı!', 'success');
-        });
+        };
 
-        connection.on("DiceRolled", (data) => {
+        const handleDiceRolled = (data) => {
+            console.log("🎲 DiceRolled event received:", data);
             setDice(data.dice);
             setShowDice(true);
+            setRollingDice([true, true]);
+            setDiceRolled(true); // ✅ Zər atıldı, bir daha atıla bilməz
+            
+            setTimeout(() => {
+                setDisplayDice(data.dice);
+                setRollingDice([false, false]);
+            }, 1200);
+            
             showNotification(`🎲 Zər: ${data.dice.join('-')}`, 'info');
-        });
+        };
 
-        connection.on("PieceMoved", (data) => {
+        const handlePieceMoved = (data) => {
             setGameBoard(data.board);
             setSelectedPoint(null);
 
@@ -166,65 +224,76 @@ function BackgammonGame() {
                     `${data.fromPoint} → ${data.toPoint}`;
 
             showNotification(`♟️ ${moveText}`, 'success');
-        });
+        };
 
-        
-                connection.on("TurnChanged", (data) => {
+        const handleTurnChanged = (data) => {
             console.log("TurnChanged received:", data);
-            console.log("My name:", myName, "Current player:", data.currentPlayer);
-            console.log("Comparing:", {
-                dataCurrentPlayer: data.currentPlayer,
-                myNameState: myName,
-                areEqual: data.currentPlayer === myName,
-                dataType: typeof data.currentPlayer,
-                myNameType: typeof myName
-            });
+            console.log("Current player from server:", data.currentPlayer);
+            console.log("My username:", myUsername);
+            console.log("My fullName:", myFullName);
             
-            // ƏSAS DÜZƏLİŞ: username və fullName hər ikisinə bax
-            const isMyTurnNow = data.currentPlayer === myName || 
-                                data.currentPlayer === user?.username || 
-                                data.currentPlayer === user?.fullName;
+            // ✅ ƏSAS FIX: Backend username göndərir, biz username ilə müqayisə edirik
+            const isMyTurnNow = data.currentPlayer === myUsername;
             
             console.log("Is my turn now?", isMyTurnNow);
             
             setIsMyTurn(isMyTurnNow);
             setShowDice(false);
             setSelectedPoint(null);
+            setDiceRolled(false); // ✅ Yeni növbə - zər yenidən atıla bilər
             
             if (isMyTurnNow) {
                 showNotification('🎯 Sizin növbənizdir!', 'info');
             } else {
                 showNotification('⏳ Rəqibin növbəsidir...', 'info');
             }
-        });
+        };
 
-        connection.on("GameEnded", (data) => {
+        const handleGameEnded = (data) => {
             showNotification(data.message, 'success');
             setTimeout(() => window.location.reload(), 4000);
-        });
+        };
 
-        connection.on("Error", (msg) => showNotification(msg, 'error'));
-        connection.on("JoinError", (msg) => showNotification(msg, 'error'));
+        const handleError = (msg) => showNotification(msg, 'error');
+        const handleJoinError = (msg) => showNotification(msg, 'error');
+
+        // Register handlers
+        connection.on("UserData", handleUserData);
+        connection.on("ChatMessage", handleChatMessage);
+        connection.on("QuickEmoji", handleQuickEmoji);
+        connection.on("QuickMessage", handleQuickMessage);
+        connection.on("BackgammonRoomCreated", handleBackgammonRoomCreated);
+        connection.on("JoinedRoom", handleJoinedRoom);
+        connection.on("PlayerJoined", handlePlayerJoined);
+        connection.on("OpponentInfo", handleOpponentInfo);
+        connection.on("GameStarting", handleGameStarting);
+        connection.on("GameStarted", handleGameStarted);
+        connection.on("DiceRolled", handleDiceRolled);
+        connection.on("PieceMoved", handlePieceMoved);
+        connection.on("TurnChanged", handleTurnChanged);
+        connection.on("GameEnded", handleGameEnded);
+        connection.on("Error", handleError);
+        connection.on("JoinError", handleJoinError);
 
         return () => {
-            connection.off("UserData");
-            connection.off("ChatMessage");
-            connection.off("QuickEmoji");
-            connection.off("QuickMessage");
-            connection.off("BackgammonRoomCreated");
-            connection.off("JoinedRoom");
-            connection.off("PlayerJoined");
-            connection.off("OpponentInfo");
-            connection.off("GameStarting");
-            connection.off("GameStarted");
-            connection.off("DiceRolled");
-            connection.off("PieceMoved");
-            connection.off("TurnChanged");
-            connection.off("GameEnded");
-            connection.off("Error");
-            connection.off("JoinError");
+            connection.off("UserData", handleUserData);
+            connection.off("ChatMessage", handleChatMessage);
+            connection.off("QuickEmoji", handleQuickEmoji);
+            connection.off("QuickMessage", handleQuickMessage);
+            connection.off("BackgammonRoomCreated", handleBackgammonRoomCreated);
+            connection.off("JoinedRoom", handleJoinedRoom);
+            connection.off("PlayerJoined", handlePlayerJoined);
+            connection.off("OpponentInfo", handleOpponentInfo);
+            connection.off("GameStarting", handleGameStarting);
+            connection.off("GameStarted", handleGameStarted);
+            connection.off("DiceRolled", handleDiceRolled);
+            connection.off("PieceMoved", handlePieceMoved);
+            connection.off("TurnChanged", handleTurnChanged);
+            connection.off("GameEnded", handleGameEnded);
+            connection.off("Error", handleError);
+            connection.off("JoinError", handleJoinError);
         };
-    }, [connection, myName, chatOpen]);
+    }, [connection, myUsername, myFullName, chatOpen]);
 
     // ==================== Auto-scroll Chat ====================
     useEffect(() => {
@@ -240,10 +309,19 @@ function BackgammonGame() {
     useEffect(() => {
         if (connected && view === 'lobby') {
             refreshRooms();
-            const interval = setInterval(refreshRooms, 3000);
+            const interval = setInterval(refreshRooms, ROOM_REFRESH_INTERVAL);
             return () => clearInterval(interval);
         }
     }, [connected, view]);
+
+    // ==================== Cleanup Timer ====================
+    useEffect(() => {
+        return () => {
+            if (notificationTimerRef.current) {
+                clearTimeout(notificationTimerRef.current);
+            }
+        };
+    }, []);
 
     // ==================== Helper Functions ====================
     const showNotification = (message, type = 'info') => {
@@ -253,14 +331,15 @@ function BackgammonGame() {
         }
         notificationTimerRef.current = setTimeout(() => {
             setNotification(prev => ({ ...prev, show: false }));
-        }, 5000);
+        }, NOTIFICATION_DURATION);
     };
 
     const updatePlayerInfo = (name, color) => {
+        const avatar = name.charAt(0).toUpperCase();
         if (color === 'white') {
-            setPlayer1({ name, avatar: name.charAt(0).toUpperCase() });
+            setPlayer1({ name, avatar });
         } else {
-            setPlayer2({ name, avatar: name.charAt(0).toUpperCase() });
+            setPlayer2({ name, avatar });
         }
     };
 
@@ -269,7 +348,7 @@ function BackgammonGame() {
         setPlayerEmojis(prev => ({ ...prev, [playerKey]: emoji }));
         setTimeout(() => {
             setPlayerEmojis(prev => ({ ...prev, [playerKey]: null }));
-        }, 2000);
+        }, EMOJI_DISPLAY_DURATION);
     };
 
     const displayPlayerQuickMessage = (sender, message) => {
@@ -277,7 +356,7 @@ function BackgammonGame() {
         setPlayerEmojis(prev => ({ ...prev, [playerKey]: message }));
         setTimeout(() => {
             setPlayerEmojis(prev => ({ ...prev, [playerKey]: null }));
-        }, 3000);
+        }, MESSAGE_DISPLAY_DURATION);
     };
 
     const refreshRooms = async () => {
@@ -302,11 +381,23 @@ function BackgammonGame() {
     };
 
     const rollDice = async () => {
-        if (!isMyTurn || !connection) return;
+        if (!isMyTurn) {
+            showNotification('Sizin növbəniz deyil!', 'error');
+            return;
+        }
+        
+        if (diceRolled) {
+            showNotification('❌ Zəri artıq atdınız! Hərəkət edin və ya növbəni bitirin.', 'error');
+            return;
+        }
+        
+        if (!connection) return;
+        
         try {
             await connection.invoke("RollDice");
         } catch (err) {
             console.error("RollDice error:", err);
+            showNotification('Xəta baş verdi!', 'error');
         }
     };
 
@@ -316,16 +407,27 @@ function BackgammonGame() {
             await connection.invoke("MovePiece", from, to);
         } catch (err) {
             console.error("MovePiece error:", err);
+            showNotification('Hərəkət edilə bilmədi!', 'error');
             setSelectedPoint(null);
         }
     };
 
     const endTurn = async () => {
         if (!connection) return;
+        if (!isMyTurn) {
+            showNotification('Sizin növbəniz deyil!', 'error');
+            return;
+        }
+        
         try {
             await connection.invoke("EndTurn");
+            // ✅ Növbə bitdi - state-ləri sıfırla
+            setDiceRolled(false);
+            setShowDice(false);
+            setSelectedPoint(null);
         } catch (err) {
             console.error("EndTurn error:", err);
+            showNotification('Xəta baş verdi!', 'error');
         }
     };
 
@@ -367,23 +469,48 @@ function BackgammonGame() {
             return;
         }
 
+        if (!diceRolled) {
+            showNotification('❌ Əvvəlcə zər atın!', 'error');
+            return;
+        }
+
         const points = gameBoard.points || {};
         const bar = gameBoard.bar || {};
 
+        // BAR-da daş varsa, əvvəl onu oynamalı
         if (bar[myColor] && bar[myColor] > 0) {
             showNotification('❌ Əvvəlcə BAR-dan hərəkət etməlisiniz!', 'error');
             return;
         }
 
-        if (selectedPoint === null || selectedPoint === pointNum) {
-            if (points[pointNum.toString()] && points[pointNum.toString()].includes(myColor)) {
+        const pointKey = pointNum.toString();
+        
+        // Əgər seçilmiş nöqtə varsa və fərqli nöqtəyə klik edilibsə
+        if (selectedPoint !== null && selectedPoint !== pointNum) {
+            // Əgər yeni nöqtədə bizim daşımız varsa - yenidən seçim
+            if (points[pointKey] && points[pointKey].includes(myColor)) {
+                setSelectedPoint(pointNum);
+                showNotification(`✅ Yeni seçim: Nöqtə ${pointNum}`, 'info');
+                return;
+            }
+            // Əks halda - hərəkət et
+            movePiece(selectedPoint, pointNum);
+            return;
+        }
+
+        // Əgər heç nə seçilməyibsə və ya eyni nöqtəyə klik edilibsə - seç/deselect
+        if (points[pointKey] && points[pointKey].includes(myColor)) {
+            if (selectedPoint === pointNum) {
+                // Deselect
+                setSelectedPoint(null);
+                showNotification('❌ Seçim ləğv edildi', 'info');
+            } else {
+                // Select
                 setSelectedPoint(pointNum);
                 showNotification(`✅ Seçildi: Nöqtə ${pointNum}`, 'info');
-            } else {
-                showNotification('Bu nöqtədə sizin daşınız yoxdur!', 'error');
             }
         } else {
-            movePiece(selectedPoint, pointNum);
+            showNotification('Bu nöqtədə sizin daşınız yoxdur!', 'error');
         }
     };
 
@@ -392,17 +519,31 @@ function BackgammonGame() {
             showNotification('Sizin növbəniz deyil!', 'error');
             return;
         }
+
+        if (!diceRolled) {
+            showNotification('❌ Əvvəlcə zər atın!', 'error');
+            return;
+        }
+
         if (color !== myColor) {
             showNotification('Bu sizin daşınız deyil!', 'error');
             return;
         }
+
         const bar = gameBoard.bar || {};
         if (!bar[color] || bar[color] === 0) {
             showNotification('BAR-da daşınız yoxdur!', 'error');
             return;
         }
-        setSelectedPoint(0);
-        showNotification(`✅ BAR seçildi (${color === 'white' ? '19-24-ə' : '1-6-ya'} daxil olmalı)`, 'info');
+
+        // BAR-ı seç/deselect
+        if (selectedPoint === 0) {
+            setSelectedPoint(null);
+            showNotification('❌ BAR seçimi ləğv edildi', 'info');
+        } else {
+            setSelectedPoint(0);
+            showNotification(`✅ BAR seçildi (${color === 'white' ? '19-24-ə' : '1-6-ya'} daxil olmalı)`, 'info');
+        }
     };
 
     const sendChatMessage = async () => {
@@ -412,6 +553,7 @@ function BackgammonGame() {
             setChatInput('');
         } catch (err) {
             console.error("Send error:", err);
+            showNotification('Mesaj göndərilə bilmədi!', 'error');
         }
     };
 
@@ -421,6 +563,7 @@ function BackgammonGame() {
             await connection.invoke("SendChatMessage", currentRoom, msg);
         } catch (err) {
             console.error("Quick message error:", err);
+            showNotification('Mesaj göndərilə bilmədi!', 'error');
         }
     };
 
@@ -431,6 +574,7 @@ function BackgammonGame() {
             setEmojiPopup({ show: false, player: null, tab: 'emoji' });
         } catch (err) {
             console.error("SendQuickEmoji error:", err);
+            showNotification('Göndərilə bilmədi!', 'error');
         }
     };
 
@@ -441,7 +585,16 @@ function BackgammonGame() {
             setEmojiPopup({ show: false, player: null, tab: 'emoji' });
         } catch (err) {
             console.error("SendQuickMessage error:", err);
+            showNotification('Mesaj göndərilə bilmədi!', 'error');
         }
+    };
+
+    const toggleEmojiPopup = (playerNum) => {
+        setEmojiPopup(prev => ({
+            show: prev.player === playerNum ? !prev.show : true,
+            player: playerNum,
+            tab: 'emoji'
+        }));
     };
 
     // ==================== RENDER ====================
@@ -456,69 +609,46 @@ function BackgammonGame() {
                 </div>
             )}
 
-            {/* Premium Header */}
-            {/* <header className="app-header">
-        <div className="header-brand">
-          <div className="brand-icon">🎲</div>
-          <div className="brand-text">
-            <h1>TAVLA ROYALE</h1>
-            <p>Premium Multiplayer Experience</p>
-          </div>
-        </div>
-        <div className="header-user">
-          <div className="user-card">
-            <div className="user-avatar-header">{myName.charAt(0).toUpperCase()}</div>
-            <div className="user-meta">
-              <div className="user-name">{myName}</div>
-              <div className="user-balance">
-                <span className="balance-icon">💰</span>
-                <span className="balance-value">{balance}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header> */}
-
             {/* Chat Toggle Button */}
-            {/* {!chatOpen && (
-        <button className="chat-toggle-btn" onClick={() => setChatOpen(true)}>
-          <span className="chat-icon">💬</span>
-          {unreadCount > 0 && <span className="chat-badge-count">{unreadCount}</span>}
-        </button>
-      )} */}
+            {!chatOpen && (
+                <button className="chat-toggle-btn" onClick={() => setChatOpen(true)}>
+                    <span className="chat-icon">💬</span>
+                    {unreadCount > 0 && <span className="chat-badge-count">{unreadCount}</span>}
+                </button>
+            )}
 
             {/* Premium Chat Panel */}
             {chatOpen && (
                 <div className="chat-panel-premium">
-                    {/* <div className="chat-panel-header">
-            <div className="chat-panel-title">
-              <span className="chat-icon-header">💬</span>
-              <h3>Live Chat</h3>
-            </div>
-            <button className="chat-panel-close" onClick={() => setChatOpen(false)}>✕</button>
-          </div> */}
-
-                    {/* <div className="chat-messages-container">
-            {chatMessages.length === 0 ? (
-              <div className="chat-empty-state">
-                <div className="empty-icon">💭</div>
-                <p>No messages yet</p>
-              </div>
-            ) : (
-              chatMessages.map((msg, i) => (
-                <div key={i} className={`chat-message-item ${msg.isOwn ? 'own' : 'other'}`}>
-                  <div className="message-bubble">
-                    <div className="message-sender-name">{msg.sender}</div>
-                    <div className="message-text">{msg.message}</div>
-                    <div className="message-time">
-                      {msg.time.toLocaleTimeString('az-AZ', { hour: '2-digit', minute: '2-digit' })}
+                    <div className="chat-panel-header">
+                        <div className="chat-panel-title">
+                            <span className="chat-icon-header">💬</span>
+                            <h3>Live Chat</h3>
+                        </div>
+                        <button className="chat-panel-close" onClick={() => setChatOpen(false)}>✕</button>
                     </div>
-                  </div>
-                </div>
-              ))
-            )}
-            <div ref={messagesEndRef} />
-          </div> */}
+
+                    <div className="chat-messages-container">
+                        {chatMessages.length === 0 ? (
+                            <div className="chat-empty-state">
+                                <div className="empty-icon">💭</div>
+                                <p>No messages yet</p>
+                            </div>
+                        ) : (
+                            chatMessages.map((msg, i) => (
+                                <div key={i} className={`chat-message-item ${msg.isOwn ? 'own' : 'other'}`}>
+                                    <div className="message-bubble">
+                                        <div className="message-sender-name">{msg.sender}</div>
+                                        <div className="message-text">{msg.message}</div>
+                                        <div className="message-time">
+                                            {msg.time.toLocaleTimeString('az-AZ', { hour: '2-digit', minute: '2-digit' })}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                        <div ref={messagesEndRef} />
+                    </div>
 
                     {/* Quick Actions */}
                     {activeQuickPanel === 'emoji' && (
@@ -662,8 +792,6 @@ function BackgammonGame() {
             {/* GAME VIEW */}
             {view === 'game' && (
                 <div className="game-view-container">
-
-
                     {/* Players Status Bar */}
                     <div className="players-status-bar">
                         {/* Player 1 (White) */}
@@ -674,20 +802,16 @@ function BackgammonGame() {
                                     <span className="player-stone">
                                         ⚪ <span className="stone-text">White</span>
                                     </span>
-                                    <span className="player-home">🏠 {gameBoard.home?.white || 0}/15</span>
+                                    <span className="player-home"><span className='home-icon-bg'>🏠</span> {gameBoard.home?.white || 0}/15</span>
                                 </div>
                             </div>
 
-                            {/* ƏSAS DƏYİŞİKLİK: Yalnız player1 cari oyunçudursa düyməni göstər */}
+                            {/* Yalnız player1 cari oyunçudursa düyməni göstər */}
                             {player1.name === myName && (
                                 <div className="player-action-zone">
                                     <button
                                         className="player-emoji-action-btn"
-                                        onClick={() => setEmojiPopup({
-                                            show: emojiPopup.player === 'player1' ? !emojiPopup.show : true,
-                                            player: 'player1',
-                                            tab: 'emoji'
-                                        })}
+                                        onClick={() => toggleEmojiPopup('player1')}
                                         title="Send emoji or quick message"
                                     >
                                         💬
@@ -735,14 +859,16 @@ function BackgammonGame() {
                                 </div>
                             )}
                         </div>
+
                         {/* Game Header with Bet */}
                         <div className="game-header-section">
                             <div className="bet-display">
                                 <span className="bet-icon">🏆</span>
                                 <span className="bet-text">Match Pot:</span>
-                                <span className="bet-amount-large">{betAmount} 💰</span>
+                                <span className="bet-amount-large">{betAmount} <span className='home-icon-bg'>💰</span> </span>
                             </div>
                         </div>
+
                         {/* Player 2 (Black) */}
                         <div className={`player-status-card player-black ${(myColor === 'black' ? isMyTurn : !isMyTurn) ? 'active-turn' : ''}`}>
                             <div className="player-status-info">
@@ -751,25 +877,21 @@ function BackgammonGame() {
                                     <span className="player-stone">
                                         ⚫ <span className="stone-text">Black</span>
                                     </span>
-                                    <span className="player-home">🏠 {gameBoard.home?.black || 0}/15</span>
+                                    <span className="player-home"><span className='home-icon-bg'>🏠</span> {gameBoard.home?.black || 0}/15</span>
                                 </div>
                             </div>
 
-                            {/* ƏSAS DƏYİŞİKLİK: Yalnız player2 cari oyunçudursa düyməni göstər */}
+                            {/* Yalnız player2 cari oyunçudursa düyməni göstər */}
                             {player2.name === myName && (
                                 <div className="player-action-zone">
                                     <button
                                         className="player-emoji-action-btn"
-                                        onClick={() => setEmojiPopup({
-                                            show: emojiPopup.player === 'player1' ? !emojiPopup.show : true,
-                                            player: 'player1',
-                                            tab: 'emoji'
-                                        })}
+                                        onClick={() => toggleEmojiPopup('player2')}
                                         title="Send emoji or quick message"
                                     >
                                         💬
                                     </button>
-                                    {emojiPopup.show && emojiPopup.player === 'player1' && (
+                                    {emojiPopup.show && emojiPopup.player === 'player2' && (
                                         <div className="emoji-action-popup">
                                             <div className="emoji-popup-nav">
                                                 <button
@@ -804,9 +926,9 @@ function BackgammonGame() {
                                             )}
                                         </div>
                                     )}
-                                    {playerEmojis.player1 && (
+                                    {playerEmojis.player2 && (
                                         <div className="floating-emoji-display">
-                                            {playerEmojis.player1}
+                                            {playerEmojis.player2}
                                         </div>
                                     )}
                                 </div>
@@ -883,8 +1005,22 @@ function BackgammonGame() {
                             {/* Dice Display */}
                             {showDice && (
                                 <div className="dice-display-area">
-                                    <div className="die-cube">{dice[0]}</div>
-                                    <div className="die-cube">{dice[1]}</div>
+                                    <div className={`die-cube-3d ${rollingDice[0] ? 'rolling' : ''} ${!rollingDice[0] ? `show-face-${displayDice[0]}` : ''}`}>
+                                        <div className="die-face die-face-1"><span>1</span></div>
+                                        <div className="die-face die-face-2"><span>2</span></div>
+                                        <div className="die-face die-face-3"><span>3</span></div>
+                                        <div className="die-face die-face-4"><span>4</span></div>
+                                        <div className="die-face die-face-5"><span>5</span></div>
+                                        <div className="die-face die-face-6"><span>6</span></div>
+                                    </div>
+                                    <div className={`die-cube-3d ${rollingDice[1] ? 'rolling' : ''} ${!rollingDice[1] ? `show-face-${displayDice[1]}` : ''}`}>
+                                        <div className="die-face die-face-1"><span>1</span></div>
+                                        <div className="die-face die-face-2"><span>2</span></div>
+                                        <div className="die-face die-face-3"><span>3</span></div>
+                                        <div className="die-face die-face-4"><span>4</span></div>
+                                        <div className="die-face die-face-5"><span>5</span></div>
+                                        <div className="die-face die-face-6"><span>6</span></div>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -892,15 +1028,19 @@ function BackgammonGame() {
 
                     {/* Game Controls */}
                     <div className="game-controls-bar">
-                        <button className="control-btn roll-dice-btn" onClick={rollDice} disabled={!isMyTurn}>
+                        <button 
+                            className="control-btn roll-dice-btn" 
+                            onClick={rollDice} 
+                            disabled={!isMyTurn || diceRolled}
+                        >
                             <span className="btn-icon">🎲</span>
                             <span className="btn-text">Roll Dice</span>
                         </button>
-                        <button className="control-btn bear-off-btn" onClick={bearOff} disabled={!isMyTurn}>
+                        <button className="control-btn bear-off-btn" onClick={bearOff} disabled={!isMyTurn || !diceRolled}>
                             <span className="btn-icon">🏠</span>
                             <span className="btn-text">Bear Off</span>
                         </button>
-                        <button className="control-btn end-turn-btn" onClick={endTurn} disabled={!isMyTurn}>
+                        <button className="control-btn end-turn-btn" onClick={endTurn} disabled={!isMyTurn || !diceRolled}>
                             <span className="btn-icon">⏭️</span>
                             <span className="btn-text">End Turn</span>
                         </button>
@@ -916,8 +1056,6 @@ function BackgammonGame() {
 }
 
 // ==================== POINT COMPONENT ====================
-// Renders a single point on the backgammon board
-// Props: num (point number 1-24), position (top/bottom), gameBoard, selectedPoint, handlePointClick
 function Point({ num, position, gameBoard, selectedPoint, handlePointClick }) {
     const points = gameBoard.points || {};
     const pointKey = num.toString();
@@ -929,6 +1067,7 @@ function Point({ num, position, gameBoard, selectedPoint, handlePointClick }) {
             className={`board-point ${position} ${isSelected ? 'selected' : ''}`}
             data-point={num}
             onClick={() => handlePointClick(num)}
+            style={{ cursor: 'pointer' }}
         >
             <div className="point-triangle" />
 
@@ -937,7 +1076,11 @@ function Point({ num, position, gameBoard, selectedPoint, handlePointClick }) {
             {pieces.length > 0 && (
                 <div className="point-pieces">
                     {pieces.slice(0, 5).map((color, i) => (
-                        <div key={i} className={`point-piece ${color}`}>
+                        <div 
+                            key={i} 
+                            className={`point-piece ${color}`}
+                            style={{ cursor: 'pointer' }}
+                        >
                             {i === 4 && pieces.length > 5 && (
                                 <span className="piece-stack-count">{pieces.length}</span>
                             )}

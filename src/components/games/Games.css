@@ -61,7 +61,12 @@
   transform: scale(1.05);
 }
 
-
+.game-image {
+  width: 90%;
+  height: 90%;
+  object-fit: cover;
+  border-radius: 12px;
+}
 /* focus styles for accessibility */
 .game-card:focus-within {
   outline: 3px solid rgba(255, 215, 0, 0.08);

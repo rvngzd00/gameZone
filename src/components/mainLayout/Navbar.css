@@ -215,7 +215,7 @@
   position: absolute;
   width: 26px;
   height: 26px;
-  background: var(--accent-rgba-239-203-095);
+  background: var(--white);
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;

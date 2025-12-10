@@ -1,7 +1,7 @@
 // DominoGame.jsx
 import React, { useState, useEffect } from 'react';
 // import confetti from 'canvas-confetti';
-import './DominoGame.css'; // Import CSS styles
+// import './DominoGame.css'; // Import CSS styles
 
 const showToast = (msg, success = false) => {
   const toast = document.createElement('div');

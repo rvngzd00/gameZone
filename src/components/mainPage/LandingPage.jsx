@@ -2,10 +2,6 @@ import React from 'react';
 import './LandingPage.css';
 import Ranking from './Ranking';
 import Games from "../games/Games";
-import dominoesImg from '../../assets/game-images/Dominoes Image.png';
-import backgammonImg from '../../assets/game-images/BackGammon Image.png';
-import chessImg from '../../assets/game-images/Chess Image.png';
-import durakImg from '../../assets/game-images/Durak Image.png';
 import { Link } from 'react-router-dom';
 
 

@@ -92,7 +92,7 @@ const Register = () => {
 
 
           <div className="form-group">
-            <label htmlFor="surname">SİKDİR OLACAG</label>
+            <label htmlFor="surname">LEGV</label>
             <div className="input-wrapper">
 
               <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -127,7 +127,7 @@ const Register = () => {
           </div>
 
           <div className="form-group" style={{display:"hidden"}}>
-            <label htmlFor="image">SİKDİR OLACAG</label>
+            <label htmlFor="image">LEGV</label>
             <input
               type="text"
               name="image"

@@ -19,6 +19,8 @@ import LotoMain from './components/games/loto/LotoMain'
 import DominoMain from './components/games/domino/DominoMain'
 import Backgammon from './components/games/backgammon/Backgammon'
 
+import SnowEffect from './components/mainLayout/SnowEffect'
+
 import AdminDashboard from './components/admin/AdminDashboard'
 const ProtectedRouteWrapper = ({ children }) => {
   const { isAuthenticated } = useAppContext();
@@ -32,6 +34,7 @@ function App() {
         <div className="app">
           <TopBar />
           <main className="main-content">
+          <SnowEffect snowflakeCount={7} />
             <ScrollToTop />
             <Routes>
               <Route path="/" element={<LandingPage />} />

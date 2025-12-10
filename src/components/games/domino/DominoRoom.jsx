@@ -1,6 +1,6 @@
 // DominoRoom.jsx
 import React, { useState, useEffect } from 'react';
-import './DominoRoom.css'; // Import CSS styles
+// import './DominoRoom.css'; // Import CSS styles
 
 const DominoRoom = ({ connection, userBalance, isConnected, onJoinRoom }) => {
   const [rooms, setRooms] = useState([]);
