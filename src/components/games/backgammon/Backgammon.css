@@ -12,7 +12,12 @@
     gap: 16px;
     flex-wrap: wrap;
 }
-
+.section-header h2{
+    color: var(--white);
+}
+.section-header p{
+    color: var(--text-muted);
+}
 .header-brand {
     display: flex;
     align-items: center;
@@ -194,10 +199,7 @@
     margin-bottom: 4px;
 }
 
-.section-header p {
-    font-size: clamp(12px, 2vw, 14px);
-    color: var(--text-muted);
-}
+
 
 .bet-options-grid {
     display: grid;
@@ -219,7 +221,7 @@
     gap: 8px;
     font-weight: 700;
     font-size: clamp(18px, 3vw, 24px);
-    color: var(--text);
+    color: var(--white);
 }
 
 .bet-option-btn:hover {

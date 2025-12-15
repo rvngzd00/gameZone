@@ -1,0 +1,1315 @@
+﻿<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Türk Tavlası - Düzəldilmiş</title>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@7.0.0/dist/browser/signalr.min.js"></script>
+    
+</head>
+<body>
+    <div id="notification" class="notification">
+        <div id="notificationMessage"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <span style="font-size: 32px;">🎲</span>
+                <div>
+                    <h1>Türk Tavlası</h1>
+                    <p style="color: #666; font-size: 12px;">Emoji Sistemli Versiya</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">?</div>
+                <div>
+                    <div id="userName" style="font-weight: bold; color: #333;">Yüklənir...</div>
+                    <div class="balance">💰 <span id="userBalance">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Toggle Button -->
+        <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
+            💬
+            <span class="chat-badge" id="chatBadge">0</span>
+        </button>
+
+        <!-- Chat Panel -->
+        <div class="chat-panel" id="chatPanel">
+            <div class="chat-header">
+                <h3>💬 Söhbət</h3>
+                <button class="chat-close" onclick="toggleChat()">×</button>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div style="text-align: center; color: #999; padding: 20px; font-size: 13px;">
+                    Söhbət başlamayıb
+                </div>
+            </div>
+
+            <!-- Quick Emoji Panel -->
+            <div class="quick-actions" id="quickEmojis">
+                <div class="emoji-grid">
+                    <button class="emoji-btn" onclick="insertText('😊')">😊</button>
+                    <button class="emoji-btn" onclick="insertText('😂')">😂</button>
+                    <button class="emoji-btn" onclick="insertText('❤️')">❤️</button>
+                    <button class="emoji-btn" onclick="insertText('👍')">👍</button>
+                    <button class="emoji-btn" onclick="insertText('🙏')">🙏</button>
+                    <button class="emoji-btn" onclick="insertText('🔥')">🔥</button>
+                    <button class="emoji-btn" onclick="insertText('✨')">✨</button>
+                    <button class="emoji-btn" onclick="insertText('🎉')">🎉</button>
+                    <button class="emoji-btn" onclick="insertText('👏')">👏</button>
+                    <button class="emoji-btn" onclick="insertText('💯')">💯</button>
+                    <button class="emoji-btn" onclick="insertText('🤔')">🤔</button>
+                    <button class="emoji-btn" onclick="insertText('😍')">😍</button>
+                </div>
+            </div>
+
+            <!-- Quick Messages Panel -->
+            <div class="quick-actions" id="quickMessages">
+                <div class="quick-messages">
+                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Salam! 👋')">Salam! 👋</button>
+                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Uğurlar! 🍀')">Uğurlar! 🍀</button>
+                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Yaxşı oyun! 🎯')">Yaxşı oyun! 🎯</button>
+                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Təşəkkürlər 🙏')">Təşəkkürlər 🙏</button>
+                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Gözəl hərəkət! 👏')">Gözəl! 👏</button>
+                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Ups... 😅')">Ups... 😅</button>
+                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Daha diqqətli! 🤔')">Diqqətli! 🤔</button>
+                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('GG! 🎊')">GG! 🎊</button>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-area">
+                <div class="chat-input-tools">
+                    <button class="tool-btn" id="emojiTool" onclick="toggleQuickPanel('emoji')" title="Emoji">
+                        😊
+                    </button>
+                    <button class="tool-btn" id="messageTool" onclick="toggleQuickPanel('messages')" title="Sürətli mesajlar">
+                        💬
+                    </button>
+                </div>
+
+                <div class="chat-input-box">
+                    <input type="text"
+                           id="chatInput"
+                           placeholder="Mesajınızı yazın..."
+                           maxlength="200"
+                           onkeypress="handleChatKeyPress(event)">
+                    <button class="send-btn" onclick="sendChatMessage()">
+                        ➤
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="lobbyView" class="lobby">
+            <div class="rooms-section">
+                <h2 class="section-title">🎯 Sürətli Oyun</h2>
+
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 25px; border-radius: 15px; color: white; margin-bottom: 20px; text-align: center;">
+                    <h3 style="font-size: 20px; margin-bottom: 15px;">⚡ Quick Match</h3>
+                    <p style="opacity: 0.9; margin-bottom: 20px; font-size: 14px;">Mərc seç və avtomatik rəqib tap!</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
+                        <button class="btn" style="background: rgba(255,255,255,0.2); border: 2px solid white;" onclick="quickMatch(50)">
+                            50 💰
+                        </button>
+                        <button class="btn" style="background: rgba(255,255,255,0.2); border: 2px solid white;" onclick="quickMatch(100)">
+                            100 💰
+                        </button>
+                        <button class="btn" style="background: rgba(255,255,255,0.2); border: 2px solid white;" onclick="quickMatch(200)">
+                            200 💰
+                        </button>
+                        <button class="btn" style="background: rgba(255,255,255,0.2); border: 2px solid white;" onclick="quickMatch(500)">
+                            500 💰
+                        </button>
+                    </div>
+
+                    <button class="btn" style="background: rgba(255,255,255,0.3); border: 2px solid white; width: 100%;" onclick="quickMatch(1000)">
+                        🔥 1000 💰 VIP
+                    </button>
+                </div>
+
+                <h3 style="font-size: 16px; color: #666; margin-bottom: 10px;">📋 Aktiv Otaqlar</h3>
+                <div id="roomsGrid" class="rooms-grid">
+                    <p style="text-align: center; color: #999; padding: 20px; font-size: 13px;">Otaqlar yüklənir...</p>
+                </div>
+            </div>
+
+            <div class="create-section">
+                <h2 class="section-title">ℹ️ Oyun Qaydaları</h2>
+
+                <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; margin-bottom: 15px;">
+                    <h3 style="font-size: 14px; color: #333; margin-bottom: 10px;">🎲 BAR Sistemi</h3>
+                    <ul style="font-size: 12px; color: #666; line-height: 1.8; padding-left: 20px;">
+                        <li>⚪ Ağ: BAR-dan 19-24 arası daxil olur</li>
+                        <li>⚫ Qara: BAR-dan 1-6 arası daxil olur</li>
+                        <li>BAR-da daş varsa önce onu oynat</li>
+                    </ul>
+                </div>
+
+                <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; margin-bottom: 15px;">
+                    <h3 style="font-size: 14px; color: #333; margin-bottom: 10px;">🏠 HOME-a Çıxarma</h3>
+                    <ul style="font-size: 12px; color: #666; line-height: 1.8; padding-left: 20px;">
+                        <li>⚪ Ağ: 1-6 arası home quadrant</li>
+                        <li>⚫ Qara: 19-24 arası home quadrant</li>
+                        <li>Bütün daşlar home-da olmalı</li>
+                        <li>15 daşı çıxaran qalib</li>
+                    </ul>
+                </div>
+
+                <div style="padding: 15px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 10px; color: white; margin-bottom: 15px;">
+                    <h3 style="font-size: 14px; margin-bottom: 10px;">🏆 Qələbə</h3>
+                    <p style="font-size: 12px; opacity: 0.95; line-height: 1.6;">
+                        İlk olaraq 15 daşı HOME-a çıxaran oyunçu qalib olur və 2x mərc qazanır!
+                    </p>
+                </div>
+
+                <div style="padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; color: white;">
+                    <h3 style="font-size: 14px; margin-bottom: 10px;">💬 Emoji Sistemi</h3>
+                    <p style="font-size: 12px; opacity: 0.95; line-height: 1.6;">
+                        Oyunçu avatar-ının yanındaki 💬 düyməni basaraq rəqibinə emoji və sürətli mesajlar göndərə bilərsiniz!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="gameView" class="game-view">
+            <div class="game-container">
+                <div class="score-display">
+                    <h3>Mərc</h3>
+                    <div class="score-value">🏆 <span id="betValue">0</span> Coin</div>
+                </div>
+
+                <div class="players-info">
+                    <div class="player-card" id="player1Card">
+                        <div class="player-avatar-large" id="p1Avatar">?</div>
+                        <div class="player-details">
+                            <h3 id="p1Name">Oyunçu 1</h3>
+                            <div class="player-color">⚪ Ağ</div>
+                            <div style="font-size: 12px; margin-top: 5px;">🏠 HOME: <span id="whiteHome">0</span>/15</div>
+                        </div>
+                        <div style="position: relative;">
+                            <button class="player-emoji-btn" onclick="toggleEmojiPopup('player1')">
+                                💬
+                            </button>
+                            <div class="emoji-popup" id="emojiPopup1">
+                                <div class="emoji-popup-header">
+                                    <button class="emoji-tab active" onclick="switchEmojiTab('player1', 'emoji')">😊 Emoji</button>
+                                    <button class="emoji-tab" onclick="switchEmojiTab('player1', 'message')">💬 Mesaj</button>
+                                </div>
+                                <div class="emoji-popup-content" id="emojiContent1">
+                                    <div class="emoji-popup-grid">
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('👋')">👋</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😊')">😊</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😂')">😂</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('❤️')">❤️</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('👍')">👍</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('👏')">👏</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🙏')">🙏</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🔥')">🔥</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('✨')">✨</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🎉')">🎉</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('💯')">💯</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🤔')">🤔</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😍')">😍</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😎')">😎</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😢')">😢</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😡')">😡</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🤩')">🤩</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🥳')">🥳</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="player-card" id="player2Card">
+                        <div class="player-avatar-large" id="p2Avatar">?</div>
+                        <div class="player-details">
+                            <h3 id="p2Name">Oyunçu 2</h3>
+                            <div class="player-color">⚫ Qara</div>
+                            <div style="font-size: 12px; margin-top: 5px;">🏠 HOME: <span id="blackHome">0</span>/15</div>
+                        </div>
+                        <div style="position: relative;">
+                            <button class="player-emoji-btn" onclick="toggleEmojiPopup('player2')">
+                                💬
+                            </button>
+                            <div class="emoji-popup" id="emojiPopup2">
+                                <div class="emoji-popup-header">
+                                    <button class="emoji-tab active" onclick="switchEmojiTab('player2', 'emoji')">😊 Emoji</button>
+                                    <button class="emoji-tab" onclick="switchEmojiTab('player2', 'message')">💬 Mesaj</button>
+                                </div>
+                                <div class="emoji-popup-content" id="emojiContent2">
+                                    <div class="emoji-popup-grid">
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('👋')">👋</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😊')">😊</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😂')">😂</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('❤️')">❤️</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('👍')">👍</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('👏')">👏</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🙏')">🙏</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🔥')">🔥</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('✨')">✨</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🎉')">🎉</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('💯')">💯</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🤔')">🤔</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😍')">😍</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😎')">😎</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😢')">😢</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('😡')">😡</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🤩')">🤩</button>
+                                        <button class="emoji-popup-btn" onclick="sendQuickEmoji('🥳')">🥳</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="board-wrapper">
+                    <div class="board-container" id="boardContainer">
+                        <!-- Board + BAR render ediləcək -->
+                    </div>
+
+                    <div class="dice-area" id="diceArea">
+                        <div class="die" id="die1">?</div>
+                        <div class="die" id="die2">?</div>
+                    </div>
+                </div>
+
+                <div class="game-controls">
+                    <button class="btn btn-success" id="rollBtn" onclick="rollDice()" disabled>
+                        🎲 Zər At
+                    </button>
+                    <button class="btn" id="bearOffBtn" onclick="bearOff()" disabled style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
+                        🏠 HOME-a Çıxart
+                    </button>
+                    <button class="btn btn-primary" id="endTurnBtn" onclick="endTurn()" disabled>
+                        ⏭️ Növbəni Bitir
+                    </button>
+                    <button class="btn btn-danger" onclick="leaveGame()">
+                        🚪 Çıx
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let connection = null;
+        let currentRoom = null;
+        let myColor = null;
+        let myName = null;
+        let isMyTurn = false;
+        let selectedPoint = null;
+        let gameBoard = { points: {}, bar: { white: 0, black: 0 }, home: { white: 0, black: 0 } };
+        let isWaitingForOpponent = false;
+        let activePopup = null;
+
+        function getToken() {
+            const raw = document.cookie
+                .split("; ")
+                .find(row => row.startsWith("AuthToken="))
+                ?.split("=")[1];
+            return raw ? decodeURIComponent(raw).trim() : "";
+        }
+
+        async function initSignalR() {
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl("/backgammonhub", {
+                    accessTokenFactory: () => getToken()
+                })
+                .withAutomaticReconnect()
+                .build();
+
+            setupEventHandlers();
+
+            try {
+                await connection.start();
+                console.log("✅ Backgammon connected");
+                await refreshRooms();
+            } catch (err) {
+                console.error("❌ Connection error:", err);
+                showNotification('Bağlantı xətası!', 'error');
+            }
+        }
+
+        function setupEventHandlers() {
+            connection.on("UserData", (data) => {
+                myName = data.fullName || data.username;
+                document.getElementById('userName').textContent = myName;
+                document.getElementById('userBalance').textContent = data.balance;
+                document.getElementById('userAvatar').textContent = myName.charAt(0).toUpperCase();
+                console.log("👤 My name:", myName);
+            });
+
+            connection.on("ChatMessage", (data) => {
+                console.log("💬 Chat message:", data);
+                const isOwn = data.sender === myName;
+                displayChatMessage(data.sender, data.message, isOwn);
+            });
+
+            connection.on("QuickEmoji", (data) => {
+                console.log("📩 Quick emoji received:", data);
+                // Yalnız avatar yanında göstər, chat-a əlavə ETMƏ
+                displayPlayerEmoji(data.sender, data.emoji);
+            });
+
+            connection.on("QuickMessage", (data) => {
+                console.log("📩 Quick message received:", data);
+                // Yalnız avatar yanında göstər, chat-a əlavə ETMƏ
+                displayPlayerQuickMessage(data.sender, data.message);
+            });
+
+            connection.on("BackgammonRoomCreated", () => {
+                refreshRooms();
+            });
+
+            connection.on("JoinedRoom", (data) => {
+                currentRoom = data.roomId;
+                myColor = data.color;
+                isWaitingForOpponent = data.waitingForOpponent || false;
+
+                document.getElementById('betValue').textContent = data.betAmount;
+                document.getElementById('lobbyView').style.display = 'none';
+                document.getElementById('gameView').classList.add('active');
+
+                // Öz məlumatlarımı set edək
+                if (myColor === 'white') {
+                    document.getElementById('p1Name').textContent = myName;
+                    document.getElementById('p1Avatar').textContent = myName.charAt(0).toUpperCase();
+                } else {
+                    document.getElementById('p2Name').textContent = myName;
+                    document.getElementById('p2Avatar').textContent = myName.charAt(0).toUpperCase();
+                }
+
+                renderBoard(gameBoard);
+
+                if (isWaitingForOpponent) {
+                    showNotification(`⏳ Rəqib gözlənilir... (${data.color === 'white' ? '⚪ Ağ' : '⚫ Qara'})`, 'info');
+                } else {
+                    showNotification(`Otağa qoşuldunuz! Siz ${data.color === 'white' ? '⚪ Ağ' : '⚫ Qara'}`, 'success');
+                }
+            });
+
+            connection.on("PlayerJoined", (data) => {
+                console.log("👥 Player joined:", data);
+                isWaitingForOpponent = false;
+                showNotification(`${data.name} qoşuldu! Oyun başlayır...`, 'info');
+
+                // Rəqib məlumatını yenilə
+                updatePlayerInfo(data.name, data.color);
+            });
+
+            connection.on("OpponentInfo", (data) => {
+                console.log("👥 Opponent info received:", data);
+                updatePlayerInfo(data.name, data.color);
+            });
+
+            connection.on("GameStarting", (data) => {
+                console.log("🎲 Game starting with dice roll:", data);
+                const message = `${data.player1.name} atdı ${data.player1.dice} 🎲\n${data.player2.name} atdı ${data.player2.dice} 🎲\n\n🏁 ${data.starter} başlayır!`;
+                showNotification(message, 'success');
+                showDice([data.player1.dice, data.player2.dice]);
+            });
+
+            connection.on("GameStarted", (data) => {
+                console.log("🎲 Game started:", data);
+                console.log("📊 Initial board data:", data.board);
+
+                isMyTurn = data.isMyTurn;
+                gameBoard = data.board;
+
+                if (!gameBoard.bar) {
+                    console.warn("⚠️ BAR data missing in GameStarted, initializing...");
+                    gameBoard.bar = { white: 0, black: 0 };
+                }
+
+                if (!gameBoard.home) {
+                    console.warn("⚠️ HOME data missing in GameStarted, initializing...");
+                    gameBoard.home = { white: 0, black: 0 };
+                }
+
+                // Oyunçu məlumatlarını yenilə
+                if (data.players && data.players.length === 2) {
+                    data.players.forEach(p => {
+                        updatePlayerInfo(p.name, p.color);
+                    });
+                }
+
+                console.log("✅ Game board prepared:", gameBoard);
+
+                renderBoard(gameBoard);
+                updateTurnIndicator();
+                showNotification(data.message || 'Oyun başladı!', 'success');
+
+                if (isMyTurn) {
+                    document.getElementById('rollBtn').disabled = false;
+                }
+
+                document.getElementById('bearOffBtn').disabled = true;
+                document.getElementById('endTurnBtn').disabled = true;
+            });
+
+            connection.on("DiceRolled", (data) => {
+                showDice(data.dice);
+                showNotification(`🎲 Zər: ${data.dice.join('-')}`, 'info');
+                document.getElementById('endTurnBtn').disabled = false;
+                document.getElementById('rollBtn').disabled = true;
+
+                if (checkCanBearOff()) {
+                    document.getElementById('bearOffBtn').disabled = false;
+                    showNotification(`🎲 Zər: ${data.dice.join('-')} | 🏠 HOME-a çıxara bilərsiniz!`, 'info');
+                }
+            });
+
+            connection.on("PieceMoved", (data) => {
+                console.log("🔄 PieceMoved received:", data);
+                console.log("📦 Full board data:", JSON.stringify(data.board, null, 2));
+                console.log("🎲 Remaining moves:", data.remainingMoves);
+
+                gameBoard = data.board;
+
+                if (gameBoard.bar) {
+                    console.log("✅ BAR data exists:", JSON.stringify(gameBoard.bar));
+                } else {
+                    console.warn("⚠️ BAR data missing in response!");
+                }
+
+                renderBoard(gameBoard);
+
+                let moveText = '';
+                if (data.fromPoint === 0) {
+                    moveText = `BAR → ${data.toPoint}`;
+                } else if (data.toPoint < 1 || data.toPoint > 24) {
+                    moveText = `${data.fromPoint} → HOME 🏠`;
+                } else {
+                    moveText = `${data.fromPoint} → ${data.toPoint}`;
+                }
+
+                if (data.remainingMoves && data.remainingMoves.length > 0) {
+                    showNotification(`♟️ ${moveText} | Qalan zərlər: ${data.remainingMoves.join(', ')}`, 'success');
+                } else {
+                    showNotification(`♟️ ${moveText} | ✅ Bütün zərlər istifadə edildi`, 'success');
+                }
+
+                selectedPoint = null;
+
+                if (!data.remainingMoves || data.remainingMoves.length === 0) {
+                    document.getElementById('bearOffBtn').disabled = true;
+                    document.getElementById('endTurnBtn').disabled = true;
+                } else {
+                    if (checkCanBearOff() && isMyTurn) {
+                        document.getElementById('bearOffBtn').disabled = false;
+                    } else {
+                        document.getElementById('bearOffBtn').disabled = true;
+                    }
+                }
+            });
+
+            connection.on("TurnChanged", (data) => {
+                isMyTurn = data.currentPlayer === myName;
+                updateTurnIndicator();
+                hideDice();
+                document.getElementById('endTurnBtn').disabled = true;
+                document.getElementById('rollBtn').disabled = !isMyTurn;
+                document.getElementById('bearOffBtn').disabled = true;
+
+                if (isMyTurn) {
+                    showNotification('🎯 Sizin növbənizdir!', 'info');
+                }
+            });
+
+            connection.on("GameEnded", (data) => {
+                showNotification(data.message, 'success');
+                setTimeout(() => {
+                    location.reload();
+                }, 4000);
+            });
+
+            connection.on("Error", (msg) => {
+                showNotification(msg, 'error');
+            });
+
+            connection.on("JoinError", (msg) => {
+                showNotification(msg, 'error');
+            });
+        }
+
+        function updatePlayerInfo(name, color) {
+            console.log(`🔄 Updating player info: ${name} (${color})`);
+
+            if (color === 'white') {
+                document.getElementById('p1Name').textContent = name;
+                document.getElementById('p1Avatar').textContent = name.charAt(0).toUpperCase();
+            } else if (color === 'black') {
+                document.getElementById('p2Name').textContent = name;
+                document.getElementById('p2Avatar').textContent = name.charAt(0).toUpperCase();
+            }
+
+            console.log(`✅ Player info updated: P1=${document.getElementById('p1Name').textContent}, P2=${document.getElementById('p2Name').textContent}`);
+        }
+
+        async function refreshRooms() {
+            try {
+                const rooms = await connection.invoke("GetAvailableRooms");
+                displayRooms(rooms);
+            } catch (err) {
+                console.error("❌ GetAvailableRooms error:", err);
+            }
+        }
+
+        async function quickMatch(betAmount) {
+            try {
+                showNotification(`⏳ ${betAmount} coin mərc üçün otaq axtarılır...`, 'info');
+                const result = await connection.invoke("QuickMatch", betAmount);
+                if (!result.success) {
+                    showNotification(result.message, 'error');
+                }
+            } catch (err) {
+                console.error("❌ QuickMatch error:", err);
+                showNotification('Xəta baş verdi!', 'error');
+            }
+        }
+
+        setInterval(() => {
+            if (document.getElementById('lobbyView').style.display !== 'none') {
+                refreshRooms();
+            }
+        }, 3000);
+
+        function displayRooms(rooms) {
+            const grid = document.getElementById('roomsGrid');
+            if (rooms.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: #999; padding: 20px; font-size: 13px;">Hazırda aktiv otaq yoxdur</p>';
+                return;
+            }
+            grid.innerHTML = rooms.map(room => {
+                const statusText = room.isAvailable
+                    ? `<span style="color: #10b981;">● Açıq (${room.playerCount}/2)</span>`
+                    : `<span style="color: #ef4444;">● Oyunda</span>`;
+                return `
+                        <div class="room-card" style="padding: 12px;">
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">${room.roomName}</div>
+                                <div style="color: #666; font-size: 12px;">
+                                    💰 ${room.betAmount} Coin • ${statusText}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            }).join('');
+        }
+
+        function renderBoard(board) {
+            console.log("🎨 Rendering board...", board);
+            const container = document.getElementById('boardContainer');
+            container.innerHTML = '';
+
+            const points = board.points || {};
+            const bar = {
+                white: board.bar?.white ?? board.bar?.White ?? 0,
+                black: board.bar?.black ?? board.bar?.Black ?? 0
+            };
+            const home = {
+                white: board.home?.white ?? board.home?.White ?? 0,
+                black: board.home?.black ?? board.home?.Black ?? 0
+            };
+
+            console.log("📊 BAR status:", bar);
+            console.log("🏠 HOME status:", home);
+
+            document.getElementById('whiteHome').textContent = home.white;
+            document.getElementById('blackHome').textContent = home.black;
+
+            const leftHalf = document.createElement('div');
+            leftHalf.className = 'board-half';
+
+            const topLeft = document.createElement('div');
+            topLeft.className = 'board-section';
+            for (let i = 13; i <= 18; i++) {
+                topLeft.appendChild(createPoint(i, 'top', points));
+            }
+            leftHalf.appendChild(topLeft);
+
+            const bottomLeft = document.createElement('div');
+            bottomLeft.className = 'board-section';
+            for (let i = 12; i >= 7; i--) {
+                bottomLeft.appendChild(createPoint(i, 'bottom', points));
+            }
+            leftHalf.appendChild(bottomLeft);
+
+            container.appendChild(leftHalf);
+
+            const barElement = document.createElement('div');
+            barElement.className = 'bar';
+
+            const whiteBarSection = document.createElement('div');
+            whiteBarSection.className = 'bar-section';
+            if (selectedPoint === 0 && myColor === 'white') {
+                whiteBarSection.classList.add('selected');
+            }
+            whiteBarSection.onclick = () => handleBarClick('white');
+
+            const whiteBarText = document.createElement('div');
+            whiteBarText.className = 'bar-text';
+            whiteBarText.textContent = '⚪';
+            whiteBarSection.appendChild(whiteBarText);
+
+            if (bar.white > 0) {
+                const whiteChecker = document.createElement('div');
+                whiteChecker.className = 'bar-checker white';
+                if (bar.white > 1) {
+                    const count = document.createElement('div');
+                    count.className = 'bar-count';
+                    count.textContent = bar.white;
+                    whiteChecker.appendChild(count);
+                }
+                whiteBarSection.appendChild(whiteChecker);
+            }
+
+            barElement.appendChild(whiteBarSection);
+
+            const blackBarSection = document.createElement('div');
+            blackBarSection.className = 'bar-section';
+            if (selectedPoint === 0 && myColor === 'black') {
+                blackBarSection.classList.add('selected');
+            }
+            blackBarSection.onclick = () => handleBarClick('black');
+
+            const blackBarText = document.createElement('div');
+            blackBarText.className = 'bar-text';
+            blackBarText.textContent = '⚫';
+            blackBarSection.appendChild(blackBarText);
+
+            if (bar.black > 0) {
+                const blackChecker = document.createElement('div');
+                blackChecker.className = 'bar-checker black';
+                if (bar.black > 1) {
+                    const count = document.createElement('div');
+                    count.className = 'bar-count';
+                    count.textContent = bar.black;
+                    blackChecker.appendChild(count);
+                }
+                blackBarSection.appendChild(blackChecker);
+            }
+
+            barElement.appendChild(blackBarSection);
+            container.appendChild(barElement);
+
+            const rightHalf = document.createElement('div');
+            rightHalf.className = 'board-half';
+
+            const topRight = document.createElement('div');
+            topRight.className = 'board-section';
+            for (let i = 19; i <= 24; i++) {
+                topRight.appendChild(createPoint(i, 'top', points));
+            }
+            rightHalf.appendChild(topRight);
+
+            const bottomRight = document.createElement('div');
+            bottomRight.className = 'board-section';
+            for (let i = 6; i >= 1; i--) {
+                bottomRight.appendChild(createPoint(i, 'bottom', points));
+            }
+            rightHalf.appendChild(bottomRight);
+
+            container.appendChild(rightHalf);
+
+            console.log("✅ Board rendered successfully");
+        }
+
+        function createPoint(num, position, points) {
+            const point = document.createElement('div');
+            point.className = `point ${position}`;
+            if (selectedPoint === num) {
+                point.classList.add('selected');
+            }
+            point.dataset.point = num;
+            point.onclick = () => handlePointClick(num);
+
+            const triangle = document.createElement('div');
+            triangle.className = 'triangle';
+            point.appendChild(triangle);
+
+            const number = document.createElement('div');
+            number.className = 'point-number';
+            number.textContent = num;
+            point.appendChild(number);
+
+            const pointKey = num.toString();
+            if (points[pointKey] && Array.isArray(points[pointKey]) && points[pointKey].length > 0) {
+                const checkers = document.createElement('div');
+                checkers.className = 'checkers';
+
+                const pieces = points[pointKey];
+                const displayCount = Math.min(pieces.length, 5);
+
+                for (let i = 0; i < displayCount; i++) {
+                    const checker = document.createElement('div');
+                    checker.className = `checker ${pieces[i]}`;
+                    checker.onclick = (e) => {
+                        e.stopPropagation();
+                        handleCheckerClick(num);
+                    };
+                    checkers.appendChild(checker);
+                }
+
+                if (pieces.length > 5) {
+                    const lastChecker = checkers.lastChild;
+                    if (lastChecker) {
+                        const count = document.createElement('div');
+                        count.className = 'checker-count';
+                        count.textContent = pieces.length;
+                        lastChecker.appendChild(count);
+                    }
+                }
+
+                point.appendChild(checkers);
+            }
+
+            return point;
+        }
+
+        function handleBarClick(color) {
+            if (!isMyTurn) {
+                showNotification('Sizin növbəniz deyil!', 'error');
+                return;
+            }
+
+            if (color !== myColor) {
+                showNotification('Bu sizin daşınız deyil!', 'error');
+                return;
+            }
+
+            const bar = gameBoard.bar || {};
+            if (!bar[color] || bar[color] === 0) {
+                showNotification('BAR-da daşınız yoxdur!', 'error');
+                return;
+            }
+
+            selectedPoint = 0;
+            renderBoard(gameBoard);
+            showNotification(`✅ BAR seçildi (${color === 'white' ? '19-24-ə' : '1-6-ya'} daxil olmalı)`, 'info');
+        }
+
+        function handlePointClick(pointNum) {
+            if (!isMyTurn) {
+                showNotification('Sizin növbəniz deyil!', 'error');
+                return;
+            }
+
+            const points = gameBoard.points || {};
+            const pointKey = pointNum.toString();
+
+            if (selectedPoint === null || selectedPoint === pointNum) {
+                const bar = gameBoard.bar || {};
+                if (bar[myColor] && bar[myColor] > 0) {
+                    showNotification('❌ Əvvəlcə BAR-dan hərəkət etməlisiniz!', 'error');
+                    return;
+                }
+
+                if (points[pointKey] && points[pointKey].includes(myColor)) {
+                    selectedPoint = pointNum;
+                    renderBoard(gameBoard);
+
+                    const canBearOff = checkCanBearOff();
+                    if (canBearOff) {
+                        showNotification(`✅ Seçildi: Nöqtə ${pointNum} (HOME-a çıxara bilərsiniz)`, 'info');
+                    } else {
+                        showNotification(`✅ Seçildi: Nöqtə ${pointNum}`, 'info');
+                    }
+                } else {
+                    showNotification('Bu nöqtədə sizin daşınız yoxdur!', 'error');
+                }
+            } else {
+                movePiece(selectedPoint, pointNum);
+            }
+        }
+
+        function checkCanBearOff() {
+            const points = gameBoard.points || {};
+            const homeStart = myColor === 'white' ? 1 : 19;
+            const homeEnd = myColor === 'white' ? 6 : 24;
+
+            if (gameBoard.bar && gameBoard.bar[myColor] > 0) return false;
+
+            for (let i = 1; i <= 24; i++) {
+                if (i >= homeStart && i <= homeEnd) continue;
+                if (points[i.toString()] && points[i.toString()].some(p => p === myColor)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function handleCheckerClick(pointNum) {
+            if (!isMyTurn) {
+                showNotification('Sizin növbəniz deyil!', 'error');
+                return;
+            }
+
+            const points = gameBoard.points || {};
+            const pointKey = pointNum.toString();
+
+            const bar = gameBoard.bar || {};
+            if (bar[myColor] && bar[myColor] > 0) {
+                showNotification('❌ Əvvəlcə BAR-dan hərəkət etməlisiniz!', 'error');
+                return;
+            }
+
+            if (points[pointKey] && points[pointKey].includes(myColor)) {
+                selectedPoint = pointNum;
+                renderBoard(gameBoard);
+
+                if (checkCanBearOff()) {
+                    document.getElementById('bearOffBtn').disabled = false;
+                    showNotification(`✅ Daş seçildi: Nöqtə ${pointNum} (HOME-a çıxara bilərsiniz)`, 'info');
+                } else {
+                    document.getElementById('bearOffBtn').disabled = true;
+                    showNotification(`✅ Daş seçildi: Nöqtə ${pointNum}`, 'info');
+                }
+            }
+        }
+
+        async function rollDice() {
+            if (!isMyTurn) {
+                showNotification('Sizin növbəniz deyil!', 'error');
+                return;
+            }
+
+            try {
+                await connection.invoke("RollDice");
+                document.getElementById('rollBtn').disabled = true;
+            } catch (err) {
+                console.error("❌ RollDice error:", err);
+                showNotification('Xəta baş verdi!', 'error');
+            }
+        }
+
+        async function movePiece(from, to) {
+            try {
+                await connection.invoke("MovePiece", from, to);
+            } catch (err) {
+                console.error("❌ MovePiece error:", err);
+                showNotification('Hərəkət edilə bilmədi!', 'error');
+                selectedPoint = null;
+                renderBoard(gameBoard);
+            }
+        }
+
+        async function bearOff() {
+            if (!isMyTurn) {
+                showNotification('Sizin növbəniz deyil!', 'error');
+                return;
+            }
+
+            if (selectedPoint === null) {
+                showNotification('❌ Əvvəlcə daş seçin!', 'error');
+                return;
+            }
+
+            if (!checkCanBearOff()) {
+                showNotification('❌ Hələ HOME-a çıxara bilməzsiniz! Bütün daşlar home quadrant-da olmalıdır.', 'error');
+                return;
+            }
+
+            const homeTo = myColor === 'white' ? 0 : 25;
+
+            console.log(`🏠 Attempting bear off: from=${selectedPoint}, to=${homeTo}, color=${myColor}`);
+
+            try {
+                await connection.invoke("MovePiece", selectedPoint, homeTo);
+                document.getElementById('bearOffBtn').disabled = true;
+                selectedPoint = null;
+            } catch (err) {
+                console.error("❌ Bear off error:", err);
+                showNotification('HOME-a çıxarıla bilmədi! Uyğun zər atmalısınız.', 'error');
+                selectedPoint = null;
+                renderBoard(gameBoard);
+            }
+        }
+
+        async function endTurn() {
+            try {
+                await connection.invoke("EndTurn");
+                document.getElementById('rollBtn').disabled = false;
+                document.getElementById('endTurnBtn').disabled = true;
+            } catch (err) {
+                console.error("❌ EndTurn error:", err);
+            }
+        }
+
+        async function leaveGame() {
+            if (!confirm('Oyundan çıxmaq istədiyinizə əminsiniz?')) return;
+
+            try {
+                await connection.invoke("LeaveRoom");
+                location.reload();
+            } catch (err) {
+                console.error("❌ LeaveRoom error:", err);
+                location.reload();
+            }
+        }
+
+        function showDice(dice) {
+            const area = document.getElementById('diceArea');
+            area.classList.add('show');
+            document.getElementById('die1').textContent = dice[0] || '?';
+            document.getElementById('die2').textContent = dice[1] || '?';
+        }
+
+        function hideDice() {
+            document.getElementById('diceArea').classList.remove('show');
+        }
+
+        function updateTurnIndicator() {
+            const p1Card = document.getElementById('player1Card');
+            const p2Card = document.getElementById('player2Card');
+
+            if (myColor === 'white') {
+                p1Card.classList.toggle('active', isMyTurn);
+                p2Card.classList.toggle('active', !isMyTurn);
+            } else {
+                p1Card.classList.toggle('active', !isMyTurn);
+                p2Card.classList.toggle('active', isMyTurn);
+            }
+
+            document.getElementById('rollBtn').disabled = !isMyTurn;
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notificationMessage');
+
+            notification.className = `notification ${type} show`;
+            messageEl.innerHTML = message.replace(/\n/g, '<br>');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        // ========== EMOJI SİSTEMİ ==========
+        function toggleEmojiPopup(player) {
+            const popupId = player === 'player1' ? 'emojiPopup1' : 'emojiPopup2';
+            const popup = document.getElementById(popupId);
+
+            if (activePopup && activePopup !== popup) {
+                activePopup.classList.remove('show');
+            }
+
+            popup.classList.toggle('show');
+            activePopup = popup.classList.contains('show') ? popup : null;
+        }
+
+        function switchEmojiTab(player, tab) {
+            const popupNum = player === 'player1' ? '1' : '2';
+            const popup = document.getElementById(`emojiPopup${popupNum}`);
+            const content = document.getElementById(`emojiContent${popupNum}`);
+
+            popup.querySelectorAll('.emoji-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            if (tab === 'emoji') {
+                content.innerHTML = `
+                        <div class="emoji-popup-grid">
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('👋')">👋</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('😊')">😊</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('😂')">😂</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('❤️')">❤️</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('👍')">👍</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('👏')">👏</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('🙏')">🙏</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('🔥')">🔥</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('✨')">✨</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('🎉')">🎉</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('💯')">💯</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('🤔')">🤔</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('😍')">😍</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('😎')">😎</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('😢')">😢</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('😡')">😡</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('🤩')">🤩</button>
+                            <button class="emoji-popup-btn" onclick="sendQuickEmoji('🥳')">🥳</button>
+                        </div>
+                    `;
+            } else {
+                content.innerHTML = `
+                        <div class="quick-msg-list">
+                            <button class="quick-msg-item" onclick="sendQuickMessage('Salam! 👋')">Salam! 👋</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage('Uğurlar! 🍀')">Uğurlar! 🍀</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage('Yaxşı oyun! 🎯')">Yaxşı oyun! 🎯</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage('Təşəkkürlər 🙏')">Təşəkkürlər 🙏</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage('Gözəl hərəkət! 👏')">Gözəl! 👏</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage('Ups... 😅')">Ups... 😅</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage('GG! 🎊')">GG! 🎊</button>
+                        </div>
+                    `;
+            }
+        }
+
+        async function sendQuickEmoji(emoji) {
+            if (!currentRoom) {
+                showNotification('Oyunda deyilsiniz!', 'error');
+                return;
+            }
+
+            try {
+                console.log(`📤 Sending emoji: ${emoji} to room: ${currentRoom}`);
+                await connection.invoke("SendQuickEmoji", currentRoom, emoji);
+
+                if (activePopup) {
+                    activePopup.classList.remove('show');
+                    activePopup = null;
+                }
+            } catch (err) {
+                console.error("❌ SendQuickEmoji error:", err);
+                showNotification('Göndərilə bilmədi!', 'error');
+            }
+        }
+
+        async function sendQuickMessage(message) {
+            if (!currentRoom) {
+                showNotification('Oyunda deyilsiniz!', 'error');
+                return;
+            }
+
+            try {
+                console.log(`📤 Sending quick message from popup: "${message}" to room: ${currentRoom}`);
+                await connection.invoke("SendQuickMessage", currentRoom, message);
+
+                // Popup-u bağla
+                if (activePopup) {
+                    activePopup.classList.remove('show');
+                    activePopup = null;
+                }
+
+                console.log(`✅ Quick message sent successfully`);
+            } catch (err) {
+                console.error("❌ SendQuickMessage error:", err);
+                showNotification('Mesaj göndərilə bilmədi!', 'error');
+            }
+        }
+        function displayPlayerEmoji(senderName, emoji) {
+            console.log(`🎭 Displaying emoji from ${senderName}: ${emoji}`);
+
+            const p1Name = document.getElementById('p1Name').textContent;
+            const p2Name = document.getElementById('p2Name').textContent;
+
+            let targetAvatar;
+            if (senderName === p1Name) {
+                targetAvatar = document.getElementById('p1Avatar');
+            } else if (senderName === p2Name) {
+                targetAvatar = document.getElementById('p2Avatar');
+            } else {
+                console.warn(`⚠️ Unknown sender: ${senderName}`);
+                return;
+            }
+
+            const emojiDisplay = document.createElement('div');
+            emojiDisplay.className = 'player-emoji-display';
+            emojiDisplay.textContent = emoji;
+
+            targetAvatar.appendChild(emojiDisplay);
+
+            setTimeout(() => {
+                emojiDisplay.remove();
+            }, 2000);
+        }
+
+        function displayPlayerQuickMessage(senderName, message) {
+            console.log(`💬 Displaying quick message from ${senderName}: ${message}`);
+
+            const p1Name = document.getElementById('p1Name').textContent;
+            const p2Name = document.getElementById('p2Name').textContent;
+
+            let targetAvatar;
+            if (senderName === p1Name) {
+                targetAvatar = document.getElementById('p1Avatar');
+            } else if (senderName === p2Name) {
+                targetAvatar = document.getElementById('p2Avatar');
+            } else {
+                console.warn(`⚠️ Unknown sender: ${senderName}`);
+                return;
+            }
+
+            // Əgər artıq mesaj varsa, onu sil
+            const existingMessage = targetAvatar.querySelector('.player-emoji-display');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            const messageDisplay = document.createElement('div');
+            messageDisplay.className = 'player-emoji-display';
+            messageDisplay.style.fontSize = '14px';
+            messageDisplay.style.padding = '10px 15px';
+            messageDisplay.style.maxWidth = '220px';
+            messageDisplay.style.whiteSpace = 'normal';
+            messageDisplay.style.wordWrap = 'break-word';
+            messageDisplay.style.textAlign = 'center';
+            messageDisplay.style.lineHeight = '1.4';
+            messageDisplay.style.color = '#333';  // ✅ Rəng əlavə et
+            messageDisplay.style.fontWeight = '600';  // ✅ Qalın mətn
+            messageDisplay.innerHTML = message;  // ✅ innerHTML istifadə et
+
+            targetAvatar.appendChild(messageDisplay);
+
+            setTimeout(() => {
+                if (messageDisplay.parentElement) {
+                    messageDisplay.remove();
+                }
+            }, 3000);
+        }
+        document.addEventListener('click', (e) => {
+            if (activePopup && !e.target.closest('.emoji-popup') && !e.target.closest('.player-emoji-btn')) {
+                activePopup.classList.remove('show');
+                activePopup = null;
+            }
+        });
+
+        // ========== CHAT TOGGLE ==========
+        function toggleChat() {
+            const panel = document.getElementById('chatPanel');
+            const toggle = document.getElementById('chatToggle');
+
+            panel.classList.toggle('open');
+
+            if (panel.classList.contains('open')) {
+                toggle.style.display = 'none';
+                document.getElementById('chatBadge').classList.remove('show');
+                document.getElementById('chatBadge').textContent = '0';
+            } else {
+                toggle.style.display = 'flex';
+            }
+        }
+
+        function displayChatMessage(sender, message, isOwn) {
+            const messagesDiv = document.getElementById('chatMessages');
+
+            const placeholder = messagesDiv.querySelector('div[style*="text-align: center"]');
+            if (placeholder) {
+                placeholder.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isOwn ? 'own' : ''}`;
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('az-AZ', { hour: '2-digit', minute: '2-digit' });
+
+            messageDiv.innerHTML = `
+                    <div class="message-sender">${sender}</div>
+                    <div class="message-content">
+                        <div class="message-text">${message}</div>
+                        <div class="message-time">${timeStr}</div>
+                    </div>
+                `;
+
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            const panel = document.getElementById('chatPanel');
+            if (!panel.classList.contains('open')) {
+                const badge = document.getElementById('chatBadge');
+                const currentCount = parseInt(badge.textContent) || 0;
+                badge.textContent = currentCount + 1;
+                badge.classList.add('show');
+            }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) {
+                return;
+            }
+
+            if (!currentRoom) {
+                showNotification('Oyunda deyilsiniz!', 'error');
+                return;
+            }
+
+            try {
+                console.log(`📤 Sending chat message: "${message}" to room: ${currentRoom}`);
+                await connection.invoke("SendChatMessage", currentRoom, message);
+                input.value = '';
+            } catch (err) {
+                console.error("❌ SendChatMessage error:", err);
+                showNotification('Mesaj göndərilə bilmədi!', 'error');
+            }
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        async function sendQuickMessageChat(message) {
+            if (!currentRoom) {
+                showNotification('Oyunda deyilsiniz!', 'error');
+                return;
+            }
+
+            if (!message || message.trim() === '') {
+                showNotification('Mesaj boşdur!', 'error');
+                return;
+            }
+
+            try {
+                console.log(`📤 Sending quick chat message from chat panel: "${message}" to room: ${currentRoom}`);
+                await connection.invoke("SendChatMessage", currentRoom, message);
+                console.log(`✅ Quick chat message sent successfully`);
+            } catch (err) {
+                console.error("❌ SendQuickMessageChat error:", err);
+                showNotification('Mesaj göndərilə bilmədi!', 'error');
+            }
+        }
+
+        function toggleQuickPanel(type) {
+            const emojiPanel = document.getElementById('quickEmojis');
+            const messagePanel = document.getElementById('quickMessages');
+            const emojiTool = document.getElementById('emojiTool');
+            const messageTool = document.getElementById('messageTool');
+
+            if (type === 'emoji') {
+                const isActive = emojiPanel.classList.contains('show');
+                emojiPanel.classList.toggle('show');
+                messagePanel.classList.remove('show');
+                emojiTool.classList.toggle('active', !isActive);
+                messageTool.classList.remove('active');
+            } else {
+                const isActive = messagePanel.classList.contains('show');
+                messagePanel.classList.toggle('show');
+                emojiPanel.classList.remove('show');
+                messageTool.classList.toggle('active', !isActive);
+                emojiTool.classList.remove('active');
+            }
+        }
+
+        function insertText(text) {
+            const input = document.getElementById('chatInput');
+            input.value += text;
+            input.focus();
+        }
+
+        window.onload = () => {
+            initSignalR();
+        };
+
+        window.onbeforeunload = () => {
+            if (connection) {
+                connection.stop();
+            }
+        };
+    </script>
+</body>
+</html>

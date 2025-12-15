@@ -19,7 +19,7 @@ const TopBar = () => {
               <div className="balance-display" title={`Balance: ${balance}`}>
                 <div className="coin-icon" aria-hidden>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" fill="url(#coinGradient)" stroke="var(--accent)" strokeWidth="1.5"/>
+                    <circle cx="12" cy="12" r="10" fill="url(#coinGradient)" stroke="var(--accent-6)" strokeWidth="1.5"/>
                     <path d="M12 6V18M15 9H9M15 15H9" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round"/>
                     <defs>
                       <linearGradient id="coinGradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">

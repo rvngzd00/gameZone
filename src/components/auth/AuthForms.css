@@ -229,7 +229,10 @@
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
 }
-
+.auth-switch{
+  margin: 7px 0 0 0;
+  color: var(--white);
+}
 .auth-switch a {
   color: var(--accent);
   text-decoration: none;
@@ -237,12 +240,6 @@
   transition: all 0.3s ease;
 }
 
-.auth-switch a {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
 
 .auth-switch a:hover {
   text-shadow: 0 0 10px rgba(255, 209, 102, 0.5);

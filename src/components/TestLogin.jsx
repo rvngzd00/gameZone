@@ -4,7 +4,7 @@ import axios from "axios";
 
 export default function TestLogin() {
   // API URL-i özünə uyğun deyiş:
-  const API_URL = "http://192.168.100.26:5063/api/Auths/Login";
+  const API_URL = "https://nehemiah-paginal-alan.ngrok-free.dev/api/Auths/Login";
 
   const handleTestLogin = async () => {
     try {

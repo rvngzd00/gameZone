@@ -16,6 +16,7 @@ export const useAppContext = () => {
 // 🔗 Backend URL-ni burda dəyiş
 const API_BASE = "https://nehemiah-paginal-alan.ngrok-free.dev/";
 
+
 export function AppProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -24,11 +25,18 @@ export function AppProvider({ children }) {
   const navigate = useNavigate();
 
   // 🔧 Axios instance
+  // const api = axios.create({
+  //   baseURL: API_BASE,
+  //   withCredentials: true,
+  // });
   const api = axios.create({
     baseURL: API_BASE,
     withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 'true' // ngrok üçün
+    }
   });
-
   // 🧩 Token interceptor
   api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
@@ -49,10 +57,10 @@ export function AppProvider({ children }) {
 
   // 👤 USER məlumatlarını çək
   const getUserProfile = async () => {
-    
+
     try {
       setLoading(true);
-      const res = await api.get("/api/Auths/GetCurrentUser/current");
+      const res = await api.get("/api/Auths/GetCurrentUser/current", { withCredentials: true });
       console.log("User data:", res.data);
       setUser(res.data);
       setBalance(res.data.balance || 0);

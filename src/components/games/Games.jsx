@@ -2,13 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Games.css';
 
-import dominoImg from './dominoes.png';
-import backgammonImg from './backgammon.png';
-import lotoImg from './loto.png';
-import durakImg from './poker.png';
-import okayImg from './poker.png';
-import blackjackImg from './poker.png';
-import pokerImg from './poker.png';
+import dominoImg from './gameLogoImages/dominoes.png';
+import backgammonImg from './gameLogoImages/backgammon.png';
+import lotoImg from './gameLogoImages/loto.png';
+import durakImg from './gameLogoImages/poker.png';
+import okayImg from './gameLogoImages/poker.png';
+import blackjackImg from './gameLogoImages/poker.png';
+import pokerImg from './gameLogoImages/poker.png';
 
 
 

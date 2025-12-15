@@ -132,7 +132,7 @@
 
 .balance-amount-wallet {
     font-size: 57px;
-    background: linear-gradient(90deg, var(--accent), var(--accent), var(--accent));
+    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;

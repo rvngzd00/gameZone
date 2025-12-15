@@ -99,6 +99,8 @@ function App() {
 
               <Route path='/admin'
                 element={<AdminDashboard />} />
+
+              <Route path="/test-login" element={<TestLogin />} />
             </Routes>
           </main>
           <Navbar />
