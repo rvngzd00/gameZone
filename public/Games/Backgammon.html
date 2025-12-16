@@ -1,19 +1,23 @@
 ﻿<!DOCTYPE html>
 <html lang="az">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Türk Tavlası - Düzəldilmiş</title>
     <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@7.0.0/dist/browser/signalr.min.js"></script>
+    <link rel="stylesheet" href="./Backgammon.css">
+    <link rel="stylesheet" href="./BackgammonNEW.css">
     
 </head>
+
 <body>
     <div id="notification" class="notification">
         <div id="notificationMessage"></div>
     </div>
 
     <div class="container">
-        <div class="header">
+        <!-- <div class="header">
             <div class="header-title">
                 <span style="font-size: 32px;">🎲</span>
                 <div>
@@ -28,13 +32,13 @@
                     <div class="balance">💰 <span id="userBalance">0</span></div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Chat Toggle Button -->
-        <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
+        <!-- <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
             💬
             <span class="chat-badge" id="chatBadge">0</span>
-        </button>
+        </button> -->
 
         <!-- Chat Panel -->
         <div class="chat-panel" id="chatPanel">
@@ -72,11 +76,14 @@
                 <div class="quick-messages">
                     <button class="quick-msg-btn" onclick="sendQuickMessageChat('Salam! 👋')">Salam! 👋</button>
                     <button class="quick-msg-btn" onclick="sendQuickMessageChat('Uğurlar! 🍀')">Uğurlar! 🍀</button>
-                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Yaxşı oyun! 🎯')">Yaxşı oyun! 🎯</button>
-                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Təşəkkürlər 🙏')">Təşəkkürlər 🙏</button>
+                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Yaxşı oyun! 🎯')">Yaxşı oyun!
+                        🎯</button>
+                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Təşəkkürlər 🙏')">Təşəkkürlər
+                        🙏</button>
                     <button class="quick-msg-btn" onclick="sendQuickMessageChat('Gözəl hərəkət! 👏')">Gözəl! 👏</button>
                     <button class="quick-msg-btn" onclick="sendQuickMessageChat('Ups... 😅')">Ups... 😅</button>
-                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Daha diqqətli! 🤔')">Diqqətli! 🤔</button>
+                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Daha diqqətli! 🤔')">Diqqətli!
+                        🤔</button>
                     <button class="quick-msg-btn" onclick="sendQuickMessageChat('GG! 🎊')">GG! 🎊</button>
                 </div>
             </div>
@@ -87,17 +94,15 @@
                     <button class="tool-btn" id="emojiTool" onclick="toggleQuickPanel('emoji')" title="Emoji">
                         😊
                     </button>
-                    <button class="tool-btn" id="messageTool" onclick="toggleQuickPanel('messages')" title="Sürətli mesajlar">
+                    <button class="tool-btn" id="messageTool" onclick="toggleQuickPanel('messages')"
+                        title="Sürətli mesajlar">
                         💬
                     </button>
                 </div>
 
                 <div class="chat-input-box">
-                    <input type="text"
-                           id="chatInput"
-                           placeholder="Mesajınızı yazın..."
-                           maxlength="200"
-                           onkeypress="handleChatKeyPress(event)">
+                    <input type="text" id="chatInput" placeholder="Mesajınızı yazın..." maxlength="200"
+                        onkeypress="handleChatKeyPress(event)">
                     <button class="send-btn" onclick="sendChatMessage()">
                         ➤
                     </button>
@@ -105,76 +110,44 @@
             </div>
         </div>
 
-        <div id="lobbyView" class="lobby">
-            <div class="rooms-section">
-                <h2 class="section-title">🎯 Sürətli Oyun</h2>
-
-                <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 25px; border-radius: 15px; color: white; margin-bottom: 20px; text-align: center;">
-                    <h3 style="font-size: 20px; margin-bottom: 15px;">⚡ Quick Match</h3>
-                    <p style="opacity: 0.9; margin-bottom: 20px; font-size: 14px;">Mərc seç və avtomatik rəqib tap!</p>
-
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
-                        <button class="btn" style="background: rgba(255,255,255,0.2); border: 2px solid white;" onclick="quickMatch(50)">
-                            50 💰
+        <div id="lobbyView" class="lobby-container">
+            <div class="lobby-content">
+                <section class="quick-match-section">
+                    <div class="section-header">
+                        <div class="section-icon">⚡</div>
+                        <div>
+                            <h2>Quick Match</h2>
+                            <p>Select your bet and find an opponent instantly</p>
+                        </div>
+                    </div>
+                    <div class="bet-options-grid">
+                        <button class="bet-option-btn" onclick="quickMatch(50)"><span class="bet-amount">50</span>
+                            <span class="bet-label">💰</span>
                         </button>
-                        <button class="btn" style="background: rgba(255,255,255,0.2); border: 2px solid white;" onclick="quickMatch(100)">
-                            100 💰
+                        <button class="bet-option-btn" onclick="quickMatch(100)">
+                            <span class="bet-amount">100</span>
+                            <span class="bet-label">💰</span>
                         </button>
-                        <button class="btn" style="background: rgba(255,255,255,0.2); border: 2px solid white;" onclick="quickMatch(200)">
-                            200 💰
+                        <button class="bet-option-btn" onclick="quickMatch(200)"><span class="bet-amount">200</span>
+                            <span class="bet-label">💰</span>
                         </button>
-                        <button class="btn" style="background: rgba(255,255,255,0.2); border: 2px solid white;" onclick="quickMatch(500)">
-                            500 💰
+                        <button class="bet-option-btn" onclick="quickMatch(500)">
+                            <span class="bet-amount">500</span>
+                            <span class="bet-label">💰</span>
                         </button>
                     </div>
-
-                    <button class="btn" style="background: rgba(255,255,255,0.3); border: 2px solid white; width: 100%;" onclick="quickMatch(1000)">
-                        🔥 1000 💰 VIP
-                    </button>
-                </div>
-
-                <h3 style="font-size: 16px; color: #666; margin-bottom: 10px;">📋 Aktiv Otaqlar</h3>
-                <div id="roomsGrid" class="rooms-grid">
-                    <p style="text-align: center; color: #999; padding: 20px; font-size: 13px;">Otaqlar yüklənir...</p>
-                </div>
+                    <button class="vip-match-btn" onclick="quickMatch(100)"><span class="vip-badge">VIP</span><span class="vip-amount">1000
+                            💰</span></button>
+                </section>
+                <section id="roomsGrid" class="active-rooms-section">
+                    <div class="section-header">
+                    <div class="section-icon">📋</div>
+                    <p style="text-align: center; color: #999; padding: 20px; font-size: 13px;">Otaqlar yüklənir...
+                    </p>
+                </section>
             </div>
 
-            <div class="create-section">
-                <h2 class="section-title">ℹ️ Oyun Qaydaları</h2>
 
-                <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; margin-bottom: 15px;">
-                    <h3 style="font-size: 14px; color: #333; margin-bottom: 10px;">🎲 BAR Sistemi</h3>
-                    <ul style="font-size: 12px; color: #666; line-height: 1.8; padding-left: 20px;">
-                        <li>⚪ Ağ: BAR-dan 19-24 arası daxil olur</li>
-                        <li>⚫ Qara: BAR-dan 1-6 arası daxil olur</li>
-                        <li>BAR-da daş varsa önce onu oynat</li>
-                    </ul>
-                </div>
-
-                <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; margin-bottom: 15px;">
-                    <h3 style="font-size: 14px; color: #333; margin-bottom: 10px;">🏠 HOME-a Çıxarma</h3>
-                    <ul style="font-size: 12px; color: #666; line-height: 1.8; padding-left: 20px;">
-                        <li>⚪ Ağ: 1-6 arası home quadrant</li>
-                        <li>⚫ Qara: 19-24 arası home quadrant</li>
-                        <li>Bütün daşlar home-da olmalı</li>
-                        <li>15 daşı çıxaran qalib</li>
-                    </ul>
-                </div>
-
-                <div style="padding: 15px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 10px; color: white; margin-bottom: 15px;">
-                    <h3 style="font-size: 14px; margin-bottom: 10px;">🏆 Qələbə</h3>
-                    <p style="font-size: 12px; opacity: 0.95; line-height: 1.6;">
-                        İlk olaraq 15 daşı HOME-a çıxaran oyunçu qalib olur və 2x mərc qazanır!
-                    </p>
-                </div>
-
-                <div style="padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; color: white;">
-                    <h3 style="font-size: 14px; margin-bottom: 10px;">💬 Emoji Sistemi</h3>
-                    <p style="font-size: 12px; opacity: 0.95; line-height: 1.6;">
-                        Oyunçu avatar-ının yanındaki 💬 düyməni basaraq rəqibinə emoji və sürətli mesajlar göndərə bilərsiniz!
-                    </p>
-                </div>
-            </div>
         </div>
 
         <div id="gameView" class="game-view">
@@ -190,7 +163,8 @@
                         <div class="player-details">
                             <h3 id="p1Name">Oyunçu 1</h3>
                             <div class="player-color">⚪ Ağ</div>
-                            <div style="font-size: 12px; margin-top: 5px;">🏠 HOME: <span id="whiteHome">0</span>/15</div>
+                            <div style="font-size: 12px; margin-top: 5px;">🏠 HOME: <span id="whiteHome">0</span>/15
+                            </div>
                         </div>
                         <div style="position: relative;">
                             <button class="player-emoji-btn" onclick="toggleEmojiPopup('player1')">
@@ -198,8 +172,10 @@
                             </button>
                             <div class="emoji-popup" id="emojiPopup1">
                                 <div class="emoji-popup-header">
-                                    <button class="emoji-tab active" onclick="switchEmojiTab('player1', 'emoji')">😊 Emoji</button>
-                                    <button class="emoji-tab" onclick="switchEmojiTab('player1', 'message')">💬 Mesaj</button>
+                                    <button class="emoji-tab active" onclick="switchEmojiTab('player1', 'emoji')">😊
+                                        Emoji</button>
+                                    <button class="emoji-tab" onclick="switchEmojiTab('player1', 'message')">💬
+                                        Mesaj</button>
                                 </div>
                                 <div class="emoji-popup-content" id="emojiContent1">
                                     <div class="emoji-popup-grid">
@@ -232,7 +208,8 @@
                         <div class="player-details">
                             <h3 id="p2Name">Oyunçu 2</h3>
                             <div class="player-color">⚫ Qara</div>
-                            <div style="font-size: 12px; margin-top: 5px;">🏠 HOME: <span id="blackHome">0</span>/15</div>
+                            <div style="font-size: 12px; margin-top: 5px;">🏠 HOME: <span id="blackHome">0</span>/15
+                            </div>
                         </div>
                         <div style="position: relative;">
                             <button class="player-emoji-btn" onclick="toggleEmojiPopup('player2')">
@@ -240,8 +217,10 @@
                             </button>
                             <div class="emoji-popup" id="emojiPopup2">
                                 <div class="emoji-popup-header">
-                                    <button class="emoji-tab active" onclick="switchEmojiTab('player2', 'emoji')">😊 Emoji</button>
-                                    <button class="emoji-tab" onclick="switchEmojiTab('player2', 'message')">💬 Mesaj</button>
+                                    <button class="emoji-tab active" onclick="switchEmojiTab('player2', 'emoji')">😊
+                                        Emoji</button>
+                                    <button class="emoji-tab" onclick="switchEmojiTab('player2', 'message')">💬
+                                        Mesaj</button>
                                 </div>
                                 <div class="emoji-popup-content" id="emojiContent2">
                                     <div class="emoji-popup-grid">
@@ -285,7 +264,8 @@
                     <button class="btn btn-success" id="rollBtn" onclick="rollDice()" disabled>
                         🎲 Zər At
                     </button>
-                    <button class="btn" id="bearOffBtn" onclick="bearOff()" disabled style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
+                    <button class="btn" id="bearOffBtn" onclick="bearOff()" disabled
+                        style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
                         🏠 HOME-a Çıxart
                     </button>
                     <button class="btn btn-primary" id="endTurnBtn" onclick="endTurn()" disabled>
@@ -300,6 +280,63 @@
     </div>
 
     <script>
+
+        // ---------------------
+        // 1️⃣ Bu dəyişənləri əlavə et (faylın əvvəlində)
+        // ⬇️⬇️⬇️ BURAYA ƏLAVƏ ET ⬇️⬇️⬇️
+
+        // alert('🎮 HTML SCRIPT YÜKLƏNDI!'); // Test üçün
+
+        let currentUserToken = null;
+        let currentUserData = null;
+
+        console.log('🎮 Game script loaded, waiting for postMessage...');
+
+        window.addEventListener('message', (event) => {
+            alert('📨 MESSAGE ALINDI!'); // Test üçün
+            console.log('📨 Message received:', event);
+            console.log('📍 Origin:', event.origin);
+            console.log('📦 Data:', event.data);
+
+            if (event.data && event.data.type === 'INIT_USER') {
+                // alert('✅ INIT_USER ALINDI!'); // Test üçün
+                console.log('✅ INIT_USER message received!');
+                currentUserData = event.data.payload;
+                currentUserToken = currentUserData.token;
+
+                console.log('✅ User data received:', currentUserData);
+
+                // UI-ı yenilə
+                if (currentUserData.username) {
+                    document.getElementById('userName').textContent = currentUserData.username;
+                }
+                if (currentUserData.balance !== undefined) {
+                    document.getElementById('userBalance').textContent = currentUserData.balance;
+                }
+                if (currentUserData.avatar) {
+                    document.getElementById('userAvatar').textContent = currentUserData.avatar;
+                }
+
+                console.log('🚀 Starting SignalR...');
+                // SignalR-i başlat
+                initSignalR();
+            } else {
+                console.log('⚠️ Message type not INIT_USER:', event.data?.type);
+            }
+        });
+
+
+        // 3️⃣ getToken() funksiyasını dəyişdir
+        function getToken() {
+            return currentUserToken || "";
+        }
+
+        // 4️⃣ window.onload-dan initSignalR() çağırmasını SİL
+        window.onload = () => {
+            console.log('🎮 Game loaded, waiting for user data...');
+            // initSignalR(); // ❌ Bunu SİL - indi React-dən data gələndə çağırılacaq
+        };
+        // ---------------------
         let connection = null;
         let currentRoom = null;
         let myColor = null;
@@ -320,7 +357,7 @@
 
         async function initSignalR() {
             connection = new signalR.HubConnectionBuilder()
-                .withUrl("/backgammonhub", {
+                .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/backgammonhub", {
                     accessTokenFactory: () => getToken()
                 })
                 .withAutomaticReconnect()
@@ -1312,4 +1349,5 @@
         };
     </script>
 </body>
+
 </html>

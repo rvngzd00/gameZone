@@ -1,20 +1,70 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    min-height: 100vh;
-    padding: 20px;
-}
-
 .container {
     max-width: 1200px;
     margin: 0 auto;
 }
+
+/* COLORS */
+:root {
+    /* Backgrounds */
+    --primary-bg: #0a1410;
+    --black: #050a08;
+    --bg-dark-2: #0f1f18;
+    --surface: #142d22;
+    --surface-2: #1a3d2e;
+
+    /* Text */
+    --text-primary: #e8fff4;
+    --white: #ffffff;
+    --text-on-accent: #0a1410;
+    --text-muted: #a3c1b3;
+
+    /* Accent / Jade & Platinum */
+    --accent: #b8f3d8;
+    --accent-2: #8fedd1;
+    --accent-3: #6ee7c4;
+    --accent-4: #a0f0cc;
+    --accent-5: #d4ffeb;
+    --accent-6: #7ae5ba;
+
+    /* Purples */
+    --purple-1: #3da887;
+    --purple-2: #2bcc9a;
+
+    /* Muted / greys */
+    --muted: #7fa395;
+    --muted-2: #aac9bc;
+    --muted-3: #c8e0d8;
+
+    /* Success / Danger */
+    --success: #1de9b6;
+    --success-dark: #00bfa5;
+    --danger: #ff5370;
+    --danger-dark: #e84258;
+
+    /* Other */
+    --brown-dark: #2d4d3d;
+
+    /* RGBA variants */
+    --accent-opaque-01: rgba(184, 243, 216, 0.1);
+    --accent-opaque-02: rgba(184, 243, 216, 0.2);
+    --accent-opaque-03: rgba(184, 243, 216, 0.3);
+    --accent-opaque-04: rgba(184, 243, 216, 0.4);
+    --accent-opaque-05: rgba(184, 243, 216, 0.05);
+    --accent-rgba-239-203-095: rgba(184, 243, 216, 0.95);
+    --white-05: rgba(255, 255, 255, 0.05);
+    --white-03: rgba(255, 255, 255, 0.03);
+    --white-08: rgba(255, 255, 255, 0.08);
+    --white-10: rgba(255, 255, 255, 0.1);
+    --white-15: rgba(255, 255, 255, 0.15);
+    --text-muted-07: rgba(232, 255, 244, 0.7);
+    --white-05-border: rgba(255, 255, 255, 0.05);
+    --white-02: rgba(255, 255, 255, 0.02);
+    --black-20: rgba(0, 0, 0, 0.2);
+    --purple-shadow-30: rgba(61, 168, 135, 0.3);
+    --purple-shadow-40: rgba(61, 168, 135, 0.4);
+}
+
+/* -------------- */
 
 .header {
     background: white;
@@ -412,11 +462,7 @@ body {
     display: flex;
 }
 
-.lobby {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 20px;
-}
+.lobby {}
 
 .rooms-section,
 .create-section {

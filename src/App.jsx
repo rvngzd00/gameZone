@@ -17,11 +17,12 @@ import ProtectedRoute from './components/auth/ProtectedRoute'
 import { useContext } from 'react'
 import LotoMain from './components/games/loto/LotoMain'
 import DominoMain from './components/games/domino/DominoMain'
-import Backgammon from './components/games/backgammon/Backgammon'
+import Backgammon from './components/games/backgammon/Backgammon.jsx'
 
 import SnowEffect from './components/mainLayout/SnowEffect'
 
 import AdminDashboard from './components/admin/AdminDashboard'
+import BackgammonREACT from './components/games/BACKGAMMMONN/BackgammonREACT.jsx'
 const ProtectedRouteWrapper = ({ children }) => {
   const { isAuthenticated } = useAppContext();
   return <ProtectedRoute isAuthenticated={isAuthenticated}>{children}</ProtectedRoute>;
@@ -37,6 +38,15 @@ function App() {
           <SnowEffect snowflakeCount={7} />
             <ScrollToTop />
             <Routes>
+
+              <Route
+                path="/games/backgammonR"
+                element={
+                  <BackgammonREACT/>
+                
+                }
+              />
+
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -68,7 +78,7 @@ function App() {
                 path="/games/backgammon"
                 element={
                   <ProtectedRouteWrapper>
-                    <Backgammon />
+                    <Backgammon/>
                   </ProtectedRouteWrapper>
                 }
               />
