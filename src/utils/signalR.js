@@ -3,7 +3,7 @@ import * as signalR from "@microsoft/signalr";
 
 export const initSignalR = async (token) => {
   const connection = new signalR.HubConnectionBuilder()
-    .withUrl("http://localhost:5063/adminChatHub", {
+    .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/adminChatHub", {
       accessTokenFactory: () => token,
       withCredentials: true,
     })
