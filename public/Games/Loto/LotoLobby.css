@@ -1,0 +1,394 @@
+.header {
+    text-align: center;
+    margin-bottom: clamp(20px, 5vw, 30px);
+    padding: 0 clamp(12px, 3vw, 20px);
+}
+
+.header h1 {
+    font-size: clamp(28px, 8vw, 48px);
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffd166 0%, #ff9a3c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
+
+.balance-display {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 10px);
+    background: rgba(255, 255, 255, 0.1);
+    padding: clamp(8px, 2vw, 12px) clamp(16px, 4vw, 24px);
+    border-radius: 50px;
+    font-size: clamp(14px, 3vw, 20px);
+    font-weight: 700;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.rooms-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 90vw, 350px), 1fr));
+    gap: clamp(12px, 3vw, 20px);
+    padding: 0 clamp(12px, 3vw, 20px);
+}
+
+.room-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+    border: 2px solid rgba(255, 209, 102, 0.3);
+    border-radius: clamp(12px, 3vw, 20px);
+    padding: clamp(16px, 4vw, 24px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.room-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(255, 209, 102, 0.3);
+    border-color: #ffd166;
+}
+
+.room-card.playing {
+    border-color: #ff6b6b;
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.05));
+}
+
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: clamp(12px, 3vw, 20px);
+    flex-wrap: wrap;
+    gap: clamp(8px, 2vw, 12px);
+}
+
+.entry-fee {
+    font-size: clamp(24px, 6vw, 36px);
+    font-weight: 900;
+    color: #ffd166;
+}
+
+.status-badge {
+    padding: clamp(4px, 1vw, 6px) clamp(10px, 2vw, 14px);
+    border-radius: 20px;
+    font-size: clamp(10px, 2vw, 12px);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-waiting {
+    background: linear-gradient(135deg, #ffd166, #ffb703);
+    color: #000;
+}
+
+.badge-playing {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+    color: #fff;
+}
+
+.jackpot-display {
+    background: rgba(0, 0, 0, 0.3);
+    padding: clamp(12px, 3vw, 16px);
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+.jackpot-label {
+    font-size: clamp(10px, 2vw, 12px);
+    color: #ffd166;
+    margin-bottom: 4px;
+}
+
+.jackpot-amount {
+    font-size: clamp(20px, 5vw, 28px);
+    font-weight: 900;
+    color: #fff;
+}
+
+.room-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(8px, 2vw, 12px);
+    margin-top: clamp(12px, 3vw, 16px);
+}
+
+.info-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: clamp(8px, 2vw, 10px);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.info-label {
+    font-size: clamp(9px, 2vw, 11px);
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 4px;
+}
+
+.info-value {
+    font-size: clamp(13px, 2.5vw, 16px);
+    font-weight: 700;
+}
+
+.timer-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin-top: 12px;
+    overflow: hidden;
+}
+
+.timer-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd166, #ff9a3c);
+    transition: width 1s linear;
+}
+
+.loading {
+    text-align: center;
+    padding: clamp(40px, 10vw, 60px);
+    font-size: clamp(14px, 3vw, 18px);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* ==================== TABLET RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .header {
+        margin-bottom: clamp(15px, 4vw, 25px);
+    }
+
+    .header h1 {
+        font-size: clamp(24px, 7vw, 36px);
+    }
+
+    .balance-display {
+        font-size: clamp(13px, 2.5vw, 16px);
+        padding: 8px 16px;
+    }
+
+    .rooms-container {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: clamp(10px, 2.5vw, 15px);
+        padding: 0 10px;
+    }
+
+    .room-card {
+        padding: clamp(14px, 3vw, 20px);
+        border-radius: 16px;
+    }
+
+    .entry-fee {
+        font-size: clamp(22px, 5vw, 30px);
+    }
+
+    .jackpot-amount {
+        font-size: clamp(18px, 4vw, 24px);
+    }
+
+    .room-header {
+        margin-bottom: 12px;
+        gap: 10px;
+    }
+}
+
+/* ==================== MOBILE RESPONSIVE ==================== */
+@media (max-width: 480px) {
+    .header {
+        margin-bottom: 15px;
+        padding: 0 8px;
+    }
+
+    .header h1 {
+        font-size: clamp(22px, 6vw, 32px);
+    }
+
+    .balance-display {
+        font-size: 13px;
+        padding: 8px 12px;
+        gap: 6px;
+    }
+
+    .rooms-container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 0 8px;
+        max-width: 100%;
+    }
+
+    .room-card {
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    .room-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .room-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        gap: 8px;
+    }
+
+    .entry-fee {
+        font-size: 20px;
+    }
+
+    .status-badge {
+        font-size: 10px;
+        padding: 4px 10px;
+    }
+
+    .jackpot-display {
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+
+    .jackpot-label {
+        font-size: 9px;
+    }
+
+    .jackpot-amount {
+        font-size: 18px;
+    }
+
+    .room-info {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .info-item {
+        padding: 8px;
+    }
+
+    .info-label {
+        font-size: 9px;
+    }
+
+    .info-value {
+        font-size: 12px;
+    }
+
+    .loading {
+        padding: 30px;
+        font-size: 14px;
+    }
+}
+
+/* ==================== SMALL MOBILE (320px and below) ==================== */
+@media (max-width: 380px) {
+    .header h1 {
+        font-size: 20px;
+    }
+
+    .balance-display {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .rooms-container {
+        gap: 10px;
+        padding: 0 6px;
+    }
+
+    .room-card {
+        padding: 12px;
+    }
+
+    .entry-fee {
+        font-size: 18px;
+    }
+
+    .room-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .status-badge {
+        align-self: flex-start;
+    }
+
+    .jackpot-amount {
+        font-size: 16px;
+    }
+
+    .info-value {
+        font-size: 11px;
+    }
+
+    .loading {
+        padding: 20px;
+        font-size: 12px;
+    }
+}
+
+/* ==================== LANDSCAPE ORIENTATION ==================== */
+@media (max-height: 500px) and (orientation: landscape) {
+    .header {
+        margin-bottom: 12px;
+    }
+
+    .header h1 {
+        font-size: clamp(20px, 5vw, 28px);
+        margin-bottom: 4px;
+    }
+
+    .balance-display {
+        font-size: clamp(12px, 2vw, 16px);
+        padding: 6px 12px;
+    }
+
+    .rooms-container {
+        gap: 10px;
+    }
+
+    .room-card {
+        padding: 12px;
+    }
+
+    .loading {
+        padding: 20px 10px;
+    }
+}
+
+/* ==================== LARGE SCREENS ==================== */
+@media (min-width: 1200px) {
+    .rooms-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ==================== EXTRA LARGE SCREENS ==================== */
+@media (min-width: 1600px) {
+    .rooms-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .header h1 {
+        font-size: 52px;
+    }
+}

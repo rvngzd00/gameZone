@@ -3,26 +3,27 @@ import Navbar from './components/mainLayout/Navbar'
 import TopBar from './components/mainLayout/TopBar'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AppProvider, useAppContext } from './context/AppContext'
+import { useContext } from 'react'
 import LandingPage from './components/mainPage/LandingPage'
 import Login from './components/auth/Login'
 import Register from './components/auth/Register'
-import Footer from './components/mainLayout/Footer'
-import Games from './components/games/Games'
 import Profile from './components/profile/Profile'
 import Wallet from './components/wallet/Wallet'
 import Chat from './components/chat/Chat'
 import ScrollToTop from './context/ScrollToTop'
 import TestLogin from './components/TestLogin'
 import ProtectedRoute from './components/auth/ProtectedRoute'
-import { useContext } from 'react'
-import LotoMain from './components/games/loto/LotoMain'
-import DominoMain from './components/games/domino/DominoMain'
+
+// Games Import 
+import Games from './components/games/Games'
+import LotoLobby from './components/games/loto/LotoLobby.jsx'
+import LotoGame from './components/games/loto/LotoGame.jsx'
 import Backgammon from './components/games/backgammon/Backgammon.jsx'
 
 import SnowEffect from './components/mainLayout/SnowEffect'
 
 import AdminDashboard from './components/admin/AdminDashboard'
-import BackgammonREACT from './components/games/BACKGAMMMONN/BackgammonREACT.jsx'
+
 const ProtectedRouteWrapper = ({ children }) => {
   const { isAuthenticated } = useAppContext();
   return <ProtectedRoute isAuthenticated={isAuthenticated}>{children}</ProtectedRoute>;
@@ -39,14 +40,6 @@ function App() {
             <ScrollToTop />
             <Routes>
 
-              <Route
-                path="/games/backgammonR"
-                element={
-                  <BackgammonREACT/>
-                
-                }
-              />
-
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -62,15 +55,15 @@ function App() {
                 path="/games/loto"
                 element={
                   <ProtectedRouteWrapper>
-                    <LotoMain />
+                    <LotoLobby />
                   </ProtectedRouteWrapper>
                 }
               />
               <Route
-                path="/games/domino"
+                path="/games/loto/:roomId"
                 element={
                   <ProtectedRouteWrapper>
-                    <DominoMain />
+                    <LotoGame />
                   </ProtectedRouteWrapper>
                 }
               />

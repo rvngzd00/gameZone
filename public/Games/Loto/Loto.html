@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>10 Line Loto - Oyun</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="./Loto.css">
+</head>
+
+<body>
+    <div class="top-bar">
+        <div>
+            <div class="jackpot-display">
+                🏆 <span id="jackpotAmount">0.00</span> ₼
+            </div>
+        </div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <div class="balance-display">💰 <span id="userBalance">0.00</span> ₼</div>
+            <button id="buyTicketBtn" class="btn">+ Bilet Al</button>
+            <button id="backBtn" class="btn btn-danger">← Çıx</button>
+        </div>
+    </div>
+
+    <div class="drawn-number">
+        <div class="big-ball" id="bigBall">--</div>
+        <div class="history" id="history"></div>
+    </div>
+
+    <div class="tickets-container" id="ticketsContainer"></div>
+
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <h2>🏆</h2>
+            <div id="gameOverText" style="font-size: 24px; margin-bottom: 20px;"></div>
+
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // React-dən user data və roomId
+        // ============================================
+        let currentUserToken = null;
+        let currentUserData = null;
+        let roomId = null; // React-dən gələcək
+
+        let connection = null;
+        let myTickets = [];
+        let drawnNumbers = [];
+        let isGameStarted = false;
+
+        console.log('🎮 Loto Game loaded, waiting for user data...');
+
+        window.addEventListener('message', (event) => {
+            console.log('📨 Game message:', event.data);
+
+            if (event.data && event.data.type === 'INIT_USER') {
+                console.log('✅ User data received in game');
+                currentUserData = event.data.payload;
+                currentUserToken = currentUserData.token;
+                roomId = currentUserData.roomId; // React-dən
+
+                // Balance göstər
+                document.getElementById("userBalance").textContent =
+                    currentUserData.balance.toFixed(2);
+
+                // Oyunu başlat
+                init();
+            }
+        });
+
+        // ============================================
+        // Token funksiyası
+        // ============================================
+        function getToken() {
+            return currentUserToken || "";
+        }
+
+        // ============================================
+        // Digər funksiyalar (dəyişiklik YOX)
+        // ============================================
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
+        }
+
+        function createConnection() {
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/lotoHub", {
+                    accessTokenFactory: () => getToken()
+                })
+                .withAutomaticReconnect()
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            setupHandlers();
+            return connection;
+        }
+
+        function setupHandlers() {
+            connection.on("UserData", (data) => {
+                document.getElementById("userBalance").textContent = data.balance.toFixed(2);
+            });
+
+            connection.on("RoomJoined", (data) => {
+                myTickets = data.myTickets;
+                isGameStarted = data.isGameStarted;
+                drawnNumbers = data.drawnNumbers || [];
+                document.getElementById("jackpotAmount").textContent = data.jackpot.toFixed(2);
+                renderTickets();
+                updateHistory();
+            });
+
+            connection.on("TicketPurchased", (data) => {
+                myTickets.push({ ticketId: data.ticketId, card: data.card });
+                document.getElementById("userBalance").textContent = data.balance.toFixed(2);
+                showNotification(`✅ Bilet ${data.ticketNumber}/${data.maxTickets} alındı`);
+                renderTickets();
+            });
+
+            connection.on("TicketRefreshed", (data) => {
+                const ticketIndex = myTickets.findIndex(t => t.ticketId === data.ticketId);
+                if (ticketIndex !== -1) {
+                    myTickets[ticketIndex].card = data.card;
+                    renderTickets();
+                    showMessage("Bilet uğurla yeniləndi!", "success");
+                }
+            });
+
+            connection.on("TicketDeleted", (ticketId) => {
+                myTickets = myTickets.filter(t => t.ticketId !== ticketId);
+                renderTickets();
+                showMessage("Bilet silindi və balans geri qaytarıldı!", "success");
+            });
+
+            connection.on("ShowMessage", (message, type) => {
+                showMessage(message, type || "info");
+            });
+
+            connection.on("RoomUpdated", (data) => {
+                document.getElementById("jackpotAmount").textContent = data.jackpot.toFixed(2);
+            });
+
+            connection.on("GameStarted", (data) => {
+                isGameStarted = true;
+                document.getElementById("buyTicketBtn").disabled = true;
+                showNotification("🎮 Oyun başladı!");
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+
+                document.querySelectorAll('.btn-refresh, .btn-delete').forEach(btn => {
+                    btn.disabled = true;
+                });
+            });
+
+            connection.on("NumberDrawn", (num) => {
+                drawnNumbers.push(num);
+                document.getElementById("bigBall").textContent = num;
+                updateHistory();
+                markNumber(num);
+            });
+
+            connection.on("BalanceUpdated", (balance) => {
+                document.getElementById("userBalance").textContent = balance.toFixed(2);
+            });
+
+            connection.on("CinkoCompleted", (data) => {
+                showNotification(`📊 ${data.playerName} - Xətt ${data.line} tamamlandı! (+${data.reward}₼)`);
+            });
+
+            connection.on("AutoBingoChecking", (data) => {
+                console.log("🔍 Auto-Bingo yoxlanır...", data);
+            });
+
+            connection.on("GameOver", (data) => {
+                if (data.message && data.message.includes("AUTO-BINGO")) {
+                    showNotification("🎉 " + data.message);
+                    confetti({
+                        particleCount: 300,
+                        spread: 100,
+                        origin: { y: 0.5 },
+                        colors: ['#ffd166', '#ff9a3c', '#2dd4bf']
+                    });
+                }
+
+                document.getElementById("gameOverText").textContent = data.message;
+                document.getElementById("gameOverModal").classList.add("show");
+
+                // ✅ React-ə bildir
+                window.parent.postMessage({
+                    type: 'GAME_ENDED'
+                }, '*');
+            });
+
+            connection.on("RoomReset", () => {
+                // ✅ React-ə bildir
+                window.parent.postMessage({
+                    type: 'BACK_TO_LOBBY'
+                }, '*');
+            });
+        }
+
+        async function refreshTicket(ticketId) {
+            try {
+                await connection.invoke("RefreshTicket", ticketId);
+                showMessage("Bilet yenilənir...", "info");
+            } catch (err) {
+                console.error(err);
+                showMessage("Xəta: " + err.message, "error");
+            }
+        }
+
+        async function deleteTicket(ticketId) {
+            try {
+                await connection.invoke("DeleteTicket", ticketId);
+                showMessage("Bilet silinir...", "info");
+            } catch (err) {
+                console.error(err);
+                showMessage("Xəta: " + err.message, "error");
+            }
+        }
+
+        function showMessage(message, type = 'info') {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = message;
+            messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideDown 0.3s ease;
+        `;
+
+            if (type === 'success') {
+                messageDiv.style.background = '#10b981';
+                messageDiv.style.color = 'white';
+            } else if (type === 'error') {
+                messageDiv.style.background = '#ef4444';
+                messageDiv.style.color = 'white';
+            } else {
+                messageDiv.style.background = '#3b82f6';
+                messageDiv.style.color = 'white';
+            }
+
+            document.body.appendChild(messageDiv);
+
+            setTimeout(() => {
+                messageDiv.style.animation = 'slideUp 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(messageDiv);
+                }, 300);
+            }, 3000);
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 1; transform: translateX(-50%) translateY(0); }
+            to { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
+    `;
+        document.head.appendChild(style);
+
+        function renderTickets() {
+            const container = document.getElementById("ticketsContainer");
+            container.innerHTML = "";
+
+            myTickets.forEach((ticket, index) => {
+                const ticketDiv = document.createElement("div");
+                ticketDiv.className = "ticket";
+                ticketDiv.id = `ticket-${ticket.ticketId}`;
+
+                const completedLines = [];
+                let gridHTML = '';
+
+                for (let r = 0; r < 3; r++) {
+                    for (let c = 0; c < 9; c++) {
+                        const val = ticket.card[r][c];
+                        const isMarked = val !== null && drawnNumbers.includes(val);
+                        const cellClass = val === null ? 'cell blank' : `cell ${isMarked ? 'marked' : ''}`;
+                        gridHTML += `<div class="${cellClass}">${val ?? ''}</div>`;
+                    }
+                }
+
+                for (let r = 0; r < 3; r++) {
+                    let allMarked = true;
+                    for (let c = 0; c < 9; c++) {
+                        const val = ticket.card[r][c];
+                        if (val !== null && !drawnNumbers.includes(val)) {
+                            allMarked = false;
+                            break;
+                        }
+                    }
+                    if (allMarked && ticket.card[r].some(v => v !== null)) {
+                        completedLines.push(r);
+                    }
+                }
+
+                let lineBtnsHTML = '';
+                for (let r = 0; r < 3; r++) {
+                    const isCompleted = completedLines.includes(r);
+                    const disabled = !isCompleted || !isGameStarted;
+                    lineBtnsHTML += `
+                    <button class="line-btn ${isCompleted ? 'completed' : ''}"
+                            ${disabled ? 'disabled' : ''}
+                            onclick="callCinko('${ticket.ticketId}', ${r})">
+                        Xətt ${r + 1} ${isCompleted ? '✓' : ''}
+                    </button>
+                `;
+                }
+
+                ticketDiv.innerHTML = `
+                <div class="ticket-header">
+                    <div class="ticket-number">🎫 Bilet #${index + 1}</div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-refresh" onclick="refreshTicket('${ticket.ticketId}')"
+                                ${isGameStarted ? 'disabled' : ''}>
+                            🔄 Yenilə
+                        </button>
+                        <button class="btn-delete" onclick="deleteTicket('${ticket.ticketId}')"
+                                ${isGameStarted ? 'disabled' : ''}>
+                            🗑️ Sil
+                        </button>
+                        <button class="btn" onclick="callBingo('${ticket.ticketId}')"
+                                ${!isGameStarted ? 'disabled' : ''}>
+                            🎯 BINGO
+                        </button>
+                    </div>
+                </div>
+                <div class="card-grid">${gridHTML}</div>
+                <div class="line-btns">${lineBtnsHTML}</div>
+            `;
+
+                container.appendChild(ticketDiv);
+            });
+        }
+
+        function updateHistory() {
+            const history = document.getElementById("history");
+            history.innerHTML = "";
+
+            const last20 = drawnNumbers.slice(-20).reverse();
+            last20.forEach(num => {
+                const ball = document.createElement("div");
+                ball.className = "history-ball";
+                ball.textContent = num;
+                history.appendChild(ball);
+            });
+        }
+
+        function markNumber(num) {
+            console.log(`✅ Nömrə çəkildi: ${num}`);
+            renderTickets();
+            checkMyTicketsStatus();
+        }
+
+        function checkMyTicketsStatus() {
+            myTickets.forEach((ticket, index) => {
+                let totalNumbers = 0;
+                let markedCount = 0;
+
+                for (let r = 0; r < 3; r++) {
+                    for (let c = 0; c < 9; c++) {
+                        const val = ticket.card[r][c];
+                        if (val !== null) {
+                            totalNumbers++;
+                            if (drawnNumbers.includes(val)) {
+                                markedCount++;
+                            }
+                        }
+                    }
+                }
+
+                if (totalNumbers === 15 && markedCount === 15) {
+                    console.log(`🏆 Bilet #${index + 1} TAM DOLDU!`);
+                }
+            });
+        }
+
+        async function callBingo(ticketId) {
+            try {
+                await connection.invoke("Bingo", ticketId);
+            } catch (err) {
+                console.error("Bingo error:", err);
+            }
+        }
+
+        async function callCinko(ticketId, lineIndex) {
+            try {
+                await connection.invoke("Cinko", ticketId, lineIndex);
+            } catch (err) {
+                console.error("Cinko error:", err);
+            }
+        }
+
+        document.getElementById("buyTicketBtn").addEventListener("click", async () => {
+            try {
+                const result = await connection.invoke("BuyTicket", roomId);
+                if (!result.success) {
+                    showNotification("❌ " + result.message);
+                }
+            } catch (err) {
+                console.error("Buy ticket error:", err);
+                showNotification("❌ Bilet almaq alınmadı");
+            }
+        });
+
+        // ✅ Back button - React-ə mesaj göndər
+        document.getElementById("backBtn").addEventListener("click", () => {
+            window.parent.postMessage({
+                type: 'BACK_TO_LOBBY'
+            }, '*');
+        });
+
+        // ✅ init funksiyası - yalnız React-dən data gələndə çağrılır
+        async function init() {
+            if (!roomId) {
+                console.error('❌ No roomId!');
+                window.parent.postMessage({ type: 'BACK_TO_LOBBY' }, '*');
+                return;
+            }
+
+            let retries = 3;
+
+            while (retries > 0) {
+                try {
+                    console.log(`🚀 [GAME] init cəhdi (${4 - retries}/3)`);
+
+                    connection = createConnection();
+                    await connection.start();
+
+                    // 500ms gözlə (əmin olmaq üçün)
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    console.log('🎮 [GAME] JoinRoomView...');
+                    await connection.invoke("JoinRoomView", roomId);
+                    console.log('✅ [GAME] Uğurlu!');
+
+                    return; // Uğurlu oldu, çıx
+
+                } catch (err) {
+                    console.error(`❌ [GAME] Cəhd ${4 - retries} uğursuz:`, err);
+                    retries--;
+
+                    if (retries === 0) {
+                        showNotification("❌ Bağlantı xətası");
+                        setTimeout(() => {
+                            window.parent.postMessage({ type: 'BACK_TO_LOBBY' }, '*');
+                        }, 2000);
+                    } else {
+                        console.log(`⏳ [GAME] 1 saniyə sonra yenidən...`);
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>
