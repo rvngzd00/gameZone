@@ -125,7 +125,7 @@ function BackgammonGame() {
     <div className="backgammon-container">
       <iframe
         ref={iframeRef}
-        src="/Games/Backgammon.html"
+        src="/Games/Backgammon/Backgammon.html"
         className="backgammon-iframe"
         title="Türk Tavlası"
         allow="autoplay; fullscreen"

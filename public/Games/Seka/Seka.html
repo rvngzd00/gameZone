@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seka Oyunu - Premium Casino</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+    <link rel="stylesheet" href="./seka.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🃏 SEKA PREMIUM 🃏</h1>
+            <div class="header-subtitle">PROFESSIONAL CARD GAME</div>
+        </div>
+
+        <div class="user-info">
+            <div><strong id="userName">Yüklənir...</strong></div>
+            <div class="balance">💰 <span id="userBalance">0</span> ₼</div>
+        </div>
+
+        <div class="quick-join-section">
+            <h2 style="color: #ffd700; margin-bottom: 15px;">⚡ Tez Qoşul</h2>
+            <p style="color: #94a3b8; margin-bottom: 20px;">Giriş haqqı seçin və avtomatik uyğun otağa qoşulun!</p>
+            <div id="quickJoinGrid" class="quick-join-grid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="roomListSection" class="room-list-section">
+            <h2 style="color: #ffd700; margin-bottom: 15px;">🎮 Bütün Otaqlar</h2>
+            <div class="room-grid" id="roomGrid">
+                <div class="loading">
+                    <div class="spinner"></div>Otaqlar yüklənir...
+                </div>
+            </div>
+        </div>
+
+        <div id="gameSection" class="game-section">
+            <div style="margin-bottom: 20px;">
+                <h2>Otaq: <span id="currentRoomName">-</span></h2>
+            </div>
+
+            <div class="poker-table" id="pokerTable">
+                <div class="table-center">
+                    <div class="pot-amount">POT: <span id="potAmount">0</span> ₼</div>
+                    <div class="current-bet">Cari mərc: <span id="currentBetAmount">0</span> ₼</div>
+                </div>
+            </div>
+
+            <div class="hand-cards" id="handCards"></div>
+
+            <div class="actions">
+                <button class="btn btn-fold" id="foldBtn" disabled>Fold</button>
+                <button class="btn btn-call" id="callBtn" disabled>
+                    Call (<span id="callAmount">0</span> ₼)
+                </button>
+                <button class="btn btn-call" id="checkBtn" disabled style="background: #3b82f6;">Check</button>
+                <button class="btn" id="allInBtn" disabled style="background: #f59e0b; color: #fff;">All-In 🔥</button>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="raiseInput" class="bet-input" placeholder="Məbləğ" min="0" step="10"
+                        disabled>
+                    <button class="btn btn-raise" id="raiseBtn" disabled>Raise</button>
+                </div>
+                <button class="btn" id="showdownBtn" disabled style="background: #8b5cf6; color: #fff;">Showdown
+                    🎴</button>
+                <button class="btn btn-leave" id="leaveBtn">Çıx</button>
+            </div>
+
+            <div class="players-list">
+                <h3>Oyunçular</h3>
+                <div id="playersList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="redirect-overlay" id="redirectOverlay">
+        <div class="redirect-content">
+            <h2>🔄 Yönləndirmə</h2>
+            <p id="redirectMessage" style="color: #fff; font-size: 1.2rem;"></p>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <div class="showdown-overlay" id="showdownOverlay">
+        <div class="showdown-content">
+            <div class="showdown-title">🎴 SHOWDOWN 🎴</div>
+            <div class="showdown-players" id="showdownPlayers"></div>
+            <div class="showdown-winner-announce" id="showdownWinner"></div>
+            <button class="showdown-close-btn" onclick="closeShowdown()">Davam et</button>
+        </div>
+    </div>
+
+    <script>
+
+
+        let currentUserToken = null;
+        let currentUserData = null;
+
+        console.log('🃏 [SEKA] Script yükləndi');
+
+        window.addEventListener('message', (event) => {
+            console.log('📨 [SEKA] Message alındı:', event.data);
+
+            if (event.data && event.data.type === 'INIT_USER') {
+                console.log('✅ [SEKA] INIT_USER qəbul edildi');
+
+                currentUserData = event.data.payload;
+                currentUserToken = currentUserData.token;
+
+                console.log('👤 [SEKA] User:', currentUserData.username);
+                console.log('🎫 [SEKA] Token:', currentUserToken ? 'VAR' : 'YOX');
+
+                // UI-ı yenilə
+                document.getElementById('userName').textContent = currentUserData.username;
+                document.getElementById('userBalance').textContent = currentUserData.balance.toFixed(2);
+
+                console.log('🚀 [SEKA] initializeSignalR() çağırılır...');
+                // SignalR başlat
+                initializeSignalR();
+            }
+        });
+
+        // ============================================
+        // getToken funksiyasını dəyişdir
+        // ============================================
+        function getToken() {
+            return currentUserToken || "";
+        }
+
+       
+        // ✅ Əvəzinə bunu əlavə et:
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📄 [SEKA] DOM loaded');
+            setupEventListeners();
+            console.log('✅ [SEKA] Event listeners quruldu, user data gözlənilir...');
+        });
+
+
+
+        // ==================== GLOBAL VARIABLES ====================
+        let connection = null;
+        let currentUserId = 0;
+        let currentRoomId = null;
+        let myHand = [];
+        let currentTurnUserId = 0;
+        let currentGameBet = 0;
+
+
+
+        function setupEventListeners() {
+            document.getElementById('foldBtn').addEventListener('click', fold);
+            document.getElementById('callBtn').addEventListener('click', call);
+            document.getElementById('checkBtn').addEventListener('click', check);
+            document.getElementById('allInBtn').addEventListener('click', allIn);
+            document.getElementById('raiseBtn').addEventListener('click', raise);
+            document.getElementById('showdownBtn').addEventListener('click', requestShowdown);
+            document.getElementById('leaveBtn').addEventListener('click', leaveRoom);
+        }
+
+        // function getToken() {
+        //     const raw = document.cookie
+        //         .split("; ")
+        //         .find(row => row.startsWith("AuthToken="))
+        //         ?.split("=")[1];
+        //     return raw ? decodeURIComponent(raw).trim() : "";
+        // }
+
+        // ==================== SIGNALR CONNECTION ====================
+        async function initializeSignalR() {
+            try {
+                connection = new signalR.HubConnectionBuilder()
+                    .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/sekaHub", { accessTokenFactory: () => getToken() })
+                    .withAutomaticReconnect()
+                    .build();
+
+                setupSignalRHandlers();
+                await connection.start();
+                console.log("✅ SignalR connected");
+
+                await loadQuickJoinButtons();
+                await loadRoomList();
+            } catch (error) {
+                console.error("❌ SignalR error:", error);
+                showMessage("Bağlantı xətası: " + error.message, "error");
+            }
+        }
+
+        // ==================== SIGNALR HANDLERS ====================
+        function setupSignalRHandlers() {
+            // User data
+            connection.on("UserData", (data) => {
+                currentUserId = data.userId;
+                document.getElementById('userName').textContent = data.fullName;
+                document.getElementById('userBalance').textContent = data.balance.toFixed(2);
+            });
+
+            connection.on("BalanceUpdated", (balance) => {
+                document.getElementById('userBalance').textContent = balance.toFixed(2);
+                console.log('💰 Balance updated:', balance);
+            });
+
+            // Room redirect
+            connection.on("RoomRedirect", (data) => {
+                const overlay = document.getElementById('redirectOverlay');
+                const message = document.getElementById('redirectMessage');
+                message.textContent = data.message;
+                overlay.classList.add('active');
+                setTimeout(() => overlay.classList.remove('active'), 3000);
+            });
+
+            // Room joining
+            connection.on("JoinedRoom", (data) => {
+                currentRoomId = data.roomId;
+                document.getElementById('currentRoomName').textContent = data.roomName;
+                document.getElementById('roomListSection').style.display = 'none';
+                document.getElementById('gameSection').classList.add('active');
+
+                if (data.hand && data.hand.length > 0) {
+                    myHand = data.hand;
+                    displayHand();
+                }
+
+                showMessage("Otağa qoşuldunuz!", "success");
+            });
+
+            connection.on("JoinError", (message) => showMessage(message, "error"));
+            connection.on("LeaveError", (message) => showMessage(message, "error"));
+
+            connection.on("PlayerJoined", (playerName) => {
+                showMessage(playerName + " qoşuldu", "info");
+                loadRoomList();
+            });
+
+            connection.on("PlayerLeft", (playerName) => {
+                showMessage(playerName + " çıxdı", "info");
+                loadRoomList();
+            });
+
+            connection.on("PlayersList", (players) => {
+                updatePlayersList(players);
+                updatePlayersOnTable(players);
+            });
+
+            connection.on("PotUpdated", (amount) => {
+                document.getElementById('potAmount').textContent = amount.toFixed(2);
+            });
+
+            connection.on("RoomFull", (message) => {
+                showMessage(message, "info");
+            });
+
+            connection.on("RoomDeleted", (roomId) => {
+                loadRoomList();
+            });
+
+            // Game events
+            connection.on("GameStarted", () => {
+                showMessage("Oyun başladı! 🎮", "success");
+                resetGameUI();
+            });
+
+            connection.on("CardsDealt", (data) => {
+                console.log('🎴 Cards received from backend:', data);
+                myHand = data.hand;
+                displayHand();
+                showMessage("Kartlar paylandı!", "info");
+            });
+
+            connection.on("GameState", (state) => {
+                currentTurnUserId = state.currentTurnUserId;
+                currentGameBet = state.currentBet;
+
+                document.getElementById('potAmount').textContent = state.potAmount.toFixed(2);
+                document.getElementById('currentBetAmount').textContent = state.currentBet.toFixed(2);
+                document.getElementById('callAmount').textContent = state.currentBet.toFixed(2);
+
+                updateActionButtons(state);
+            });
+
+            connection.on("PlayerBet", (data) => {
+                showMessage(`${data.playerName} mərc etdi: ${data.amount}₼`, "info");
+            });
+
+            connection.on("PlayerFolded", (playerName) => {
+                showMessage(`${playerName} fold etdi`, "info");
+            });
+
+            connection.on("PlayerChecked", (playerName) => {
+                showMessage(`${playerName} check etdi`, "info");
+            });
+
+            connection.on("PlayerAllIn", (playerName, amount) => {
+                showMessage(`${playerName} ALL-IN! ${amount}₼`, "success");
+            });
+
+            connection.on("BetError", (message) => showMessage(message, "error"));
+            connection.on("FoldError", (message) => showMessage(message, "error"));
+            connection.on("ActionError", (message) => showMessage(message, "error"));
+
+            // Showdown
+            connection.on("ShowdownStart", (players) => {
+                showShowdown(players);
+            });
+
+            connection.on("ShowdownRequested", () => {
+                showMessage("Showdown başlayır...", "info");
+            });
+
+            connection.on("GameOver", (data) => {
+                handleGameOver(data);
+            });
+
+            connection.on("GameReset", () => {
+                resetGameUI();
+                showMessage("Yeni oyun üçün hazırlıq...", "info");
+            });
+
+            connection.on("LeftRoom", () => {
+                currentRoomId = null;
+                myHand = [];
+                document.getElementById('gameSection').classList.remove('active');
+                document.getElementById('roomListSection').style.display = 'block';
+                loadRoomList();
+                showMessage("Otaqdan çıxdınız", "info");
+            });
+
+            // Emoji
+            connection.on("PlayerEmoji", (data) => {
+                showFloatingEmoji(data.userId, data.emoji);
+            });
+        }
+
+        // ==================== QUICK JOIN ====================
+        async function loadQuickJoinButtons() {
+            try {
+                const templates = await connection.invoke("GetRoomTemplates");
+                const grid = document.getElementById('quickJoinGrid');
+
+                grid.innerHTML = templates.map(t => `
+            <div class="quick-join-btn" onclick="quickJoin(${t.fee})">
+                <div class="name">${t.name}</div>
+                <div class="fee">${t.fee}₼</div>
+                <div class="players">Max: ${t.maxPlayers} oyunçu</div>
+            </div>
+        `).join('');
+            } catch (error) {
+                console.error("❌ Template error:", error);
+            }
+        }
+
+        async function quickJoin(entryFee) {
+            try {
+                await connection.invoke("QuickJoin", entryFee);
+            } catch (error) {
+                console.error("❌ Quick join error:", error);
+                showMessage("Qoşulma xətası: " + error.message, "error");
+            }
+        }
+
+        // ==================== ROOM LIST ====================
+        async function loadRoomList() {
+            try {
+                const rooms = await connection.invoke("GetRoomList");
+                const grid = document.getElementById('roomGrid');
+
+                if (rooms.length === 0) {
+                    grid.innerHTML = '<div class="loading">Otaq tapılmadı</div>';
+                    return;
+                }
+
+                grid.innerHTML = rooms.map(room => `
+            <div class="room-card ${room.isFull ? 'full' : ''}" onclick="joinRoom('${room.roomId}')">
+                ${room.isDefault ? '<div class="default-badge">SYSTEM</div>' : ''}
+                <h3>${room.roomName}</h3>
+                <div class="room-info">
+                    <span>Yaradıcı:</span>
+                    <span>${room.creatorName}</span>
+                </div>
+                <div class="room-info">
+                    <span>Oyunçular:</span>
+                    <span>${room.playerCount}/${room.maxPlayers}</span>
+                </div>
+                <div class="room-info">
+                    <span>Giriş haqqı:</span>
+                    <span style="color: #ffd700;">${room.entryFee}₼</span>
+                </div>
+                <div class="room-info">
+                    <span>Status:</span>
+                    <span style="color: ${room.isGameStarted ? '#dc2626' : '#4ade80'};">
+                        ${room.isGameStarted ? '🔴 Oyun davam edir' : '🟢 Gözləyir'}
+                    </span>
+                </div>
+                <button class="join-btn" ${room.isFull || room.isGameStarted ? 'disabled' : ''}>
+                    ${room.isFull ? '❌ Dolu' : '✅ Qoşul'}
+                </button>
+            </div>
+        `).join('');
+            } catch (error) {
+                console.error("❌ Room list error:", error);
+            }
+        }
+
+        async function joinRoom(roomId) {
+            try {
+                await connection.invoke("JoinRoom", roomId, null);
+            } catch (error) {
+                console.error("❌ Join error:", error);
+                showMessage("Qoşulma xətası: " + error.message, "error");
+            }
+        }
+
+        async function leaveRoom() {
+            if (!currentRoomId) return;
+
+            if (confirm("Otaqdan çıxmaq istədiyinizdən əminsiniz?")) {
+                try {
+                    await connection.invoke("LeaveRoom");
+                } catch (error) {
+                    console.error("❌ Leave error:", error);
+                    showMessage("Çıxma xətası: " + error.message, "error");
+                }
+            }
+        }
+
+        // ==================== GAME ACTIONS ====================
+        async function fold() {
+            try {
+                await connection.invoke("Fold");
+            } catch (error) {
+                console.error("❌ Fold error:", error);
+                showMessage("Fold xətası: " + error.message, "error");
+            }
+        }
+
+        async function call() {
+            try {
+                await connection.invoke("Call");
+            } catch (error) {
+                console.error("❌ Call error:", error);
+                showMessage("Call xətası: " + error.message, "error");
+            }
+        }
+
+        async function check() {
+            try {
+                await connection.invoke("Check");
+            } catch (error) {
+                console.error("❌ Check error:", error);
+                showMessage("Check xətası: " + error.message, "error");
+            }
+        }
+
+        async function raise() {
+            const input = document.getElementById('raiseInput');
+            const amount = parseFloat(input.value);
+
+            if (!amount || amount <= 0) {
+                showMessage("Düzgün məbləğ daxil edin", "error");
+                return;
+            }
+
+            try {
+                await connection.invoke("Raise", amount);
+                input.value = '';
+            } catch (error) {
+                console.error("❌ Raise error:", error);
+                showMessage("Raise xətası: " + error.message, "error");
+            }
+        }
+
+        async function allIn() {
+            if (confirm("ALL-IN etmək istədiyinizdən əminsiniz?")) {
+                try {
+                    await connection.invoke("AllIn");
+                } catch (error) {
+                    console.error("❌ All-in error:", error);
+                    showMessage("All-in xətası: " + error.message, "error");
+                }
+            }
+        }
+
+        async function requestShowdown() {
+            try {
+                await connection.invoke("RequestShowdown");
+            } catch (error) {
+                console.error("❌ Showdown error:", error);
+                showMessage("Showdown xətası: " + error.message, "error");
+            }
+        }
+
+        async function sendEmoji(emoji) {
+            try {
+                await connection.invoke("SendEmoji", emoji);
+            } catch (error) {
+                console.error("❌ Emoji error:", error);
+            }
+        }
+
+        // ==================== UI UPDATES ====================
+        function displayHand() {
+            const container = document.getElementById('handCards');
+            if (!myHand || myHand.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            // ✅ Backend artıq simvolları göndərir, ona görə sadəcə göstəririk
+            const getSuitClass = (suit) => {
+                // Simvola görə class təyin edirik
+                if (suit === '♥') return 'hearts';
+                if (suit === '♦') return 'diamonds';
+                if (suit === '♣') return 'clubs';
+                if (suit === '♠') return 'spades';
+
+                // Fallback: string adlara da dəstək
+                const normalized = suit.toLowerCase();
+                if (normalized.includes('heart') || normalized.includes('ürək')) return 'hearts';
+                if (normalized.includes('diamond') || normalized.includes('karo')) return 'diamonds';
+                if (normalized.includes('club') || normalized.includes('çətənə')) return 'clubs';
+                if (normalized.includes('spade') || normalized.includes('pika')) return 'spades';
+                return 'hearts';
+            };
+
+            container.innerHTML = myHand.map(card => `
+        <div class="card ${getSuitClass(card.suit)}">
+            <div class="card-rank">${card.rank}</div>
+            <div class="card-suit">${card.suit}</div>
+        </div>
+    `).join('');
+
+            console.log('✅ Hand displayed:', myHand);
+        }
+
+        function updateActionButtons(state) {
+            const isMyTurn = state.currentTurnUserId === currentUserId;
+            const hasBet = state.currentBet > 0;
+
+            document.getElementById('foldBtn').disabled = !isMyTurn;
+            document.getElementById('callBtn').disabled = !isMyTurn || !hasBet;
+            document.getElementById('checkBtn').disabled = !isMyTurn || hasBet;
+            document.getElementById('raiseBtn').disabled = !isMyTurn;
+            document.getElementById('raiseInput').disabled = !isMyTurn;
+            document.getElementById('allInBtn').disabled = !isMyTurn;
+            document.getElementById('showdownBtn').disabled = !isMyTurn;
+        }
+
+        function updatePlayersList(players) {
+            const list = document.getElementById('playersList');
+
+            list.innerHTML = players.map(p => `
+        <div class="player-item">
+            <div>
+                <strong style="color: ${p.userId === currentUserId ? '#ffd700' : '#fff'};">
+                    ${p.name}${p.userId === currentUserId ? ' (Siz)' : ''}
+                </strong>
+                ${p.hasFolded ? ' <span style="color: #dc2626;">[FOLD]</span>' : ''}
+            </div>
+            <div>
+                <span style="color: #4ade80;">${p.balance.toFixed(2)}₼</span>
+                ${p.currentBet > 0 ? `<span style="color: #ffd700;"> | Mərc: ${p.currentBet}₼</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+        }
+
+        function updatePlayersOnTable(players) {
+            const table = document.getElementById('pokerTable');
+            const positions = ['bottom', 'left', 'top', 'right', 'top-left', 'top-right'];
+
+            // Clear existing players
+            table.querySelectorAll('.player-spot').forEach(el => el.remove());
+
+            players.forEach((player, index) => {
+                if (index >= positions.length) return;
+
+                const spot = document.createElement('div');
+                spot.className = `player-spot ${positions[index]}`;
+                spot.innerHTML = `
+            <div class="player-avatar ${player.isActive && !player.hasFolded ? 'active' : ''} ${player.hasFolded ? 'folded' : ''}" 
+                 onclick="toggleEmojiPopup(${player.userId})">
+                ${player.name.charAt(0).toUpperCase()}
+                <div class="emoji-popup" id="emojiPopup${player.userId}">
+                    <div class="emoji-grid">
+                        <button class="emoji-btn" onclick="sendEmoji('😀')">😀</button>
+                        <button class="emoji-btn" onclick="sendEmoji('😎')">😎</button>
+                        <button class="emoji-btn" onclick="sendEmoji('😂')">😂</button>
+                        <button class="emoji-btn" onclick="sendEmoji('🔥')">🔥</button>
+                        <button class="emoji-btn" onclick="sendEmoji('👍')">👍</button>
+                        <button class="emoji-btn" onclick="sendEmoji('💪')">💪</button>
+                        <button class="emoji-btn" onclick="sendEmoji('🎉')">🎉</button>
+                        <button class="emoji-btn" onclick="sendEmoji('❤️')">❤️</button>
+                    </div>
+                </div>
+            </div>
+            <div class="player-name">${player.name}</div>
+            <div class="player-bet">${player.currentBet > 0 ? player.currentBet + '₼' : ''}</div>
+        `;
+
+                table.appendChild(spot);
+            });
+        }
+
+        function toggleEmojiPopup(userId) {
+            if (userId !== currentUserId) return;
+
+            const popup = document.getElementById(`emojiPopup${userId}`);
+            if (popup) {
+                popup.classList.toggle('active');
+
+                // Close after 5 seconds
+                if (popup.classList.contains('active')) {
+                    setTimeout(() => popup.classList.remove('active'), 5000);
+                }
+            }
+        }
+
+        function showFloatingEmoji(userId, emoji) {
+            const spot = Array.from(document.querySelectorAll('.player-spot')).find(el => {
+                const avatar = el.querySelector('.player-avatar');
+                return avatar && avatar.getAttribute('onclick')?.includes(userId.toString());
+            });
+
+            if (!spot) return;
+
+            const floater = document.createElement('div');
+            floater.className = 'floating-emoji';
+            floater.textContent = emoji;
+            floater.style.left = '50%';
+            floater.style.top = '50%';
+
+            spot.appendChild(floater);
+
+            setTimeout(() => floater.remove(), 2000);
+        }
+
+        // ==================== SHOWDOWN ====================
+        function showShowdown(players) {
+            const overlay = document.getElementById('showdownOverlay');
+            const container = document.getElementById('showdownPlayers');
+
+            const getSuitClass = (suit) => {
+                if (suit === '♥') return 'hearts';
+                if (suit === '♦') return 'diamonds';
+                if (suit === '♣') return 'clubs';
+                if (suit === '♠') return 'spades';
+
+                const normalized = suit.toLowerCase();
+                if (normalized.includes('heart') || normalized.includes('ürək')) return 'hearts';
+                if (normalized.includes('diamond') || normalized.includes('karo')) return 'diamonds';
+                if (normalized.includes('club') || normalized.includes('çətənə')) return 'clubs';
+                if (normalized.includes('spade') || normalized.includes('pika')) return 'spades';
+                return 'hearts';
+            };
+
+            container.innerHTML = players.map(p => `
+        <div class="showdown-player">
+            <div class="showdown-player-header">
+                <div class="showdown-player-name">${p.name}</div>
+            </div>
+            <div class="showdown-hand-name">${p.handValue?.rank || 'Gözləyin...'}</div>
+            <div class="showdown-cards">
+                ${p.hand.map(card => `
+                    <div class="showdown-card ${getSuitClass(card.suit)}">
+                        <div style="font-size: 1.8rem;">${card.rank}</div>
+                        <div style="font-size: 2rem;">${card.suit}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+
+            overlay.classList.add('active');
+            console.log('✅ Showdown displayed:', players);
+        }
+
+        function handleGameOver(data) {
+            const winnerDiv = document.getElementById('showdownWinner');
+
+            const getSuitClass = (suit) => {
+                if (suit === '♥') return 'dom';
+                if (suit === '♦') return 'diamonds';
+                if (suit === '♣') return 'clubs';
+                if (suit === '♠') return 'spades';
+
+                const normalized = suit.toLowerCase();
+                if (normalized.includes('heart') || normalized.includes('ürək')) return 'dom';
+                if (normalized.includes('diamond') || normalized.includes('karo')) return 'diamonds';
+                if (normalized.includes('club') || normalized.includes('çətənə')) return 'clubs';
+                if (normalized.includes('spade') || normalized.includes('pika')) return 'spades';
+                return 'hearts';
+            };
+
+            if (data.results && data.results.length > 0) {
+                const container = document.getElementById('showdownPlayers');
+
+                container.innerHTML = data.results.map(p => `
+            <div class="showdown-player ${p.isWinner ? 'winner' : ''}">
+                <div class="showdown-player-header">
+                    <div class="showdown-player-name ${p.isWinner ? 'winner' : ''}">
+                        ${p.rank}. ${p.name}
+                    </div>
+                    ${p.isWinner ? '<div style="color: #ffd700; font-size: 2rem;">👑</div>' : ''}
+                </div>
+                <div class="showdown-hand-name">${p.handName}</div>
+                <div class="showdown-cards">
+                    ${p.hand.map(card => `
+                        <div class="showdown-card ${getSuitClass(card.suit)}">
+                            <div style="font-size: 1.8rem;">${card.rank}</div>
+                            <div style="font-size: 2rem;">${card.suit}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+            }
+
+            if (data.winners) {
+                winnerDiv.innerHTML = `
+            🎊 Qaliblər: ${data.winners.join(', ')} 🎊<br>
+            Hər biri qazandı: ${data.amount.toFixed(2)}₼
+            <div class="commission-info">Komissiya (20%): ${data.commission.toFixed(2)}₼</div>
+        `;
+            } else {
+                winnerDiv.innerHTML = `
+            🎊 Qalib: ${data.winner} 🎊<br>
+            Qazanc: ${data.amount.toFixed(2)}₼
+            <div class="commission-info">Komissiya (20%): ${data.commission.toFixed(2)}₼</div>
+        `;
+            }
+
+            document.getElementById('showdownOverlay').classList.add('active');
+            console.log('✅ Game Over:', data);
+        }
+
+        function closeShowdown() {
+            document.getElementById('showdownOverlay').classList.remove('active');
+        }
+
+        // ==================== UTILITY ====================
+        function showMessage(text, type = 'info') {
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            document.body.appendChild(msg);
+
+            setTimeout(() => msg.remove(), 4000);
+        }
+
+        function resetGameUI() {
+            myHand = [];
+            displayHand();
+
+            document.getElementById('potAmount').textContent = '0';
+            document.getElementById('currentBetAmount').textContent = '0';
+            document.getElementById('callAmount').textContent = '0';
+
+            const buttons = ['foldBtn', 'callBtn', 'checkBtn', 'raiseBtn', 'allInBtn', 'showdownBtn'];
+            buttons.forEach(id => document.getElementById(id).disabled = true);
+
+            document.getElementById('raiseInput').disabled = true;
+            document.getElementById('raiseInput').value = '';
+        }
+    </script>
+</body>
+
+</html>

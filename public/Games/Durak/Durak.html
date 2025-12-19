@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Durak - Kart Oyunu</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+    <link rel="stylesheet" href="./Durak.css">
+</head>
+
+<body>
+    <div class="messages" id="messages"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🃏 DURAK</h1>
+            <div class="user-info" id="userInfo">
+                <span id="userName">Qoşulur...</span>
+            </div>
+        </div>
+
+        <!-- Lobby Screen -->
+        <div class="lobby-screen" id="lobbyScreen">
+            <div class="player-select-section">
+                <h2>⚡ Oyun Növü Seçin</h2>
+                <div class="player-options">
+                    <div class="player-option" onclick="selectPlayerCount(2)">
+                        <div class="player-count">2</div>
+                        <div class="player-label">Oyunçu</div>
+                    </div>
+                    <div class="player-option" onclick="selectPlayerCount(3)">
+                        <div class="player-count">3</div>
+                        <div class="player-label">Oyunçu</div>
+                    </div>
+                    <div class="player-option" onclick="selectPlayerCount(4)">
+                        <div class="player-count">4</div>
+                        <div class="player-label">Oyunçu</div>
+                    </div>
+                    <div class="player-option" onclick="selectPlayerCount(6)">
+                        <div class="player-count">6</div>
+                        <div class="player-label">Oyunçu</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-rooms-section" id="roomsSection" style="display:none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">🎮 Hazır Otaqlar</h2>
+                    <button class="btn btn-sm" onclick="goBackToPlayerSelect()"
+                        style="width: auto; padding: 10px 20px;">
+                        ← Geri
+                    </button>
+                </div>
+                <p style="opacity: 0.8; margin-bottom: 20px;">Aşağıdakı otaqlardan birinə qoşulun</p>
+                <div class="rooms-grid" id="quickRoomsList">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Otaqlar yüklənir...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-screen" id="gameScreen">
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="game-info">
+                        <div class="info-item">
+                            <div class="label">Mükafat Fondu</div>
+                            <div class="value" id="totalPrize">0 AZN</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">Otaq</div>
+                            <div class="value" id="currentRoomName">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">Göyərtədə</div>
+                            <div class="value" id="deckCount">36</div>
+                        </div>
+                    </div>
+                    <div class="game-actions">
+                        <button class="btn btn-sm btn-success hidden" id="beatenBtn">✅ Beaten</button>
+                        <button class="btn btn-sm btn-danger hidden" id="takeCardsBtn">📥 Kartları Götür</button>
+                        <button class="btn btn-sm btn-danger" id="leaveRoomBtn">Otaqdan Çıx</button>
+                    </div>
+                </div>
+
+                <div class="players-section" id="playersSection"></div>
+
+                <div class="game-table" id="gameTable">
+                    <div class="trump-card-display" id="trumpDisplay">
+                        <div class="deck-stack" id="deckStack">
+                            <div class="deck-card"></div>
+                            <div class="deck-card"></div>
+                            <div class="deck-card"></div>
+                            <div class="deck-count" id="deckCountDisplay">24</div>
+                        </div>
+
+                        <div class="trump-label">Koz:</div>
+                        <div id="trumpCardContainer"></div>
+                    </div>
+                    <div class="table-cards" id="tableCards">
+                        <div class="empty-hand">Masa boşdur</div>
+                    </div>
+                </div>
+
+                <div class="quick-messages-section">
+                    <div style="text-align: center; margin-bottom: 15px; font-weight: 600;">Tez Mesajlar:</div>
+                    <div class="quick-messages-grid">
+                        <button class="quick-msg-btn" onclick="sendQuickMsg('👍', 'Yaxşı!')">👍 Yaxşı</button>
+                        <button class="quick-msg-btn" onclick="sendQuickMsg('😂', 'Gülməli!')">😂 Gülməli</button>
+                        <button class="quick-msg-btn" onclick="sendQuickMsg('🔥', 'Super!')">🔥 Super</button>
+                        <button class="quick-msg-btn" onclick="sendQuickMsg('😎', 'Cool!')">😎 Cool</button>
+                        <button class="quick-msg-btn" onclick="sendQuickMsg('💪', 'Güclü!')">💪 Güclü</button>
+                        <button class="quick-msg-btn" onclick="sendQuickMsg('😢', 'Pis!')">😢 Pis</button>
+                        <button class="quick-msg-btn" onclick="sendQuickMsg('🎯', 'Dəqiq!')">🎯 Dəqiq</button>
+                        <button class="quick-msg-btn" onclick="sendQuickMsg('⚡', 'Sürətli!')">⚡ Sürətli</button>
+                    </div>
+                </div>
+
+                <div class="player-hand">
+                    <div class="player-hand-title">Sizin Kartlarınız</div>
+                    <div class="cards-container" id="playerCards">
+                        <div class="empty-hand">Kartlarınız yüklənir...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        let currentUserToken = null;
+        let currentUserData = null;
+
+        console.log('🃏 [DURAK] Script yükləndi');
+
+        window.addEventListener('message', (event) => {
+            console.log('📨 [DURAK] Message alındı:', event.data);
+
+            if (event.data && event.data.type === 'INIT_USER') {
+                console.log('✅ [DURAK] INIT_USER qəbul edildi');
+
+                currentUserData = event.data.payload;
+                currentUserToken = currentUserData.token;
+
+                console.log('👤 [DURAK] User:', currentUserData.username);
+                console.log('🎫 [DURAK] Token:', currentUserToken ? 'VAR' : 'YOX');
+
+                // UI-ı yenilə
+                document.getElementById('userName').textContent = currentUserData.username;
+
+                console.log('🚀 [DURAK] init() çağırılır...');
+                // SignalR başlat
+                init();
+            }
+        });
+
+        // ============================================
+        // getToken funksiyasını dəyişdir
+        // ============================================
+        function getToken() {
+            return currentUserToken || "";
+        }
+
+        // ============================================
+        // Qalan kod eyni qalır
+        // ============================================
+
+        // Mövcud connection, currentUser və s. dəyişənlər...
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/durakHub", { accessTokenFactory: () => getToken() })
+            .withAutomaticReconnect()
+            .build();
+
+        let currentUser = null;
+        let currentRoom = null;
+        let myCards = [];
+        let gameState = null;
+        let selectedPlayerCount = 0;
+        let draggedCard = null;
+
+        // ... suitIcons, rankNames və s. ...
+
+        // ✅ init() funksiyasını sadələşdir
+        async function init() {
+            console.log('🚀 [DURAK] init() başladı');
+
+            if (!currentUserToken) {
+                console.error('❌ [DURAK] Token yoxdur!');
+                return;
+            }
+
+            try {
+                await connection.start();
+                console.log("✅ [DURAK] SignalR qoşuldu");
+            } catch (err) {
+                console.error("❌ [DURAK] SignalR xətası:", err);
+                showMessage("Serverə qoşulmaq alınmadı", "error");
+            }
+        }
+
+        // ... qalan bütün kod eyni qalır (setupEventHandlers və s.) ...
+
+        // ❌ SİL - connection.on("UserData") event handler-ini dəyişdir:
+        connection.on("UserData", (data) => {
+            currentUser = data;
+            console.log('👤 [DURAK] UserData event:', data);
+
+            // ✅ Artıq React-dən aldıq, yenidən yazmırıq
+            // document.getElementById("userName").textContent = data.fullName;
+
+            document.getElementById("lobbyScreen").style.display = "block";
+
+            // URL parametrindən player count yoxla
+            const urlParams = new URLSearchParams(window.location.search);
+            const playersParam = urlParams.get('players');
+            if (playersParam && ['2', '3', '4', '6'].includes(playersParam)) {
+                selectPlayerCount(parseInt(playersParam));
+            }
+        });
+
+        // ... qalan bütün funksiyalar və event handler-lər eyni qalır ...
+
+        console.log('✅ [DURAK] Script tam yükləndi, postMessage gözlənilir...');
+
+
+        // function getToken() {
+        //     const raw = document.cookie
+        //         .split("; ")
+        //         .find(row => row.startsWith("AuthToken="))
+        //         ?.split("=")[1];
+        //     return raw ? decodeURIComponent(raw).trim() : "";
+        // }
+
+        // const connection = new signalR.HubConnectionBuilder()
+        //     .withUrl("/durakHub", { accessTokenFactory: () => getToken() })
+        //     .withAutomaticReconnect()
+        //     .build();
+
+        // let currentUser = null;
+        // let currentRoom = null;
+        // let myCards = [];
+        // let gameState = null;
+        // let selectedPlayerCount = 0;
+        // let draggedCard = null;
+
+        const suitIcons = {
+            'Hearts': '♥',
+            'Diamonds': '♦',
+            'Clubs': '♣',
+            'Spades': '♠'
+        };
+
+        const rankNames = {
+            '6': '6', '7': '7', '8': '8', '9': '9', '10': '10',
+            'Jack': 'J', 'Queen': 'Q', 'King': 'K', 'Ace': 'A'
+        };
+
+        // Initialize
+        // async function init() {
+        //     try {
+        //         await connection.start();
+        //         console.log("✅ SignalR qoşuldu");
+        //     } catch (err) {
+        //         console.error("❌ SignalR xətası:", err);
+        //         showMessage("Serverə qoşulmaq alınmadı", "error");
+        //     }
+        // }
+
+        // SignalR Events
+        // connection.on("UserData", (data) => {
+        //     currentUser = data;
+        //     document.getElementById("userName").textContent = data.fullName;
+        //     document.getElementById("lobbyScreen").style.display = "block";
+
+        //     // URL parametrindən player count yoxla
+        //     const urlParams = new URLSearchParams(window.location.search);
+        //     const playersParam = urlParams.get('players');
+        //     if (playersParam && ['2', '3', '4', '6'].includes(playersParam)) {
+        //         selectPlayerCount(parseInt(playersParam));
+        //     }
+        // });
+
+        connection.on("RefundProcessed", (data) => {
+            showMessage(data.message, "success");
+            console.log('💸 Refund:', data.amount, 'AZN');
+        });
+
+        connection.on("JoinedRoom", (data) => {
+            currentRoom = data;
+            document.getElementById("currentRoomName").textContent = data.roomName;
+            document.getElementById("lobbyScreen").style.display = "none";
+            document.getElementById("gameScreen").style.display = "block";
+
+            let message = `${data.roomName} otağına qoşuldunuz`;
+            if (data.entryFee > 0) {
+                message += ` (Giriş haqqı: ${data.entryFee} AZN)`;
+            }
+            showMessage(message, "success");
+        });
+
+        connection.on("PlayerJoined", (playerName) => {
+            showMessage(`${playerName} oyuna qoşuldu`, "info");
+        });
+
+        connection.on("PlayerLeft", (playerName) => {
+            showMessage(`${playerName} oyunu tərk etdi`, "info");
+        });
+
+        connection.on("GameStarted", (data) => {
+            showMessage("Oyun başladı! 🎮", "success");
+            renderTrumpCard(data.trumpCard);
+        });
+
+        connection.on("YourCards", (cards) => {
+            myCards = cards;
+            renderPlayerCards();
+        });
+
+        connection.on("GameState", (state) => {
+            gameState = state;
+
+            console.log('🎮 GAME STATE UPDATED:', state);
+
+            renderPlayers(state.players);
+            renderTableCards(state);
+
+            // ✅ Deck count update
+            document.getElementById("deckCount").textContent = state.deckCount;
+            document.getElementById("deckCountDisplay").textContent = state.deckCount;
+
+            // ✅ Deck görünüşü
+            const deckStack = document.getElementById("deckStack");
+            if (state.deckCount === 0) {
+                deckStack.style.display = 'none';
+            } else {
+                deckStack.style.display = 'block';
+            }
+
+            if (state.totalPrize > 0) {
+                document.getElementById("totalPrize").textContent = `${state.totalPrize} AZN`;
+            }
+
+            if (myCards.length > 0) {
+                renderPlayerCards();
+                console.log('🔄 Player cards re-rendered after state update');
+            }
+
+            updateBeatenButton(state);
+        });
+
+        connection.on("CardsAttacked", (data) => {
+            showMessage(`${data.playerName} hücum etdi`, "info");
+        });
+
+        connection.on("CardsDefended", (data) => {
+            showMessage(`${data.playerName} müdafiə etdi`, "success");
+        });
+
+        connection.on("CardsTaken", (data) => {
+            showMessage(`${data.playerName} kartları götürdü`, "warning");
+        });
+
+        connection.on("CardsDiscarded", () => {
+            showMessage("Kartlar yandırıldı 🔥", "success");
+        });
+
+        connection.on("GameOver", (data) => {
+            showMessage(data.message, "info");
+
+            let alertMessage = data.message;
+            if (data.winnerPrize) {
+                alertMessage += `\n\n💰 Mükafat: ${data.winnerPrize} AZN`;
+                alertMessage += `\n📊 Komissiya: ${data.commission} AZN`;
+            }
+
+            if (data.canRematch) {
+                alertMessage += `\n\n🔄 Yenidən oynamaq istəyirsiniz?`;
+                if (data.entryFee > 0) {
+                    alertMessage += `\n(Giriş haqqı: ${data.entryFee} AZN)`;
+                }
+            }
+
+            alert(alertMessage);
+
+            // ✅ Rematch button göstər
+            if (data.canRematch) {
+                showRematchUI(data.entryFee);
+            }
+        });
+
+
+        // ✅ Rematch vote notification
+        connection.on("RematchVote", (data) => {
+            showMessage(`${data.playerName} yenidən oynamaq istəyir (${data.votes}/${data.required})`, "info");
+        });
+
+        // ✅ Rematch failed
+        connection.on("RematchFailed", (data) => {
+            showMessage(data.message, "error");
+            hideRematchUI();
+        });
+
+        // ✅ Rematch UI
+        function showRematchUI(entryFee) {
+            const existingUI = document.getElementById("rematchUI");
+            if (existingUI) {
+                existingUI.remove();
+            }
+
+            const rematchDiv = document.createElement("div");
+            rematchDiv.id = "rematchUI";
+            rematchDiv.style.cssText = `
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.95);
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        z-index: 2000;
+        border: 3px solid #fbbf24;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    `;
+
+            rematchDiv.innerHTML = `
+        <h2 style="margin-bottom: 20px; color: #fbbf24;">🔄 Yenidən Oyna</h2>
+        ${entryFee > 0 ? `<p style="margin-bottom: 20px; font-size: 1.2em;">Giriş haqqı: ${entryFee} AZN</p>` : ''}
+        <button class="btn btn-success" onclick="voteRematch()" style="width: 200px; margin: 0 auto;">
+            ✅ Razıyam
+        </button>
+    `;
+
+            document.body.appendChild(rematchDiv);
+        }
+
+        function hideRematchUI() {
+            const rematchUI = document.getElementById("rematchUI");
+            if (rematchUI) {
+                rematchUI.remove();
+            }
+        }
+
+        async function voteRematch() {
+            try {
+                await connection.invoke("VoteRematch");
+                showMessage("Səsiniz qeydə alındı! ⏳", "success");
+            } catch (err) {
+                showMessage("Xəta: " + err.toString(), "error");
+            }
+        }
+
+
+        connection.on("Error", (msg) => showMessage(msg, "error"));
+        connection.on("JoinError", (msg) => showMessage(msg, "error"));
+        connection.on("GameError", (msg) => showMessage(msg, "error"));
+        connection.on("ActionError", (msg) => showMessage(msg, "error"));
+
+        connection.on("LeftRoom", () => {
+            currentRoom = null;
+            myCards = [];
+            gameState = null;
+            document.getElementById("gameScreen").style.display = "none";
+            document.getElementById("lobbyScreen").style.display = "block";
+            document.getElementById("roomsSection").style.display = "none";
+        });
+
+        connection.on("QuickMessage", (data) => {
+            showMessage(`${data.playerName}: ${data.emoji} ${data.message}`, "info");
+            const display = document.createElement("div");
+            display.className = "quick-message-display";
+            display.innerHTML = `
+                    <div style="margin-bottom: 10px; font-size: 0.5em; opacity: 0.8;">${data.playerName}</div>
+                    <div>${data.emoji} ${data.message}</div>
+                `;
+            document.body.appendChild(display);
+            setTimeout(() => display.remove(), 2000);
+        });
+
+        // Player Selection
+        async function selectPlayerCount(count) {
+            selectedPlayerCount = count;
+            await loadQuickRooms(count);
+            document.getElementById("roomsSection").style.display = "block";
+        }
+
+        function goBackToPlayerSelect() {
+            document.getElementById("roomsSection").style.display = "none";
+            selectedPlayerCount = 0;
+        }
+
+        async function loadQuickRooms(playerCount) {
+            try {
+                const quickRooms = await connection.invoke("GetQuickRooms");
+                const filtered = quickRooms.filter(r => r.maxPlayers === playerCount);
+                const container = document.getElementById("quickRoomsList");
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="empty-hand">Hazırda uyğun otaq yoxdur</div>';
+                    return;
+                }
+
+                container.innerHTML = filtered.map(room => `
+                        <div class="room-card" onclick="joinRoom('${room.roomId}')">
+                            <h3>⚡ ${room.roomName}</h3>
+                            <div class="room-info">
+                                <span>👥 ${room.playerCount}/${room.maxPlayers}</span>
+                                ${room.entryFee > 0 ? `<span>💰 ${room.entryFee} AZN</span>` : ''}
+                            </div>
+                            ${room.totalPrize > 0 ? `<p style="color: #fbbf24; font-weight: 600;">🏆 ${room.totalPrize} AZN</p>` : ''}
+                            <span class="room-status waiting">⏳ Gözləyir</span>
+                        </div>
+                    `).join('');
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<div class="empty-hand">Yükləmə xətası</div>';
+            }
+        }
+
+        async function joinRoom(roomId) {
+            try {
+                await connection.invoke("JoinRoom", roomId);
+            } catch (err) {
+                showMessage("Otağa qoşulmaq alınmadı", "error");
+            }
+        }
+
+        async function sendQuickMsg(emoji, message) {
+            try {
+                await connection.invoke("SendQuickMessage", emoji, message);
+            } catch (err) {
+                console.error("Quick message error:", err);
+            }
+        }
+
+        // Rendering Functions
+        function renderTrumpCard(card) {
+            if (!card) return;
+            const container = document.getElementById("trumpCardContainer");
+            const cardDiv = createCardElement(card, false, false);
+            container.innerHTML = '';
+            container.appendChild(cardDiv);
+        }
+
+        function renderPlayers(players) {
+            const container = document.getElementById("playersSection");
+            container.innerHTML = players.map(player => {
+                let roleClass = '';
+                let roleText = '';
+
+                if (player.isAttacker) {
+                    roleClass = 'attacker';
+                    roleText = '<span class="player-role attacker">⚔️ Saldıran</span>';
+                } else if (player.isDefender) {
+                    roleClass = 'defender';
+                    roleText = '<span class="player-role defender">🛡️ Müdafiəçi</span>';
+                }
+
+                return `
+                        <div class="player-card ${roleClass}">
+                            <div class="player-name">${player.name}</div>
+                            <div class="player-cards-count">🃏 ${player.cardCount} kart</div>
+                            ${roleText}
+                        </div>
+                    `;
+            }).join('');
+        }
+
+        function renderTableCards(state) {
+            const container = document.getElementById("tableCards");
+
+            // ✅ Backend artıq DefendedPairs göndərir (array)
+            const hasDefended = state.defendedCards && state.defendedCards.length > 0;
+            const hasUndefended = state.tableCards && state.tableCards.length > 0;
+
+            if (!hasDefended && !hasUndefended) {
+                container.innerHTML = '<div class="empty-hand">Masa boşdur</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            // ✅ currentUser.userId int-ə çevir (string olmasın)
+            let isDefender = false;
+            if (currentUser && state.players) {
+                const myUserId = parseInt(currentUser.userId); // ✅ int-ə çevir
+                for (let p of state.players) {
+                    if (p.userId === myUserId) { // ✅ int === int
+                        isDefender = p.isDefender;
+                        break;
+                    }
+                }
+            }
+
+            console.log('🛡️ AM I DEFENDER?', isDefender);
+            console.log('👤 My User ID:', currentUser?.userId, '(parsed:', parseInt(currentUser?.userId), ')');
+            console.log('👥 All Players:', state.players);
+
+            // 1. ✅ Defended pairs (array)
+            if (hasDefended) {
+                state.defendedCards.forEach(pair => {
+                    const pairDiv = document.createElement('div');
+                    pairDiv.className = 'card-pair';
+                    pairDiv.style.border = '2px solid rgba(16, 185, 129, 0.5)';
+                    pairDiv.style.background = 'rgba(16, 185, 129, 0.1)';
+                    pairDiv.style.padding = '10px';
+                    pairDiv.style.borderRadius = '10px';
+
+                    const attackCardEl = createCardElement(pair.attackCard, false, false);
+                    const defendCardEl = createCardElement(pair.defendCard, false, false);
+
+                    pairDiv.appendChild(attackCardEl);
+                    pairDiv.appendChild(defendCardEl);
+                    container.appendChild(pairDiv);
+                });
+            }
+
+            function showVoteNotification(data) {
+                // Mövcud notification-ları sil
+                document.querySelectorAll('.vote-notification').forEach(n => n.remove());
+
+                const notification = document.createElement("div");
+                notification.className = "vote-notification";
+
+                const action = data.action === "Beaten" ? "🔥 Beaten" : "📥 Götürmək";
+
+                notification.innerHTML = `
+        <div style="margin-bottom: 5px;">${data.playerName}</div>
+        <div style="font-size: 1.2em;">${action} (${data.votes}/${data.required})</div>
+    `;
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(400px)';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+
+                console.log(`🗳️ Vote: ${data.playerName} - ${data.action} (${data.votes}/${data.required})`);
+            }
+
+            // 2. ✅ Undefended cards - DROP ZONE (yalnız müdafiəçi üçün)
+            if (hasUndefended) {
+                state.tableCards.forEach(card => {
+                    const cardWrapper = document.createElement('div');
+                    const cardEl = createCardElement(card, false, false);
+
+                    console.log('🃏 Creating wrapper for:', card.rank, 'of', card.suit, '| isDefender:', isDefender);
+
+                    if (isDefender === true) {
+                        // ✅ MÜDAFİƏÇİ - DROP ZONE
+                        cardWrapper.className = 'card-pair card-drop-zone';
+                        cardWrapper.style.border = '3px dashed rgba(59, 130, 246, 0.8)'; // Mavi
+                        cardWrapper.style.padding = '20px';
+                        cardWrapper.style.borderRadius = '15px';
+                        cardWrapper.style.minHeight = '170px';
+                        cardWrapper.style.minWidth = '130px';
+                        cardWrapper.style.display = 'flex';
+                        cardWrapper.style.alignItems = 'center';
+                        cardWrapper.style.justifyContent = 'center';
+                        cardWrapper.style.background = 'rgba(59, 130, 246, 0.1)';
+
+                        cardWrapper.setAttribute('data-attack-rank', card.rank);
+                        cardWrapper.setAttribute('data-attack-suit', card.suit);
+
+                        // ✅ Drag & Drop event handlers
+                        cardWrapper.ondragover = function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('📍 DRAGOVER on drop zone!');
+                            this.style.background = 'rgba(16, 185, 129, 0.3)'; // Yaşıl
+                            this.style.borderColor = '#10b981';
+                            return false;
+                        };
+
+                        connection.on("PlayerVoted", (data) => {
+                            showVoteNotification(data);
+                        });
+
+
+                        cardWrapper.ondragleave = function (e) {
+                            e.preventDefault();
+                            this.style.background = 'rgba(59, 130, 246, 0.1)'; // Mavi
+                            this.style.borderColor = 'rgba(59, 130, 246, 0.8)';
+                        };
+
+                        cardWrapper.ondrop = function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('🎯 DROP EVENT TRIGGERED!!!');
+                            this.style.background = 'rgba(59, 130, 246, 0.1)';
+                            this.style.borderColor = 'rgba(59, 130, 246, 0.8)';
+                            handleDropOnZone(this);
+                            return false;
+                        };
+
+                        console.log('✅ DROP ZONE CREATED for card:', card.rank, card.suit);
+                    } else {
+                        // Saldıran və ya tamaşaçı
+                        cardWrapper.className = 'card-pair';
+                        cardWrapper.style.border = '2px solid rgba(239, 68, 68, 0.3)';
+                        cardWrapper.style.padding = '10px';
+                        cardWrapper.style.borderRadius = '10px';
+
+                        console.log('⚔️ Attack card (no drop zone)');
+                    }
+
+                    cardWrapper.appendChild(cardEl);
+                    container.appendChild(cardWrapper);
+                });
+            }
+
+            console.log('📊 Table rendered - Defended:', hasDefended ? state.defendedCards.length : 0,
+                '| Undefended:', hasUndefended ? state.tableCards.length : 0);
+        }
+
+        function renderPlayerCards() {
+            const container = document.getElementById("playerCards");
+
+            if (myCards.length === 0) {
+                container.innerHTML = '<div class="empty-hand">Kartlarınız yoxdur</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            let canAttack = false;
+            let isDefender = false;
+
+            if (gameState && gameState.isGameActive && currentUser) {
+                const players = gameState.players || [];
+                const myPlayer = players.find(p => p.userId === currentUser.userId);
+
+                if (myPlayer) {
+                    isDefender = myPlayer.isDefender;
+
+                    // ✅ YENİ MƏNTIQ:
+                    // 1. Müdafiəçi hücum edə bilməz
+                    // 2. Əsas attacker həmişə hücum edə bilər
+                    // 3. Digər oyunçular masada kart varsa əlavə edə bilər
+
+                    const isMainAttacker = myPlayer.isAttacker;
+                    const hasCardsOnTable = (gameState.tableCards && gameState.tableCards.length > 0) ||
+                        (gameState.defendedCards && gameState.defendedCards.length > 0);
+
+                    if (!isDefender) {
+                        if (isMainAttacker) {
+                            // Əsas attacker həmişə hücum edə bilər
+                            canAttack = true;
+                        } else if (hasCardsOnTable) {
+                            // Digər oyunçular masada kart varsa əlavə edə bilər
+                            canAttack = true;
+                        }
+                    }
+
+                    console.log('👤 Player Status:', {
+                        isDefender,
+                        isMainAttacker,
+                        hasCardsOnTable,
+                        canAttack
+                    });
+                }
+            }
+
+            myCards.forEach(card => {
+                const cardElement = createCardElement(card, false, true);
+
+                cardElement.draggable = true;
+                cardElement.classList.add('draggable');
+                cardElement.addEventListener('dragstart', (e) => handleDragStart(e, card));
+                cardElement.addEventListener('dragend', handleDragEnd);
+
+                // ✅ Hücum edə bilən oyunçular üçün style
+                if (canAttack) {
+                    // Masada eyni rank varsa - highlight et
+                    const tableRanks = new Set();
+
+                    if (gameState.tableCards) {
+                        gameState.tableCards.forEach(c => tableRanks.add(c.rank));
+                    }
+
+                    if (gameState.defendedCards) {
+                        gameState.defendedCards.forEach(pair => {
+                            tableRanks.add(pair.attackCard.rank);
+                            tableRanks.add(pair.defendCard.rank);
+                        });
+                    }
+
+                    // İlk hücum və ya masada eyni rank varsa
+                    const canPlayThisCard = tableRanks.size === 0 || tableRanks.has(card.rank);
+
+                    if (canPlayThisCard) {
+                        cardElement.style.cursor = 'pointer';
+                        cardElement.style.border = '3px solid rgba(239, 68, 68, 0.8)';
+                        cardElement.style.boxShadow = '0 0 15px rgba(239, 68, 68, 0.5)';
+
+                        cardElement.onclick = function () {
+                            attackWithCard(card);
+                        };
+                    } else {
+                        // Bu kartla hücum edilə bilməz
+                        cardElement.style.opacity = '0.5';
+                        cardElement.style.cursor = 'not-allowed';
+                    }
+                }
+
+                container.appendChild(cardElement);
+            });
+        }
+        function createCardElement(card, isSelected = false, isClickable = false) {
+            const suit = card.suit.toLowerCase();
+            const rank = rankNames[card.rank] || card.rank;
+            const suitIcon = suitIcons[card.suit];
+
+            const cardDiv = document.createElement('div');
+            cardDiv.className = `card ${suit} ${isSelected ? 'selected' : ''}`;
+            cardDiv.innerHTML = `
+                    <div class="card-rank">${rank}</div>
+                    <div class="card-suit">${suitIcon}</div>
+                    <div class="card-rank">${rank}</div>
+                `;
+
+            return cardDiv;
+        }
+
+        // Drag & Drop Handlers
+        function handleDragStart(e, card) {
+            // ✅ Yoxla: mənim kartımdır?
+            const isMyCard = myCards.some(c => c.rank === card.rank && c.suit === card.suit);
+
+            if (!isMyCard) {
+                console.log('❌ Bu sizin kartınız deyil!');
+                e.preventDefault();
+                return;
+            }
+
+            draggedCard = card;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', JSON.stringify(card)); // ✅ Data əlavə et
+
+            console.log('🎯 Drag started:', card.rank, 'of', card.suit);
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+
+            // Remove drag-over from all drop zones
+            document.querySelectorAll('.card-drop-zone').forEach(zone => {
+                zone.classList.remove('drag-over');
+            });
+
+            console.log('🏁 Drag ended');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault(); // ✅ BU ÇOX VACİBDİR!
+            e.stopPropagation();
+
+            e.dataTransfer.dropEffect = 'move';
+
+            const dropZone = e.currentTarget;
+            if (dropZone && !dropZone.classList.contains('drag-over')) {
+                dropZone.classList.add('drag-over');
+                console.log('📍 Drag over drop zone');
+            }
+
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+
+            const dropZone = e.currentTarget;
+            const rect = dropZone.getBoundingClientRect();
+
+            // Check if mouse is actually outside the drop zone
+            if (
+                e.clientX < rect.left ||
+                e.clientX >= rect.right ||
+                e.clientY < rect.top ||
+                e.clientY >= rect.bottom
+            ) {
+                dropZone.classList.remove('drag-over');
+                console.log('🚪 Drag leave');
+            }
+        }
+
+        async function handleDropOnZone(dropZone) {
+            console.log('🎯🎯🎯 DROP EVENT TRIGGERED! 🎯🎯🎯');
+
+            if (!draggedCard) {
+                console.log('❌ No dragged card');
+                showMessage("Xəta: Kart seçilməyib", "error");
+                return;
+            }
+
+            const attackRank = dropZone.getAttribute('data-attack-rank');
+            const attackSuit = dropZone.getAttribute('data-attack-suit');
+
+            console.log('📍 Attack:', attackRank, attackSuit);
+            console.log('📍 Defend:', draggedCard.rank, draggedCard.suit);
+
+            if (!attackRank || !attackSuit) {
+                showMessage("Xəta: Hücum kartı tapılmadı", "error");
+                return;
+            }
+
+            try {
+                await connection.invoke("Defend", [{
+                    AttackCard: { rank: attackRank, suit: attackSuit },
+                    DefendCard: draggedCard
+                }]);
+                console.log('✅ Defense sent!');
+                showMessage("Müdafiə göndərildi! ✅", "success");
+            } catch (err) {
+                console.error('❌ Error:', err);
+                showMessage("Müdafiə alınmadı ❌", "error");
+            }
+
+            draggedCard = null;
+        }        //async function handleDrop(e) {
+        //    e.preventDefault();
+        //    e.stopPropagation();
+
+        //    console.log('🎯 DROP EVENT TRIGGERED!');
+
+        //    const dropZone = e.currentTarget;
+        //    dropZone.classList.remove('drag-over');
+
+        //    if (!draggedCard) {
+        //        console.log('❌ No dragged card');
+        //        return false;
+        //    }
+
+        //    // ✅ getAttribute istifadə et
+        //    const attackRank = dropZone.getAttribute('data-attack-rank');
+        //    const attackSuit = dropZone.getAttribute('data-attack-suit');
+
+        //    console.log('📍 Attack card from drop zone:', attackRank, attackSuit);
+        //    console.log('📍 Defend card (dragged):', draggedCard.rank, draggedCard.suit);
+
+        //    if (!attackRank || !attackSuit) {
+        //        console.log('❌ No attack card data in drop zone');
+        //        showMessage("Xəta: Hücum kartı tapılmadı", "error");
+        //        return false;
+        //    }
+
+        //    const attackCard = {
+        //        rank: attackRank,
+        //        suit: attackSuit
+        //    };
+
+        //    console.log('✅ Sending defense to server...');
+
+        //    try {
+        //        await connection.invoke("Defend", [{
+        //            AttackCard: attackCard,
+        //            DefendCard: draggedCard
+        //        }]);
+        //        console.log('✅ Defense successful!');
+        //        showMessage("Müdafiə uğurlu! ✅", "success");
+        //    } catch (err) {
+        //        showMessage("Müdafiə alınmadı ❌", "error");
+        //        console.error('❌ Defense failed:', err);
+        //    }
+
+        //    draggedCard = null;
+        //    return false;
+        //}        // Attack with card (click)
+
+        async function attackWithCard(card) {
+            console.log('⚔️⚔️⚔️ ATTACK FUNCTION CALLED ⚔️⚔️⚔️');
+            console.log('Card:', card);
+            console.log('GameState:', gameState);
+            console.log('CurrentUser:', currentUser);
+
+            if (!gameState || !currentUser) {
+                console.log('❌ No gameState or currentUser');
+                showMessage("Xəta: Oyun state tapılmadı", "error");
+                return;
+            }
+
+            const myPlayer = gameState.players.find(p => p.userId === currentUser.userId);
+
+            if (!myPlayer) {
+                showMessage("Oyunçu tapılmadı", "error");
+                return;
+            }
+
+            // ✅ Müdafiəçi hücum edə bilməz
+            if (myPlayer.isDefender) {
+                showMessage("Müdafiəçi hücum edə bilməz", "warning");
+                return;
+            }
+
+            // ✅ İlk hücum - yalnız əsas attacker
+            const hasCardsOnTable = (gameState.tableCards && gameState.tableCards.length > 0) ||
+                (gameState.defendedCards && gameState.defendedCards.length > 0);
+
+            if (!hasCardsOnTable && !myPlayer.isAttacker) {
+                showMessage("İlk hücumu yalnız saldıran edə bilər", "warning");
+                return;
+            }
+
+            try {
+                console.log('📤 Sending attack to server:', [card]);
+                await connection.invoke("Attack", [card]);
+                console.log('✅ Attack sent successfully!');
+
+                if (myPlayer.isAttacker) {
+                    showMessage("Hücum göndərildi! ⚔️", "success");
+                } else {
+                    showMessage("Əlavə hücum! ➕", "success");
+                }
+            } catch (err) {
+                console.error('❌ Attack error:', err);
+                showMessage("Hücum alınmadı: " + err.toString(), "error");
+            }
+        }
+
+        // Beaten Button
+        function updateBeatenButton(state) {
+            const beatenBtn = document.getElementById("beatenBtn");
+            const takeBtn = document.getElementById("takeCardsBtn");
+
+            if (!state.isGameActive || !currentUser) {
+                beatenBtn.classList.add("hidden");
+                takeBtn.classList.add("hidden");
+                return;
+            }
+
+            const hasUndefendedCards = state.tableCards && state.tableCards.length > 0;
+            const hasDefendedCards = state.defendedCards && state.defendedCards.length > 0;
+            const hasAnyCards = hasUndefendedCards || hasDefendedCards;
+
+            // ✅ Beaten button - hamı üçün (bütün kartlar müdafiə olunarsa)
+            if (!hasUndefendedCards && hasDefendedCards) {
+                beatenBtn.classList.remove("hidden");
+                beatenBtn.textContent = "✅ Beaten (Razıyam)";
+            } else {
+                beatenBtn.classList.add("hidden");
+            }
+
+            // ✅ Take Cards button - hamı üçün (masada kart varsa)
+            if (hasAnyCards) {
+                takeBtn.classList.remove("hidden");
+                takeBtn.textContent = "📥 Götürmək (Razıyam)";
+            } else {
+                takeBtn.classList.add("hidden");
+            }
+        }
+        document.getElementById("beatenBtn").addEventListener("click", async () => {
+            try {
+                await connection.invoke("Beaten");
+                // Confirm mesajını sil - səsvermə sistemi olduğu üçün lazım deyil
+            } catch (err) {
+                showMessage("Səs vermək alınmadı", "error");
+                console.error(err);
+            }
+        });
+
+        document.getElementById("takeCardsBtn").addEventListener("click", async () => {
+            try {
+                await connection.invoke("TakeCards");
+                // Confirm mesajını sil - səsvermə sistemi olduğu üçün lazım deyil
+            } catch (err) {
+                showMessage("Səs vermək alınmadı", "error");
+                console.error(err);
+            }
+        });
+
+        document.getElementById("leaveRoomBtn").addEventListener("click", async () => {
+            if (!confirm("Otaqdan çıxmaq istədiyinizə əminsiniz?")) return;
+            try {
+                await connection.invoke("LeaveRoom");
+            } catch (err) {
+                showMessage("Otaqdan çıxmaq alınmadı", "error");
+            }
+        });
+
+        function showMessage(text, type = "info") {
+            const container = document.getElementById("messages");
+            const msg = document.createElement("div");
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            container.appendChild(msg);
+
+            setTimeout(() => {
+                msg.style.animation = "slideIn 0.3s ease-out reverse";
+                setTimeout(() => msg.remove(), 300);
+            }, 4000);
+        }
+
+        init();
+        console.log('✅ Durak Game Ready! Drag & Drop + Beaten Active.');
+    </script>
+</body>
+
+</html>

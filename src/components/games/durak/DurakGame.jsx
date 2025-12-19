@@ -1,9 +1,10 @@
+
 import { useEffect, useRef } from 'react';
 import { useAppContext } from '../../../context/AppContext.jsx';
 import { useNavigate } from 'react-router-dom';
-import './DominoReact.css';
+import './DurakReact.css';
 
-function DominoGame() {
+function DurakGame() {
   const { user, balance, isAuthenticated, token } = useAppContext();
   const iframeRef = useRef(null);
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ function DominoGame() {
 
   // 📨 iframe ilə kommunikasiya
   useEffect(() => {
-    console.log('🎯 DominoGame mounted');
+    console.log('🃏 DurakGame mounted');
     console.log('User:', user);
     console.log('Token:', token ? 'EXISTS' : 'MISSING');
 
@@ -27,7 +28,7 @@ function DominoGame() {
     }
 
     const handleLoad = () => {
-      console.log('📺 Domino iframe loaded');
+      console.log('📺 Durak iframe loaded');
       
       setTimeout(() => {
         const iframe = iframeRef.current;
@@ -48,9 +49,9 @@ function DominoGame() {
           }
         };
 
-        console.log('📤 Sending user data to Domino:', userData);
+        console.log('📤 Sending user data to Durak:', userData);
         iframe.contentWindow.postMessage(userData, '*');
-        console.log('✅ User data sent to Domino');
+        console.log('✅ User data sent to Durak');
       }, 500);
     };
 
@@ -76,12 +77,12 @@ function DominoGame() {
   }, [user, token, balance]);
 
   return (
-    <div className="domino-game-container">
+    <div className="durak-game-container">
       <iframe
         ref={iframeRef}
-        src="/Games/Domino/Domino.html"
-        className="domino-game-iframe"
-        title="Domino Oyunu"
+        src="/Games/Durak/Durak.html"
+        className="durak-game-iframe"
+        title="Durak - Kart Oyunu"
         allow="autoplay; fullscreen"
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
       />
@@ -89,4 +90,4 @@ function DominoGame() {
   );
 }
 
-export default DominoGame;
+export default DurakGame;
