@@ -35,7 +35,7 @@ function BackgammonGame() {
           {
             type: 'INIT_USER',
             payload: {
-              userId: user.id,
+              userId: user.id || user.userId,
               username: user.userName || user.username,
               fullName: user.fullName,
               balance: balance,

@@ -79,7 +79,7 @@ function PokerGame() {
     <div className="poker-game-container">
       <iframe
         ref={iframeRef}
-        src="/Games/Poker.html"
+        src="/Games/Poker/Poker.html"
         className="poker-game-iframe"
         title="Poker Casino"
         allow="autoplay; fullscreen"

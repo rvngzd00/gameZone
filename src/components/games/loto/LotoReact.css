@@ -5,7 +5,7 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
-  z-index: 7777;
+  z-index: 7;
 }
 
 .loto-game-iframe, .loto-lobby-iframe {
