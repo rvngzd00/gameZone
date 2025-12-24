@@ -3,6 +3,7 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
+    color: white;
 }
 
 .header {
@@ -198,25 +199,29 @@
 
 .chain {
     display: flex;
-    gap: 3px;
+    gap: 4px;
     align-items: center;
-    padding: 20px;
-    flex-wrap: nowrap;
+    padding: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .tile {
-    width: 50px;
-    height: 100px;
+    width: clamp(36px, 6.5vw, 100px);
+    aspect-ratio: 1 / 2;
     background: linear-gradient(145deg, #ffffff, #f1f5f9);
     border: 3px solid #cbd5e1;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     cursor: grab;
-    transition: all 0.2s;
+    transition: all 0.18s;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     flex-shrink: 0;
     user-select: none;
+    min-width: 26px;
 }
 
 .tile:active {
@@ -224,13 +229,13 @@
 }
 
 .tile:hover {
-    transform: translateY(-8px) scale(1.05);
-    box-shadow: 0 12px 24px rgba(16, 185, 129, 0.4);
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.35);
 }
 
 .tile.horizontal {
-    width: 100px;
-    height: 50px;
+    width: clamp(60px, 18vw, 200px);
+    aspect-ratio: 2 / 1;
     flex-direction: row;
 }
 
@@ -588,6 +593,61 @@
     100% {
         opacity: 0;
         transform: translateX(-50%) translateY(-20px) scale(0.8);
+    }
+}
+
+/* Additional responsive rules for domino tiles and layout */
+@media (max-width: 900px) {
+    .chain {
+        gap: 6px;
+        padding: 10px;
+        justify-content: center;
+    }
+    .tile {
+        width: clamp(30px, 8vw, 80px);
+    }
+    .tile.horizontal {
+        width: clamp(50px, 20vw, 160px);
+    }
+    .table {
+        padding: 16px;
+    }
+    .hand-tiles {
+        gap: 8px;
+    }
+    .actions {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .tile:hover {
+        transform: none;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+}
+
+@media (max-width: 480px) {
+    .tile {
+        width: clamp(26px, 10vw, 60px);
+    }
+    .tile.horizontal {
+        width: clamp(40px, 32vw, 120px);
+    }
+    .chain {
+        gap: 4px;
+        padding: 8px;
+        justify-content: flex-start;
+    }
+    .table {
+        padding: 8px;
+        min-height: 220px;
+    }
+    .game-layout {
+        grid-template-columns: 1fr;
+        padding: 8px;
+    }
+    .status-bar {
+        font-size: 13px;
+        padding: 8px;
     }
 }
 

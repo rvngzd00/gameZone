@@ -122,10 +122,10 @@ function BackgammonREACT() {
             // ✅ ƏSAS: username və fullName ayrı-ayrı saxla
             const username = data.username;
             const fullName = data.fullName || data.username;
-            
+
             console.log("👤 Username:", username);
             console.log("👤 FullName:", fullName);
-            
+
             setMyUsername(username); // Backend bununla müqayisə edir
             setMyFullName(fullName); // UI-da göstərmək üçün
             setMyName(fullName); // Display name
@@ -206,12 +206,12 @@ function BackgammonREACT() {
             setShowDice(true);
             setRollingDice([true, true]);
             setDiceRolled(true); // ✅ Zər atıldı, bir daha atıla bilməz
-            
+
             setTimeout(() => {
                 setDisplayDice(data.dice);
                 setRollingDice([false, false]);
             }, 1200);
-            
+
             showNotification(`🎲 Zər: ${data.dice.join('-')}`, 'info');
         };
 
@@ -231,17 +231,17 @@ function BackgammonREACT() {
             console.log("Current player from server:", data.currentPlayer);
             console.log("My username:", myUsername);
             console.log("My fullName:", myFullName);
-            
+
             // ✅ ƏSAS FIX: Backend username göndərir, biz username ilə müqayisə edirik
             const isMyTurnNow = data.currentPlayer === myUsername;
-            
+
             console.log("Is my turn now?", isMyTurnNow);
-            
+
             setIsMyTurn(isMyTurnNow);
             setShowDice(false);
             setSelectedPoint(null);
             setDiceRolled(false); // ✅ Yeni növbə - zər yenidən atıla bilər
-            
+
             if (isMyTurnNow) {
                 showNotification('🎯 Sizin növbənizdir!', 'info');
             } else {
@@ -385,14 +385,14 @@ function BackgammonREACT() {
             showNotification('Sizin növbəniz deyil!', 'error');
             return;
         }
-        
+
         if (diceRolled) {
             showNotification('❌ Zəri artıq atdınız! Hərəkət edin və ya növbəni bitirin.', 'error');
             return;
         }
-        
+
         if (!connection) return;
-        
+
         try {
             await connection.invoke("RollDice");
         } catch (err) {
@@ -418,7 +418,7 @@ function BackgammonREACT() {
             showNotification('Sizin növbəniz deyil!', 'error');
             return;
         }
-        
+
         try {
             await connection.invoke("EndTurn");
             // ✅ Növbə bitdi - state-ləri sıfırla
@@ -484,7 +484,7 @@ function BackgammonREACT() {
         }
 
         const pointKey = pointNum.toString();
-        
+
         // Əgər seçilmiş nöqtə varsa və fərqli nöqtəyə klik edilibsə
         if (selectedPoint !== null && selectedPoint !== pointNum) {
             // Əgər yeni nöqtədə bizim daşımız varsa - yenidən seçim
@@ -802,7 +802,10 @@ function BackgammonREACT() {
                                     <span className="player-stone">
                                         ⚪ <span className="stone-text">White</span>
                                     </span>
-                                    <span className="player-home"><span className='home-icon-bg'>🏠</span> {gameBoard.home?.white || 0}/15</span>
+                                    <span className="player-home">
+                                        <span className='home-icon-bg'>🏠</span>
+                                        {gameBoard.home?.white || 0}/15
+                                    </span>
                                 </div>
                             </div>
 
@@ -1028,9 +1031,9 @@ function BackgammonREACT() {
 
                     {/* Game Controls */}
                     <div className="game-controls-bar">
-                        <button 
-                            className="control-btn roll-dice-btn" 
-                            onClick={rollDice} 
+                        <button
+                            className="control-btn roll-dice-btn"
+                            onClick={rollDice}
                             disabled={!isMyTurn || diceRolled}
                         >
                             <span className="btn-icon">🎲</span>
@@ -1076,8 +1079,8 @@ function Point({ num, position, gameBoard, selectedPoint, handlePointClick }) {
             {pieces.length > 0 && (
                 <div className="point-pieces">
                     {pieces.slice(0, 5).map((color, i) => (
-                        <div 
-                            key={i} 
+                        <div
+                            key={i}
                             className={`point-piece ${color}`}
                             style={{ cursor: 'pointer' }}
                         >

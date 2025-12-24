@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useAppContext } from '../../../context/AppContext.jsx';
 import { useNavigate } from 'react-router-dom';
-import './DurakReact.css';
+import './OkeyReact.css';
 
-function DurakGame() {
+function OkayGame() {
   const { user, balance, isAuthenticated, token } = useAppContext();
   const iframeRef = useRef(null);
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ function DurakGame() {
     }
 
     const handleLoad = () => {
-      console.log('📺 Durak iframe loaded');
+      console.log('📺 Okay iframe loaded');
       
       setTimeout(() => {
         const iframe = iframeRef.current;
@@ -76,12 +76,12 @@ function DurakGame() {
   }, [user, token, balance]);
 
   return (
-    <div className="durak-game-container">
+    <div className="okay-game-container">
       <iframe
         ref={iframeRef}
-        src="/Games/Durak/Durak.html"
-        className="durak-game-iframe"
-        title="Durak - Kart Oyunu"
+        src="/Games/Okey/Okey.html"
+        className="okay-game-iframe"
+        title="Okay"
         allow="autoplay; fullscreen"
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
       />
@@ -89,4 +89,4 @@ function DurakGame() {
   );
 }
 
-export default DurakGame;
+export default OkayGame;

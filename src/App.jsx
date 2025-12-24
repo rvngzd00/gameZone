@@ -23,12 +23,14 @@ import SekaGame from './components/games/seka/SekaGame.jsx'
 import DurakGame from './components/games/durak/DurakGame.jsx'
 import PokerGame from './components/games/poker/PokerGame.jsx'
 import DominoGame from './components/games/domino/DominoGame.jsx'
+import OkeyGame from './components/games/okey/OkeyGame.jsx'
 
 
 import SnowEffect from './components/mainLayout/SnowEffect'
 
 import AdminDashboard from './components/admin/AdminDashboard'
 
+import BackgammonGame from './components/games/BACKGAMMMONN/BackgammonREACT.jsx'
 
 const ProtectedRouteWrapper = ({ children }) => {
   const { isAuthenticated } = useAppContext();
@@ -82,6 +84,14 @@ function App() {
                 }
               />
               <Route
+                path="/games/backgammonT"
+                element={
+                  <ProtectedRouteWrapper>
+                    <BackgammonGame/>
+                  </ProtectedRouteWrapper>
+                }
+              />
+              <Route
                 path="/games/seka"
                 element={
                   <ProtectedRouteWrapper>
@@ -110,6 +120,14 @@ function App() {
                 element={
                   <ProtectedRouteWrapper>
                     <DominoGame/>
+                  </ProtectedRouteWrapper>
+                }
+              />
+              <Route
+                path="/games/okay"
+                element={
+                  <ProtectedRouteWrapper>
+                    <OkeyGame/>
                   </ProtectedRouteWrapper>
                 }
               />

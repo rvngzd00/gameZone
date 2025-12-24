@@ -1,4 +1,8 @@
 /* ==================== HEADER ==================== */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
 .app-header {
     display: flex;
     justify-content: space-between;
@@ -351,6 +355,11 @@
 .game-header-section {
     display: flex;
     justify-content: center;
+    background-color:var(--surface);
+    /* padding: clamp(12px, 2vw, 16px) clamp(20px, 3vw, 28px); */
+    padding: 7px;
+    border-radius: 17px;
+    border: 2px solid var(--surface-2);
 }
 
 .bet-display {
@@ -374,6 +383,9 @@
 }
 
 /* ==================== PLAYERS STATUS ==================== */
+.players-info{
+    color: var(--white);
+}
 .players-status-bar {
     display: flex;
     gap: 7px;
@@ -1826,16 +1838,22 @@
     .bet-amount-large {
         font-size: 13px;
     }
+    .player-status-info h3 {
+        font-size: 12px;
+    }
 }
 
 /* Small Mobile */
 @media (max-width: 480px) {
+    .bet-text{
+        display: none;
+    }
     .player-status-info h3 {
         font-size: 14px;
     }
 
-    .home-icon-bg {
-        display: none;
+    .game-header-section {
+        padding: 0;
     }
 
     .board-container-premium {
@@ -1847,7 +1865,9 @@
     .player-stone .stone-text {
         display: none;
     }
-
+    .stone-text{
+        display: none;
+    }
 
     .board-point {
         min-width: 17px;

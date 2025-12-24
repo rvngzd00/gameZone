@@ -145,80 +145,17 @@
         let isInGame = false;
         let myUserId = null;
         let activeEmojiPopup = null;
+
+        // 🔥 DRAG & DROP dəyişənləri
         let draggedTile = null;
 
-        // ... qalan bütün funksiyalar eyni qalır ...
-
-        
-
-        // ... qalan funksiyalar eyni (renderHand, renderChain və s.) ...
-
-        // ✅ init() funksiyasını dəyişdir
-        async function init() {
-            console.log('🚀 [DOMINO] init() başladı');
-
-            if (!currentUserToken) {
-                console.error('❌ [DOMINO] Token yoxdur!');
-                return;
-            }
-
-            try {
-                connection = createConnection();
-                await connection.start();
-                console.log("✅ [DOMINO] SignalR connected");
-
-                // Drop zone setup
-                setupDropZone();
-
-                if (roomIdFromUrl) {
-                    await connection.invoke("ReconnectToRoom", roomIdFromUrl);
-                } else {
-                    showLobby();
-                    await loadLobbies();
-                }
-
-                setInterval(() => {
-                    if (!isInGame) {
-                        loadLobbies();
-                    }
-                }, 3000);
-
-            } catch (err) {
-                console.error("❌ [DOMINO] Connection error:", err);
-                showToast("Serverə qoşulmaq alınmadı");
-            }
+        function getToken() {
+            const raw = document.cookie.split("; ").find(row => row.startsWith("AuthToken="))?.split("=")[1];
+            if (!raw) return "";
+            let token = decodeURIComponent(raw).trim();
+            if (token.endsWith(".")) token = token.slice(0, -1);
+            return token;
         }
-
-        console.log('✅ [DOMINO] Script tam yükləndi, postMessage gözlənilir...');
-
-        // const urlParams = new URLSearchParams(window.location.search);
-        // const roomIdFromUrl = urlParams.get('roomId');
-
-        // let connection = null;
-        // let myHand = [];
-        // let chainTiles = [];
-        // let isMyTurn = false;
-        // let leftEnd = null;
-        // let rightEnd = null;
-        // let stockCount = 0;
-        // let currentRound = 1;
-        // let gameType = "";
-        // let scoreToWin = 101;
-        // let currentRoomId = null;
-        // let isInGame = false;
-        // let myUserId = null;
-        // let activeEmojiPopup = null;
-
-        // // 🔥 DRAG & DROP dəyişənləri
-        // let draggedTile = null;
-
-        // function getToken() {
-        //     const raw = document.cookie.split("; ").find(row => row.startsWith("AuthToken="))?.split("=")[1];
-        //     if (!raw) return "";
-        //     let token = decodeURIComponent(raw).trim();
-        //     if (token.endsWith(".")) token = token.slice(0, -1);
-        //     return token;
-        // }
 
         function showToast(msg, success = false) {
             const toast = document.createElement('div');
@@ -245,14 +182,6 @@
                 .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/dominoHub", { accessTokenFactory: () => getToken() })
                 .withAutomaticReconnect()
                 .build();
-
-            connection.on("UserData", (data) => {
-                myUserId = data.userId;
-                // ✅ Artıq React-dən aldıq, yenidən yazmırıq
-                // document.getElementById('userBalance').textContent = data.balance;
-                // document.getElementById('balance').textContent = data.balance;
-                console.log("✅ [DOMINO] UserData event:", data);
-            });
 
             connection.on("UserData", (data) => {
                 myUserId = data.userId;
@@ -984,33 +913,34 @@
             }
         });
 
-        // async function init() {
-        //     try {
-        //         connection = createConnection();
-        //         await connection.start();
-        //         console.log("✅ SignalR connected");
 
-        //         // Drop zone setup
-        //         setupDropZone();
+        async function init() {
+            try {
+                connection = createConnection();
+                await connection.start();
+                console.log("✅ SignalR connected");
 
-        //         if (roomIdFromUrl) {
-        //             await connection.invoke("ReconnectToRoom", roomIdFromUrl);
-        //         } else {
-        //             showLobby();
-        //             await loadLobbies();
-        //         }
+                // Drop zone setup
+                setupDropZone();
 
-        //         setInterval(() => {
-        //             if (!isInGame) {
-        //                 loadLobbies();
-        //             }
-        //         }, 3000);
+                if (roomIdFromUrl) {
+                    await connection.invoke("ReconnectToRoom", roomIdFromUrl);
+                } else {
+                    showLobby();
+                    await loadLobbies();
+                }
 
-        //     } catch (err) {
-        //         console.error("❌ Connection error:", err);
-        //         showToast("Serverə qoşulmaq alınmadı");
-        //     }
-        // }
+                setInterval(() => {
+                    if (!isInGame) {
+                        loadLobbies();
+                    }
+                }, 3000);
+
+            } catch (err) {
+                console.error("❌ Connection error:", err);
+                showToast("Serverə qoşulmaq alınmadı");
+            }
+        }
 
         // init();
     </script>

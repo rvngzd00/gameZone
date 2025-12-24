@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@7.0.0/dist/browser/signalr.min.js"></script>
     <link rel="stylesheet" href="./Backgammon.css">
     <link rel="stylesheet" href="./BackgammonNEW.css">
-    
+
 </head>
 
 <body>
@@ -136,14 +136,15 @@
                             <span class="bet-label">💰</span>
                         </button>
                     </div>
-                    <button class="vip-match-btn" onclick="quickMatch(100)"><span class="vip-badge">VIP</span><span class="vip-amount">1000
+                    <button class="vip-match-btn" onclick="quickMatch(100)"><span class="vip-badge">VIP</span><span
+                            class="vip-amount">1000
                             💰</span></button>
                 </section>
                 <section id="roomsGrid" class="active-rooms-section">
                     <div class="section-header">
-                    <div class="section-icon">📋</div>
-                    <p style="text-align: center; color: #999; padding: 20px; font-size: 13px;">Otaqlar yüklənir...
-                    </p>
+                        <div class="section-icon">📋</div>
+                        <p style="text-align: center; color: #999; padding: 20px; font-size: 13px;">Otaqlar yüklənir...
+                        </p>
                 </section>
             </div>
 
@@ -152,18 +153,19 @@
 
         <div id="gameView" class="game-view">
             <div class="game-container">
-                <div class="score-display">
-                    <h3>Mərc</h3>
-                    <div class="score-value">🏆 <span id="betValue">0</span> Coin</div>
-                </div>
 
                 <div class="players-info">
                     <div class="player-card" id="player1Card">
-                        <div class="player-avatar-large" id="p1Avatar">?</div>
-                        <div class="player-details">
-                            <h3 id="p1Name">Oyunçu 1</h3>
-                            <div class="player-color">⚪ Ağ</div>
-                            <div style="font-size: 12px; margin-top: 5px;">🏠 HOME: <span id="whiteHome">0</span>/15
+                        <!-- <div class="player-avatar-large" id="p1Avatar">?</div> -->
+                        <div class="player-status-info">
+                            <h3 id="p1Name">Gamer 1</h3>
+                            <div class="player-status-meta">
+                                <span class="player-stone">⚪ <span class="stone-text">White</span></span>
+                                <span class="player-home">
+                                    <span class="home-icon-bg">
+                                        🏠: <span id="whiteHome">0</span>/15
+                                    </span>
+                                </span>
                             </div>
                         </div>
                         <div style="position: relative;">
@@ -202,14 +204,26 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="player-card" id="player2Card">
-                        <div class="player-avatar-large" id="p2Avatar">?</div>
-                        <div class="player-details">
-                            <h3 id="p2Name">Oyunçu 2</h3>
-                            <div class="player-color">⚫ Qara</div>
-                            <div style="font-size: 12px; margin-top: 5px;">🏠 HOME: <span id="blackHome">0</span>/15
+                    <div class="bet-display">
+                        <span class="bet-icon">🏆</span>
+                        <span class="bet-text">Match Pot:</span>
+                        <span id="betValue">0</span>
+                        <span class="bet-amount-large" id="betValue">
+                            <span class='home-icon-bg'>💰</span>
+                        </span>
+                    </div>
+                    <div class="player-status-card" id="player2Card">
+                        <!-- <div class="player-avatar-large" id="p2Avatar">?</div> -->
+                        <div class="player-status-info">
+                            <h3 id="p2Name">Gamer 2</h3>
+                            <div class="player-status-meta">
+                                <span class="player-stone">⚫ <span class="stone-text">Black</span></span>
+                                <span class="player-home">
+                                    <span class="home-icon-bg">
+                                        🏠: <span id="blackHome">0</span>/15</span>
+                                </span>
                             </div>
+
                         </div>
                         <div style="position: relative;">
                             <button class="player-emoji-btn" onclick="toggleEmojiPopup('player2')">
@@ -249,6 +263,8 @@
                     </div>
                 </div>
 
+
+
                 <div class="board-wrapper">
                     <div class="board-container" id="boardContainer">
                         <!-- Board + BAR render ediləcək -->
@@ -279,6 +295,8 @@
         </div>
     </div>
 
+    </div>
+
     <script>
 
         // ---------------------
@@ -293,7 +311,7 @@
         console.log('🎮 Game script loaded, waiting for postMessage...');
 
         window.addEventListener('message', (event) => {
-            alert('📨 MESSAGE ALINDI!'); // Test üçün
+            console.log('📨 MESSAGE ALINDI!'); // Test üçün
             console.log('📨 Message received:', event);
             console.log('📍 Origin:', event.origin);
             console.log('📦 Data:', event.data);
@@ -307,16 +325,16 @@
                 console.log('✅ User data received:', currentUserData);
 
                 // UI-ı yenilə
-                if (currentUserData.username) {
-                    document.getElementById('userName').textContent = currentUserData.username;
-                }
-                if (currentUserData.balance !== undefined) {
-                    document.getElementById('userBalance').textContent = currentUserData.balance;
-                }
-                if (currentUserData.avatar) {
-                    document.getElementById('userAvatar').textContent = currentUserData.avatar;
-                }
-                
+                // if (currentUserData.username) {
+                //     document.getElementById('userName').textContent = currentUserData.username;
+                // }
+                // if (currentUserData.balance !== undefined) {
+                //     document.getElementById('userBalance').textContent = currentUserData.balance;
+                // }
+                // if (currentUserData.avatar) {
+                //     document.getElementById('userAvatar').textContent = currentUserData.avatar;
+                // }
+
                 console.log('🚀 Starting SignalR...');
                 // SignalR-i başlat
                 initSignalR();
