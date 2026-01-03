@@ -71,6 +71,11 @@ function LotoLobby() {
         console.log(`🎮 Joining room: ${roomId}`);
         navigate(`/games/loto/${roomId}`);
       }
+      // JOIN_ROOM mesajı gəldikdə oyuna keç
+      if (event.data?.type === 'BACK_TO_GAMES') {
+        console.log(`🎮 Returning to lobby`);
+        navigate(`/games`);
+      }
     };
 
     const iframe = iframeRef.current;

@@ -3,282 +3,142 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover" />
     <title>10 Line Loto - Otaqlar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-    <link rel="stylesheet" href="LotoLobby.css" />
+    <link rel="stylesheet" href="./LotoLobby.css" />
+
 </head>
 
 <body>
-    <div class="header">
-        <h1>🎲 10 LINE LOTO</h1>
-        <div class="balance-display">
-            💰 <span id="userBalance">0</span> ₼
+    <div class="container-game">
+        <div class="header">
+            <div class="balance-display">
+                💰 <span id="userBalance">0</span>
+            </div>
+            <div class="header-right">
+                <h1>LOTO</h1>
+            </div>
+            <button class="back-btn" onclick="goToLobby()">
+                ←
+            </button>
         </div>
     </div>
 
+    <div id="loadingContainer" class="loading-container">
+        <div>
+            <!-- Floating elements -->
+            <div class="floating-cards">
+                <div class="card"></div>
+                <div class="card"></div>
+                <div class="card"></div>
+                <div class="card"></div>
+                <div class="coin"></div>
+                <div class="coin"></div>
+                <div class="coin"></div>
+                <div class="coin"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+            </div>
+
+            <!-- Dice -->
+            <div class="dice-container">
+                <div class="dice">⚅</div>
+            </div>
+            <div class="dice-container-right">
+                <div class="dice">⚄</div>
+            </div>
+
+            <!-- Main roulette wheel -->
+            <div class="roulette-wheel">
+                <div class="wheel-outer">
+                    <div class="wheel-inner">
+                        <div class="wheel-segment"></div>
+                        <div class="wheel-segment"></div>
+                        <div class="wheel-segment"></div>
+                        <div class="wheel-segment"></div>
+                        <div class="wheel-segment"></div>
+                        <div class="wheel-segment"></div>
+                        <div class="wheel-segment"></div>
+                        <div class="wheel-segment"></div>
+                        <div class="wheel-center"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text -->
+            <div class="loading-text">LOADING ROOMS</div>
+            <div class="loading-subtext">PREPARING YOUR GAME</div>
+
+            <!-- Progress dots -->
+            <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
     <div id="roomsContainer" class="rooms-container">
-        <div class="loading pulse">Otaqlar yüklənir...</div>
     </div>
 
-    <!-- <script>
-    // ============================================
-    // React-dən user data
-    // ============================================
-    let currentUserToken = null;
-    let currentUserData = null;
-    let connection = null;
-    let userBalance = 0;
-    let updateInterval = null;
-
-    console.log('🎰 [LOBBY] Script yükləndi');
-
-    window.addEventListener('message', (event) => {
-        console.log('📨 [LOBBY] Message alındı:', event.data);
-
-        if (event.data && event.data.type === 'INIT_USER') {
-            console.log('✅ [LOBBY] INIT_USER qəbul edildi');
-            console.log('👤 [LOBBY] User data:', event.data.payload);
-            
-            currentUserData = event.data.payload;
-            currentUserToken = currentUserData.token;
-
-            console.log('🎫 [LOBBY] Token:', currentUserToken ? 'VAR (ilk 20 simvol): ' + currentUserToken.substring(0, 20) : 'YOX');
-            console.log('💰 [LOBBY] Balance:', currentUserData.balance);
-
-            // Balance göstər
-            document.getElementById("userBalance").textContent =
-                currentUserData.balance.toFixed(2);
-
-            console.log('🚀 [LOBBY] init() çağırılır...');
-            // SignalR başlat
-            init();
-        } else {
-            console.log('⚠️ [LOBBY] Message type INIT_USER deyil:', event.data?.type);
-        }
-    });
-
-    function getToken() {
-        const token = currentUserToken || "";
-        console.log('🔑 [LOBBY] getToken çağırıldı, token:', token ? 'VAR' : 'YOX');
-        return token;
-    }
-
-    function createConnection() {
-        console.log('📡 [LOBBY] createConnection başladı');
-        
-        connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/lotoHub", {
-                accessTokenFactory: () => {
-                    const token = getToken();
-                    console.log('🔐 [LOBBY] SignalR token factory, token:', token ? 'VAR' : 'YOX');
-                    return token;
-                }
-            })
-            .withAutomaticReconnect()
-            .configureLogging(signalR.LogLevel.Information)
-            .build();
-
-        console.log('✅ [LOBBY] Connection yaradıldı');
-        setupHandlers();
-        return connection;
-    }
-
-    function setupHandlers() {
-        console.log('🎧 [LOBBY] Event handlers qurulur...');
-        
-        connection.on("UserData", (data) => {
-            console.log('👤 [LOBBY] UserData event:', data);
-            userBalance = data.balance;
-            document.getElementById("userBalance").textContent = data.balance.toFixed(2);
-        });
-
-        connection.on("RoomListUpdated", () => {
-            console.log('🔄 [LOBBY] RoomListUpdated event');
-            loadRooms();
-        });
-
-        console.log('✅ [LOBBY] Event handlers quruldu');
-    }
-
-    async function loadRooms() {
-        console.log('📋 [LOBBY] loadRooms başladı');
-        console.log('📡 [LOBBY] Connection state:', connection?.state);
-        
-        try {
-            console.log('🔄 [LOBBY] GetRoomList invoke edilir...');
-            const rooms = await connection.invoke("GetRoomList");
-            
-            console.log('📦 [LOBBY] Rooms alındı:', rooms);
-            console.log('📊 [LOBBY] Room sayı:', rooms ? rooms.length : 0);
-            
-            if (rooms && rooms.length > 0) {
-                console.log('🎯 [LOBBY] İlk room:', rooms[0]);
-            }
-            
-            renderRooms(rooms);
-        } catch (err) {
-            console.error("❌ [LOBBY] Load rooms xətası:", err);
-            console.error("❌ [LOBBY] Error stack:", err.stack);
-        }
-    }
-
-    function renderRooms(rooms) {
-        console.log('🎨 [LOBBY] renderRooms başladı');
-        console.log('📦 [LOBBY] Rooms parametri:', rooms);
-        
-        const container = document.getElementById("roomsContainer");
-        
-        if (!container) {
-            console.error('❌ [LOBBY] roomsContainer tapılmadı!');
-            return;
-        }
-
-        if (!rooms || rooms.length === 0) {
-            console.log('⚠️ [LOBBY] Room yoxdur');
-            container.innerHTML = '<div class="loading">Aktiv otaq yoxdur</div>';
-            return;
-        }
-
-        container.innerHTML = "";
-        console.log(`✅ [LOBBY] ${rooms.length} otaq render edilir`);
-
-        rooms.forEach((room, index) => {
-            console.log(`🎯 [LOBBY] Room ${index + 1}/${rooms.length}:`, room);
-            
-            const card = document.createElement("div");
-            card.className = `room-card ${room.isGameStarted ? 'playing' : ''}`;
-
-            const statusBadge = room.isGameStarted
-                ? '<span class="status-badge badge-playing">▶ Oynayır</span>'
-                : '<span class="status-badge badge-waiting">Gözləyir</span>';
-
-            const timePercent = room.isGameStarted ? 0 : (room.timeRemaining / room.timerSeconds) * 100;
-
-            card.innerHTML = `
-                <div class="room-header">
-                    <div class="entry-fee">${room.entryFee.toFixed(2)} ₼</div>
-                    ${statusBadge}
-                </div>
-                <div class="jackpot-display">
-                    <div class="jackpot-label">JACKPOT</div>
-                    <div class="jackpot-amount">${room.jackpotPool.toFixed(2)} ₼</div>
-                </div>
-                <div class="room-info">
-                    <div class="info-item">
-                        <div class="info-label">OYUNÇULAR</div>
-                        <div class="info-value">${room.playerCount}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">VAXT</div>
-                        <div class="info-value">${room.isGameStarted ? 'BAŞLAYIB' : room.timeRemaining + 's'}</div>
-                    </div>
-                </div>
-                ${!room.isGameStarted ? `
-                    <div class="timer-bar">
-                        <div class="timer-fill" style="width: ${timePercent}%"></div>
-                    </div>
-                ` : ''}
-            `;
-
-            card.addEventListener("click", () => {
-                console.log('🎮 [LOBBY] Room clicked:', room.roomId);
-                window.parent.postMessage({
-                    type: 'JOIN_ROOM',
-                    roomId: room.roomId
-                }, '*');
-            });
-
-            container.appendChild(card);
-        });
-        
-        console.log('✅ [LOBBY] Bütün otaqlar render edildi');
-    }
-
-    async function init() {
-        console.log('🚀 [LOBBY] init() başladı');
-        console.log('🎫 [LOBBY] Token mövcuddur:', currentUserToken ? 'BƏLİ' : 'XEYR');
-        
-        if (!currentUserToken) {
-            console.error('❌ [LOBBY] Token yoxdur! Init dayandırılır.');
-            return;
-        }
-        
-        try {
-            console.log('📡 [LOBBY] createConnection çağırılır...');
-            connection = createConnection();
-            
-            console.log('🔌 [LOBBY] connection.start() çağırılır...');
-            await connection.start();
-            console.log("✅ [LOBBY] SignalR bağlantısı uğurlu!");
-            console.log("📡 [LOBBY] Connection ID:", connection.connectionId);
-
-            console.log('📋 [LOBBY] İlk loadRooms() çağırılır...');
-            await loadRooms();
-
-            console.log('⏰ [LOBBY] setInterval başladılır (1000ms)...');
-            // Her 1 saniyədə yenilə
-            updateInterval = setInterval(() => {
-                console.log('⏰ [LOBBY] Interval tick - loadRooms çağırılır');
-                loadRooms();
-            }, 1000);
-
-            // Auto-start yoxla
-            setInterval(async () => {
-                if (connection.state === signalR.HubConnectionState.Connected) {
-                    try {
-                        await connection.invoke("CheckAutoStart");
-                    } catch (err) {
-                        console.error("❌ [LOBBY] CheckAutoStart xətası:", err);
-                    }
-                }
-            }, 1000);
-
-            console.log('✅ [LOBBY] init() tamamlandı');
-
-        } catch (err) {
-            console.error("❌ [LOBBY] init() xətası:", err);
-            console.error("❌ [LOBBY] Error stack:", err.stack);
-            console.error("❌ [LOBBY] Error message:", err.message);
-            
-            document.getElementById("roomsContainer").innerHTML =
-                '<div class="loading">❌ Bağlantı xətası: ' + err.message + '</div>';
-        }
-    }
-
-    console.log('✅ [LOBBY] Script tam yükləndi, postMessage gözlənilir...');
-</script> -->
-
     <script>
+
         let currentUserToken = null;
         let currentUserData = null;
-        let connection = null;
-        let userBalance = 0;
 
-        console.log('🎰 [LOBBY] Script yükləndi');
+        console.log('🎰 [LOTO LOBBY] Script yükləndi');
 
         window.addEventListener('message', (event) => {
+            console.log('📨 [LOTO LOBBY] Message alındı:', event.data);
+
             if (event.data && event.data.type === 'INIT_USER') {
-                console.log('✅ [LOBBY] INIT_USER qəbul edildi');
+                console.log('✅ [LOTO LOBBY] INIT_USER qəbul edildi');
 
                 currentUserData = event.data.payload;
                 currentUserToken = currentUserData.token;
 
+                console.log('👤 [LOTO LOBBY] User:', currentUserData.username);
+                console.log('🎫 [LOTO LOBBY] Token:', currentUserToken ? 'VAR' : 'YOX');
+
+                // Balance göstər
                 document.getElementById("userBalance").textContent =
                     currentUserData.balance.toFixed(2);
 
-                console.log('🚀 [LOBBY] init() çağırılır...');
+                console.log('🚀 [LOTO LOBBY] init() çağırılır...');
+                // SignalR başlat
                 init();
             }
         });
 
+        // ============================================
+        // getToken funksiyasını dəyişdir
+        // ============================================
         function getToken() {
             return currentUserToken || "";
         }
+        // ------------------------------
+        let connection = null;
+        let userBalance = 0;
+        let updateInterval = null;
+
+        // function getToken() {
+        //     const raw = document.cookie
+        //         .split("; ")
+        //         .find(row => row.startsWith("AuthToken="))
+        //         ?.split("=")[1];
+        //     if (!raw) return "";
+        //     let token = decodeURIComponent(raw).trim();
+        //     if (token.endsWith(".")) token = token.slice(0, -1);
+        //     return token;
+        // }
 
         function createConnection() {
-            console.log('📡 [LOBBY] createConnection başladı');
-
             connection = new signalR.HubConnectionBuilder()
                 .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/lotoHub", {
                     accessTokenFactory: () => getToken()
@@ -290,93 +150,89 @@
             setupHandlers();
             return connection;
         }
-
+        function removeLoading() {
+            const loadingContainer = document.getElementById("loadingContainer");
+            if (loadingContainer) {
+                loadingContainer.remove();
+            }
+        }
         function setupHandlers() {
-            console.log('🎧 [LOBBY] Event handlers qurulur...');
-
-            // UserData event
             connection.on("UserData", (data) => {
-                console.log('👤 [LOBBY] UserData event:', data);
                 userBalance = data.balance;
-                document.getElementById("userBalance").textContent = data.balance.toFixed(2);
+                // Artıq React-dən aldıq, yenidən yazmırıq
+                console.log("✅ [LOTO LOBBY] UserData event:", data);
             });
 
-            // ✅ RoomListUpdated - Backend dəyişiklik olanda göndərir
             connection.on("RoomListUpdated", () => {
-                console.log('🔄 [LOBBY] RoomListUpdated event - otaqlar yüklənir');
                 loadRooms();
             });
-
-            console.log('✅ [LOBBY] Event handlers quruldu');
         }
 
         async function loadRooms() {
-            console.log('📋 [LOBBY] loadRooms başladı');
-
+            // ← BU YOXLANIŞI ƏLAVE ET:
+            if (!connection || connection.state !== signalR.HubConnectionState.Connected) {
+                console.log('⏳ Connection hələ hazır deyil');
+                return;
+            }
             try {
                 const rooms = await connection.invoke("GetRoomList");
-                console.log('📦 [LOBBY] Rooms alındı:', rooms?.length || 0, 'ədəd');
                 renderRooms(rooms);
+                removeLoading();
             } catch (err) {
-                console.error("❌ [LOBBY] Load rooms xətası:", err);
+                console.error("Load rooms error:", err);
             }
         }
 
         function renderRooms(rooms) {
             const container = document.getElementById("roomsContainer");
-
-            if (!container) {
-                console.error('❌ [LOBBY] roomsContainer tapılmadı!');
-                return;
-            }
+            container.innerHTML = "";
 
             if (!rooms || rooms.length === 0) {
-                container.innerHTML = '<div class="loading">Aktiv otaq yoxdur</div>';
+                container.innerHTML = '<div class="loading">Rooms Are loading...</div>';
                 return;
             }
 
-            container.innerHTML = "";
-            console.log(`✅ [LOBBY] ${rooms.length} otaq render edilir`);
-
-            rooms.forEach((room) => {
+            rooms.forEach(room => {
                 const card = document.createElement("div");
                 card.className = `room-card ${room.isGameStarted ? 'playing' : ''}`;
 
                 const statusBadge = room.isGameStarted
-                    ? '<span class="status-badge badge-playing">▶ Oynayır</span>'
-                    : '<span class="status-badge badge-waiting">Gözləyir</span>';
+                    ? '<span class="status-badge badge-playing">▶ Playing</span>'
+                    : '<span class="status-badge badge-waiting">Waiting</span>';
 
                 const timePercent = room.isGameStarted ? 0 : (room.timeRemaining / room.timerSeconds) * 100;
 
                 card.innerHTML = `
-                <div class="room-header">
-                    <div class="entry-fee">${room.entryFee.toFixed(2)} ₼</div>
-                    ${statusBadge}
-                </div>
-                <div class="jackpot-display">
-                    <div class="jackpot-label">JACKPOT</div>
-                    <div class="jackpot-amount">${room.jackpotPool.toFixed(2)} ₼</div>
-                </div>
-                <div class="room-info">
-                    <div class="info-item">
-                        <div class="info-label">OYUNÇULAR</div>
-                        <div class="info-value">${room.playerCount}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">VAXT</div>
-                        <div class="info-value">${room.isGameStarted ? 'BAŞLAYIB' : room.timeRemaining + 's'}</div>
-                    </div>
-                </div>
-                ${!room.isGameStarted ? `
-                    <div class="timer-bar">
-                        <div class="timer-fill" style="width: ${timePercent}%"></div>
-                    </div>
-                ` : ''}
-            `;
+                        <div class="room-header">
+                            <div class="entry-fee">${room.entryFee.toFixed(2)}</div>
+                            ${statusBadge}
+                        </div>
 
-                // Otağa daxil ol
+                        <div class="jackpot-display">
+                            <div class="jackpot-label">JACKPOT</div>
+                            <div class="jackpot-amount">${room.jackpotPool.toFixed(2)}</div>
+                        </div>
+
+                        <div class="room-info">
+                            <div class="info-item">
+                                <div class="info-label">CARDS</div>
+                                <div class="info-value">${room.playerCount}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">TIME</div>
+                                <div class="info-value">${room.isGameStarted ? 'STARTED' : room.timeRemaining + 's'}</div>
+                            </div>
+                        </div>
+
+                        ${!room.isGameStarted ? `
+                            <div class="timer-bar">
+                                <div class="timer-fill" style="width: ${timePercent}%"></div>
+                            </div>
+                        ` : ''}
+                    `;
+
                 card.addEventListener("click", () => {
-                    console.log('🎮 [LOBBY] Room clicked:', room.roomId);
+                    console.log('🎮 [LOTO LOBBY] Room clicked:', room.roomId);
                     window.parent.postMessage({
                         type: 'JOIN_ROOM',
                         roomId: room.roomId
@@ -386,37 +242,39 @@
                 container.appendChild(card);
             });
         }
+        function goToLobby() {
+            window.parent.postMessage({ type: 'BACK_TO_GAMES', payload: {} }, '*');
+        }
 
         async function init() {
-            console.log('🚀 [LOBBY] init() başladı');
+            console.log('🚀 [LOTO LOBBY] init() başladı');
 
             if (!currentUserToken) {
-                console.error('❌ [LOBBY] Token yoxdur!');
+                console.error('❌ [LOTO LOBBY] Token yoxdur!');
                 return;
             }
 
             try {
                 connection = createConnection();
                 await connection.start();
-                console.log("✅ [LOBBY] SignalR bağlantısı uğurlu!");
+                console.log("✅ [LOTO LOBBY] SignalR connected");
 
-                // İlk yükləmə
+                // ← Connection ready olandan SONRA loadRooms çağır:
                 await loadRooms();
 
-                // ✅ Backend "RoomListUpdated" göndərəcək
-                // setInterval LAZIM DEYİL!
-                console.log('✅ [LOBBY] Backend event-lərə dinləyici quruldu');
+                // Sonra interval başlat:
+                updateInterval = setInterval(loadRooms, 2000);
 
             } catch (err) {
-                console.error("❌ [LOBBY] init() xətası:", err);
+                console.error("❌ [LOTO LOBBY] Connection error:", err);
                 document.getElementById("roomsContainer").innerHTML =
-                    '<div class="loading">❌ Bağlantı xətası: ' + err.message + '</div>';
+                    '<div class="loading">❌ Bağlantı xətası</div>';
             }
         }
 
-        console.log('✅ [LOBBY] Script tam yükləndi, postMessage gözlənilir...');
-    </script>
+        console.log('✅ [LOTO LOBBY] Script tam yükləndi, postMessage gözlənilir...');
 
+    </script>
 </body>
 
 </html>

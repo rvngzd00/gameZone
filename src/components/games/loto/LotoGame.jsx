@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import './LotoReact.css';
 
 function LotoGame() {
-  const { user, balance, isAuthenticated, token } = useAppContext();
+  const { user, balance, isAuthenticated, refreshBalance, token } = useAppContext();
   const iframeRef = useRef(null);
   const navigate = useNavigate();
   const { roomId } = useParams(); // URL-dən roomId götür
@@ -68,12 +68,17 @@ function LotoGame() {
         console.log('📤 Sending user data to game:', userData);
         iframe.contentWindow.postMessage(userData, '*');
         console.log('✅ User data sent to game');
-      }, 500);
+      }, 700);
     };
 
     // iframe-dən mesajları qəbul et
     const handleMessage = (event) => {
       console.log('📩 Message from game iframe:', event.data);
+
+      // BALANCE update
+      if (event.data?.type === 'BALANCE_UPDATED') {
+        refreshBalance();
+      }
 
       // BACK_TO_LOBBY mesajı gəldikdə lobby-ə qayıt
       if (event.data?.type === 'BACK_TO_LOBBY') {
@@ -86,7 +91,7 @@ function LotoGame() {
         console.log('🏁 Game ended, returning to lobby...');
         setTimeout(() => {
           navigate('/games/loto');
-        }, 3000);
+        }, 8000);
       }
     };
 

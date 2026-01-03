@@ -29,7 +29,7 @@ const LandingPage = () => {
                                     </div>
                                 </div>
                                 <div className="cta-buttons">
-                                    <Link to="/games" className="btn btn-primary">Start Playing Now</Link>
+                                    {/* <Link to="/games" className="btn btn-primary">Start Playing Now</Link> */}
                                     {/* <button className="btn btn-secondary">Learn More</button> */}
                                 </div>
                             </div>

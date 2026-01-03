@@ -260,17 +260,15 @@ table {
 }
 
 
-/* TEST */
 
-/* html,
-body {
-	overflow: hidden;
-	overscroll-behavior: none;
-	touch-action: none;
+/* Hide TopBar and NavBar */
+body.no-layout .navbar,
+body.no-layout .top-bar {
+  display: none !important;
 }
 
-* {
-	-webkit-user-select: none;
-	-webkit-touch-callout: none;
-
-} */
+/* Full height for game pages  */
+body.no-layout {
+  height: 100vh;
+  overflow: hidden;
+}

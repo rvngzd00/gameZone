@@ -14,6 +14,8 @@ import ScrollToTop from './context/ScrollToTop'
 import TestLogin from './components/TestLogin'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 
+import RouteStyleController from './context/RouteStyleController.jsx'
+
 // Games Import 
 import Games from './components/games/Games'
 import LotoLobby from './components/games/loto/LotoLobby.jsx'
@@ -44,7 +46,8 @@ function App() {
         <div className="app">
           <TopBar />
           <main className="main-content">
-          <SnowEffect snowflakeCount={7} />
+            <RouteStyleController />
+          {/* <SnowEffect snowflakeCount={7} /> */}
             <ScrollToTop />
             <Routes>
 

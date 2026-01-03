@@ -137,6 +137,15 @@ export function AppProvider({ children }) {
     setUser((prev) => ({ ...prev, balance: newBalance }));
   };
 
+  const refreshBalance = async () => {
+    try {
+      const res = await api.get("/api/Auths/GetCurrentUser/current", { withCredentials: true });
+      setBalance(res.data.balance || 0);
+    } catch (err) {
+      console.error('Balance refresh error:', err);
+    }
+  };
+
   // ⚙️ USER update (məs: profil şəkli, ad, email və s.)
   const updateUser = (newData) => {
     setUser((prev) => ({ ...prev, ...newData }));
@@ -152,6 +161,7 @@ export function AppProvider({ children }) {
     register,
     logout,
     updateBalance,
+    refreshBalance,
     updateUser,
     getUserProfile,
   };
