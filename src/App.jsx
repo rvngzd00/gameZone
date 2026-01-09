@@ -127,7 +127,7 @@ function App() {
                 }
               />
               <Route
-                path="/games/okay"
+                path="/games/okey"
                 element={
                   <ProtectedRouteWrapper>
                     <OkeyGame/>

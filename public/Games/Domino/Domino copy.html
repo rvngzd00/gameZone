@@ -1,5 +1,4 @@
-
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="az">
 <head>
     <meta charset="utf-8" />
@@ -1244,18 +1243,20 @@
 
         function showRoundResultModal(data) {
             console.log("🎯 Creating modal with data:", data);
+            console.log("📋 Player hands:", data.allPlayerHands);
 
             const overlay = document.createElement('div');
             overlay.className = 'round-result-overlay';
 
             let playersHtml = '';
 
-            // 🔥 DÜZƏLIŞ: null check
             if (!data.allPlayerHands || data.allPlayerHands.length === 0) {
                 console.error("❌ allPlayerHands is empty!");
                 playersHtml = '<div style="color: #ef4444;">Oyunçu məlumatları tapılmadı</div>';
             } else {
                 data.allPlayerHands.forEach(player => {
+                    console.log(`👤 ${player.name}: ${player.tiles.length} daş`, player.tiles);
+
                     const winnerClass = player.isWinner ? 'winner' : '';
                     const winnerIcon = player.isWinner ? '🏆 ' : '';
 
@@ -1263,72 +1264,71 @@
                     if (player.tiles && player.tiles.length > 0) {
                         tilesHtml = player.tiles.map(tileStr => {
                             const parts = tileStr.split('|').map(n => parseInt(n));
+                            console.log(`  🎲 Rendering tile: [${parts[0]}|${parts[1]}]`);
                             return renderMiniTile(parts[0], parts[1]);
                         }).join('');
                     } else {
-                        tilesHtml = '<div style="color: #64748b; font-size: 14px;">Daş yoxdur</div>';
+                        tilesHtml = '<div style="color: #64748b; font-size: 14px;">✅ Əl boşdur (Qalib!)</div>';
                     }
 
                     playersHtml += `
-                    <div class="player-result-card ${winnerClass}">
-                        <div class="player-result-header">
-                            <div class="player-result-name">${winnerIcon}${player.name}</div>
-                            <div class="player-result-score">${player.handValue} xal</div>
-                        </div>
-                        <div class="player-result-hand">
-                            ${tilesHtml}
-                        </div>
-                    </div>
-                `;
+            <div class="player-result-card ${winnerClass}">
+                <div class="player-result-header">
+                    <div class="player-result-name">${winnerIcon}${player.name}</div>
+                    <div class="player-result-score">${player.handValue} xal</div>
+                </div>
+                <div class="player-result-hand">
+                    ${tilesHtml}
+                </div>
+            </div>
+        `;
                 });
             }
 
-            // 🔥 DÜZƏLIŞ: allScores fallback
             let scoresHtml = '';
             if (data.allScores && data.allScores.length > 0) {
                 scoresHtml = data.allScores.map(score => `
-                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.1);">
-                    <span style="font-weight: 600;">${score.isWinner ? '🏆 ' : ''}${score.name}</span>
-                    <span style="font-weight: 700; color: #fbbf24;">${score.score} xal</span>
-                </div>
-            `).join('');
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.1);">
+            <span style="font-weight: 600;">${score.isWinner ? '🏆 ' : ''}${score.name}</span>
+            <span style="font-weight: 700; color: #fbbf24;">${score.score} xal</span>
+        </div>
+    `).join('');
             } else {
-                // 🔥 Əgər allScores yoxdursa, allPlayerHands-dan götür
                 scoresHtml = data.allPlayerHands.map(ph => `
-                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.1);">
-                    <span style="font-weight: 600;">${ph.isWinner ? '🏆 ' : ''}${ph.name}</span>
-                    <span style="font-weight: 700; color: #fbbf24;">${ph.handValue} xal</span>
-                </div>
-            `).join('');
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.1);">
+            <span style="font-weight: 600;">${ph.isWinner ? '🏆 ' : ''}${ph.name}</span>
+            <span style="font-weight: 700; color: #fbbf24;">${ph.handValue} xal</span>
+        </div>
+    `).join('');
             }
 
             overlay.innerHTML = `
-            <div class="round-result-modal">
-                <div class="round-result-header">
-                    <div class="round-result-title">🎯 Raund ${data.round} Bitdi!</div>
-                    <div class="round-result-subtitle">
-                        ${data.winnerName} qazandı (+${data.pointsEarned} xal)
-                    </div>
+        <div class="round-result-modal">
+            <div class="round-result-header">
+                <div class="round-result-title">🎯 Raund ${data.round} Bitdi!</div>
+                <div class="round-result-subtitle">
+                    ${data.winnerName} qazandı (+${data.pointsEarned} xal)
                 </div>
-
-                <div style="margin-bottom: 20px;">
-                    ${playersHtml}
-                </div>
-
-                <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-                    <div style="font-size: 16px; font-weight: 600; color: #10b981; margin-bottom: 10px;">
-                        📊 Cari Skorlar:
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        ${scoresHtml}
-                    </div>
-                </div>
-
-                <button class="round-continue-btn" onclick="readyForNextRound()">
-                    ✅ Növbəti Raunda Hazıram (${data.gameType === 'Quick5' ? '51-ə çatmaq uduzmaqdır' : data.scoreToWin + ' xala çatmaq qazanmaqdır'})
-                </button>
             </div>
-        `;
+
+            <div style="margin-bottom: 20px;">
+                ${playersHtml}
+            </div>
+
+            <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                <div style="font-size: 16px; font-weight: 600; color: #10b981; margin-bottom: 10px;">
+                    📊 Cari Skorlar:
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    ${scoresHtml}
+                </div>
+            </div>
+
+            <button class="round-continue-btn" onclick="readyForNextRound()">
+                ✅ Növbəti Raunda Hazıram (${data.gameType === 'Quick5' ? '51-ə çatmaq uduzmaqdır' : data.scoreToWin + ' xala çatmaq qazanmaqdır'})
+            </button>
+        </div>
+    `;
 
             document.body.appendChild(overlay);
             console.log("✅ Modal added to DOM");
@@ -1338,14 +1338,16 @@
             const isDouble = left === right;
             const tileClass = isDouble ? 'mini-tile' : 'mini-tile horizontal';
 
-            return `
-                        <div class="${tileClass}">
-                            <div class="mini-tile-half">${renderMiniDots(left)}</div>
-                            <div class="mini-tile-half">${renderMiniDots(right)}</div>
-                        </div>
-                    `;
-        }
+            const leftDotsHtml = renderMiniDots(left);
+            const rightDotsHtml = renderMiniDots(right);
 
+            return `
+                <div class="${tileClass}">
+                    <div class="mini-tile-half">${leftDotsHtml}</div>
+                    <div class="mini-tile-half">${rightDotsHtml}</div>
+                </div>
+            `;
+                }
         function renderMiniDots(value) {
             if (value === 0) return '<div class="mini-dots mini-dots-0"></div>';
             const dots = '<div class="mini-dot"></div>'.repeat(value);

@@ -17,7 +17,7 @@ const GAMES = [
   { id: 'backgammon', name: 'Backgammon', img: backgammonImg },
   { id: 'loto', name: 'Loto', img: lotoImg },
   { id: 'durak', name: 'Durak' ,img: durakImg },
-  { id: 'okay', name: 'Okay' ,img: okayImg },
+  { id: 'okey', name: 'Okey' ,img: okayImg },
   { id: 'seka', name: 'Seka', img: blackjackImg },
   { id: 'poker', name: 'Poker', img: pokerImg }
 ];

@@ -4,171 +4,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎮 Okey Premium</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" /> -->
+
+    <title>Okey</title>
     <link rel="stylesheet" href="./Okey.css">
 </head>
 
 <body>
-    <div id="roomListScreen" class="screen active">
-        <div class="room-list-container">
-            <div class="header">
-                <div>
-                    <h1>🎮 Okey Premium</h1>
-                    <p style="color: #7f8c8d; margin-top: 5px;">Klassik Okey Oyunu</p>
+    <div class="okey-game-container">
+        <!-- <div class="notification">asjkdlfalsdjf</div> -->
+        <div id="roomListScreen" class="screen active">
+            <div class="room-list-container">
+                <div class="header">
+                    <div class="header-content">
+                        <div class="logo-section">
+                            <h1>OKEY 51</h1>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name" id="userName">Yüklənir...</span>
+                            <span class="user-balance" id="userBalance">💰 0₼</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="user-info">
-                    <span class="user-name" id="userName">Yüklənir...</span>
-                    <span class="rank-badge" id="userRank">Yeni</span>
-                    <span class="user-balance" id="userBalance">💰 0₼</span>
-                </div>
-            </div>
-            <div class="rooms-grid" id="roomsGrid">
-                <div style="text-align: center; padding: 50px; color: white;">
-                    <div class="loading"></div>
-                    <p style="margin-top: 20px;">Yüklənir...</p>
+
+                <div class="rooms-grid" id="roomsGrid">
+                    <div class="loading-container">
+                        <div class="loading"></div>
+                        <p class="loading-text">Otaqlar yüklənir...</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="gameScreen" class="screen">
-        <div class="game-container">
-            <div class="game-header">
-                <div class="game-info">
-                    <span id="roomNameDisplay">Otaq</span>
-                    <span id="gameModeDisplay" style="color: #f39c12;">Mod: 101</span>
-                    <span id="potAmountDisplay" style="color: #27ae60;">Pot: 0₼</span>
-                </div>
-                <button id="leaveRoomBtn" class="btn btn-danger">Çıx</button>
-            </div>
-
-            <div class="game-table">
-                <div class="player-section player-section-top">
-                    <div class="player-info" id="playerInfoTop">
-                        <div class="player-avatar">👤</div>
-                        <div class="player-details">
-                            <div class="player-name">Gözləyir</div>
-                            <div class="player-score">101</div>
-                        </div>
+        <div id="gameScreen" class="screen">
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="game-info">
+                        <span id="roomNameDisplay">Otaq</span>
+                        <!-- <span id="gameModeDisplay" style="color: #f39c12;">Mod: 51</span> -->
+                        <span id="potAmountDisplay" style="color: #27ae60;">Pot: 0</span>
                     </div>
-                    <div class="discard-zone" id="discardZoneTop">🗑️</div>
+                    <div class="current-user-info">
+                        <div class="player-name" id="myPlayerName">You</div>
+                        <!-- <div class="player-score" id="myScore">101</div> -->
+                    </div>
+                    <button id="leaveRoomBtn" class="btn btn-danger">Çıx</button>
+                    <!-- <button onclick="goFullscreen()" class="btn btn-danger">Tam Ekran</button> -->
                 </div>
 
-                <div class="player-section player-section-right">
-                    <div class="discard-zone" id="discardZoneRight">🗑️</div>
-                    <div class="player-info" id="playerInfoRight">
-                        <div class="player-avatar">👤</div>
-                        <div class="player-details">
-                            <div class="player-name">Gözləyir</div>
-                            <div class="player-score">101</div>
-                        </div>
-                    </div>
-                </div>
+                <div class="game-table">
+                    <div class="player-section player-section-top">
+                        <div class="player-deck-section">
 
-                <div class="player-section player-section-bottom">
-                    <div class="my-actions">
-                        <button id="sortBtn" class="btn-action">🔤 Sırala</button>
-                        <button id="declareWinBtn" class="btn-action btn-success" disabled>🏆 Bitir</button>
-                    </div>
+                            <div class="player-deck-top" id="playerInfoTop">
+                                <div class="player-avatar">👤</div>
+                                <div class="player-details detail-sides">
+                                    <div id="topPlayerName" class="player-name">Gözləyir</div>
+                                    <!-- <div class="player-score">101</div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="discard-zone" id="discardZoneTop">🗑️</div> -->
+                        <div class="discard-zone" id="discardZoneTop" onclick="tryDrawFromTopPlayer()">
+                            <!-- 🗑️ -->
+                        </div>
 
-                    <div class="my-board-container">
-                        <div class="my-board" id="myBoard">
-                            <!-- <div class="tile-row" id="myRow1"></div>
-                            <div class="tile-row" id="myRow2"></div> -->
-                        </div>
-                        <div class="my-discard-zone" id="myDiscardZone">
-                            🗑️
-                            <div class="discard-label">BURAYA<br>AT</div>
-                        </div>
                     </div>
 
-                    <div class="player-info active" id="myPlayerInfo">
-                        <div class="player-avatar">😊</div>
-                        <div class="player-details">
-                            <div class="player-name" id="myPlayerName">Siz</div>
-                            <div class="player-score" id="myScore">101</div>
+                    <div class="player-section player-section-right">
+                        <div class="discard-zone discard-zone-right" id="discardZoneRight">
+                        </div>
+                        <div class="player-deck-section deck-right">
+                            <div class="player-deck-right" id="playerInfoRight">
+                                <div class="player-avatar avatar-right">👤</div>
+                                <div class="player-details detail-sides">
+                                    <div id="rightPlayerName" class="player-name">Gözləyir</div>
+                                    <!-- <div class="player-score">101</div> -->
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="player-section player-section-left">
-                    <div class="player-info" id="playerInfoLeft">
-                        <div class="player-avatar">👤</div>
-                        <div class="player-details">
-                            <div class="player-name">Gözləyir</div>
-                            <div class="player-score">101</div>
+                    <div class="player-section player-section-bottom">
+                        <div class="my-board-container" id="myBoardContainer">
+
+                            <div class="my-actions">
+                                <!-- <button id="declareWinBtn" class="btn-action btn-success" disabled>🏆 Bitir</button> -->
+                                <!-- <div class="player-info active" id="myPlayerInfo">
+                                    <div class="player-avatar">😊</div>
+                                    <div class="player-details">
+                                        <div class="player-name" id="myPlayerName">You</div>
+                                        <div class="player-score" id="myScore">101</div>
+                                    </div>
+                                </div> -->
+                                <!-- <button id="sortBtn" class="btn-action">Sırala</button> -->
+                            </div>
+
+                            <div class="my-board" id="myBoard">
+                                <!-- <div class="tile-row" id="myRow1"></div>
+                                <div class="tile-row" id="myRow2"></div> -->
+                            </div>
+                            <div class="my-discard-zone" id="myDiscardZone">
+                                <!-- 🗑️
+                                <div class="discard-label">BURAYA<br>AT</div> -->
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="player-section player-section-left">
+                        <div class="player-deck-section deck-left">
+                            <div class="player-deck-left" id="playerInfoLeft">
+                                <div class="player-avatar avatar-left">👤</div>
+                                <div class="player-details detail-sides">
+                                    <div id="leftPlayerName" class="player-name">Gözləyir</div>
+                                    <!-- <div class="player-score">101</div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="discard-zone clickable discard-zone-left" id="discardZoneLeft"
+                            onclick="tryDrawFromLeftPlayer()">
                         </div>
                     </div>
-                    <div class="discard-zone clickable" id="discardZoneLeft" onclick="tryDrawFromLeftPlayer()">🗑️</div>
-                </div>
 
-                <div class="center-area">
-                    <div class="indicator-wrapper">
-                        <div class="indicator-label">🎯 GÖSTƏRİCİ</div>
+                    <div class="center-area">
+                        <!-- <div class="indicator-wrapper"> -->
+                        <!-- <div class="indicator-label">🎯 OKEY</div> -->
+                        <!-- </div> -->
+
                         <div id="indicatorTile"></div>
-                    </div>
+                        <div class="deck-stack" id="deckStack">
+                            <div class="deck-tile-layer" id="deckCountLabel"></div>
+                            <!-- <div class="deck-label" id="deckCountLabel">106</div> -->
+                        </div>
+                        <!-- <div id="notification" class="notification"></div> -->
 
-                    <div class="deck-stack" id="deckStack">
-                        <div class="deck-tile-layer">🎴</div>
-                        <div class="deck-tile-layer">🎴</div>
-                        <div class="deck-tile-layer">🎴</div>
-                        <div class="deck-label" id="deckCountLabel">📚 106</div>
-                    </div>
-
-                    <div class="indicator-wrapper">
-                        <div class="indicator-label">🃏 JOKER</div>
-                        <div id="jokerTile"></div>
+                        <!-- ✅ Qazanan kombinasiya modalı -->
+                        <div id="winModal" class="win-modal">
+                            <h2>🏆 QAZANAN KOMBİNASİYA</h2>
+                            <div id="winMeldsContainer" class="win-melds"></div>
+                        </div>
+                        <div class="indicator-wrapper">
+                            <!-- <div class="indicator-label">🃏 JOKER</div>
+                        <div id="jokerTile"></div> -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <!-- <div id="notification" class="notification"></div> -->
 
-    <div id="notification" class="notification"></div>
+
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
     <script>
 
-
-
-        //Collusion test etc
-
-        // ✅ İki daş toqquşurmu?
-        function checkTileCollision(x1, y1, x2, y2, tileWidth = 55, tileHeight = 70) {
-            return !(x1 + tileWidth <= x2 ||
-                x2 + tileWidth <= x1 ||
-                y1 + tileHeight <= y2 ||
-                y2 + tileHeight <= y1);
+        playerPositions = {
+            top: topPlayerName,
+            right: rightPlayerName,
+            left: leftPlayerName
         }
 
-        // ✅ Pozisiya sərbəstdirmi? (başqa daşla toqquşmur?)
+        function getPlayerNames() {
+            return {
+                top: document.getElementById("topPlayerName")?.textContent || "",
+                right: document.getElementById("rightPlayerName")?.textContent || "",
+                left: document.getElementById("leftPlayerName")?.textContent || ""
+            };
+        }
+        let activeTimerInterval = null;
+        function findPosition(username) {
+            // Top player
+            const topName = document.getElementById("topPlayerName")?.textContent;
+            if (topName === username) return 'top';
+
+            // Right player
+            const rightName = document.getElementById("rightPlayerName")?.textContent;
+            if (rightName === username) return 'right';
+
+            // Left player
+            const leftName = document.getElementById("leftPlayerName")?.textContent;
+            if (leftName === username) return 'left';
+
+            // Bottom (özüm)
+            const myName = document.querySelector('#myPlayerName')?.textContent;
+            if (myName === username) return 'bottom';
+
+            console.log(topName, rightName, leftName, myName);
+
+            return null;
+        }
+        // function showTimer(username, seconds) {
+        //     const position = findPosition(username);
+        //     if (!position) {
+        //         console.log('❌ Player tapılmadı:', username);
+        //         return;
+        //     }
+
+        //     console.log(`✅ Timer: ${username} (${position}) - ${seconds}s`);
+
+        //     // Əvvəlki timer-ləri sil
+        //     document.querySelectorAll('.player-deck-top, .player-deck-right, .player-deck-left').forEach(el => {
+        //         el.classList.remove('timer-active');
+        //     });
+
+        //     // Element tap
+        //     let deckElement = null;
+        //     if (position === 'top') deckElement = document.querySelector('.player-deck-top');
+        //     if (position === 'right') deckElement = document.querySelector('.player-deck-right');
+        //     if (position === 'left') deckElement = document.querySelector('.player-deck-left');
+
+        //     if (deckElement) {
+        //         const percentage = (seconds / 30) * 100; // 30 = max saniyə
+
+        //         // Rəng
+        //         let color = '#4CAF50'; // yaşıl
+        //         if (seconds <= 10) color = '#FFC107'; // sarı
+        //         if (seconds <= 5) color = '#f44336'; // qırmızı
+
+        //         deckElement.style.setProperty('--timer-progress', `${percentage}%`);
+        //         deckElement.style.setProperty('--timer-color', color);
+        //         deckElement.classList.add('timer-active');
+        //     }
+        // }
+
+        function showTimer(username, seconds) {
+            const position = findPosition(username);
+            if (!position) {
+                console.log('❌ Player tapılmadı:', username);
+                return;
+            }
+
+            console.log(`✅ Timer başladı: ${username} (${position}) - ${seconds}s`);
+
+            // Köhnə timer-i dayandır
+            if (activeTimerInterval) {
+                clearInterval(activeTimerInterval);
+                activeTimerInterval = null;
+            }
+
+            // Əvvəlki timer-ləri sil
+            document.querySelectorAll('.player-deck-top, .player-deck-right, .player-deck-left,.my-board').forEach(el => {
+                el.classList.remove('timer-active');
+            });
+
+            // Element tap
+            let deckElement = null;
+            if (position === 'top') deckElement = document.querySelector('.player-deck-top');
+            if (position === 'right') deckElement = document.querySelector('.player-deck-right');
+            if (position === 'left') deckElement = document.querySelector('.player-deck-left');
+            if (position === 'bottom') deckElement = document.querySelector('.my-board');
+
+            if (!deckElement) return;
+
+            let remainingSeconds = seconds;
+            const maxSeconds = 33;
+
+            // İlk göstər
+            updateTimerDisplay(deckElement, remainingSeconds, maxSeconds);
+
+            // Hər saniyə yenilə
+            activeTimerInterval = setInterval(() => {
+                remainingSeconds--;
+
+                if (remainingSeconds <= 0) {
+                    clearInterval(activeTimerInterval);
+                    activeTimerInterval = null;
+                    deckElement.classList.remove('timer-active');
+                    console.log('⏰ Timer bitdi');
+                    return;
+                }
+
+                updateTimerDisplay(deckElement, remainingSeconds, maxSeconds);
+            }, 1000);
+        }
+        function updateTimerDisplay(element, seconds, maxSeconds) {
+            const percentage = (seconds / maxSeconds) * 100;
+
+            // Rəng
+            let color = '#4CAF50'; // yaşıl
+            if (seconds <= 10) color = '#FFC107'; // sarı
+            if (seconds <= 5) color = '#f44336'; // qırmızı
+
+            element.style.setProperty('--timer-progress', `${percentage}%`);
+            element.style.setProperty('--timer-color', color);
+            element.classList.add('timer-active');
+
+            console.log(`⏱️ Timer: ${seconds}s (${percentage.toFixed(0)}%)`);
+        }
+        // function clearTimers() {
+        //     document.querySelectorAll('.player-deck-top, .player-deck-right, .player-deck-left').forEach(el => {
+        //         el.classList.remove('timer-active');
+        //     });
+        // }
+
+        function clearTimers() {
+            if (activeTimerInterval) {
+                clearInterval(activeTimerInterval);
+                activeTimerInterval = null;
+            }
+
+            document.querySelectorAll('.player-deck-top, .player-deck-right, .player-deck-left').forEach(el => {
+                el.classList.remove('timer-active');
+            });
+
+            console.log('🧹 Timer-lər təmizləndi');
+        }
+
+        window.addEventListener("load", () => {
+            setTimeout(() => {
+                window.scrollTo(0, 1);
+            }, 100);
+        });
+
+        function checkTileCollision(x1, y1, x2, y2) {
+            const tileWidth = 36;
+            const tileHeight = 55;
+            const tolerance = 4; // ✅ 4px overlap-ə icazə ver
+
+            return !(
+                x1 + tileWidth - tolerance <= x2 ||
+                x2 + tileWidth - tolerance <= x1 ||
+                y1 + tileHeight - tolerance <= y2 ||
+                y2 + tileHeight - tolerance <= y1
+            );
+        }
+
         function isPositionValid(x, y, currentIdx) {
-            const tileWidth = 55;
-            const tileHeight = 70;
-
             for (let i = 0; i < myHand.length; i++) {
-                if (i === currentIdx) continue; // Özünü yoxlama
-
+                if (i === currentIdx) continue;
                 const otherTile = myHand[i];
-                if (checkTileCollision(x, y, otherTile.x, otherTile.y, tileWidth, tileHeight)) {
-                    return false; // Toqquşma var!
+                if (otherTile.x !== undefined && otherTile.y !== undefined) {
+                    if (checkTileCollision(x, y, otherTile.x, otherTile.y)) {
+                        return false;
+                    }
                 }
             }
-            return true; // Sərbəstdir
+            return true;
         }
 
-        // ✅ Ən yaxın boş yeri tap
         function findNearestValidPosition(targetX, targetY, currentIdx, boardWidth) {
-            const tileWidth = 55;
-            const gap = 5;
+            const tileWidth = 36;
+            const gap = 3; // ✅ Gap artırıldı
             const ROW_1_Y = 10;
-            const ROW_2_Y = 90;
+            const ROW_2_Y = 70; // ✅ Yeniləndi
 
-            // Hansı sətirdə?
-            const snappedY = targetY < 50 ? ROW_1_Y : ROW_2_Y;
+            const snappedY = targetY < 55 ? ROW_1_Y : ROW_2_Y; // ✅ Threshold yeniləndi
 
-            // X eksenində sola-sağa yoxla
-            for (let offset = 0; offset < boardWidth; offset += (tileWidth + gap)) {
+            // ✅ İlk olaraq dəqiq yeri yoxla
+            if (isPositionValid(targetX, snappedY, currentIdx)) {
+                return { x: targetX, y: snappedY };
+            }
+
+            // ✅ X eksenində kiçik addımlarla yoxla
+            const step = tileWidth + gap;
+            const maxSearchDistance = boardWidth;
+
+            for (let offset = gap; offset < maxSearchDistance; offset += step) {
                 // Sağa yoxla
                 let testX = targetX + offset;
                 if (testX + tileWidth <= boardWidth && isPositionValid(testX, snappedY, currentIdx)) {
@@ -182,9 +376,14 @@
                 }
             }
 
-            // Başqa sətirdə yoxla
+            // ✅ Başqa sətirdə yoxla
             const alternateY = snappedY === ROW_1_Y ? ROW_2_Y : ROW_1_Y;
-            for (let offset = 0; offset < boardWidth; offset += (tileWidth + gap)) {
+
+            if (isPositionValid(targetX, alternateY, currentIdx)) {
+                return { x: targetX, y: alternateY };
+            }
+
+            for (let offset = gap; offset < maxSearchDistance; offset += step) {
                 let testX = targetX + offset;
                 if (testX + tileWidth <= boardWidth && isPositionValid(testX, alternateY, currentIdx)) {
                     return { x: testX, y: alternateY };
@@ -196,9 +395,32 @@
                 }
             }
 
-            // Heç yer tapılmadı, orijinal yeri saxla
-            return { x: myHand[currentIdx].x, y: myHand[currentIdx].y };
+            // ✅ Heç yer tapılmasa, orijinal yeri saxla
+            return {
+                x: myHand[currentIdx].x || targetX,
+                y: myHand[currentIdx].y || snappedY
+            };
         }
+        function autoArrangeTiles() {
+            const tileWidth = 36;
+            const gap = 3;
+            const startX = 10;
+            const maxPerRow = 8;
+            const ROW_1_Y = 10;
+            const ROW_2_Y = 70;
+
+            myHand.forEach((tile, idx) => {
+                const row = Math.floor(idx / maxPerRow);
+                const col = idx % maxPerRow;
+
+                tile.x = startX + col * (tileWidth + gap);
+                tile.y = row === 0 ? ROW_1_Y : ROW_2_Y;
+
+                // ✅ Cache-ə əlavə et
+                tilePositions[tile.id] = { x: tile.x, y: tile.y };
+            });
+        }
+
 
         // ✅ Bu yeni dəyişənləri ƏLAVƏ ET (scriptın əvvəlində):
         let IFRAME_TOKEN = null;
@@ -247,13 +469,13 @@
 
                 // UI-ı yenilə
                 if (document.getElementById('userName')) {
-                    document.getElementById('userName').textContent = payload.fullName;
+                    document.getElementById('userName').textContent = payload.username;
                 }
                 if (document.getElementById('userBalance')) {
                     document.getElementById('userBalance').textContent = `💰 ${payload.balance}₼`;
                 }
                 if (document.getElementById('myPlayerName')) {
-                    document.getElementById('myPlayerName').textContent = payload.fullName;
+                    document.getElementById('myPlayerName').textContent = payload.username;
                 }
 
                 log('✅ User data saxlanıldı və UI yeniləndi');
@@ -266,15 +488,24 @@
         let connection, currentUser, currentRoomId, myHand = [], myPosition = 0;
         let hasDrawn = false, isMyTurn = false, mustDiscard = false;
         let draggedTile = null, draggedFromIndex = null;
+        let maxPlayers = 4;
+        let currentTurnTimer = null;
+        let turnTimeRemaining = 0;
+        // TILE POSITIONS 
+        let tilePositions = {}; // ✅ Tile ID → {x, y} cache
+
 
         function log(...args) { if (CONFIG.DEBUG) console.log('🎮', ...args); }
 
-        function showNotification(msg, type = 'info') {
-            const n = document.getElementById('notification');
-            n.textContent = msg;
-            n.className = `notification ${type} show`;
-            setTimeout(() => n.classList.remove('show'), 3000);
+
+        function showNotification(message, type = 'info') {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
         }
+
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -314,6 +545,7 @@
         //         showNotification('Bağlantı xətası', 'error');
         //     }
         // }
+
         async function initializeSignalR() {
             try {
                 // React-dan data gözlə
@@ -348,14 +580,9 @@
                 showNotification('Bağlantı xətası: ' + err.message, 'error');
             }
         }
+
         function setupSignalREvents() {
-            // connection.on("UserData", (d) => {
-            //     currentUser = d;
-            //     document.getElementById('userName').textContent = d.fullName;
-            //     document.getElementById('userBalance').textContent = `💰 ${d.balance}₼`;
-            //     document.getElementById('userRank').textContent = d.rank;
-            //     document.getElementById('myPlayerName').textContent = d.fullName;
-            // });
+
             connection.on("UserData", (d) => {
                 // SignalR-dan gələn data ilə yenilə (React data ilə birləşdir)
                 currentUser = {
@@ -363,28 +590,226 @@
                     ...d
                 };
 
-                document.getElementById('userName').textContent = d.fullName || IFRAME_USER.fullName;
-                document.getElementById('userBalance').textContent = `💰 ${d.balance}₼`;
+                document.getElementById('userName').textContent = d.username || IFRAME_USER.username;
+                document.getElementById('userBalance').textContent = `${d.balance}`;
                 document.getElementById('userRank').textContent = d.rank;
-                document.getElementById('myPlayerName').textContent = d.fullName || IFRAME_USER.fullName;
+                document.getElementById('myPlayerName').textContent = d.username || IFRAME_USER.username;
             });
             connection.on("BalanceUpdated", (balance) => {
-                document.getElementById('userBalance').textContent = `💰 ${balance}₼`;
+                document.getElementById('userBalance').textContent = `${balance}`;
             });
 
             connection.on("RoomCreated", () => loadRooms());
             connection.on("RoomDeleted", () => loadRooms());
 
+
+            // ✅ PlayerTimeout eventi
+            // connection.on("PlayerTimeout", (data) => {
+            //     log('⏰ Player timeout:', data);
+            //     showNotification(data.message || 'Oyunçu vaxt bitirdi', 'warning');
+            //     clearAllTimers();
+            // });
+
+
+            connection.on("PlayerTimeout", (data) => {
+                log('⏰ TIMEOUT:', data);
+
+                const { playerName, discardedTile, message } = data;
+
+                showNotification(`${playerName} vaxtı bitdi - avtomatik daş atıldı`, 'success');
+
+                // 🎯 2. Avtomatik daş atma animasiyası
+                if (discardedTile) {
+                    showAutoDiscardAnimation(playerName, discardedTile);
+                }
+
+                // 🎯 3. Ekrandakı oyunçunun infosunu yenilə
+                updatePlayerUIAfterTimeout(playerName);
+            });
+
+
+
+
+            // ✅ TurnTimerStarted eventi
+            connection.on("TurnTimerStarted", (data) => {
+                console.log('⏱️ Timer started:', data);
+                showTimer(data.username, data.seconds);
+            });
+
             connection.on("JoinedRoom", (d) => {
                 currentRoomId = d.roomId;
                 myPosition = d.position;
+                maxPlayers = d.maxPlayers || 4;
                 document.getElementById('roomNameDisplay').textContent = d.roomName;
+
+                adjustTableLayout(maxPlayers);
+
+
                 if (d.hand && d.hand.length > 0) {
                     myHand = d.hand;
                     renderMyTiles();
+                    autoArrangeTiles();
                 }
                 showScreen('gameScreen');
                 showNotification('Otağa daxil oldunuz', 'success');
+            });
+            connection.on("TurnTimerUpdate", (data) => {
+                console.log('⏱️ Timer update:', data);
+                showTimer(data.username, data.seconds);
+            });
+
+            connection.on("TurnTimerStopped", () => {
+                console.log('⏹️ Timer stopped');
+                clearTimers();
+            });
+
+            // ✅ PlayerAction event-i (avtomatik daş atma bildirişi)
+            connection.on("PlayerAction", (data) => {
+                if (data.action === "AutoDiscard") {
+                    showNotification(data.message, 'info');
+                    log('⏰ AUTO ACTION:', data);
+                }
+            });
+
+            // ✅ YourTurn event-də timer-i təmizlə
+            const originalYourTurnHandler = connection.on("YourTurn", () => {
+                isMyTurn = true;
+                hasDrawn = false;
+                mustDiscard = false;
+                clearAllTimers();
+                updateTurnUI();
+                showNotification('Sizin növbənizdir! DAŞ ÇƏKİN!', 'info');
+            });
+
+            connection.on("TileDrawn", (d) => {
+                myHand = d.hand;
+                hasDrawn = true;
+                mustDiscard = true;
+                renderMyTiles();
+                updateTurnUI();
+
+                // ✅ Vizual olaraq dəstədən daş çəkilməsini göstər
+                const deckStack = document.getElementById('deckStack');
+                if (deckStack) {
+                    deckStack.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        deckStack.style.transform = '';
+                    }, 200);
+                }
+
+                showNotification('Daş çəkdiniz, indi DAŞ ATIN!', 'success');
+            });
+
+            // ✅ TileDiscarded event-də timer təmizlə
+            connection.on("TileDiscarded", (d) => {
+                myHand = d.hand;
+                hasDrawn = false;
+                isMyTurn = false;
+                mustDiscard = false;
+                clearAllTimers();
+                renderMyTiles();
+                updateTurnUI();
+            });
+
+
+            // ✅ PlayerDiscardedTile - vizual animasiya
+            connection.on("PlayerDiscardedTile", (d) => {
+                if (d.tile && d.playerPosition !== undefined) {
+                    displayDiscardedTile(d.tile, d.playerPosition);
+
+                    // ✅ Animasiya
+                    const relativePos = getRelativePosition(myPosition, d.playerPosition);
+                    let zoneId = '';
+
+                    if (relativePos === 'bottom') zoneId = 'myDiscardZone';
+                    else if (relativePos === 'top') zoneId = 'discardZoneTop';
+                    else if (relativePos === 'left') zoneId = 'discardZoneLeft';
+                    else if (relativePos === 'right') zoneId = 'discardZoneRight';
+
+                    const zone = document.getElementById(zoneId);
+                    if (zone) {
+                        // Atma animasiyası
+                        zone.style.transform = 'scale(1.15)';
+                        zone.style.boxShadow = '0 0 30px rgba(231, 76, 60, 0.8)';
+
+                        setTimeout(() => {
+                            zone.style.transform = '';
+                            zone.style.boxShadow = '';
+                        }, 300);
+                    }
+                }
+            });
+
+            // ✅ GameReset event-də timer təmizlə
+            connection.on("GameReset", () => {
+                console.log('🔄 Game Reset - təmizləmə başlayır...');
+
+                // ✅ Oyun vəziyyətini sıfırla
+                myHand = [];
+                hasDrawn = false;
+                mustDiscard = false;
+                isMyTurn = false;
+
+                tilePositions = {};
+
+                // ✅ Timer-ləri təmizlə
+                clearAllTimers();
+
+                // ✅ Lövhəni təmizlə
+                const row1 = document.getElementById('myRow1');
+                const row2 = document.getElementById('myRow2');
+                if (row1) row1.innerHTML = '';
+                if (row2) row2.innerHTML = '';
+
+                // ✅ Bütün discard zona-ları təmizlə
+                clearAllDiscardZones();
+
+                // ✅ Göstərici və joker-i təmizlə
+                const indicatorEl = document.getElementById('indicatorTile');
+                const jokerEl = document.getElementById('jokerTile');
+                if (indicatorEl) indicatorEl.innerHTML = '';
+                if (jokerEl) jokerEl.innerHTML = '';
+
+                // ✅ Dəstə sayını sıfırla
+                const deckLabel = document.getElementById('deckCountLabel');
+                if (deckLabel) {
+                    deckLabel.textContent = '106';
+                    deckLabel.style.color = 'white';
+                }
+
+                // ✅ Modal-ı bağla
+                document.getElementById('winModal')?.classList.remove('show');
+
+                // ✅ Bildiriş
+                showNotification('Yeni raund hazırlanır...', 'info');
+
+                console.log('✅ Təmizləmə tamamlandı');
+            });
+
+            // ✅ Dəstə vizual yeniləmə
+            connection.on("GameStateUpdated", (state) => {
+                if (state.stockCount !== undefined) {
+                    const label = document.getElementById('deckCountLabel');
+                    if (label) {
+                        label.textContent = `📚 ${state.stockCount}`;
+
+                        // ✅ Az daş qalıbsa xəbərdarlıq
+                        if (state.stockCount <= 10 && state.stockCount > 0) {
+                            label.style.color = '#f39c12';
+                        } else if (state.stockCount === 0) {
+                            label.style.color = '#e74c3c';
+                            label.textContent = '❌ BOŞ';
+                        }
+                    }
+                }
+
+                if (state.potAmount !== undefined) {
+                    document.getElementById('potAmountDisplay').textContent = `Pot: ${state.potAmount}₼`;
+                }
+
+                if (state.players) {
+                    updatePlayersDisplay(state.players);
+                }
             });
 
             connection.on("JoinError", (msg) => showNotification(msg, 'error'));
@@ -395,6 +820,14 @@
             connection.on("GameStarted", (d) => {
                 log('GameStarted:', d);
                 myHand = d.hand || [];
+
+                adjustTableLayout(maxPlayers);
+
+                tilePositions = {};
+                if (myHand.length > 0) {
+                    autoArrangeTiles();
+                }
+
 
                 if (myHand.length === 15) {
                     hasDrawn = true;
@@ -411,28 +844,24 @@
                 if (d.indicator) setIndicatorTile(d.indicator);
                 if (d.joker) setJokerTile(d.joker);
 
-                document.getElementById('gameModeDisplay').textContent = `Mod: ${d.gameMode}`;
+                // document.getElementById('gameModeDisplay').textContent = `Mod: ${d.gameMode}`;
                 document.getElementById('myScore').textContent = d.initialScore;
                 updateTurnUI();
+
+                const playerPositions = getPlayerNames();
+                console.log(playerPositions);
 
                 if (!mustDiscard) showNotification('Oyun başladı! 🎮', 'success');
             });
 
             connection.on("GameStateUpdated", (state) => {
                 if (state.stockCount !== undefined)
-                    document.getElementById('deckCountLabel').textContent = `📚 ${state.stockCount}`;
+                    document.getElementById('deckCountLabel').textContent = `${state.stockCount}`;
                 if (state.potAmount !== undefined)
                     document.getElementById('potAmountDisplay').textContent = `Pot: ${state.potAmount}₼`;
                 if (state.players) updatePlayersDisplay(state.players);
             });
 
-            connection.on("YourTurn", () => {
-                isMyTurn = true;
-                hasDrawn = false;
-                mustDiscard = false;
-                updateTurnUI();
-                showNotification('Sizin növbənizdir! DAŞ ÇƏKİN!', 'info');
-            });
 
             connection.on("TileDrawn", (d) => {
                 myHand = d.hand;
@@ -445,14 +874,7 @@
 
             connection.on("PlayerDrew", (d) => showNotification(`${d.playerName} daş çəkdi`, 'info'));
 
-            connection.on("TileDiscarded", (d) => {
-                myHand = d.hand;
-                hasDrawn = false;
-                isMyTurn = false;
-                mustDiscard = false;
-                renderMyTiles();
-                updateTurnUI();
-            });
+
 
             connection.on("PlayerDiscardedTile", (d) => {
                 if (d.tile && d.playerPosition !== undefined)
@@ -460,21 +882,72 @@
             });
 
             connection.on("ActionError", (msg) => showNotification(msg, 'error'));
-            connection.on("RoundOver", (d) => showNotification(`🎉 ${d.winner} qazandı!`, 'success'));
-            connection.on("GameOver", (d) => {
-                showNotification(`🏆 Qalibi: ${d.finalWinner}`, 'success');
-                setTimeout(() => { showScreen('roomListScreen'); loadRooms(); }, 5000);
+
+            // connection.on("RoundOver", (d) => showNotification(`🎉 ${d.winner} qazandı!`, 'success'));
+            connection.on("RoundOver", (d) => {
+                console.log('🎉 RoundOver:', d);
+
+                showNotification(`🎉 ${d.winner} qazandı!`, 'success');
+
+                // ✅ Kombinasiyaları masanın ortasında modal ilə göstər
+                const modal = document.getElementById('winModal');
+                const container = document.getElementById('winMeldsContainer');
+
+                if (modal && container && d.melds && d.melds.length > 0) {
+                    container.innerHTML = '';
+
+                    d.melds.forEach((meld, idx) => {
+                        const meldDiv = document.createElement('div');
+                        meldDiv.className = 'win-meld-group';
+                        meldDiv.innerHTML = `<strong style="color: #f39c12; min-width: 80px;">Qrup ${idx + 1}:</strong>`;
+
+                        meld.forEach(tile => {
+                            meldDiv.innerHTML += createTileHTML(tile, 0);
+                        });
+
+                        container.appendChild(meldDiv);
+                    });
+
+                    const winTypeEl = document.createElement('p');
+                    winTypeEl.style.cssText = 'margin-top: 25px; font-size: 20px; text-align: center; color: #f39c12; font-weight: 800;';
+                    winTypeEl.innerHTML = `🎖️ Bitirmə növü: <strong>${d.winType}</strong>`;
+                    container.appendChild(winTypeEl);
+
+                    modal.classList.add('show');
+
+                    setTimeout(() => modal.classList.remove('show'), 10000);
+                }
             });
 
-            connection.on("GameReset", () => {
-                myHand = [];
-                hasDrawn = false;
-                mustDiscard = false;
-                isMyTurn = false;
-                renderMyTiles();
-                clearAllDiscardZones();
-                showNotification('Yeni raund...', 'info');
+            connection.on("GameOver", (d) => {
+                if (d.reason) {
+                    showNotification(d.reason, 'error');
+                } else {
+                    showNotification(`🏆 Final Qalibi: ${d.finalWinner}`, 'success');
+                }
+
+                // ✅ Final xalları göstər
+                if (d.finalScores && d.finalScores.length > 0) {
+                    console.log('📊 Final Scores:', d.finalScores);
+                }
+
+                // ✅ 5 saniyə sonra otaq siyahısına qayıt
+                setTimeout(() => {
+                    showScreen('roomListScreen');
+                    loadRooms();
+                }, 5000);
             });
+
+            // connection.on("GameReset", () => {
+            //     myHand = [];
+            //     hasDrawn = false;
+            //     mustDiscard = false;
+            //     isMyTurn = false;
+            //     renderMyTiles();
+            //     clearAllDiscardZones();
+            //     document.getElementById('winModal')?.classList.remove('show');
+            //     showNotification('Yeni raund...', 'info');
+            // });
 
             connection.on("WinDeclared", (d) => showNotification(d.message, d.isValid ? 'success' : 'error'));
             connection.on("RankUpdated", (d) => {
@@ -492,6 +965,264 @@
             connection.on("LeaveError", (msg) => showNotification(msg, 'error'));
         }
 
+
+
+
+        function adjustTableLayout(playerCount) {
+            const table = document.querySelector('.game-table');
+            if (!table) return;
+
+            // Əvvəlki class-ları sil
+            table.classList.remove('players-2', 'players-3', 'players-4');
+
+            // Yeni class əlavə et
+            table.classList.add(`players-${playerCount}`);
+
+            log(`🎮 Masa ${playerCount} nəfərlik rejimdə`);
+        }
+        // ============autoDiscard============== 
+        // ✅ AVTOMATIK DAŞ ATMA ANİMASİYASI
+        function showAutoDiscardAnimation(playerName, tile) {
+            const relativePos = getRelativePositionByName(playerName);
+            let zoneId = '';
+
+            if (relativePos === 'bottom') zoneId = 'myDiscardZone';
+            else if (relativePos === 'top') zoneId = 'discardZoneTop';
+            else if (relativePos === 'left') zoneId = 'discardZoneLeft';
+            else if (relativePos === 'right') zoneId = 'discardZoneRight';
+
+            const zone = document.getElementById(zoneId);
+            if (!zone) return;
+
+            // 🎯 Daş elementi yarat
+            const autoTile = document.createElement('div');
+            autoTile.className = `okey-tile ${(tile.color || '').toLowerCase()}`;
+            autoTile.style.position = 'fixed';
+            autoTile.style.width = '36px';
+            autoTile.style.height = '55px';
+            autoTile.style.zIndex = '7777';
+            autoTile.style.animation = 'autoDiscardFly 0.8s ease-in-out forwards';
+
+            // Daş üzərində mətn
+            if (tile.isJoker || tile.isFakeJoker) {
+                autoTile.innerHTML = '<div class="tile-joker-star">★</div>';
+            } else {
+                const color = (tile.color || '').toLowerCase();
+                const dotColor = color === 'red' ? '#d32f2f' :
+                    color === 'yellow' ? '#f9a825' :
+                        color === 'blue' ? '#1976d2' : '#212121';
+                autoTile.innerHTML = `
+            <div class="tile-number">${tile.number}</div>
+
+            <div class="tile-color-dot-container">
+            <div class="tile-color-dot" style="background: ${dotColor};"></div>
+            </div>
+        `;
+            }
+
+            // 🎯 Başlanğıc position (oyunçunun masada yerləşdiyi yer)
+            const playerInfo = getPlayerInfoElement(relativePos);
+            if (playerInfo) {
+                const rect = playerInfo.getBoundingClientRect();
+                autoTile.style.left = (rect.left + rect.width / 2 - 28) + 'px';
+                autoTile.style.top = (rect.top + rect.height / 2 - 41) + 'px';
+            }
+
+            // 🎯 CSS-də hedef pozisiyanı təyin et
+            autoTile.setAttribute('data-target-zone', zoneId);
+
+            // 🎯 Sona çatdığında
+            autoTile.addEventListener('animationend', () => {
+                autoTile.remove();
+
+                // 🎯 Atma zonasına daş əlavə et
+                displayDiscardedTile(tile, getPlayerPositionByName(playerName));
+
+                // 🎯 Zona vizual feedback
+                zone.style.transform = 'scale(1.15)';
+                zone.style.boxShadow = '0 0 30px rgba(39, 174, 96, 0.8)';
+
+                setTimeout(() => {
+                    zone.style.transform = '';
+                    zone.style.boxShadow = '';
+                }, 300);
+            });
+
+            document.body.appendChild(autoTile);
+            log('✨ Auto discard animation started');
+        }
+
+        // ✅ Oyunçunun adından position tapa bilmək üçün helper
+        function getRelativePositionByName(playerName) {
+            const players = document.querySelectorAll('[class*="player-info"]');
+
+            for (let el of players) {
+                const nameEl = el.querySelector('.player-name');
+                if (nameEl && nameEl.textContent === playerName) {
+                    // Element ID-dən position tap
+                    if (el.id === 'myPlayerInfo') return 'bottom';
+                    if (el.id === 'playerInfoTop') return 'top';
+                    if (el.id === 'playerInfoLeft') return 'left';
+                    if (el.id === 'playerInfoRight') return 'right';
+                }
+            }
+            return 'bottom';
+        }
+
+        // ✅ Position-dan player info elementi tapa bilmək
+        function getPlayerInfoElement(position) {
+            const idMap = {
+                'bottom': 'myPlayerInfo',
+                'top': 'playerInfoTop',
+                'left': 'playerInfoLeft',
+                'right': 'playerInfoRight'
+            };
+            return document.getElementById(idMap[position]);
+        }
+
+        // ✅ Oyunçunun adından position tapa bilmək üçün backup
+        function getPlayerPositionByName(playerName) {
+            const players = document.querySelectorAll('[class*="player-info"]');
+
+            for (let el of players) {
+                const nameEl = el.querySelector('.player-name');
+                if (nameEl && nameEl.textContent === playerName) {
+                    if (el.id === 'myPlayerInfo') return 0; // myPosition
+                    // Digərlərini əksik - lazım olsa doldur
+                }
+            }
+            return myPosition;
+        }
+
+        // ✅ UI-ı yenilə (daş sayını azalt)
+        function updatePlayerUIAfterTimeout(playerName) {
+            const players = document.querySelectorAll('[class*="player-info"]');
+
+            for (let el of players) {
+                const nameEl = el.querySelector('.player-name');
+                if (nameEl && nameEl.textContent === playerName) {
+                    const scoreEl = el.querySelector('.player-score');
+                    if (scoreEl) {
+                        const currentScore = parseInt(scoreEl.textContent) || 0;
+                        // Daş sayı 1 azalır
+                        if (currentScore > 0) {
+                            scoreEl.textContent = currentScore - 1;
+
+                            // 🎯 Visual pulse
+                            el.style.animation = 'playerPulse 0.5s ease-out';
+                            setTimeout(() => {
+                                el.style.animation = '';
+                            }, 500);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        // ✅ CSS ANİMASİYA (style tag-ına əlavə et)
+        // Əgər artıq var isə, yoxla və yenisini əlavə et
+        const style = document.createElement('style');
+        style.textContent = `
+    @keyframes autoDiscardFly {
+        0% {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.1) rotate(-15deg);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.7);
+        }
+        100% {
+            transform: scale(0.85) rotate(5deg);
+            opacity: 0.9;
+        }
+    }
+
+    @keyframes playerPulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.08);
+            box-shadow: 0 0 25px rgba(231, 76, 60, 0.8);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(500px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+`;
+        document.head.appendChild(style);
+
+        // ========================================== 
+        function updatePlayerTimer(playerPosition, seconds) {
+            const relativePos = getRelativePosition(myPosition, playerPosition);
+            let infoId = '';
+
+            if (relativePos === 'bottom') infoId = 'myPlayerInfo';
+            else if (relativePos === 'top') infoId = 'playerInfoTop';
+            else if (relativePos === 'left') infoId = 'playerInfoLeft';
+            else if (relativePos === 'right') infoId = 'playerInfoRight';
+
+            const playerInfo = document.getElementById(infoId);
+            if (!playerInfo) return;
+
+            // Köhnə timer-i sil
+            let timerBadge = playerInfo.querySelector('.timer-badge');
+            if (!timerBadge) {
+                timerBadge = document.createElement('div');
+                timerBadge.className = 'timer-badge';
+                playerInfo.style.position = 'relative';
+                playerInfo.appendChild(timerBadge);
+            }
+
+            // Yeni vaxt göstər
+            timerBadge.textContent = seconds;
+
+            // Rəng dəyiş
+            timerBadge.classList.remove('warning', 'critical');
+            if (seconds <= 5) {
+                timerBadge.classList.add('critical');
+            } else if (seconds <= 10) {
+                timerBadge.classList.add('warning');
+            }
+
+            // ✅ Mənim növbəmdədirsə - bildiriş
+            if (relativePos === 'bottom') {
+                if (seconds === 10) {
+                    showNotification(`⏰ 10 saniyə qaldı!`, 'info');
+                } else if (seconds === 5) {
+                    showNotification(`⚠️ 5 saniyə qaldı! Tələsin!`, 'error');
+                } else if (seconds === 1) {
+                    showNotification(`🚨 AVTOMATIK DAŞ ATILIR!`, 'error');
+                }
+            }
+        }
+
+        // ✅ Bütün timer-ləri təmizlə
+        function clearAllTimers() {
+            ['myPlayerInfo', 'playerInfoTop', 'playerInfoLeft', 'playerInfoRight'].forEach(id => {
+                const playerInfo = document.getElementById(id);
+                if (playerInfo) {
+                    const timerBadge = playerInfo.querySelector('.timer-badge');
+                    if (timerBadge) {
+                        timerBadge.remove();
+                    }
+                }
+            });
+        }
+
         async function loadRooms() {
             try {
                 const rooms = await connection.invoke("GetRoomList");
@@ -500,14 +1231,44 @@
                     grid.innerHTML = '<div style="text-align: center; padding: 50px; color: white;">Otaq tapılmadı</div>';
                     return;
                 }
+                // ${r.roomName}
+                // <div class="room-detail"><span>Yaradıcı:</span><span>${r.creatorName}</span></div>
+                // grid.innerHTML = rooms.map(r => `
+                //         <div class="room-card" onclick="joinRoom('${r.roomId}')">
+                //             <div class="room-name">Okey 51 Room</div>
+                //             <div class="room-detail"><span>Mode:</span><span>${r.gameMode === 'Okey51' ? '⚡ 51' : '🎯 101'}</span></div>
+                //             <div class="room-detail"><span>Entry Fee:</span><span>💰 ${r.entryFee}₼</span></div>
+                //             <div class="room-detail"><span>Players:</span><span>👥 ${r.playerCount}/4</span></div>
+                //         </div>
+                //     `).join('');
+                // <span class="room-status ${room.status === 'active' ? 'status-active' : 'status-full'}">
+                //     ${room.status === 'active' ? 'Açıq' : 'Dolu'}
+                // </span>
+                // <div class="room-detail">
+                //         <span class="room-detail-label">💳 Min. Balans</span>
+                //         <span class="room-detail-value">${room.minBalance}</span>
+                //     </div>
+                // <div class="room-detail">
+                //     <span class="room-detail-label">Game</span>
+                //     <span class="room-detail-value">51</span>
+                // </div>
                 grid.innerHTML = rooms.map(r => `
-                        <div class="room-card" onclick="joinRoom('${r.roomId}')">
-                            <div class="room-name">${r.roomName}</div>
-                            <div class="room-detail"><span>Yaradıcı:</span><span>${r.creatorName}</span></div>
-                            <div class="room-detail"><span>Mod:</span><span>${r.gameMode === 'Okey51' ? '⚡ 51' : '🎯 101'}</span></div>
-                            <div class="room-detail"><span>Giriş:</span><span>💰 ${r.entryFee}₼</span></div>
-                            <div class="room-detail"><span>Oyunçular:</span><span>👥 ${r.playerCount}/4</span></div>
+                <div class="room-card" onclick="joinRoom('${r.roomId}')">
+                        <div class="room-header">
+                        <div class="room-name">Okay Room</div>
+                    </div>
+                    <div class="room-details">
+                        <div class="room-detail">
+                            <span class="room-detail-label">💵 Bet</span>
+                            <span class="room-detail-value highlight">${r.entryFee}</span>
                         </div>
+                        <div class="room-detail">
+                            <span class="room-detail-label">👥 Players</span>
+                            <span class="room-detail-value">${r.playerCount}/${r.maxPlayers}</span>
+                        </div>
+                        
+                    </div>
+                    </div>
                     `).join('');
             } catch (err) { log('❌ Load rooms error:', err); }
         }
@@ -520,10 +1281,64 @@
             try {
                 showNotification('Qoşulma...', 'info');
                 await connection.invoke("JoinRoom", roomId, null);
+                sortTiles(); /////////////////////////////////////////////////////////////
             } catch (err) {
                 log('❌ Join error:', err);
                 showNotification('Qoşulmaq alınmadı', 'error');
             }
+        }
+
+        // ✅ YENİ FUNKSIYA: Göstərici üzərinə daş atmaq
+        function setupIndicatorDropZone() {
+            const indicatorEl = document.getElementById('indicatorTile');
+            if (!indicatorEl) return;
+
+            indicatorEl.addEventListener('dragenter', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (hasDrawn && mustDiscard && isMyTurn && draggedTile) {
+                    indicatorEl.style.border = '3px solid #27ae60';
+                    indicatorEl.style.transform = 'scale(1.1)';
+                }
+            });
+
+            indicatorEl.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (hasDrawn && mustDiscard && isMyTurn && draggedTile) {
+                    e.dataTransfer.dropEffect = 'move';
+                }
+            });
+
+            indicatorEl.addEventListener('dragleave', (e) => {
+                const rect = indicatorEl.getBoundingClientRect();
+                if (e.clientX < rect.left || e.clientX > rect.right ||
+                    e.clientY < rect.top || e.clientY > rect.bottom) {
+                    indicatorEl.style.border = '';
+                    indicatorEl.style.transform = '';
+                }
+            });
+
+            indicatorEl.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                indicatorEl.style.border = '';
+                indicatorEl.style.transform = '';
+
+                if (hasDrawn && mustDiscard && isMyTurn && draggedTile) {
+                    const tileId = draggedTile.id;
+                    draggedTile = null;
+                    draggedFromIndex = null;
+
+                    try {
+                        log('🎯 Göstərici üzərinə daş atılır - oyun bitir!');
+                        await connection.invoke("DiscardOnIndicator", tileId);
+                    } catch (err) {
+                        log('❌ DiscardOnIndicator error:', err);
+                        showNotification('Xəta baş verdi', 'error');
+                    }
+                }
+            });
         }
 
         async function leaveRoom() {
@@ -542,9 +1357,24 @@
                 showNotification(mustDiscard ? 'DAŞ ATIN!' : 'Növbənizi gözləyin', 'error');
                 return;
             }
+
+            // ✅ Vizual animasiya
+            const deckStack = document.getElementById('deckStack');
+            if (deckStack) {
+                deckStack.style.transform = 'scale(1.15) translateY(-10px)';
+                deckStack.style.boxShadow = '0 10px 35px rgba(52, 152, 219, 0.8)';
+
+                setTimeout(() => {
+                    deckStack.style.transform = '';
+                    deckStack.style.boxShadow = '';
+                }, 300);
+            }
+
             try {
                 await connection.invoke("DrawTile", "stock");
-            } catch (err) { log('❌ Draw error:', err); }
+            } catch (err) {
+                log('❌ Draw error:', err);
+            }
         }
 
         async function tryDrawFromLeftPlayer() {
@@ -555,18 +1385,18 @@
                 return;
             }
 
-            const zone = document.getElementById('discardZoneLeft');
+            const zone = document.getElementById('discardZoneTop');
             if (!zone || !zone.querySelector('.okey-tile')) {
-                showNotification('Sol oyunçu hələ daş atmayıb', 'error');
+                showNotification('Rəqib hələ daş atmayıb', 'error');
                 return;
             }
 
             try {
-                log('🎴 Sol oyunçudan daş götürürəm...');
+                log('🎴 Top oyunçudan daş götürürəm...');
                 await connection.invoke("DrawTile", "discard");
                 setTimeout(() => {
-                    zone.innerHTML = '🗑️';
-                    log('✅ Sol oyunçunun daşı silindi');
+                    zone.innerHTML = '';
+                    log('✅ Top oyunçunun daşı silindi');
                 }, 150);
             } catch (err) {
                 log('❌ Draw from discard error:', err);
@@ -579,9 +1409,24 @@
                 showNotification('Əvvəlcə daş çəkin!', 'error');
                 return;
             }
+
+            // ✅ Vizual animasiya - atma zonası
+            const myDiscardZone = document.getElementById('myDiscardZone');
+            if (myDiscardZone) {
+                myDiscardZone.style.transform = 'scale(1.1)';
+                myDiscardZone.style.borderColor = '#27ae60';
+
+                setTimeout(() => {
+                    myDiscardZone.style.transform = '';
+                    myDiscardZone.style.borderColor = '';
+                }, 300);
+            }
+
             try {
                 await connection.invoke("DiscardTile", tileId);
-            } catch (err) { log('❌ Discard error:', err); }
+            } catch (err) {
+                log('❌ Discard error:', err);
+            }
         }
 
         async function declareWin() {
@@ -590,8 +1435,10 @@
             } catch (err) { log('❌ Win error:', err); }
         }
 
+        // ✅ SORT FUNKSIYASINI YENILƏ
         function sortTiles() {
             const colorOrder = { red: 0, yellow: 1, blue: 2, black: 3, fakejoker: 4 };
+
             myHand.sort((a, b) => {
                 const colorA = (a.color || '').toLowerCase();
                 const colorB = (b.color || '').toLowerCase();
@@ -599,549 +1446,39 @@
                 return colorDiff !== 0 ? colorDiff : a.number - b.number;
             });
 
-            autoArrangeTiles(); // Yenidən düzəlt
+            // ✅ Cache-i təmizlə və yenidən düzəlt
+            tilePositions = {};
+            autoArrangeTiles();
             renderMyTiles();
+
             showNotification('Sıralandı', 'success');
         }
 
-        // function sortTiles() {
-        //     const colorOrder = { red: 0, yellow: 1, blue: 2, black: 3, fakejoker: 4 };
-        //     myHand.sort((a, b) => {
-        //         const colorA = (a.color || '').toLowerCase();
-        //         const colorB = (b.color || '').toLowerCase();
-        //         const colorDiff = (colorOrder[colorA] || 0) - (colorOrder[colorB] || 0);
-        //         return colorDiff !== 0 ? colorDiff : a.number - b.number;
-        //     });
-        //     renderMyTiles();
-        //     showNotification('Sıralandı', 'success');
-        // }
-
-
-
-
         function getRelativePosition(myPos, targetPos) {
-            const diff = (targetPos - myPos + 4) % 4;
-            if (diff === 0) return 'bottom';
-            if (diff === 1) return 'right';
-            if (diff === 2) return 'top';
-            if (diff === 3) return 'left';
-        }
+            const diff = (targetPos - myPos + maxPlayers) % maxPlayers;
 
-        // function renderMyTiles() {
-        //     const row1 = document.getElementById('myRow1');
-        //     const row2 = document.getElementById('myRow2');
-        //     if (!row1 || !row2) return;
-
-        //     const mid = Math.ceil(myHand.length / 2);
-        //     const firstRowTiles = myHand.slice(0, mid);
-        //     const secondRowTiles = myHand.slice(mid);
-
-        //     row1.innerHTML = firstRowTiles.map((tile, idx) => createTileHTML(tile, idx)).join('');
-        //     row2.innerHTML = secondRowTiles.map((tile, idx) => createTileHTML(tile, mid + idx)).join('');
-
-        //     setupTileDragDrop(row1, 1);
-        //     setupTileDragDrop(row2, 2);
-        //     setupMyDiscardZone();
-        // }
-        function renderMyTiles() {
-            const board = document.getElementById('myBoard');
-            if (!board) {
-                console.error('❌ myBoard tapılmadı!');
-                return;
+            if (maxPlayers === 2) {
+                // 2 nəfər: bottom, top
+                if (diff === 0) return 'bottom';
+                if (diff === 1) return 'top';
+            } else if (maxPlayers === 3) {
+                // 3 nəfər: bottom, left, right
+                if (diff === 0) return 'bottom';
+                if (diff === 1) return 'right';
+                if (diff === 2) return 'left';
+            } else {
+                // 4 nəfər: bottom, right, top, left
+                if (diff === 0) return 'bottom';
+                if (diff === 1) return 'right';
+                if (diff === 2) return 'top';
+                if (diff === 3) return 'left';
             }
 
-            // İlk dəfə pozisiya yoxdursa, avtomatik düzəlt
-            if (!myHand[0]?.x && myHand.length > 0) {
-                autoArrangeTiles();
-            }
-
-            // Board-u təmizlə
-            board.innerHTML = '';
-
-            // Hər bir daşı əlavə et
-            myHand.forEach((tile, idx) => {
-                const x = tile.x || (idx * 60);
-                const y = tile.y || 10;
-
-                const tileEl = document.createElement('div');
-                tileEl.className = `okey-tile ${(tile.color || '').toLowerCase()}`;
-                tileEl.dataset.idx = idx;
-                tileEl.draggable = true;
-                tileEl.style.left = x + 'px';
-                tileEl.style.top = y + 'px';
-
-                // İçərik
-                if (tile.isFakeJoker || tile.isJoker) {
-                    tileEl.innerHTML = '<div class="tile-joker-star">★</div>';
-                    tileEl.classList.add('joker');
-                } else {
-                    const color = (tile.color || '').toLowerCase();
-                    const dotColor =
-                        color === 'red' ? '#d32f2f' :
-                            color === 'yellow' ? '#f9a825' :
-                                color === 'blue' ? '#1976d2' : '#212121';
-
-                    tileEl.innerHTML = `
-                <div class="tile-number">${tile.number}</div>
-                <div class="tile-color-dot" style="background: ${dotColor};"></div>
-            `;
-                }
-
-                board.appendChild(tileEl);
-            });
-
-            // Drag & Drop qur
-            setupFreeDragDrop();
-            setupMyDiscardZone();
-        }
-        // ✅ YENİ: Sərbəst Drag & Drop
-
-
-        // ✅ YENİ: Avtomatik düzəlt (ilk dəfə)
-
-        // function setupFreeDragDrop() {
-        //     const board = document.getElementById('myBoard');
-        //     if (!board) return;
-
-        //     const tiles = board.querySelectorAll('.okey-tile');
-        //     let activeTile = null;
-        //     let activeIdx = null;
-        //     let offsetX = 0, offsetY = 0;
-        //     let isDragging = false;
-
-        //     tiles.forEach((tileEl) => {
-        //         const idx = parseInt(tileEl.dataset.idx);
-
-        //         // ✅ MOUSE DOWN - Drag başlat
-        //         tileEl.addEventListener('mousedown', (e) => {
-        //             e.preventDefault();
-
-        //             activeTile = tileEl;
-        //             activeIdx = idx;
-        //             isDragging = true;
-
-        //             const rect = tileEl.getBoundingClientRect();
-        //             offsetX = e.clientX - rect.left;
-        //             offsetY = e.clientY - rect.top;
-
-        //             // Vizual feedback
-        //             tileEl.style.cursor = 'grabbing';
-        //             tileEl.style.zIndex = '1000';
-        //             tileEl.style.opacity = '0.8';
-        //             tileEl.style.transition = 'none'; // Animasiya söndür
-        //         });
-
-        //         // Double-click ilə at
-        //         tileEl.addEventListener('dblclick', () => {
-        //             if (mustDiscard && hasDrawn && isMyTurn) {
-        //                 const tileId = myHand[idx].id;
-
-        //                 if (myHand.length === 1) {
-        //                     showNotification('Son daş atıldı!', 'success');
-        //                     setTimeout(() => declareWin(), 300);
-        //                 } else {
-        //                     discardTile(tileId);
-        //                 }
-        //             }
-        //         });
-        //     });
-
-        //     // ✅ MOUSE MOVE - Real-time hərəkət
-        //     board.addEventListener('mousemove', (e) => {
-        //         if (!isDragging || !activeTile) return;
-
-        //         const boardRect = board.getBoundingClientRect();
-        //         let newX = e.clientX - boardRect.left - offsetX;
-        //         let newY = e.clientY - boardRect.top - offsetY;
-
-        //         // Sərhədlərdə saxla
-        //         newX = Math.max(0, Math.min(newX, boardRect.width - 55));
-        //         newY = Math.max(0, Math.min(newY, boardRect.height - 70));
-
-        //         // ⚡ DƏRHAL YERİNİ DEYİŞ
-        //         activeTile.style.left = newX + 'px';
-        //         activeTile.style.top = newY + 'px';
-
-        //         // Array-də də saxla
-        //         myHand[activeIdx].x = newX;
-        //         myHand[activeIdx].y = newY;
-        //     });
-
-        //     // ✅ MOUSE UP - Drag bitir
-        //     board.addEventListener('mouseup', () => {
-        //         if (isDragging && activeTile) {
-        //             activeTile.style.cursor = 'grab';
-        //             activeTile.style.zIndex = '1';
-        //             activeTile.style.opacity = '1';
-        //         }
-
-        //         isDragging = false;
-        //         activeTile = null;
-        //         activeIdx = null;
-        //     });
-
-        //     // ✅ MOUSE LEAVE - Board-dan çıxsa burax
-        //     board.addEventListener('mouseleave', () => {
-        //         if (isDragging && activeTile) {
-        //             activeTile.style.cursor = 'grab';
-        //             activeTile.style.zIndex = '1';
-        //             activeTile.style.opacity = '1';
-        //         }
-
-        //         isDragging = false;
-        //         activeTile = null;
-        //         activeIdx = null;
-        //     });
-
-        //     // ✅ TOUCH EVENTS - Mobil üçün
-        //     // Touch event-lər (setupFreeDragDrop içinə əlavə et)
-        //     tiles.forEach((tileEl) => {
-        //         const idx = parseInt(tileEl.dataset.idx);
-
-        //         // TOUCH START
-        //         tileEl.addEventListener('touchstart', (e) => {
-        //             const touch = e.touches[0];
-
-        //             activeTile = tileEl;
-        //             activeIdx = idx;
-        //             isDragging = true;
-
-        //             const rect = tileEl.getBoundingClientRect();
-        //             offsetX = touch.clientX - rect.left;
-        //             offsetY = touch.clientY - rect.top;
-
-        //             tileEl.style.zIndex = '1000';
-        //             tileEl.style.opacity = '0.8';
-        //         });
-        //     });
-
-        //     // TOUCH MOVE
-        //     board.addEventListener('touchmove', (e) => {
-        //         if (!isDragging || !activeTile) return;
-        //         e.preventDefault();
-
-        //         const touch = e.touches[0];
-        //         const boardRect = board.getBoundingClientRect();
-
-        //         let newX = touch.clientX - boardRect.left - offsetX;
-        //         let newY = touch.clientY - boardRect.top - offsetY;
-
-        //         newX = Math.max(0, Math.min(newX, boardRect.width - 55));
-        //         newY = Math.max(0, Math.min(newY, boardRect.height - 70));
-
-        //         activeTile.style.left = newX + 'px';
-        //         activeTile.style.top = newY + 'px';
-
-        //         myHand[activeIdx].x = newX;
-        //         myHand[activeIdx].y = newY;
-        //     });
-
-        //     // TOUCH END
-        //     board.addEventListener('touchend', () => {
-        //         if (isDragging && activeTile) {
-        //             activeTile.style.zIndex = '1';
-        //             activeTile.style.opacity = '1';
-        //         }
-
-        //         isDragging = false;
-        //         activeTile = null;
-        //         activeIdx = null;
-        //     });
-
-        // }
-
-
-
-        // function autoArrangeTiles() {
-        //     const tileWidth = 55;
-        //     const gap = 5;
-        //     const startX = 10;
-        //     const startY = 10;
-        //     const maxPerRow = 8; // Hər sətirdə 8 daş
-
-        //     myHand.forEach((tile, idx) => {
-        //         const row = Math.floor(idx / maxPerRow);
-        //         const col = idx % maxPerRow;
-
-        //         tile.x = startX + col * (tileWidth + gap);
-        //         tile.y = startY + row * 80; // 80px hər sətir
-        //     });
-        // }
-
-        // function createTileHTML(tile, globalIdx) {
-        //     if (!tile) return '';
-        //     let className = `okey-tile ${(tile.color || '').toLowerCase()}`;
-        //     let content = '';
-
-        //     if (tile.isFakeJoker || tile.isJoker) {
-        //         content = '<div class="tile-joker-star">★</div>';
-        //         className += ' joker';
-        //     } else {
-        //         const color = (tile.color || '').toLowerCase();
-        //         const dotColor =
-        //             color === 'red' ? '#d32f2f' :
-        //                 color === 'yellow' ? '#f9a825' :
-        //                     color === 'blue' ? '#1976d2' : '#212121';
-
-        //         content = `
-        //                 <div class="tile-number">${tile.number}</div>
-        //                 <div class="tile-color-dot" style="background: ${dotColor};"></div>
-        //             `;
-        //     }
-        //     return `<div class="${className}" data-tile-id="${tile.id}" data-idx="${globalIdx}" draggable="true">${content}</div>`;
-        // }
-
-        // ✅ YENİ: Tile HTML (pozisiya ilə)
-
-        function setupFreeDragDrop() {
-            const board = document.getElementById('myBoard');
-            if (!board) return;
-
-            const tiles = board.querySelectorAll('.okey-tile');
-            let activeTile = null;
-            let activeIdx = null;
-            let offsetX = 0, offsetY = 0;
-            let isDragging = false;
-
-            // ✅ YENI: 2 sətir üçün sabitlər
-            const ROW_HEIGHT = 80; // Hər sətirin hündürlüyü
-            const ROW_1_Y = 10;    // Yuxarı sətir Y pozisiyası
-            const ROW_2_Y = 90;    // Aşağı sətir Y pozisiyası
-            const SNAP_THRESHOLD = ROW_HEIGHT / 2; // Orta nöqtə (40px)
-
-            tiles.forEach((tileEl) => {
-                const idx = parseInt(tileEl.dataset.idx);
-
-                // MOUSE DOWN
-                tileEl.addEventListener('mousedown', (e) => {
-                    e.preventDefault();
-
-                    activeTile = tileEl;
-                    activeIdx = idx;
-                    isDragging = true;
-
-                    const rect = tileEl.getBoundingClientRect();
-                    offsetX = e.clientX - rect.left;
-                    offsetY = e.clientY - rect.top;
-
-                    tileEl.style.cursor = 'grabbing';
-                    tileEl.style.zIndex = '1000';
-                    tileEl.style.opacity = '0.8';
-                    tileEl.style.transition = 'none';
-                });
-
-                // DOUBLE-CLICK
-                tileEl.addEventListener('dblclick', () => {
-                    if (mustDiscard && hasDrawn && isMyTurn) {
-                        const tileId = myHand[idx].id;
-
-                        if (myHand.length === 1) {
-                            showNotification('Son daş atıldı!', 'success');
-                            setTimeout(() => declareWin(), 300);
-                        } else {
-                            discardTile(tileId);
-                        }
-                    }
-                });
-
-                // ✅ TOUCH START (mobil)
-                tileEl.addEventListener('touchstart', (e) => {
-                    const touch = e.touches[0];
-
-                    activeTile = tileEl;
-                    activeIdx = idx;
-                    isDragging = true;
-
-                    const rect = tileEl.getBoundingClientRect();
-                    offsetX = touch.clientX - rect.left;
-                    offsetY = touch.clientY - rect.top;
-
-                    tileEl.style.zIndex = '1000';
-                    tileEl.style.opacity = '0.8';
-                    tileEl.style.transition = 'none';
-                });
-            });
-
-            // MOUSE MOVE
-            // MOUSE MOVE
-            board.addEventListener('mousemove', (e) => {
-                if (!isDragging || !activeTile) return;
-
-                const boardRect = board.getBoundingClientRect();
-                let newX = e.clientX - boardRect.left - offsetX;
-                let newY = e.clientY - boardRect.top - offsetY;
-
-                // ✅ Board sərhədlərində saxla
-                const tileWidth = 55;
-                const tileHeight = 70;
-                newX = Math.max(0, Math.min(newX, boardRect.width - tileWidth));
-                newY = Math.max(0, Math.min(newY, ROW_2_Y + tileHeight - 10));
-
-                // ✅ Real-time hərəkət (toqquşma yoxlaması olmadan, vizual feedback üçün)
-                activeTile.style.left = newX + 'px';
-                activeTile.style.top = newY + 'px';
-
-                // Müvəqqəti saxla (snap zamanı yoxlanacaq)
-                myHand[activeIdx].tempX = newX;
-                myHand[activeIdx].tempY = newY;
-            });
-
-            // ✅ MOUSE UP - SNAP TO ROW!
-            // ✅ MOUSE UP - SNAP + COLLISION CHECK!
-            board.addEventListener('mouseup', () => {
-                if (isDragging && activeTile && activeIdx !== null) {
-                    const boardRect = board.getBoundingClientRect();
-                    const currentX = myHand[activeIdx].tempX || myHand[activeIdx].x;
-                    const currentY = myHand[activeIdx].tempY || myHand[activeIdx].y;
-
-                    // Hansı sətrə snap?
-                    const SNAP_THRESHOLD = 50;
-                    const targetY = currentY < SNAP_THRESHOLD ? ROW_1_Y : ROW_2_Y;
-
-                    // ✅ Toqquşma yoxla
-                    let finalX = currentX;
-                    let finalY = targetY;
-
-                    if (!isPositionValid(finalX, finalY, activeIdx)) {
-                        // ⚠️ Toqquşma var! Ən yaxın boş yeri tap
-                        const validPos = findNearestValidPosition(finalX, finalY, activeIdx, boardRect.width);
-                        finalX = validPos.x;
-                        finalY = validPos.y;
-
-                        log('⚠️ Toqquşma aşkarlandı! Yeni pozisiya:', validPos);
-                    }
-
-                    // ✅ Final pozisiyanı saxla
-                    myHand[activeIdx].x = finalX;
-                    myHand[activeIdx].y = finalY;
-
-                    // Animasiya ilə yerləşdir
-                    activeTile.style.transition = 'left 0.2s ease-out, top 0.2s ease-out';
-                    activeTile.style.left = finalX + 'px';
-                    activeTile.style.top = finalY + 'px';
-
-                    // Vizual geri qaytar
-                    setTimeout(() => {
-                        activeTile.style.cursor = 'grab';
-                        activeTile.style.zIndex = '1';
-                        activeTile.style.opacity = '1';
-                        activeTile.style.transition = 'none';
-                    }, 200);
-                }
-
-                isDragging = false;
-                activeTile = null;
-                activeIdx = null;
-            });
-
-            // MOUSE LEAVE
-            board.addEventListener('mouseleave', () => {
-                if (isDragging && activeTile && activeIdx !== null) {
-                    const currentY = myHand[activeIdx].y;
-
-                    // Snap to row
-                    let snappedY = currentY < SNAP_THRESHOLD ? ROW_1_Y : ROW_2_Y;
-                    myHand[activeIdx].y = snappedY;
-                    activeTile.style.top = snappedY + 'px';
-
-                    activeTile.style.cursor = 'grab';
-                    activeTile.style.zIndex = '1';
-                    activeTile.style.opacity = '1';
-                }
-
-                isDragging = false;
-                activeTile = null;
-                activeIdx = null;
-            });
-
-            // ✅ TOUCH MOVE (mobil)
-            // ✅ TOUCH MOVE (mobil)
-            board.addEventListener('touchmove', (e) => {
-                if (!isDragging || !activeTile) return;
-                e.preventDefault();
-
-                const touch = e.touches[0];
-                const boardRect = board.getBoundingClientRect();
-
-                let newX = touch.clientX - boardRect.left - offsetX;
-                let newY = touch.clientY - boardRect.top - offsetY;
-
-                // ✅ Board sərhədlərində saxla
-                const tileWidth = 55;
-                const tileHeight = 70;
-                newX = Math.max(0, Math.min(newX, boardRect.width - tileWidth));
-                newY = Math.max(0, Math.min(newY, ROW_2_Y + tileHeight - 10));
-
-                activeTile.style.left = newX + 'px';
-                activeTile.style.top = newY + 'px';
-
-                myHand[activeIdx].tempX = newX;
-                myHand[activeIdx].tempY = newY;
-            });
-
-            // ✅ TOUCH END - SNAP!
-            // ✅ TOUCH END - SNAP + COLLISION CHECK!
-            board.addEventListener('touchend', () => {
-                if (isDragging && activeTile && activeIdx !== null) {
-                    const boardRect = board.getBoundingClientRect();
-                    const currentX = myHand[activeIdx].tempX || myHand[activeIdx].x;
-                    const currentY = myHand[activeIdx].tempY || myHand[activeIdx].y;
-
-                    const SNAP_THRESHOLD = 50;
-                    const targetY = currentY < SNAP_THRESHOLD ? ROW_1_Y : ROW_2_Y;
-
-                    let finalX = currentX;
-                    let finalY = targetY;
-
-                    if (!isPositionValid(finalX, finalY, activeIdx)) {
-                        const validPos = findNearestValidPosition(finalX, finalY, activeIdx, boardRect.width);
-                        finalX = validPos.x;
-                        finalY = validPos.y;
-                    }
-
-                    myHand[activeIdx].x = finalX;
-                    myHand[activeIdx].y = finalY;
-
-                    activeTile.style.transition = 'left 0.2s ease-out, top 0.2s ease-out';
-                    activeTile.style.left = finalX + 'px';
-                    activeTile.style.top = finalY + 'px';
-
-                    setTimeout(() => {
-                        activeTile.style.zIndex = '1';
-                        activeTile.style.opacity = '1';
-                        activeTile.style.transition = 'none';
-                    }, 200);
-                }
-
-                isDragging = false;
-                activeTile = null;
-                activeIdx = null;
-            });
+            return 'bottom';
         }
 
-
-        function autoArrangeTiles() {
-            const tileWidth = 55;
-            const gap = 5;
-            const startX = 10;
-            const maxPerRow = 8; // Hər sətirdə max 8 daş
-
-            // ✅ 2 sətir üçün Y pozisiyaları
-            const ROW_1_Y = 10;
-            const ROW_2_Y = 90;
-
-            myHand.forEach((tile, idx) => {
-                const row = Math.floor(idx / maxPerRow);
-                const col = idx % maxPerRow;
-
-                tile.x = startX + col * (tileWidth + gap);
-
-                // ✅ Ya 1-ci sətir, ya 2-ci sətir
-                tile.y = row === 0 ? ROW_1_Y : ROW_2_Y;
-            });
-        }
-
-        function createTileHTML(tile, idx, x, y) {
+        // ✅ Tile HTML yaratmaq üçün köməkçi funksiya
+        function createTileHTML(tile, globalIdx) {
             if (!tile) return '';
 
             let className = `okey-tile ${(tile.color || '').toLowerCase()}`;
@@ -1159,169 +1496,458 @@
 
                 content = `
             <div class="tile-number">${tile.number}</div>
+            <div class="tile-color-dot-container">
             <div class="tile-color-dot" style="background: ${dotColor};"></div>
+            </div>
         `;
             }
 
-            return `
-        <div class="${className}" 
-             data-idx="${idx}" 
-             draggable="true"
-             style="left: ${x}px; top: ${y}px;">
-            ${content}
-        </div>
-    `;
+            return `<div class="${className}" data-tile-id="${tile.id}" data-idx="${globalIdx}" draggable="true">${content}</div>`;
         }
 
-        // function setupTileDragDrop(rowEl, rowNum) {
-        //     rowEl.addEventListener('dragover', (e) => {
-        //         e.preventDefault();
-        //         e.stopPropagation();
-        //         rowEl.classList.add('drag-over');
-        //     });
 
-        //     rowEl.addEventListener('dragleave', (e) => {
-        //         const rect = rowEl.getBoundingClientRect();
-        //         if (e.clientX < rect.left || e.clientX > rect.right ||
-        //             e.clientY < rect.top || e.clientY > rect.bottom) {
-        //             rowEl.classList.remove('drag-over');
-        //         }
-        //     });
+        function renderMyTiles() {
+            const board = document.getElementById('myBoard');
+            if (!board) {
+                console.error('❌ myBoard tapılmadı!');
+                return;
+            }
 
-        //     rowEl.addEventListener('drop', (e) => {
-        //         e.preventDefault();
-        //         e.stopPropagation();
-        //         rowEl.classList.remove('drag-over');
+            const tileWidth = 36;
+            const gap = 3;
+            const ROW_1_Y = 10;
+            const ROW_2_Y = 70;
 
-        //         if (draggedFromIndex !== null) {
-        //             const mid = Math.ceil(myHand.length / 2);
-
-        //             const tiles = Array.from(rowEl.querySelectorAll('.okey-tile'));
-        //             let targetIdx = tiles.length;
-
-        //             for (let i = 0; i < tiles.length; i++) {
-        //                 const rect = tiles[i].getBoundingClientRect();
-        //                 if (e.clientX < rect.left + rect.width / 2) {
-        //                     targetIdx = i;
-        //                     break;
-        //                 }
-        //             }
-
-        //             const actualTarget = rowNum === 1 ? targetIdx : mid + targetIdx;
-
-        //             if (draggedFromIndex !== actualTarget) {
-        //                 const tile = myHand.splice(draggedFromIndex, 1)[0];
-        //                 const insertIdx = draggedFromIndex < actualTarget ? actualTarget - 1 : actualTarget;
-        //                 myHand.splice(insertIdx, 0, tile);
-        //                 renderMyTiles();
-        //             }
-        //         }
-        //         draggedTile = null;
-        //         draggedFromIndex = null;
-        //     });
-
-        //     rowEl.querySelectorAll('.okey-tile').forEach((el) => {
-        //         const globalIndex = parseInt(el.dataset.idx);
-
-        //         el.addEventListener('dragstart', (e) => {
-        //             draggedTile = myHand[globalIndex];
-        //             draggedFromIndex = globalIndex;
-        //             el.classList.add('dragging');
-        //             e.dataTransfer.effectAllowed = 'move';
-        //         });
-
-        //         el.addEventListener('dragend', () => el.classList.remove('dragging'));
-
-        //         el.addEventListener('dragover', (e) => {
-        //             e.preventDefault();
-        //             e.stopPropagation();
-        //         });
-
-        //         el.addEventListener('drop', (e) => {
-        //             e.preventDefault();
-        //             e.stopPropagation();
-
-        //             if (draggedFromIndex !== null && draggedFromIndex !== globalIndex) {
-        //                 const tile = myHand.splice(draggedFromIndex, 1)[0];
-        //                 const insertIndex = draggedFromIndex < globalIndex ? globalIndex : globalIndex;
-        //                 myHand.splice(insertIndex, 0, tile);
-        //                 renderMyTiles();
-        //             }
-        //             draggedTile = null;
-        //             draggedFromIndex = null;
-        //         });
-
-        //         el.addEventListener('dblclick', () => {
-        //             if (mustDiscard && hasDrawn && isMyTurn) {
-        //                 const tileId = myHand[globalIndex].id;
-
-        //                 // ✅ Əgər son daş qalırsa, avtomatik oyunu bitir
-        //                 if (myHand.length === 1) {
-        //                     log('🏆 Son daş ikiqat klik - oyun bitir!');
-        //                     showNotification('Son daş atıldı! Yoxlanılır...', 'success');
-        //                     setTimeout(() => declareWin(), 300);
-        //                 } else {
-        //                     discardTile(tileId);
-        //                 }
-        //             }
-        //         });
-        //     });
-        // }
-
-        function setupMyDiscardZone() {
-            const zone = document.getElementById('myDiscardZone');
-            if (!zone) return;
-
-            const newZone = zone.cloneNode(true);
-            zone.parentNode.replaceChild(newZone, zone);
-            const freshZone = document.getElementById('myDiscardZone');
-
-            freshZone.addEventListener('dragenter', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (hasDrawn && mustDiscard && isMyTurn && draggedTile) {
-                    freshZone.classList.add('can-drop');
+            // ✅ 1. Köhnə daşların pozisiyalarını cache-ə saxla
+            myHand.forEach(tile => {
+                if (tile.x !== undefined && tile.y !== undefined) {
+                    tilePositions[tile.id] = { x: tile.x, y: tile.y };
                 }
             });
 
-            freshZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (hasDrawn && mustDiscard && isMyTurn && draggedTile) {
-                    freshZone.classList.add('can-drop');
-                    e.dataTransfer.dropEffect = 'move';
+            // ✅ 2. Cache-dən pozisiyaları geri qaytar
+            myHand.forEach(tile => {
+                if (tilePositions[tile.id]) {
+                    tile.x = tilePositions[tile.id].x;
+                    tile.y = tilePositions[tile.id].y;
                 }
             });
 
-            freshZone.addEventListener('dragleave', (e) => {
-                const rect = freshZone.getBoundingClientRect();
-                if (e.clientX < rect.left || e.clientX > rect.right ||
-                    e.clientY < rect.top || e.clientY > rect.bottom) {
-                    freshZone.classList.remove('can-drop');
-                }
-            });
+            // ✅ 3. Yeni daşları (pozisiyası olmayan) sona yerləşdir
+            const tilesWithoutPosition = myHand.filter(t => t.x === undefined || t.y === undefined);
 
-            freshZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                freshZone.classList.remove('can-drop');
+            if (tilesWithoutPosition.length > 0) {
+                // Hər iki sətirdə mövcud daşları say
+                const row1Count = myHand.filter(t => t.y === ROW_1_Y && t.x !== undefined).length;
+                const row2Count = myHand.filter(t => t.y === ROW_2_Y && t.x !== undefined).length;
 
-                if (hasDrawn && mustDiscard && isMyTurn && draggedTile) {
-                    const tileId = draggedTile.id;
-                    draggedTile = null;
-                    draggedFromIndex = null;
+                // Yeni daşları yerləşdir
+                tilesWithoutPosition.forEach(tile => {
+                    if (row1Count < 8) {
+                        // 1-ci sətrə əlavə et
+                        const existingRow1 = myHand.filter(t => t.y === ROW_1_Y && t.x !== undefined);
+                        const maxX = existingRow1.length > 0
+                            ? Math.max(...existingRow1.map(t => t.x))
+                            : -gap;
 
-                    // ✅ Əgər son daş qalırsa, avtomatik oyunu bitir
-                    if (myHand.length === 1) {
-                        log('🏆 Son daş atılır - oyun bitir!');
-                        showNotification('Son daş atıldı! Yoxlanılır...', 'success');
-                        setTimeout(() => declareWin(), 300);
+                        tile.x = maxX + tileWidth + gap;
+                        tile.y = ROW_1_Y;
                     } else {
-                        discardTile(tileId);
+                        // 2-ci sətrə əlavə et
+                        const existingRow2 = myHand.filter(t => t.y === ROW_2_Y && t.x !== undefined);
+                        const maxX = existingRow2.length > 0
+                            ? Math.max(...existingRow2.map(t => t.x))
+                            : -gap;
+
+                        tile.x = maxX + tileWidth + gap;
+                        tile.y = ROW_2_Y;
+                    }
+
+                    // Cache-ə əlavə et
+                    tilePositions[tile.id] = { x: tile.x, y: tile.y };
+                });
+            }
+
+            // ✅ 4. Board-u təmizlə və render et
+            board.innerHTML = '';
+
+            myHand.forEach((tile, idx) => {
+                const x = tile.x || 10;
+                const y = tile.y || 10;
+
+                const tileEl = document.createElement('div');
+                tileEl.className = `okey-tile ${(tile.color || '').toLowerCase()}`;
+                tileEl.dataset.idx = idx;
+                tileEl.dataset.tileId = tile.id;
+                tileEl.draggable = false;
+                tileEl.style.left = x + 'px';
+                tileEl.style.top = y + 'px';
+                tileEl.style.cursor = 'grab';
+
+                if (tile.isFakeJoker || tile.isJoker) {
+                    tileEl.innerHTML = '<div class="tile-joker-star">★</div>';
+                    tileEl.classList.add('joker');
+                } else {
+                    const color = (tile.color || '').toLowerCase();
+                    const dotColor =
+                        color === 'red' ? '#d32f2f' :
+                            color === 'yellow' ? '#f9a825' :
+                                color === 'blue' ? '#1976d2' : '#212121';
+
+                    tileEl.innerHTML = `
+                <div class="tile-number">${tile.number}</div>
+                <div class="tile-color-dot-container">
+            <div class="tile-color-dot" style="background: ${dotColor};"></div>
+            </div>
+            `;
+                }
+
+                board.appendChild(tileEl);
+            });
+
+            setupFreeDragDrop();
+            // setupMyDiscardZone();
+            setupIndicatorDropZone();
+        }
+
+
+
+        function setupFreeDragDrop() {
+            const board = document.getElementById('myBoard');
+            const container = document.getElementById('myBoardContainer');
+            const discardZone = document.getElementById('myDiscardZone');
+
+            if (!board || !container) return;
+
+            const tiles = board.querySelectorAll('.okey-tile');
+            let activeTile = null;
+            let activeIdx = null;
+            let isDragging = false;
+            let isOverDiscardZone = false;
+
+            // ✅ Tile-ın board içindəki orijinal pozisiyası
+            let startBoardX = 0;
+            let startBoardY = 0;
+
+            // ✅ Mouse-un tile üzərindəki offset-i
+            let mouseOffsetX = 0;
+            let mouseOffsetY = 0;
+
+            const ROW_1_Y = 10;
+            const ROW_2_Y = 75;
+            const SNAP_THRESHOLD = 45;
+
+            tiles.forEach((tileEl) => {
+                const idx = parseInt(tileEl.dataset.idx);
+
+                // ✅ MOUSE DOWN
+                tileEl.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    activeTile = tileEl;
+                    activeIdx = idx;
+                    isDragging = true;
+
+                    // ✅ Board içindəki orijinal pozisiya
+                    const boardRect = board.getBoundingClientRect();
+                    const tileRect = tileEl.getBoundingClientRect();
+
+                    startBoardX = tileRect.left - boardRect.left;
+                    startBoardY = tileRect.top - boardRect.top;
+
+                    // ✅ Mouse tile üzərində harada?
+                    mouseOffsetX = e.clientX - tileRect.left;
+                    mouseOffsetY = e.clientY - tileRect.top;
+
+                    // Style dəyişiklikləri
+                    tileEl.style.cursor = 'grabbing';
+                    tileEl.style.zIndex = '1000';
+                    tileEl.style.opacity = '0.9';
+                    tileEl.style.transition = 'none';
+                    tileEl.classList.add('dragging');
+                });
+
+                // ✅ DOUBLE-CLICK
+                tileEl.addEventListener('dblclick', () => {
+                    if (mustDiscard && hasDrawn && isMyTurn) {
+                        const tileId = myHand[idx].id;
+
+                        if (myHand.length === 1) {
+                            log('🏆 Son daş ikiqat klik - oyun bitir!');
+                            showNotification('Son daş atıldı! Yoxlanılır...', 'success');
+                            setTimeout(() => declareWin(), 300);
+                        } else {
+                            discardTile(tileId);
+                        }
+                    }
+                });
+
+                // ✅ TOUCH START
+                tileEl.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+
+                    activeTile = tileEl;
+                    activeIdx = idx;
+                    isDragging = true;
+
+                    const boardRect = board.getBoundingClientRect();
+                    const tileRect = tileEl.getBoundingClientRect();
+
+                    startBoardX = tileRect.left - boardRect.left;
+                    startBoardY = tileRect.top - boardRect.top;
+
+                    mouseOffsetX = touch.clientX - tileRect.left;
+                    mouseOffsetY = touch.clientY - tileRect.top;
+
+                    tileEl.style.zIndex = '1000';
+                    tileEl.style.opacity = '0.9';
+                    tileEl.style.transition = 'none';
+                    tileEl.classList.add('dragging');
+                });
+            });
+
+            // ✅ MOUSE MOVE - BOARD İÇİNDƏ ABSOLUTE POZİSİYA
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging || !activeTile) return;
+
+                const boardRect = board.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+                const discardRect = discardZone ? discardZone.getBoundingClientRect() : null;
+
+                // ✅ Mouse-un board-a nisbətən pozisiyası
+                let boardX = e.clientX - boardRect.left - mouseOffsetX;
+                let boardY = e.clientY - boardRect.top - mouseOffsetY;
+
+                // ✅ Container sərhədlərində saxla
+                const tileWidth = 36;
+                const tileHeight = 55;
+
+                // Board-dan çıxa bilər amma container-dan çıxmaz
+                const minX = containerRect.left - boardRect.left - mouseOffsetX;
+                const maxX = containerRect.right - boardRect.left - mouseOffsetX - tileWidth;
+                const minY = containerRect.top - boardRect.top - mouseOffsetY;
+                const maxY = containerRect.bottom - boardRect.top - mouseOffsetY - tileHeight;
+
+                boardX = Math.max(minX, Math.min(boardX, maxX));
+                boardY = Math.max(minY, Math.min(boardY, maxY));
+
+                // ✅ Pozisiyanı tətbiq et
+                activeTile.style.left = boardX + 'px';
+                activeTile.style.top = boardY + 'px';
+
+                // ✅ Discard zone üzərindədirsə?
+                if (discardRect && hasDrawn && mustDiscard && isMyTurn) {
+                    const tileCenterX = e.clientX;
+                    const tileCenterY = e.clientY;
+
+                    isOverDiscardZone =
+                        tileCenterX >= discardRect.left &&
+                        tileCenterX <= discardRect.right &&
+                        tileCenterY >= discardRect.top &&
+                        tileCenterY <= discardRect.bottom;
+
+                    if (isOverDiscardZone) {
+                        discardZone.classList.add('can-drop');
+                    } else {
+                        discardZone.classList.remove('can-drop');
                     }
                 }
             });
+
+            // ✅ MOUSE UP
+            document.addEventListener('mouseup', (e) => {
+                if (isDragging && activeTile && activeIdx !== null) {
+                    const boardRect = board.getBoundingClientRect();
+                    const discardRect = discardZone ? discardZone.getBoundingClientRect() : null;
+
+                    // ✅ Discard zone-a atıldımı?
+                    if (discardRect && hasDrawn && mustDiscard && isMyTurn && isOverDiscardZone) {
+                        const tileId = myHand[activeIdx].id;
+
+                        discardZone.classList.remove('can-drop');
+                        activeTile.remove();
+
+                        if (myHand.length === 1) {
+                            log('🏆 Son daş atılır - oyun bitir!');
+                            showNotification('Son daş atıldı! Yoxlanılır...', 'success');
+                            setTimeout(() => declareWin(), 300);
+                        } else {
+                            discardTile(tileId);
+                        }
+                    }
+                    // ✅ Board içindədirsə - snap
+                    else {
+                        // Board-a nisbətən pozisiya
+                        let boardX = e.clientX - boardRect.left - mouseOffsetX;
+                        let boardY = e.clientY - boardRect.top - mouseOffsetY;
+
+                        // Board sərhədlərində saxla
+                        const tileWidth = 36;
+                        boardX = Math.max(0, Math.min(boardX, boardRect.width - tileWidth));
+
+                        // Hansı sətirə snap?
+                        const SNAP_THRESHOLD = 55; // Əvvəl 50 idi
+                        const targetY = boardY < SNAP_THRESHOLD ? ROW_1_Y : ROW_2_Y;
+
+
+                        let finalX = boardX;
+                        let finalY = targetY;
+
+                        // Toqquşma yoxla
+                        if (!isPositionValid(finalX, finalY, activeIdx)) {
+                            const validPos = findNearestValidPosition(finalX, finalY, activeIdx, boardRect.width);
+                            finalX = validPos.x;
+                            finalY = validPos.y;
+                        }
+
+                        myHand[activeIdx].x = finalX;
+                        myHand[activeIdx].y = finalY;
+
+                        // ✅ Cache-ə əlavə et
+                        tilePositions[myHand[activeIdx].id] = { x: finalX, y: finalY };
+
+                        activeTile.style.transition = 'left 0.2s ease-out, top 0.2s ease-out';
+                        activeTile.style.left = finalX + 'px';
+                        activeTile.style.top = finalY + 'px';
+                    }
+
+                    // Reset
+                    const tileToUpdate = activeTile;
+                    setTimeout(() => {
+                        if (tileToUpdate) {
+                            tileToUpdate.style.cursor = 'grab';
+                            tileToUpdate.style.zIndex = '1';
+                            tileToUpdate.style.opacity = '1';
+                            tileToUpdate.style.transition = 'none';
+                            tileToUpdate.classList.remove('dragging');
+                        }
+                    }, 300);
+
+                    if (discardZone) discardZone.classList.remove('can-drop');
+                }
+
+                isDragging = false;
+                activeTile = null;
+                activeIdx = null;
+                isOverDiscardZone = false;
+            });
+
+            // ✅ TOUCH MOVE
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging || !activeTile) return;
+                e.preventDefault();
+
+                const touch = e.touches[0];
+                const boardRect = board.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+                const discardRect = discardZone ? discardZone.getBoundingClientRect() : null;
+
+                let boardX = touch.clientX - boardRect.left - mouseOffsetX;
+                let boardY = touch.clientY - boardRect.top - mouseOffsetY;
+
+                const tileWidth = 36;
+                const tileHeight = 55;
+
+                const minX = containerRect.left - boardRect.left - mouseOffsetX;
+                const maxX = containerRect.right - boardRect.left - mouseOffsetX - tileWidth;
+                const minY = containerRect.top - boardRect.top - mouseOffsetY;
+                const maxY = containerRect.bottom - boardRect.top - mouseOffsetY - tileHeight;
+
+                boardX = Math.max(minX, Math.min(boardX, maxX));
+                boardY = Math.max(minY, Math.min(boardY, maxY));
+
+                activeTile.style.left = boardX + 'px';
+                activeTile.style.top = boardY + 'px';
+
+                if (discardRect && hasDrawn && mustDiscard && isMyTurn) {
+                    const tileCenterX = touch.clientX;
+                    const tileCenterY = touch.clientY;
+
+                    isOverDiscardZone =
+                        tileCenterX >= discardRect.left &&
+                        tileCenterX <= discardRect.right &&
+                        tileCenterY >= discardRect.top &&
+                        tileCenterY <= discardRect.bottom;
+
+                    if (isOverDiscardZone) {
+                        discardZone.classList.add('can-drop');
+                    } else {
+                        discardZone.classList.remove('can-drop');
+                    }
+                }
+            });
+
+            // ✅ TOUCH END
+            document.addEventListener('touchend', (e) => {
+                if (isDragging && activeTile && activeIdx !== null) {
+                    const touch = e.changedTouches[0];
+                    const boardRect = board.getBoundingClientRect();
+                    const discardRect = discardZone ? discardZone.getBoundingClientRect() : null;
+
+                    if (discardRect && hasDrawn && mustDiscard && isMyTurn && isOverDiscardZone) {
+                        const tileId = myHand[activeIdx].id;
+
+                        discardZone.classList.remove('can-drop');
+                        activeTile.remove();
+
+                        if (myHand.length === 1) {
+                            showNotification('Son daş atıldı!', 'success');
+                            setTimeout(() => declareWin(), 300);
+                        } else {
+                            discardTile(tileId);
+                        }
+                    } else {
+                        let boardX = touch.clientX - boardRect.left - mouseOffsetX;
+                        let boardY = touch.clientY - boardRect.top - mouseOffsetY;
+
+                        const tileWidth = 36;
+                        boardX = Math.max(0, Math.min(boardX, boardRect.width - tileWidth));
+
+                        const targetY = boardY < SNAP_THRESHOLD ? ROW_1_Y : ROW_2_Y;
+
+                        let finalX = boardX;
+                        let finalY = targetY;
+
+                        if (!isPositionValid(finalX, finalY, activeIdx)) {
+                            const validPos = findNearestValidPosition(finalX, finalY, activeIdx, boardRect.width);
+                            finalX = validPos.x;
+                            finalY = validPos.y;
+                        }
+
+                        myHand[activeIdx].x = finalX;
+                        myHand[activeIdx].y = finalY;
+
+                        // ✅ Cache-ə əlavə et
+                        tilePositions[myHand[activeIdx].id] = { x: finalX, y: finalY };
+
+                        activeTile.style.transition = 'left 0.2s ease-out, top 0.2s ease-out';
+                        activeTile.style.left = finalX + 'px';
+                        activeTile.style.top = finalY + 'px';
+                    }
+
+                    const tileToUpdate = activeTile;
+                    setTimeout(() => {
+                        if (tileToUpdate) {
+                            tileToUpdate.style.zIndex = '1';
+                            tileToUpdate.style.opacity = '1';
+                            tileToUpdate.style.transition = 'none';
+                            tileToUpdate.classList.remove('dragging');
+                        }
+                    }, 300);
+
+                    if (discardZone) discardZone.classList.remove('can-drop');
+                }
+
+                isDragging = false;
+                activeTile = null;
+                activeIdx = null;
+                isOverDiscardZone = false;
+            });
         }
+
+
 
         function displayDiscardedTile(tile, playerPosition) {
             const relativePos = getRelativePosition(myPosition, playerPosition);
@@ -1333,21 +1959,62 @@
             else if (relativePos === 'right') zoneId = 'discardZoneRight';
 
             const zone = document.getElementById(zoneId);
-            if (zone && tile) zone.innerHTML = createTileHTML(tile, 0);
+            if (zone && tile) {
+                // if (zone.innerHTML.includes('🗑️')) {
+                //     zone.innerHTML = '';
+                // }
+
+                zone.insertAdjacentHTML('beforeend', createTileHTML(tile, 0));
+
+                const tiles = zone.querySelectorAll('.okey-tile');
+                if (tiles.length > 3) {
+                    tiles[0].remove();
+                }
+
+                // ✅ YENİ - 2 nəfərlikdə top oyunçunun daşını götürə bilmək
+                if (maxPlayers === 2 && zoneId === 'discardZoneTop') {
+                    zone.classList.add('clickable');
+                    zone.style.cursor = 'pointer';
+                }
+            }
         }
 
         function clearAllDiscardZones() {
             ['myDiscardZone', 'discardZoneTop', 'discardZoneLeft', 'discardZoneRight'].forEach(id => {
                 const zone = document.getElementById(id);
                 if (zone) {
-                    zone.innerHTML = id === 'myDiscardZone'
-                        ? '🗑️<div class="discard-label">BURAYA<br>AT</div>'
-                        : '🗑️';
+                    // Tam təmizlə
+                    zone.innerHTML = '';
+
+                    // İkon əlavə et
+                    if (id === 'myDiscardZone') {
+                        zone.innerHTML = '';
+                    } else {
+                        zone.innerHTML = '';
+                    }
+
+                    // Style-ı sıfırla
+                    zone.classList.remove('clickable', 'can-drop');
+                    zone.style.cursor = '';
+                    zone.style.transform = '';
+                    zone.style.boxShadow = '';
+                    zone.style.borderColor = '';
                 }
             });
+
+            console.log('✅ Discard zona-ları təmizləndi');
         }
 
         function updatePlayersDisplay(players) {
+            // Əvvəlcə hamısını gizlət
+            ['playerInfoTop', 'playerInfoLeft', 'playerInfoRight'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.display = 'none';
+                    el.classList.remove('active');
+                }
+            });
+
             players.forEach((player) => {
                 const relativePos = getRelativePosition(myPosition, player.position);
                 let infoId = '';
@@ -1359,6 +2026,9 @@
 
                 const infoEl = document.getElementById(infoId);
                 if (!infoEl) return;
+
+                // Göstər
+                infoEl.style.display = 'flex';
 
                 const nameEl = infoEl.querySelector('.player-name');
                 const scoreEl = infoEl.querySelector('.player-score');
@@ -1381,21 +2051,43 @@
             if (el && tile) el.innerHTML = createTileHTML(tile, 0);
         }
 
+        async function tryDrawFromTopPlayer() {
+            if (!isMyTurn || hasDrawn || mustDiscard) {
+                if (mustDiscard) showNotification('Əvvəlcə daş atın!', 'error');
+                else if (hasDrawn) showNotification('Artıq daş çəkmisiniz!', 'error');
+                else showNotification('Növbəniz deyil!', 'error');
+                return;
+            }
+
+            const zone = document.getElementById('discardZoneTop');
+            if (!zone || !zone.querySelector('.okey-tile')) {
+                showNotification('Rəqib hələ daş atmayıb', 'error');
+                return;
+            }
+
+            try {
+                log('🎴 Top oyunçudan daş götürürəm...');
+                await connection.invoke("DrawTile", "discard");
+                setTimeout(() => {
+                    zone.innerHTML = '';
+                    log('✅ Top oyunçunun daşı silindi');
+                }, 150);
+            } catch (err) {
+                log('❌ Draw from discard error:', err);
+                showNotification('Daşı götürmək mümkün olmadı', 'error');
+            }
+        }
+
+        // ✅ Global scope-a əlavə et
+        window.tryDrawFromTopPlayer = tryDrawFromTopPlayer;
+
         function updateTurnUI() {
             const deckStack = document.getElementById('deckStack');
-            const declareBtn = document.getElementById('declareWinBtn');
 
             if (isMyTurn && !hasDrawn && !mustDiscard) {
                 deckStack?.classList.remove('disabled');
-                if (declareBtn) declareBtn.disabled = true;
-            } else if (hasDrawn && mustDiscard) {
-                deckStack?.classList.add('disabled');
-                // ✅ "Bitir" düyməsi həmişə aktiv - kombinasiya yoxlamaq üçün
-                if (declareBtn) declareBtn.disabled = false;
             } else {
                 deckStack?.classList.add('disabled');
-                // ✅ Oyun bitəndən sonra da aktiv qalsın
-                if (declareBtn) declareBtn.disabled = false;
             }
         }
 
@@ -1404,13 +2096,14 @@
             document.getElementById('leaveRoomBtn')?.addEventListener('click', leaveRoom);
             document.getElementById('sortBtn')?.addEventListener('click', sortTiles);
             document.getElementById('deckStack')?.addEventListener('click', drawFromStock);
-            document.getElementById('declareWinBtn')?.addEventListener('click', declareWin);
+
             initializeSignalR();
         });
         console.log(document.getElementById('myBoard')); // null deyilsə OK
         console.log(myHand); // daşlar varmı?
         window.joinRoom = joinRoom;
         window.tryDrawFromLeftPlayer = tryDrawFromLeftPlayer;
+
     </script>
 </body>
 
