@@ -12,11 +12,73 @@
 
 <body>
     <div class="domino-container">
+        <!-- ====== Loading Screen ====== -->
+
+        <div id="loadingContainer" class="loading-container">
+            <div>
+                <!-- Floating elements -->
+                <div class="floating-cards-l">
+                    <div class="card-l"></div>
+                    <div class="card-l"></div>
+                    <div class="card-l"></div>
+                    <div class="card-l"></div>
+                    <div class="coin-l"></div>
+                    <div class="coin-l"></div>
+                    <div class="coin-l"></div>
+                    <div class="coin-l"></div>
+                    <div class="sparkle-l"></div>
+                    <div class="sparkle-l"></div>
+                    <div class="sparkle-l"></div>
+                    <div class="sparkle-l"></div>
+                    <div class="sparkle-l"></div>
+                    <div class="sparkle-l"></div>
+                </div>
+
+                <!-- Dice -->
+                <div class="dice-container">
+                    <div class="dice-l">⚅</div>
+                </div>
+                <div class="dice-container-right">
+                    <div class="dice-l">⚄</div>
+                </div>
+
+                <!-- Main roulette wheel -->
+                <div class="roulette-wheel">
+                    <div class="wheel-outer">
+                        <div class="wheel-inner">
+                            <div class="wheel-segment-l"></div>
+                            <div class="wheel-segment-l"></div>
+                            <div class="wheel-segment-l"></div>
+                            <div class="wheel-segment-l"></div>
+                            <div class="wheel-segment-l"></div>
+                            <div class="wheel-segment-l"></div>
+                            <div class="wheel-segment-l"></div>
+                            <div class="wheel-segment-l"></div>
+                            <div class="wheel-center-l"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text -->
+                <div class="loading-text">LOADING</div>
+                <div class="loading-subtext">PREPARING YOUR GAME</div>
+
+                <!-- Progress dots -->
+                <div class="dots-l">
+                    <div class="dot-l"></div>
+                    <div class="dot-l"></div>
+                    <div class="dot-l"></div>
+                    <div class="dot-l"></div>
+                    <div class="dot-l"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- ====== LOBBY VIEW ====== -->
-        <div id="lobbyView" class="lobby-container">
+        <div id="lobbyView" class="lobby-container" style="display: none;">
             <div class="header">
                 <div class="header-title">DOMINO GAMES</div>
-                <div class="balance" style="display: none;">💰 <span id="userBalance">0</span> coin</div>
+                <div class="balance">💰 <span id="userBalance">0</span> coin</div>
             </div>
 
             <!-- Classic 101 Section -->
@@ -61,7 +123,7 @@
                     <div class="section-icon">🔥</div>
                     <div class="section-title">ALL FIVES</div>
                 </div>
-                <div class="player-count-selector">
+                <div class="player-count-selector selector-all-five">
                     <button class="count-btn" onclick="showBetModal('AllFives', 2)">
                         <div class="count-number">2</div>
                         <div class="count-label">Players</div>
@@ -90,7 +152,7 @@
             </div>
         </div>
 
-        <div id="rotateModal">
+        <div id="rotateModal" style="display: none;">
             <div class="modalContent">
                 <p>🎮 Oyuna başlamaq üçün telefonu çevirin</p>
                 <div class="phoneIcon">📱↩️</div>
@@ -98,7 +160,7 @@
         </div>
         <!-- ====== GAME VIEW ====== -->
 
-        <div id="gameView" class="game-container">
+        <div id="gameView" class="game-container" style="display: none;">
             <!-- GAME HEADER -->
             <div class="game-header">
                 <div style="font-size: 18px; font-weight: 700; color: #10b981;">
@@ -212,12 +274,79 @@
         </div>
     </div>
     <script>
+        const loading = document.getElementById("loadingContainer");
         const modal = document.getElementById("rotateModal");
         const lobbyView = document.getElementById("lobbyView");
         const gameView = document.getElementById("gameView");
-        function isLobbyActive() {
-            return getComputedStyle(lobbyView).display !== "none";
+
+        function removeLoading() {
+            loading.style.display = "none";
         }
+        function showLoading() {
+            loading.style.display = "flex"; // və ya "block"
+        }
+
+        function isLobbyActive() {
+            return getComputedStyle(lobbyView).display !== "none" || getComputedStyle(loading).display !=="none";
+        }
+        function showLobby() {
+            document.getElementById('lobbyView').style.display = 'block';
+            loading.style.display="none";
+            document.getElementById('gameView').style.display = 'none';
+            document.getElementById('betModal').style.display = 'none';
+            checkOrientation();
+            isInGame = false;
+        }
+        function showBetModal(gameType, playerCount) {
+            const balance = parseInt(document.getElementById('userBalance').textContent);
+
+            selectedGameType = gameType;
+            selectedPlayerCount = playerCount;
+
+            // Backend-dən gələn lobby-ləri filtr et
+            const matchingLobbies = availableLobbies.filter(l =>
+                l.gameType === gameType && l.playerCount === playerCount
+            );
+
+            if (matchingLobbies.length === 0) {
+                showToast('Bu oyun növü üçün lobby mövcud deyil!');
+                return;
+            }
+
+            const modal = document.getElementById('betModal');
+            const betOptions = document.getElementById('betOptions');
+
+            betOptions.innerHTML = matchingLobbies.map(lobby => {
+                const disabled = balance < lobby.entryFee;
+                const prize = lobby.entryFee * playerCount * 0.9; // 10% platform fee
+                // <div class="bet-prize">🏆 ${prize.toFixed(0)}</div>
+
+                return `
+            <button class="bet-card ${disabled ? 'disabled' : ''}" 
+                    onclick="joinWithBet(${lobby.entryFee})"
+                    ${disabled ? 'disabled' : ''}>
+                <div class="bet-amount">💰 ${lobby.entryFee}</div>
+                ${disabled ? '<div class="bet-locked">🔒</div>' : ''}
+                ${lobby.waitingPlayers > 0 ? `<div class="bet-waiting">⏳ ${lobby.waitingPlayers}</div>` : ''}
+            </button>
+        `;
+            }).join('');
+
+            modal.style.display = 'flex';
+        }
+        function closeBetModal() {
+            document.getElementById('betModal').style.display = 'none';
+            checkOrientation();
+            selectedGameType = null;
+            selectedPlayerCount = null;
+        }
+         function showGame() {
+            document.getElementById('lobbyView').style.display = 'none';
+            document.getElementById('gameView').style.display = 'block';
+            isInGame = true;
+            checkOrientation();
+        }
+
         function checkOrientation() {
             if (isLobbyActive()) {
                 // Lobbydəyiksə modal HEÇ VAXT görünməsin
@@ -332,54 +461,6 @@
             setTimeout(() => toast.remove(), 3500);
         }
 
-        function showLobby() {
-            document.getElementById('lobbyView').style.display = 'block';
-            document.getElementById('gameView').style.display = 'none';
-            document.getElementById('betModal').style.display = 'none';
-            isInGame = false;
-        }
-        function showBetModal(gameType, playerCount) {
-            const balance = parseInt(document.getElementById('userBalance').textContent);
-
-            selectedGameType = gameType;
-            selectedPlayerCount = playerCount;
-
-            // Backend-dən gələn lobby-ləri filtr et
-            const matchingLobbies = availableLobbies.filter(l =>
-                l.gameType === gameType && l.playerCount === playerCount
-            );
-
-            if (matchingLobbies.length === 0) {
-                showToast('Bu oyun növü üçün lobby mövcud deyil!');
-                return;
-            }
-
-            const modal = document.getElementById('betModal');
-            const betOptions = document.getElementById('betOptions');
-
-            betOptions.innerHTML = matchingLobbies.map(lobby => {
-                const disabled = balance < lobby.entryFee;
-                const prize = lobby.entryFee * playerCount * 0.9; // 10% platform fee
-                // <div class="bet-prize">🏆 ${prize.toFixed(0)}</div>
-
-                return `
-            <button class="bet-card ${disabled ? 'disabled' : ''}" 
-                    onclick="joinWithBet(${lobby.entryFee})"
-                    ${disabled ? 'disabled' : ''}>
-                <div class="bet-amount">💰 ${lobby.entryFee}</div>
-                ${disabled ? '<div class="bet-locked">🔒</div>' : ''}
-                ${lobby.waitingPlayers > 0 ? `<div class="bet-waiting">⏳ ${lobby.waitingPlayers}</div>` : ''}
-            </button>
-        `;
-            }).join('');
-
-            modal.style.display = 'flex';
-        }
-        function closeBetModal() {
-            document.getElementById('betModal').style.display = 'none';
-            selectedGameType = null;
-            selectedPlayerCount = null;
-        }
 
         async function joinWithBet(entryFee) {
             const balance = parseInt(document.getElementById('userBalance').textContent);
@@ -408,12 +489,7 @@
             }
         }
 
-        function showGame() {
-            document.getElementById('lobbyView').style.display = 'none';
-            document.getElementById('gameView').style.display = 'block';
-            isInGame = true;
-            checkOrientation();
-        }
+       
 
         // ---------
 
@@ -1893,6 +1969,7 @@
                 connection = createConnection();
                 await connection.start();
                 console.log("✅ SignalR connected");
+                removeLoading();
 
                 // Drop zone setup
                 setupDropZone();

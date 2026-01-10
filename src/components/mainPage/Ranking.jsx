@@ -33,9 +33,6 @@ const Ranking = () => {
           api.get('/api/leaderboard/all/alltime')
         ]);
         
-        // console.log('🎯 [RANKING] Weekly Data:', weeklyResponse.data);
-        // console.log('🎯 [RANKING] Alltime Data:', alltimeResponse.data);
-        
         setWeeklyData(weeklyResponse.data.slice(0, 5)); // Top 5
         setAlltimeData(alltimeResponse.data.slice(0, 5)); // Top 5
         
@@ -79,14 +76,17 @@ const Ranking = () => {
 
     return (
       <div className={`ranking-item rank-${index + 1}`}>
+        {/* Rank Badge */}
         <div className="rank-badge">
           {getMedalEmoji(index)}
         </div>
         
+        {/* Player Avatar */}
         <div className="player-avatar">
           {player.username ? player.username.charAt(0).toUpperCase() : '?'}
         </div>
         
+        {/* Player Info */}
         <div className="player-info">
           <div className="player-name">{player.username || 'Anonim'}</div>
           <div className="player-rank">
@@ -94,23 +94,27 @@ const Ranking = () => {
           </div>
         </div>
         
-        <div className="player-stats">
-          <div className="stat-item">
-            <span className="stat-label">XP</span>
-            <span className="stat-value">{player.experiencePoints || 0}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">Qazanc</span>
-            <span className="stat-value stat-earnings">{(player.totalEarnings || 0).toFixed(2)} ₼</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">Qalib %</span>
-            <span className="stat-value stat-winrate">{winRate}%</span>
-          </div>
+        {/* Qazanc - sadəcə rəqəm */}
+        <div className="table-cell">
+          <span className="cell-value earnings">
+            {(player.totalEarnings || 0).toFixed(2)} 
+          </span>
+        </div>
+        
+        {/* Qalib % - sadəcə rəqəm */}
+        <div className="table-cell">
+          <span className="cell-value winrate">{winRate}%</span>
+        </div>
+        
+        {/* Oyunlar - sadəcə rəqəm */}
+        <div className="table-cell">
+          <span className="cell-value games">{player.totalGamesPlayed || 0}</span>
         </div>
       </div>
     );
   };
+
+  const currentData = activeTab === 'weekly' ? weeklyData : alltimeData;
 
   return (
     <div className="leaderboard-container">
@@ -138,18 +142,27 @@ const Ranking = () => {
             <div className="spinner"></div>
             <p>Yüklənir...</p>
           </div>
+        ) : currentData.length === 0 ? (
+          <div className="empty-state">
+            <span className="empty-icon">🎮</span>
+            <p>Məlumat tapılmadı</p>
+          </div>
         ) : (
           <div className="ranking-list">
-            {(activeTab === 'weekly' ? weeklyData : alltimeData).length === 0 ? (
-              <div className="empty-state">
-                <span className="empty-icon">🎮</span>
-                <p>Məlumat tapılmadı</p>
-              </div>
-            ) : (
-              (activeTab === 'weekly' ? weeklyData : alltimeData).map((player, index) => (
-                <RankingItem key={player.id || index} player={player} index={index} />
-              ))
-            )}
+            {/* Table Header */}
+            {/* <div className="ranking-header">
+              <span>Sıra</span>
+              <span>Avatar</span>
+              <span>Oyunçu</span>
+              <span>Qazanc</span>
+              <span>Qalib %</span>
+              <span>Oyunlar</span>
+            </div> */}
+            
+            {/* Table Rows */}
+            {currentData.map((player, index) => (
+              <RankingItem key={player.id || index} player={player} index={index} />
+            ))}
           </div>
         )}
       </div>

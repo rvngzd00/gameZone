@@ -32,7 +32,7 @@ const RequireAuth = () => {
                         </div>
                         <div className="feature-item">
                             <span className="feature-icon">🏆</span>
-                            <span className="future-text">Join Tournaments</span>
+                            <span className="future-text">Play and Earn Coins</span>
                         </div>
                         <div className="feature-item">
                             <span className="feature-icon">💰</span>

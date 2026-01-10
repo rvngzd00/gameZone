@@ -5,7 +5,7 @@ function RouteStyleController() {
   const location = useLocation();
 
   useEffect(() => {
-    const noScrollRoutes = ["/login", "/register", "/games/backgammon", "/games/domino", "/games/seka", "/games/durak", "/games/loto", "/games/poker", "/games/okey"];
+    const noScrollRoutes = ["/games/backgammon", "/games/domino", "/games/seka", "/games/durak", "/games/loto", "/games/poker", "/games/okey"];
     const noLayoutRoutes = ["/games/backgammon", "/games/domino", "/games/seka", "/games/durak",
       "/games/loto", "/games/loto/room_0.20", "/games/loto/room_0.50", "/games/loto/room_1.00", "/games/loto/room_2.00", "/games/loto/room_5.00", "/games/loto/room_10.00", "/games/loto/room_20.00"
       , "/games/loto/room_50.00", "/games/loto/room_100.00"

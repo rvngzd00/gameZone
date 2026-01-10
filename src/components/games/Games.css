@@ -84,10 +84,7 @@
 }
 
 @media (max-width:600px) {
-  .main-content{
-    padding: 0;
-    justify-content: start;
-  }
+
   .games-page{
     gap: 7px;
   }
