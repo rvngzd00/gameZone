@@ -2,13 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Games.css';
 
-import dominoImg from './gameLogoImages/dominoes.png';
-import backgammonImg from './gameLogoImages/backgammon.png';
-import lotoImg from './gameLogoImages/loto.png';
-import durakImg from './gameLogoImages/poker.png';
-import okayImg from './gameLogoImages/poker.png';
-import blackjackImg from './gameLogoImages/poker.png';
-import pokerImg from './gameLogoImages/poker.png';
+import dominoImg from './gameLogoImages/dominoLogo.png';
+import backgammonImg from './gameLogoImages/backgammonLogo.png';
+import lotoImg from './gameLogoImages/lotoLogo.png';
+import durakImg from './gameLogoImages/durakLogo.png';
+import okayImg from './gameLogoImages/okeyLogo.png';
+import sekaImg from './gameLogoImages/sekaLogo.png';
+import pokerImg from './gameLogoImages/pokerLogo.png';
 
 
 
@@ -16,9 +16,9 @@ const GAMES = [
   { id: 'domino', name: 'Dominoes', img: dominoImg },
   { id: 'backgammon', name: 'Backgammon', img: backgammonImg },
   { id: 'loto', name: 'Loto', img: lotoImg },
-  { id: 'durak', name: 'Durak' ,img: durakImg },
   { id: 'okey', name: 'Okey' ,img: okayImg },
-  { id: 'seka', name: 'Seka', img: blackjackImg },
+  { id: 'durak', name: 'Durak' ,img: durakImg },
+  { id: 'seka', name: 'Seka', img: sekaImg },
   { id: 'poker', name: 'Poker', img: pokerImg }
 ];
 
