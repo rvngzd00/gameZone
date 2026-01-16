@@ -171,11 +171,27 @@
                     <span class="badge" id="scoreDisplay">0/101</span>
                 </div>
                 <!-- <div class="balance">💰 <span id="balance">0</span> coin</div> -->
-                <button id="leaveBtn" class="btn btn-danger">Exit</button>
+                <!-- <button class="back-btn" onclick="goToLobby()">
+                    ←
+                </button> -->
+            </div>
+            <div id="stockModal" class="stock-modal-overlay">
+                <div class="stock-modal-content">
+                    <div class="stock-modal-header">
+                        <h2 class="stock-modal-title">🎲 Bazardan Daş Seç</h2>
+                        <button class="stock-modal-close" onclick="closeStockModal()">✕</button>
+                    </div>
+                    <div class="stock-info">
+                        Bazarda <strong id="stockModalCount">0</strong> daş var. Birini seçin:
+                    </div>
+                    <div id="stockTilesGrid" class="stock-tiles-grid">
+                        <!-- Daşlar buraya gələcək -->
+                    </div>
+                </div>
             </div>
 
             <!-- GAME TABLE -->
-            <div class="game-table">
+            <div class="game-table players-2">
 
                 <!-- TOP PLAYER -->
                 <div class="player-section player-section-top">
@@ -194,6 +210,9 @@
                     <div class="stock-indicator">
                         <!-- <div class="stock-icon">🎲</div> -->
                         <div class="stock-count" id="stockCount">28</div>
+                        <button id="drawStack" onclick="openStockModal()">
+                            🎲
+                        </button>
                     </div>
                 </div>
 
@@ -242,18 +261,18 @@
                 <!-- BOTTOM PLAYER (YOU) -->
                 <div class="player-section player-section-bottom">
                     <div class="my-board-container">
-                        <!-- <div class="my-info">
-                            <div class="player-info active" id="myPlayerInfo">
+                        <div class="my-info">
+                            <div class="player-info" id="myPlayerInfo">
                                 <div class="player-avatar">😊</div>
                                 <div class="player-details">
                                     <div class="player-name" id="myPlayerName">You</div>
-                                    <div class="player-stats">
+                                    <!-- <div class="player-stats">
                                         <span class="player-tile-count">🎯 <span id="myTileCount">0</span></span>
                                         <span class="player-score" id="myScore">0</span>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
 
                         <div class="my-board">
                             <!-- <div class="sidebar-title">Your Tiles</div> -->
@@ -265,8 +284,9 @@
                         </div>
 
                         <!-- <div class="my-actions">
-                            <button id="drawBtn" class="action-btn" disabled>Draw</button>
+                            
                         </div> -->
+                        <!-- <button id="drawBtn" class="action-btn" disabled>Draw</button> -->
                     </div>
                 </div>
 
@@ -274,6 +294,10 @@
         </div>
     </div>
     <script>
+        function goToLobby() {
+            window.parent.postMessage({ type: 'BACK_TO_GAMES', payload: {} }, '*');
+        }
+
         const loading = document.getElementById("loadingContainer");
         const modal = document.getElementById("rotateModal");
         const lobbyView = document.getElementById("lobbyView");
@@ -287,11 +311,11 @@
         }
 
         function isLobbyActive() {
-            return getComputedStyle(lobbyView).display !== "none" || getComputedStyle(loading).display !=="none";
+            return getComputedStyle(lobbyView).display !== "none" || getComputedStyle(loading).display !== "none";
         }
         function showLobby() {
             document.getElementById('lobbyView').style.display = 'block';
-            loading.style.display="none";
+            loading.style.display = "none";
             document.getElementById('gameView').style.display = 'none';
             document.getElementById('betModal').style.display = 'none';
             checkOrientation();
@@ -340,7 +364,7 @@
             selectedGameType = null;
             selectedPlayerCount = null;
         }
-         function showGame() {
+        function showGame() {
             document.getElementById('lobbyView').style.display = 'none';
             document.getElementById('gameView').style.display = 'block';
             isInGame = true;
@@ -431,6 +455,7 @@
         let currentRoomId = null;
         let isInGame = false;
         let myUserId = null;
+        let myUserName = null;
         let activeEmojiPopup = null;
 
         // 🔥 DRAG & DROP dəyişənləri
@@ -489,79 +514,275 @@
             }
         }
 
-       
+
 
         // ---------
 
+        // ========== PLAYER ARRANGEMENT - FIXED ==========
+        // ========== YENİ: Global dəyişənlər ==========
+
+
+        // UserData event-ini yenilə (əsas kodunda)
+        // connection.on("UserData", (data) => {
+        //     myUserId = data.userId;
+        //     myUsername = data.username;  // ✅ Bunu əlavə et
+        //     document.getElementById('userBalance').textContent = data.balance;
+        // });
+        function addTimerBorder(playerInfoElement) {
+            if (playerInfoElement.querySelector('.timer-border')) return;
+
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.classList.add('timer-border');
+            svg.innerHTML = `
+        <rect class="bg-circle" x="2" y="2" width="calc(100% - 4px)" height="calc(100% - 4px)" rx="12" ry="12" />
+        <rect class="progress-circle" x="2" y="2" width="calc(100% - 4px)" height="calc(100% - 4px)" rx="12" ry="12" pathLength="440" />
+    `;
+            playerInfoElement.appendChild(svg);
+        }
+        function addTimerBorderMy() {
+            myPlayer=document.getElementById("myPlayerInfo")
+            if (myPlayer.querySelector('.timer-border')) return;
+
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.classList.add('timer-border');
+            svg.innerHTML = `
+        <rect class="bg-circle" x="2" y="2" width="calc(100% - 4px)" height="calc(100% - 4px)" rx="12" ry="12" />
+        <rect class="progress-circle" x="2" y="2" width="calc(100% - 4px)" height="calc(100% - 4px)" rx="12" ry="12" pathLength="440" />
+    `;
+            myPlayer.appendChild(svg);
+        }
+
         function renderPlayers(players) {
-            console.log("🔍 renderPlayers DEBUG:");
-            console.log("  Players array:", players);
+            console.log("🔍 renderPlayers başladı:");
+            console.log("Players array:", players);
+            console.log("My userId:", myUserId);
+            console.log("Current user data:", currentUserData);
 
             if (!players || players.length === 0) {
                 console.warn("⚠️ Players array boşdur!");
+                clearAllPlayers();
                 return;
             }
 
-            // 🔥 ƏVVƏLCƏ BÜTÜN OYUNÇULARDAN ACTIVE CLASS-I SİL
-            document.querySelectorAll('.player-info').forEach(card => {
-                card.classList.remove('active');
-            });
-
-            // Oyunçu sayına görə game-table class-ını dəyişdir
-            const gameTable = document.querySelector('.game-table');
-            if (gameTable) {
-                gameTable.className = 'game-table'; // Reset
-                gameTable.classList.add(`players-${players.length}`); // +1 çünki sən də varsan
-            }
+            // Əvvəlcə BÜTÜN oyunçulardan active class-ı sil
+            // document.querySelectorAll('.player-info').forEach(card => {
+            //     card.classList.remove('active');
+            // });
 
             // Sən hansı index-sənsə tapırıq
-            const myIndex = players.findIndex(p => p.userId === myUserId);
-            console.log("  My index:", myIndex);
+            let myIndex = -1;
 
-            // Digər oyunçuları pozisyalara yerləşdiririk
+            // 1. Backend-dən isMe flag-ı varsa (ən etibarlı)
+            myIndex = players.findIndex(p => p.isMe === true);
+
+            if (myIndex !== -1) {
+                console.log("✅ Backend isMe flag-ı ilə tapıldı → Index:", myIndex);
+            } else {
+                // 2. Username ilə tap (case-insensitive)
+                if (currentUserData && currentUserData.username) {
+                    const myUsername = currentUserData.username.toLowerCase().trim();
+                    myIndex = players.findIndex(p => {
+                        const playerName = p.name.toLowerCase().trim();
+                        return playerName.includes(myUsername) || myUsername.includes(playerName);
+                    });
+                    console.log("📍 Username ilə axtarış:", currentUserData.username, "→ Index:", myIndex);
+                }
+
+                // 3. Son variant - son oyunçu
+                if (myIndex === -1) {
+                    myIndex = players.length - 1;
+                    console.log("📍 Default: Son oyunçu seçildi → Index:", myIndex);
+                }
+            }
+
+            console.log("✅ My final index:", myIndex, "| My name:", players[myIndex]?.name);
+
+            // Oyunçu sayına görə game-table class-ını dəyiş
+            const gameTable = document.querySelector('.game-table');
+            if (gameTable) {
+                gameTable.className = 'game-table';
+                gameTable.classList.add(`players-${players.length}`);
+                console.log(`✅ Table layout: players-${players.length}`);
+            }
+
+            // Pozisyalara yerləşdir
             const positions = assignPlayerPositions(players, myIndex);
+            console.log("📊 Assigned positions:", {
+                top: positions.top?.name,
+                left: positions.left?.name,
+                right: positions.right?.name,
+                bottom: positions.bottom?.name
+            });
+
 
             // TOP player
             if (positions.top) {
                 updatePlayerInfo('Top', positions.top);
+                showPlayerSection('top');
             } else {
                 clearPlayerInfo('Top');
+                hidePlayerSection('top');
             }
 
             // LEFT player
             if (positions.left) {
                 updatePlayerInfo('Left', positions.left);
+                showPlayerSection('left');
             } else {
                 clearPlayerInfo('Left');
+                hidePlayerSection('left');
             }
 
             // RIGHT player
             if (positions.right) {
                 updatePlayerInfo('Right', positions.right);
+                showPlayerSection('right');
             } else {
                 clearPlayerInfo('Right');
+                hidePlayerSection('right');
             }
 
-            // MY info (bottom)
-            if (positions.bottom) {
-                updateMyPlayerInfo(positions.bottom);
-            }
-
-            // 🔥 STATUS BAR-I YENILƏ
+            // Status bar-ı yenilə
             updateStatusBar(positions);
 
+            // Score display-i yenilə
             updateScoreDisplay(players);
+        }
+
+        function assignPlayerPositions(players, myIndex) {
+            const positions = {
+                top: null,
+                left: null,
+                right: null,
+                bottom: null
+            };
+
+            const totalPlayers = players.length;
+
+            // Bottom həmişə sən
+            positions.bottom = players[myIndex];
+
+            if (totalPlayers === 2) {
+                // 2 nəfər: qarşı tərəf top-da
+                const otherIndex = myIndex === 0 ? 1 : 0;
+                positions.top = players[otherIndex];
+
+            } else if (totalPlayers === 3) {
+                // 3 nəfər: saat əqrəbi istiqamətində
+                // Bottom (sən) -> Right -> Top
+                const rightIndex = (myIndex + 1) % 3;
+                const topIndex = (myIndex + 2) % 3;
+
+                positions.right = players[rightIndex];
+                positions.top = players[topIndex];
+
+            } else if (totalPlayers === 4) {
+                // 4 nəfər: saat əqrəbi istiqamətində
+                // Bottom (sən) -> Right -> Top -> Left
+                const rightIndex = (myIndex + 1) % 4;
+                const topIndex = (myIndex + 2) % 4;
+                const leftIndex = (myIndex + 3) % 4;
+
+                positions.right = players[rightIndex];
+                positions.top = players[topIndex];
+                positions.left = players[leftIndex];
+            }
+
+            return positions;
+        }
+
+        function updatePlayerInfo(position, playerData) {
+            const infoCard = document.getElementById(`playerInfo${position}`);
+            const myInfoCard = document.getElementById("myPlayerInfo");
+            console.log(infoCard.id);
+            console.log(position);
+            console.log(playerData);
+            if (!infoCard) {
+                console.error(`❌ playerInfo${position} tapılmadı!`);
+                return;
+            }
+
+            // Active class
+            if (playerData.isCurrentTurn) {
+                infoCard.classList.add('active');
+                addTimerBorder(infoCard);
+                console.log("added for", infoCard.innerText)
+            } else {
+                infoCard.classList.remove('active');
+                addTimerBorder(infoCard);
+                console.log("removed for", infoCard.innerText)
+            }
+
+            if (isMyTurn) {
+                myInfoCard.classList.remove('active');
+                addTimerBorderMy();
+            } else if (!isMyTurn) {
+                myInfoCard.classList.remove('active');
+            }
+
+            // Name
+            const nameEl = infoCard.querySelector('.player-name');
+            if (nameEl) nameEl.textContent = playerData.name || 'Waiting...';
+
+            // Tile count
+            const tileCountEl = infoCard.querySelector('.player-tile-count');
+            if (tileCountEl) tileCountEl.textContent = `🎯 ${playerData.tileCount || 0}`;
+
+            // Score
+            const scoreEl = infoCard.querySelector('.player-score');
+            if (scoreEl) scoreEl.textContent = playerData.score || 0;
+
+            console.log(`✅ ${position} player updated:`, playerData.name);
+        }
+
+        function clearPlayerInfo(position) {
+            const infoCard = document.getElementById(`playerInfo${position}`);
+            if (!infoCard) return;
+
+            // infoCard.classList.remove('active');
+
+            const nameEl = infoCard.querySelector('.player-name');
+            if (nameEl) nameEl.textContent = 'Gözləyir...';
+
+            const tileCountEl = infoCard.querySelector('.player-tile-count');
+            if (tileCountEl) tileCountEl.textContent = '🎯 0';
+
+            const scoreEl = infoCard.querySelector('.player-score');
+            if (scoreEl) scoreEl.textContent = '0';
+        }
+
+        function clearAllPlayers() {
+            clearPlayerInfo('Top');
+            clearPlayerInfo('Left');
+            clearPlayerInfo('Right');
+
+            hidePlayerSection('top');
+            hidePlayerSection('left');
+            hidePlayerSection('right');
+        }
+
+        function showPlayerSection(position) {
+            const section = document.querySelector(`.player-section-${position}`);
+            if (section) {
+                section.style.display = 'flex';
+            }
+        }
+
+        function hidePlayerSection(position) {
+            const section = document.querySelector(`.player-section-${position}`);
+            if (section) {
+                section.style.display = 'none';
+            }
         }
 
         function updateStatusBar(positions) {
             const statusBar = document.getElementById('statusBar');
             if (!statusBar) return;
 
-            // Hansı oyunçunun növbəsidir?
             let currentPlayer = null;
 
             if (positions.bottom && positions.bottom.isCurrentTurn) {
-                currentPlayer = { name: 'You', isMe: true };
+                currentPlayer = { name: 'Siz', isMe: true };
             } else if (positions.top && positions.top.isCurrentTurn) {
                 currentPlayer = { name: positions.top.name, isMe: false };
             } else if (positions.left && positions.left.isCurrentTurn) {
@@ -582,142 +803,7 @@
                 statusBar.textContent = "⏳ Gözləyin...";
                 statusBar.className = "status-bar";
             }
-
-            console.log('✅ Status bar updated:', statusBar.textContent);
         }
-
-        function assignPlayerPositions(players, myIndex) {
-            const positions = {
-                top: null,
-                left: null,
-                right: null,
-                bottom: null
-            };
-
-            const totalPlayers = players.length;
-
-            // Bottom həmişə sən
-            positions.bottom = players[myIndex];
-
-            if (totalPlayers === 2) {
-                // 2 nəfər: top və bottom
-                const otherIndex = myIndex === 0 ? 1 : 0;
-                positions.top = players[otherIndex];
-
-            } else if (totalPlayers === 3) {
-                // 3 nəfər: top, left, bottom
-                // Saatvari istiqamətdə: top -> right -> bottom -> top
-                const topIndex = (myIndex + 1) % 3;
-                const leftIndex = (myIndex + 2) % 3;
-
-                positions.top = players[topIndex];
-                positions.left = players[leftIndex];
-
-            } else if (totalPlayers === 4) {
-                // 4 nəfər: top, left, right, bottom
-                // Saatvari: top -> right -> bottom -> left
-                const topIndex = (myIndex + 2) % 4; // Qarşı tərəf
-                const rightIndex = (myIndex + 1) % 4; // Sağ tərəf
-                const leftIndex = (myIndex + 3) % 4; // Sol tərəf
-
-                positions.top = players[topIndex];
-                positions.right = players[rightIndex];
-                positions.left = players[leftIndex];
-            }
-
-            console.log("📍 Position assignments:", {
-                top: positions.top?.name,
-                left: positions.left?.name,
-                right: positions.right?.name,
-                bottom: positions.bottom?.name
-            });
-
-            return positions;
-        }
-
-        function updatePlayerInfo(position, playerData) {
-            const infoCard = document.getElementById(`playerInfo${position}`);
-            if (!infoCard) {
-                console.error(`❌ playerInfo${position} tapılmadı!`);
-                return;
-            }
-
-            // Active class
-            if (playerData.isCurrentTurn) {
-                infoCard.classList.add('active');
-            } else {
-                infoCard.classList.remove('active');
-            }
-
-            // Name
-            const nameEl = infoCard.querySelector('.player-name');
-            if (nameEl) nameEl.textContent = playerData.name;
-
-            // Tile count
-            const tileCountEl = infoCard.querySelector('.player-tile-count');
-            if (tileCountEl) tileCountEl.textContent = `🎯 ${playerData.tileCount}`;
-
-            // Score
-            const scoreEl = infoCard.querySelector('.player-score');
-            if (scoreEl) scoreEl.textContent = playerData.score;
-
-            // Emoji button
-            const emojiBtn = infoCard.querySelector('.emoji-btn-small');
-            if (emojiBtn) {
-                emojiBtn.style.display = 'block';
-                emojiBtn.onclick = () => togglePlayerEmojiPopup(playerData.name);
-            }
-
-            console.log(`✅ ${position} player updated:`, playerData.name);
-        }
-
-
-        function clearPlayerInfo(position) {
-            const infoCard = document.getElementById(`playerInfo${position}`);
-            if (!infoCard) return;
-
-            infoCard.classList.remove('active');
-
-            const nameEl = infoCard.querySelector('.player-name');
-            if (nameEl) nameEl.textContent = 'Waiting...';
-
-            const tileCountEl = infoCard.querySelector('.player-tile-count');
-            if (tileCountEl) tileCountEl.textContent = '🎯 0';
-
-            const scoreEl = infoCard.querySelector('.player-score');
-            if (scoreEl) scoreEl.textContent = '0';
-
-            const emojiBtn = infoCard.querySelector('.emoji-btn-small');
-            if (emojiBtn) emojiBtn.style.display = 'none';
-        }
-
-
-        function updateMyPlayerInfo(playerData) {
-            const myInfo = document.getElementById('myPlayerInfo');
-            if (!myInfo) return;
-
-            // Active class
-            if (playerData.isCurrentTurn) {
-                myInfo.classList.add('active');
-            } else {
-                myInfo.classList.remove('active');
-            }
-
-            // Name
-            const nameEl = document.getElementById('myPlayerName');
-            if (nameEl) nameEl.textContent = playerData.name;
-
-            // Tile count
-            const tileCountEl = document.getElementById('myTileCount');
-            if (tileCountEl) tileCountEl.textContent = playerData.tileCount;
-
-            // Score
-            const scoreEl = document.getElementById('myScore');
-            if (scoreEl) scoreEl.textContent = playerData.score;
-
-            console.log('✅ My info updated:', playerData.name);
-        }
-
 
         function updateScoreDisplay(players) {
             if (!players || players.length === 0) {
@@ -730,7 +816,19 @@
             document.getElementById('scoreDisplay').textContent = `${maxScore}/${scoreToWin}`;
         }
 
+        // ========== DEBUG FUNCTION ==========
+        function debugPlayerPositions() {
+            console.log("🔍 DEBUG - Current Player Positions:");
 
+            ['Top', 'Left', 'Right'].forEach(pos => {
+                const info = document.getElementById(`playerInfo${pos}`);
+                if (info) {
+                    const name = info.querySelector('.player-name')?.textContent;
+                    const display = window.getComputedStyle(info.parentElement).display;
+                    console.log(`${pos}: ${name} (display: ${display})`);
+                }
+            });
+        }
         //-----------
 
         function adjustTableLayout(playerCount) {
@@ -753,6 +851,8 @@
 
             connection.on("UserData", (data) => {
                 myUserId = data.userId;
+                myUserName = data.username;
+
                 document.getElementById('userBalance').textContent = data.balance;
                 document.getElementById('balance').textContent = data.balance;
             });
@@ -856,6 +956,7 @@
 
                 document.getElementById('roundNumber').textContent = currentRound;
                 document.getElementById('stockCount').textContent = stockCount;
+                document.getElementById("myPlayerName").textContent = myUserName;
 
                 // 🔥 SCORES array-dən xalları yenilə
                 if (state.scores && state.scores.length > 0) {
@@ -904,9 +1005,9 @@
 
                 // 🔥 ACTIVE CLASS-I DÜZGÜN ƏLAVƏ ET
                 // Əvvəlcə hamısından sil
-                document.querySelectorAll('.player-info').forEach(card => {
-                    card.classList.remove('active');
-                });
+                // document.querySelectorAll('.player-info').forEach(card => {
+                //     card.classList.remove('active');
+                // });
 
                 // İndi yalnız current player-ə əlavə et
                 if (isMyTurn) {
@@ -918,7 +1019,7 @@
                     // Əgər gəlmirsə, PlayersList event-indən sonra təyin edəcək
                 }
 
-                document.getElementById('drawBtn').disabled = !isMyTurn;
+                document.getElementById('drawStack').disabled = !isMyTurn;
 
                 console.log("✅ GameState render tamamlandı");
             });
@@ -1125,26 +1226,26 @@
         }
 
 
-        function renderMiniTile(left, right) {
-            const isDouble = left === right;
-            const tileClass = isDouble ? 'mini-tile' : 'mini-tile horizontal';
+        // function renderMiniTile(left, right) {
+        //     const isDouble = left === right;
+        //     const tileClass = isDouble ? 'mini-tile' : 'mini-tile horizontal';
 
-            const leftDotsHtml = renderMiniDots(left);
-            const rightDotsHtml = renderMiniDots(right);
+        //     const leftDotsHtml = renderMiniDots(left);
+        //     const rightDotsHtml = renderMiniDots(right);
 
-            return `
-                <div class="${tileClass}">
-                    <div class="mini-tile-half">${leftDotsHtml}</div>
-                    <div class="mini-tile-half">${rightDotsHtml}</div>
-                </div>
-            `;
-        }
+        //     return `
+        //         <div class="${tileClass}">
+        //             <div class="mini-tile-half">${leftDotsHtml}</div>
+        //             <div class="mini-tile-half">${rightDotsHtml}</div>
+        //         </div>
+        //     `;
+        // }
 
-        function renderMiniDots(value) {
-            if (value === 0) return '<div class="mini-dots mini-dots-0"></div>';
-            const dots = '<div class="mini-dot"></div>'.repeat(value);
-            return `<div class="mini-dots mini-dots-${value}">${dots}</div>`;
-        }
+        // function renderMiniDots(value) {
+        //     if (value === 0) return '<div class="mini-dots mini-dots-0"></div>';
+        //     const dots = '<div class="mini-dot"></div>'.repeat(value);
+        //     return `<div class="mini-dots mini-dots-${value}">${dots}</div>`;
+        // }
 
         function closeRoundModal() {
             const overlay = document.querySelector('.round-result-overlay');
@@ -1944,13 +2045,13 @@
             document.getElementById('rightEnd').textContent = rightEnd !== null ? rightEnd : '-';
         }
 
-        document.getElementById('drawBtn').addEventListener('click', async () => {
-            try {
-                await connection.invoke("TakeFromStock");
-            } catch (err) {
-                showToast("Bazardan götürmək alınmadı");
-            }
-        });
+        // document.getElementById('drawBtn').addEventListener('click', async () => {
+        //     try {
+        //         await connection.invoke("TakeFromStock");
+        //     } catch (err) {
+        //         showToast("Bazardan götürmək alınmadı");
+        //     }
+        // });
 
         document.getElementById('leaveBtn').addEventListener('click', async () => {
             if (confirm("Oyunu tərk etmək istədiyinizdən əminsiniz?")) {
@@ -1960,6 +2061,65 @@
                 currentRoomId = null;
                 showLobby();
                 loadLobbies();
+            }
+        });
+
+        // Draw Stack 
+        function openStockModal() {
+            const modal = document.getElementById('stockModal');
+            const grid = document.getElementById('stockTilesGrid');
+            const countEl = document.getElementById('stockModalCount');
+
+            // Backend-dən stockCount götür
+            const stockCount = parseInt(document.getElementById('stockCount')?.textContent || 28);
+            countEl.textContent = stockCount;
+
+            // Grid-i təmizlə
+            grid.innerHTML = '';
+
+            // Stock daşlarını göstər (arka tərəf - göstərməsən də olar)
+            for (let i = 0; i < stockCount; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'stock-tile-wrapper';
+                wrapper.onclick = () => selectStockTile(i);
+
+                wrapper.innerHTML = `
+            <div class="tile">
+                
+            </div>
+        `;
+
+                grid.appendChild(wrapper);
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeStockModal() {
+            const modal = document.getElementById('stockModal');
+            modal.classList.remove('active');
+        }
+
+        async function selectStockTile(index) {
+            console.log(`🎲 Daş seçildi: ${index}`);
+
+            try {
+                // Backend-ə göndər
+                await connection.invoke("TakeFromStock");
+
+                // Modal-ı bağla
+                closeStockModal();
+
+            } catch (err) {
+                console.error("❌ Stock-dan daş götürmək xətası:", err);
+                showToast("Daş götürülə bilmədi");
+            }
+        }
+
+        // Modal kənara klik - bağlansın
+        document.getElementById('stockModal').addEventListener('click', (e) => {
+            if (e.target.id === 'stockModal') {
+                closeStockModal();
             }
         });
 
