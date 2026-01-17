@@ -1227,52 +1227,68 @@
             try {
                 const rooms = await connection.invoke("GetRoomList");
                 const grid = document.getElementById('roomsGrid');
+
                 if (!rooms || rooms.length === 0) {
                     grid.innerHTML = '<div style="text-align: center; padding: 50px; color: white;">Otaq tapılmadı</div>';
                     return;
                 }
-                // ${r.roomName}
-                // <div class="room-detail"><span>Yaradıcı:</span><span>${r.creatorName}</span></div>
-                // grid.innerHTML = rooms.map(r => `
-                //         <div class="room-card" onclick="joinRoom('${r.roomId}')">
-                //             <div class="room-name">Okey 51 Room</div>
-                //             <div class="room-detail"><span>Mode:</span><span>${r.gameMode === 'Okey51' ? '⚡ 51' : '🎯 101'}</span></div>
-                //             <div class="room-detail"><span>Entry Fee:</span><span>💰 ${r.entryFee}₼</span></div>
-                //             <div class="room-detail"><span>Players:</span><span>👥 ${r.playerCount}/4</span></div>
-                //         </div>
-                //     `).join('');
-                // <span class="room-status ${room.status === 'active' ? 'status-active' : 'status-full'}">
-                //     ${room.status === 'active' ? 'Açıq' : 'Dolu'}
-                // </span>
-                // <div class="room-detail">
-                //         <span class="room-detail-label">💳 Min. Balans</span>
-                //         <span class="room-detail-value">${room.minBalance}</span>
-                //     </div>
-                // <div class="room-detail">
-                //     <span class="room-detail-label">Game</span>
-                //     <span class="room-detail-value">51</span>
-                // </div>
-                grid.innerHTML = rooms.map(r => `
-                <div class="room-card" onclick="joinRoom('${r.roomId}')">
-                        <div class="room-header">
-                        <div class="room-name">Okay Room</div>
+
+                // Otaqları oyunçu sayına görə qruplaşdır
+                const roomsByPlayers = {
+                    2: rooms.filter(r => r.maxPlayers === 2),
+                    3: rooms.filter(r => r.maxPlayers === 3),
+                    4: rooms.filter(r => r.maxPlayers === 4)
+                };
+
+                grid.innerHTML = [2, 3, 4].map(playerCount => `
+            <div class="room-type-card">
+                <div class="room-type-header">
+                    <div class="player-count">
+                        <span class="player-icon">👥</span>
+                        <span class="player-number">${playerCount}</span>
+                        <span class="player-text">Nəfərlik</span>
                     </div>
-                    <div class="room-details">
-                        <div class="room-detail">
-                            <span class="room-detail-label">💵 Bet</span>
-                            <span class="room-detail-value highlight">${r.entryFee}</span>
-                        </div>
-                        <div class="room-detail">
-                            <span class="room-detail-label">👥 Players</span>
-                            <span class="room-detail-value">${r.playerCount}/${r.maxPlayers}</span>
-                        </div>
-                        
-                    </div>
-                    </div>
-                    `).join('');
-            } catch (err) { log('❌ Load rooms error:', err); }
+                </div>
+                
+                <div class="bet-options">
+                    ${generateBetOptions(roomsByPlayers[playerCount], playerCount)}
+                </div>
+            </div>
+        `).join('');
+
+            } catch (err) {
+                log('❌ Load rooms error:', err);
+            }
         }
 
+        function generateBetOptions(rooms, playerCount) {
+            if (!rooms || rooms.length === 0) {
+                return `
+            <div class="bet-option empty-bet">
+                <span class="bet-label">Bet seçimi yoxdur</span>
+            </div>
+        `;
+            }
+
+            // Unikal bet məbləğləri
+            const uniqueBets = [...new Set(rooms.map(r => r.entryFee))].sort((a, b) => a - b);
+
+            return uniqueBets.map(bet => {
+                const room = rooms.find(r => r.entryFee === bet);
+                return `
+            <div class="bet-option" onclick="joinRoom('${room.roomId}')">
+                <div class="bet-amount">
+                    <span class="currency-icon">💰</span>
+                    <span class="bet-value">${bet}</span>
+                    <span class="currency">₼</span>
+                </div>
+                <div class="bet-info">
+                    <span class="active-players">${room.playerCount}/${playerCount} aktiv</span>
+                </div>
+            </div>
+        `;
+            }).join('');
+        }
         setInterval(() => {
             if (document.getElementById('roomListScreen').classList.contains('active') && connection) loadRooms();
         }, 3000);
