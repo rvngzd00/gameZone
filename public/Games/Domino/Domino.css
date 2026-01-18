@@ -1051,8 +1051,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
+    /* margin-bottom: 24px;
+    padding-bottom: 16px; */
     border-bottom: 2px solid rgba(255, 215, 0, 0.2);
 }
 
@@ -1423,87 +1423,336 @@ body {
 }
 
 /* Modal Styles */
+/* Modal Overlay - Daha dinamik blur */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    /* width: 100%; */
     height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(10px);
+    /* background: radial-gradient(circle at center, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.95)); */
+    backdrop-filter: blur(15px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 3000;
-    animation: fadeIn 0.3s;
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Modal Content - Glassmorphism effekti */
 .modal-content {
-    background: linear-gradient(145deg, rgba(30, 30, 60, 0.98), rgba(15, 15, 40, 0.98));
-    border: 3px solid rgba(255, 215, 0, 0.3);
-    border-radius: 25px;
-    padding: 40px;
-    max-width: 700px;
-    width: 60%;
-    box-shadow: 0 20px 60px rgba(255, 215, 0, 0.3);
-    animation: modalSlide 0.4s;
+    background: linear-gradient(145deg, 
+        rgba(255, 255, 255, 0.1), 
+        rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    border-radius: 30px;
+    padding: 45px;
+    max-width: 750px;
+    width: 65%;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 80px rgba(255, 215, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: modalSlide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Dekorativ işıq effekti */
+.modal-content::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+    animation: glow 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes glow {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+    50% { transform: translate(10px, 10px) scale(1.1); opacity: 0.8; }
 }
 
 @keyframes modalSlide {
     from {
         opacity: 0;
-        transform: translateY(50px) scale(0.9);
+        transform: translateY(60px) scale(0.85);
     }
-
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Modal Header */
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+    /* margin-bottom: 35px;
+    padding-bottom: 25px; */
+    border-bottom: 2px solid rgba(255, 215, 0, 0.25);
+    position: relative;
 }
 
 .modal-header h2 {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 900;
-    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
+    text-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+    animation: shimmer 3s linear infinite;
+    letter-spacing: 1px;
 }
 
+@keyframes shimmer {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+/* Close Button - Daha interaktiv */
 .modal-close {
-    background: rgba(239, 68, 68, 0.2);
-    border: 2px solid rgba(239, 68, 68, 0.4);
-    color: #ef4444;
-    width: 40px;
-    height: 40px;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.3));
+    border: 2px solid rgba(239, 68, 68, 0.5);
+    color: #ff6b6b;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    font-size: 24px;
+    font-size: 22px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-close::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.modal-close:hover::before {
+    opacity: 1;
 }
 
 .modal-close:hover {
-    background: rgba(239, 68, 68, 0.4);
-    transform: rotate(90deg);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(220, 38, 38, 0.5));
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 6px 25px rgba(239, 68, 68, 0.4);
 }
 
+.modal-close:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+/* Modal Body */
 .modal-body {
-    max-height: 60vh;
+    max-height: 65vh;
     overflow-y: auto;
+    padding-right: 10px;
 }
 
+/* Custom Scrollbar */
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(255, 215, 0, 0.6), rgba(255, 215, 0, 0.3));
+    border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(255, 215, 0, 0.8), rgba(255, 215, 0, 0.5));
+}
+
+/* Bet Cards Container */
+#betOptions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 20px;
+    padding: 10px;
+}
+
+/* Bet Card - Premium görünüş */
+.bet-card {
+    position: relative;
+    background: linear-gradient(145deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+    border: 2px solid rgba(255, 215, 0, 0.4);
+    border-radius: 20px;
+    padding: 30px 20px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.bet-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.bet-card:hover::before {
+    opacity: 1;
+}
+
+.bet-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    border-color: rgba(255, 215, 0, 0.8);
+    box-shadow: 
+        0 12px 40px rgba(255, 215, 0, 0.3),
+        0 0 60px rgba(255, 215, 0, 0.15);
+}
+
+.bet-card:active {
+    transform: translateY(-4px) scale(1.02);
+}
+
+/* Disabled State */
+.bet-card.disabled {
+    background: linear-gradient(145deg, rgba(100, 100, 100, 0.15), rgba(60, 60, 60, 0.1));
+    border-color: rgba(150, 150, 150, 0.3);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.bet-card.disabled:hover {
+    transform: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Bet Amount */
+.bet-amount {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffd700;
+    text-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Bet Prize */
+.bet-prize {
+    font-size: 14px;
+    color: #4ade80;
+    font-weight: 700;
+    background: rgba(74, 222, 128, 0.15);
+    padding: 6px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+/* Bet Locked */
+.bet-locked {
+    font-size: 28px;
+    opacity: 0.6;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Bet Waiting - Pulsing effect */
+.bet-waiting {
+    font-size: 13px;
+    color: #60a5fa;
+    font-weight: 700;
+    background: rgba(96, 165, 250, 0.2);
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(96, 165, 250, 0.4);
+    animation: pulse 2s ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.98); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+        padding: 30px 25px;
+    }
+    
+    .modal-header h2 {
+        font-size: 26px;
+    }
+    
+    #betOptions {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+    }
+    
+    .bet-amount {
+        font-size: 20px;
+    }
+}
+
+
+/* AllFives ScoreToWin Qrupları */
+.allfives-score-group {
+    border-radius: 20px;
+}
+
+.allfives-score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+    padding-bottom: 7px;
+    border-bottom: 2px solid rgba(255, 215, 0, 0.15);
+}
+
+.allfives-score-title {
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.allfives-bet-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
 /* .bet-card {
     background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
     border: 3px solid rgba(16, 185, 129, 0.3);

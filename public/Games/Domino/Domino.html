@@ -86,7 +86,7 @@
                     <div class="game-section">
                         <div class="section-header classic-header">
                             <div class="section-icon">🎯</div>
-                            <div class="section-title" >CLASSIC 101</div>
+                            <div class="section-title">CLASSIC 101</div>
                         </div>
                         <div class="player-count-selector">
                             <button class="count-btn" onclick="showBetModal('Classic101', 2)">
@@ -331,10 +331,14 @@
             selectedGameType = gameType;
             selectedPlayerCount = playerCount;
 
+
+            console.log(availableLobbies);
             // Backend-dən gələn lobby-ləri filtr et
             const matchingLobbies = availableLobbies.filter(l =>
                 l.gameType === gameType && l.playerCount === playerCount
             );
+            console.log(matchingLobbies);
+
 
             if (matchingLobbies.length === 0) {
                 showToast('Bu oyun növü üçün lobby mövcud deyil!');
@@ -344,21 +348,65 @@
             const modal = document.getElementById('betModal');
             const betOptions = document.getElementById('betOptions');
 
-            betOptions.innerHTML = matchingLobbies.map(lobby => {
-                const disabled = balance < lobby.entryFee;
-                const prize = lobby.entryFee * playerCount * 0.9; // 10% platform fee
-                // <div class="bet-prize">🏆 ${prize.toFixed(0)}</div>
+            if (gameType == "Classic101" || gameType == "Quick5") {
+                betOptions.innerHTML = matchingLobbies.map(lobby => {
+                    const disabled = balance < lobby.entryFee;
+                    const prize = lobby.entryFee * playerCount * 0.9; // 10% platform fee
+                    // <div class="bet-prize">🏆 ${prize.toFixed(0)}</div>
 
-                return `
-            <button class="bet-card ${disabled ? 'disabled' : ''}" 
-                    onclick="joinWithBet(${lobby.entryFee})"
-                    ${disabled ? 'disabled' : ''}>
-                <div class="bet-amount">💰 ${lobby.entryFee}</div>
-                ${disabled ? '<div class="bet-locked">🔒</div>' : ''}
-                ${lobby.waitingPlayers > 0 ? `<div class="bet-waiting">⏳ ${lobby.waitingPlayers}</div>` : ''}
-            </button>
-        `;
-            }).join('');
+                    return `
+                <button class="bet-card ${disabled ? 'disabled' : ''}" 
+                        onclick="joinWithBet(${lobby.entryFee})"
+                        ${disabled ? 'disabled' : ''}>
+                    <div class="bet-amount">💰 ${lobby.entryFee}</div>
+                    ${disabled ? '<div class="bet-locked">🔒</div>' : ''}
+                    ${lobby.waitingPlayers > 0 ? `<div class="bet-waiting">⏳ ${lobby.waitingPlayers}</div>` : ''}
+                </button>
+            `;
+                }).join('');
+            } else if (gameType === "AllFives") {
+    // ScoreToWin-ə görə qruplaşdır
+    const groupedByScore = {};
+
+    matchingLobbies.forEach(lobby => {
+        const scoreKey = lobby.scoreToWin || 185;
+        if (!groupedByScore[scoreKey]) {
+            groupedByScore[scoreKey] = [];
+        }
+        groupedByScore[scoreKey].push(lobby);
+    });
+
+    // HTML yaratmaq
+    betOptions.innerHTML = Object.keys(groupedByScore)
+        .sort((a, b) => a - b)
+        .map(scoreToWin => {
+            const lobbies = groupedByScore[scoreToWin];
+
+            return `
+                <div class="allfives-score-group">
+                    <div class="allfives-score-header">
+                        <span class="allfives-score-title">${scoreToWin} Xal</span>
+                    </div>
+                    <div class="allfives-bet-grid">
+                        ${lobbies.map(lobby => {
+                            const disabled = balance < lobby.entryFee;
+
+                            return `
+                                <button style="width:100%;" class="bet-card ${disabled ? 'disabled' : ''}" 
+                                        onclick="joinWithBet(${lobby.entryFee})"
+                                        ${disabled ? 'disabled' : ''}>
+                                    <div class="bet-amount" style="font-size:17px;">💰 ${lobby.entryFee}</div>
+                                    ${disabled ? '<div class="bet-locked">🔒</div>' : ''}
+                                    ${lobby.waitingPlayers > 0 ? `<div class="bet-waiting">⏳ ${lobby.waitingPlayers}</div>` : ''}
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+}
+
 
             modal.style.display = 'flex';
         }
