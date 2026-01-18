@@ -197,7 +197,7 @@ body {
     height: 87vh;
     background:
         radial-gradient(ellipse at center, rgba(26, 122, 26, 0.4) 0%, transparent 70%),
-        linear-gradient(135deg, #1a7a1a 0%, #0d5a0d 50%, #0d4a0d 100%);
+        linear-gradient(135deg, #1a307a 0%, #1a307a 50%, #1a307a 100%);
     border: 12px solid #6b5638;
     border-radius: 20px;
     box-shadow:
@@ -245,7 +245,7 @@ body {
     display: flex;
     align-items: center;
     justify-self: center;
-    bottom: 15px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
@@ -391,7 +391,7 @@ body {
     border-radius: 16px;
     padding: 0 20px;
     display: flex;
-    align-items: center;
+    align-items: center; /*9 cu dasdan sonra start a kecmelidir*/
     justify-content: center;
     overflow-x: auto;
     overflow-y: hidden;
@@ -611,7 +611,7 @@ body {
 }
 
 
-.tile:hover {
+.hand-tiles .tile:hover {
     transform: translateY(-6px) scale(1.03);
     box-shadow: 0 10px 20px rgba(16, 185, 129, 0.35);
 }
@@ -850,6 +850,8 @@ body {
 }
 .top-game{
     display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .game-section {
@@ -2312,8 +2314,8 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.25);
+    /* backdrop-filter: blur(10px); */
     display: none;
     align-items: center;
     justify-content: center;
@@ -2327,11 +2329,11 @@ body {
 
 .stock-modal-content {
     background: linear-gradient(145deg, rgba(30, 30, 60, 0.98), rgba(15, 15, 40, 0.98));
-    border: 3px solid rgba(16, 185, 129, 0.4);
+    border: 3px solid rgb(16 81 185 / 40%);
     border-radius: 20px;
-    padding: 30px;
+    padding: 10px;
     max-width: 600px;
-    width: 90%;
+    /* width: 90%; */
     max-height: 80vh;
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
@@ -2385,9 +2387,9 @@ body {
 
 .stock-tiles-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-    gap: 12px;
-    padding: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    /* gap: 12px;
+    padding: 10px; */
 }
 
 .stock-tile-wrapper {
@@ -2405,8 +2407,8 @@ body {
 
 .stock-tile-wrapper .tile {
     cursor: pointer;
-    border: 2px solid rgba(16, 185, 129, 0.3);
-    background-color: rgba(30, 41, 59, 0.5);
+    /* border: 2px solid rgba(16, 185, 129, 0.3); */
+    /* background-color: rgba(30, 41, 59, 0.5); */
 }
 
 .stock-tile-wrapper:hover .tile {
@@ -2620,12 +2622,12 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.25);
+    /* backdrop-filter: blur(10px); */
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 7777;
+    z-index: 777;
     /* ✅ ÇOX YÜKSƏK */
     animation: fadeIn 0.3s;
 }

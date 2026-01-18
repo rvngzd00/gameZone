@@ -16,21 +16,29 @@
         <div id="roomListScreen" class="screen active">
             <div class="room-list-container">
                 <div class="header">
-                    <div class="header-content">
-                        <div class="logo-section">
-                            <h1>OKEY 51</h1>
-                        </div>
-                        <div class="user-info">
-                            <span class="user-name" id="userName">Yüklənir...</span>
-                            <span class="user-balance" id="userBalance">0</span>
-                        </div>
-                    </div>
+
+                    <!-- <h1>OKEY 51</h1> -->
+                    <div class="header-title">OKEY 51</div>
+                    <!-- <span class="user-name" id="userName">Yüklənir...</span> -->
+                    <span class="user-balance" id="userBalance">0</span>
+
                 </div>
 
                 <div class="rooms-grid" id="roomsGrid">
                     <div class="loading-container">
                         <div class="loading"></div>
                         <p class="loading-text">Otaqlar yüklənir...</p>
+                    </div>
+                </div>
+                <!-- Lobby Bet Modal -->
+                <div id="lobbyBetModal" class="modal-overlay" style="display: none;"
+                    onclick="if(event.target === this) closeLobbyBetModal()">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Bet Seç</h2>
+                            <button class="modal-close" onclick="closeLobbyBetModal()">×</button>
+                        </div>
+                        <div class="modal-body" id="lobbyBetOptions"></div>
                     </div>
                 </div>
             </div>
@@ -1223,6 +1231,8 @@
             });
         }
 
+        // Lobby yükləmə funksiyası
+        // Lobby yükləmə funksiyası
         async function loadRooms() {
             try {
                 const rooms = await connection.invoke("GetRoomList");
@@ -1233,76 +1243,117 @@
                     return;
                 }
 
-                // Otaqları oyunçu sayına görə qruplaşdır
-                const roomsByPlayers = {
-                    2: rooms.filter(r => r.maxPlayers === 2),
-                    3: rooms.filter(r => r.maxPlayers === 3),
-                    4: rooms.filter(r => r.maxPlayers === 4)
-                };
+                // Otaqları saxla (modal üçün)
+                window.availableRooms = rooms;
 
-                grid.innerHTML = [2, 3, 4].map(playerCount => `
-            <div class="room-type-card">
-                <div class="room-type-header">
-                    <div class="player-count">
-                        <span class="player-icon">👥</span>
-                        <span class="player-number">${playerCount}</span>
-                        <span class="player-text">Nəfərlik</span>
-                    </div>
-                </div>
-                
-                <div class="bet-options">
-                    ${generateBetOptions(roomsByPlayers[playerCount], playerCount)}
+                // Oyunçu sayı seçimləri
+                grid.innerHTML = `
+            <div class="player-selection-container">
+                <div class="player-options">
+                    ${[2, 3, 4].map(playerCount => {
+                    const playerRooms = rooms.filter(r => r.maxPlayers === playerCount);
+                    const totalPlayers = playerRooms.reduce((sum, r) => sum + r.playerCount, 0);
+                    // <span class="player-count-info">${totalPlayers} oyunçu</span>
+                    // <div class="player-icon-large">👥</div>
+
+                    return `
+                            <div class="player-option-card" onclick="openBetModal(${playerCount})">
+                                <div class="player-count-large">${playerCount}</div>
+                                <div class="player-label">Nəfərlik</div>
+                                ${playerRooms.length > 0 ? `
+                                ` : '<div class="no-rooms">Otaq yoxdur</div>'}
+                            </div>
+                        `;
+                }).join('')}
                 </div>
             </div>
-        `).join('');
+        `;
 
             } catch (err) {
-                log('❌ Load rooms error:', err);
+                console.error('❌ Load rooms error:', err);
             }
         }
 
-        function generateBetOptions(rooms, playerCount) {
+        // Bet modal açma
+        function openBetModal(playerCount) {
+            const rooms = window.availableRooms.filter(r => r.maxPlayers === playerCount);
+
             if (!rooms || rooms.length === 0) {
-                return `
-            <div class="bet-option empty-bet">
-                <span class="bet-label">Bet seçimi yoxdur</span>
-            </div>
-        `;
+                showNotification('Bu oyunçu sayı üçün otaq yoxdur', 'error');
+                return;
+            }
+
+            // Modal yaradırıq və ya tapırıq
+            let modal = document.getElementById('lobbyBetModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'lobbyBetModal';
+                modal.className = 'modal-overlay';
+                modal.style.display = 'none';
+                document.body.appendChild(modal);
+
+                // Overlay-ə klik edəndə bağlansın
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeLobbyBetModal();
+                });
             }
 
             // Unikal bet məbləğləri
             const uniqueBets = [...new Set(rooms.map(r => r.entryFee))].sort((a, b) => a - b);
 
-            return uniqueBets.map(bet => {
+            // <div class="bet-info-small">${room.playerCount}/${playerCount} oyunçu</div>
+            // Modal content-i yenilə
+            modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>${playerCount} Nəfərlik Oyun</h2>
+                <button class="modal-close" onclick="closeLobbyBetModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="bet-grid" id="betOptions">
+                    ${uniqueBets.map(bet => {
                 const room = rooms.find(r => r.entryFee === bet);
                 return `
-            <div class="bet-option" onclick="joinRoom('${room.roomId}')">
-                <div class="bet-amount">
-                    <span class="currency-icon">💰</span>
-                    <span class="bet-value">${bet}</span>
-                    <span class="currency">₼</span>
-                </div>
-                <div class="bet-info">
-                    <span class="active-players">${room.playerCount}/${playerCount} aktiv</span>
+                            <button class="lobby-bet-card" onclick="joinRoom('${room.roomId}')">
+                                <div class="bet-amount">💰 ${bet}</div>
+                            </button>
+                        `;
+            }).join('')}
                 </div>
             </div>
-        `;
-            }).join('');
-        }
-        setInterval(() => {
-            if (document.getElementById('roomListScreen').classList.contains('active') && connection) loadRooms();
-        }, 3000);
+        </div>
+    `;
 
+            modal.style.display = 'flex';
+        }
+
+        // Modal bağlama
+        function closeLobbyBetModal() {
+            const modal = document.getElementById('lobbyBetModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Otağa qoşulma
         async function joinRoom(roomId) {
             try {
+                closeLobbyBetModal();
                 showNotification('Qoşulma...', 'info');
                 await connection.invoke("JoinRoom", roomId, null);
-                sortTiles(); /////////////////////////////////////////////////////////////
+                sortTiles();
             } catch (err) {
-                log('❌ Join error:', err);
+                console.error('❌ Join error:', err);
                 showNotification('Qoşulmaq alınmadı', 'error');
             }
         }
+
+        // Auto refresh
+        // setInterval(() => {
+        //     if (document.getElementById('roomListScreen').classList.contains('active') && connection) {
+        //         loadRooms();
+        //     }
+        // }, 3000);
 
         // ✅ YENİ FUNKSIYA: Göstərici üzərinə daş atmaq
         function setupIndicatorDropZone() {

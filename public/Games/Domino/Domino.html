@@ -365,24 +365,24 @@
             `;
                 }).join('');
             } else if (gameType === "AllFives") {
-    // ScoreToWin-ə görə qruplaşdır
-    const groupedByScore = {};
+                // ScoreToWin-ə görə qruplaşdır
+                const groupedByScore = {};
 
-    matchingLobbies.forEach(lobby => {
-        const scoreKey = lobby.scoreToWin || 185;
-        if (!groupedByScore[scoreKey]) {
-            groupedByScore[scoreKey] = [];
-        }
-        groupedByScore[scoreKey].push(lobby);
-    });
+                matchingLobbies.forEach(lobby => {
+                    const scoreKey = lobby.scoreToWin || 185;
+                    if (!groupedByScore[scoreKey]) {
+                        groupedByScore[scoreKey] = [];
+                    }
+                    groupedByScore[scoreKey].push(lobby);
+                });
 
-    // HTML yaratmaq
-    betOptions.innerHTML = Object.keys(groupedByScore)
-        .sort((a, b) => a - b)
-        .map(scoreToWin => {
-            const lobbies = groupedByScore[scoreToWin];
+                // HTML yaratmaq
+                betOptions.innerHTML = Object.keys(groupedByScore)
+                    .sort((a, b) => a - b)
+                    .map(scoreToWin => {
+                        const lobbies = groupedByScore[scoreToWin];
 
-            return `
+                        return `
                 <div class="allfives-score-group">
                     <div class="allfives-score-header">
                         <span class="allfives-score-title">${scoreToWin} Xal</span>
@@ -404,8 +404,8 @@
                     </div>
                 </div>
             `;
-        }).join('');
-}
+                    }).join('');
+            }
 
 
             modal.style.display = 'flex';
@@ -833,8 +833,8 @@
             </div>
 
 
-            <button class="round-continue-btn" onclick="readyForNextRound()">
-                ✅ Növbəti Raunda Hazıram (${data.gameType === 'Quick5' ? '51-ə çatmaq uduzmaqdır' : data.scoreToWin + ' xala çatmaq qazanmaqdır'})
+            <button class="round-continue-btn" onclick="closeRoundModal()">
+                Bagla
             </button>
         </div>
     `;
@@ -2286,26 +2286,31 @@
             // Backend-dən stockCount götür
             const stockCount = parseInt(document.getElementById('stockCount')?.textContent || 28);
             countEl.textContent = stockCount;
+            if (stockCount > 0) {
+                grid.innerHTML = '';
 
-            // Grid-i təmizlə
-            grid.innerHTML = '';
+                // Stock daşlarını göstər (arka tərəf - göstərməsən də olar)
+                for (let i = 0; i < stockCount; i++) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'stock-tile-wrapper';
+                    wrapper.onclick = () => selectStockTile(i);
 
-            // Stock daşlarını göstər (arka tərəf - göstərməsən də olar)
-            for (let i = 0; i < stockCount; i++) {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'stock-tile-wrapper';
-                wrapper.onclick = () => selectStockTile(i);
-
-                wrapper.innerHTML = `
-            <div class="tile">
-                
-            </div>
-        `;
-
+                    wrapper.innerHTML = `
+                <div class="tile">
+                    
+                </div>
+                `;
                 grid.appendChild(wrapper);
+                }
+                // Grid-i təmizlə
+
+                modal.classList.add('active');
+            }else{
+                domcument.getElementById('drawStack').textContent="Pass";
+                connection.invoke("TakeFromStock");
+
             }
 
-            modal.classList.add('active');
         }
 
         function closeStockModal() {
