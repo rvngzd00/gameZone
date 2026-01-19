@@ -388,3 +388,36 @@
         width: 100%;
     }
 }
+
+/* Simple modal styles for EditProfile popup */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    /* background: rgba(0,0,0,0.5); */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    /* padding: 1rem; */
+}
+.modal-content {
+    /* background: var(--modal-bg, #0f1724); */
+    border-radius: 12px;
+    max-width: 920px;
+    width: 100%;
+    /* max-height: 90vh; */
+    /* overflow: auto; */
+    position: relative;
+    /* padding: 1rem; */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+}
+.modal-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}

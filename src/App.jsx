@@ -153,16 +153,16 @@ function App() {
               <Route
                 path="/profile"
                 element={
-                  <ProtectedRouteWrapper>
+                  // <ProtectedRouteWrapper>
                     <Profile />
-                  </ProtectedRouteWrapper>
+                  // </ProtectedRouteWrapper>
                 }
               />
 
               <Route path='/admin'
                 element={<AdminDashboard />} />
 
-              <Route path="/test-login" element={<TestLogin />} />
+              {/* <Route path="/test-login" element={<TestLogin />} /> */}
             </Routes>
           </main>
           <Navbar />

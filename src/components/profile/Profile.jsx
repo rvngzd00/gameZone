@@ -1,8 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import './Profile.css';
 import profilePhoto from '../../assets/game-images/profilePhoto.png';
 import { useAppContext } from '../../context/AppContext';
+
+import EditProfile from "./EditProfile"
 
 const Profile = () => {
     // // Mock data - replace with real data from your context/API
@@ -23,6 +25,7 @@ const Profile = () => {
         ]
     };
     const { isAuthenticated, balance, logout, user } = useAppContext();
+    const [showEdit, setShowEdit] = useState(false);
     return (
         <div className="container">
             <div className="profile-container">
@@ -95,13 +98,22 @@ const Profile = () => {
                 {/* </div> */}
 
                 <div className="profile-actions">
-                    <button className="profile-action-btn edit-btn">
+                    <button className="profile-action-btn edit-btn" onClick={() => setShowEdit(true)}>
                         Edit Profile
                     </button>
                     <button className="profile-action-btn history-btn">
                         Full History
                     </button>
                 </div>
+
+                {showEdit && (
+                    <div className="modal-overlay" onClick={() => setShowEdit(false)}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <button className="modal-close" onClick={() => setShowEdit(false)}>×</button>
+                            <EditProfile />
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
