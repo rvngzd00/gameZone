@@ -1,0 +1,73 @@
+.ab-overlay{
+  position: fixed!important;
+  inset: 0!important;
+  /* background:rgba(0,0,0,0.45); */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  padding:20px;
+  color: white;
+}
+.ab-modal{
+  width:100%;
+  max-width:520px;
+  background:var(--primary-bg);
+  border-radius:12px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.2);
+  padding:20px;
+  position:relative;
+}
+.ab-close{
+  position:absolute;
+  right:12px;
+  top:8px;
+  border:none;
+  background:transparent;
+  font-size:22px;
+  cursor:pointer;
+}
+.ab-wallet-card{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  background:linear-gradient(90deg,#15422e,#164b36);
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:12px;
+}
+.ab-wallet-icon{
+  font-size:28px;
+  background:linear-gradient(45deg,#ffb100,#ff7a00);
+  color:white;
+  width:56px;
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+.ab-wallet-label{font-size:12px;}
+.ab-wallet-address{font-weight:600;font-size:13px}
+.ab-username{margin:8px 0 10px;font-weight:700}
+.ab-form{display:flex;flex-direction:column;gap:10px}
+.ab-label{font-size:13px;}
+.ab-input{padding:10px;border-radius:8px;border:1px solid #e6e6e6;font-size:15px}
+.ab-note{font-size:13px;margin:6px 0}
+.ab-image-preview{position:relative;display:inline-block}
+.ab-image-preview img{max-width:160px;max-height:120px;border-radius:8px;display:block}
+.ab-cancel-image{position:absolute;right:-6px;top:-6px;background:#ff5252;border:none;color:white;border-radius:50%;width:24px;height:24px;cursor:pointer}
+.ab-file-row{display:flex;align-items:center;gap:10px}
+.ab-file-input{display:none}
+.ab-file-label{border-radius:8px;padding:8px 12px;cursor:pointer;border:1px dashed #ddd}
+.ab-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:6px}
+.ab-btn{padding:10px 16px;border-radius:8px;border:none;cursor:pointer}
+.ab-cancel{background:#f3f3f3}
+.ab-send{background:var(--accent,#2d9cdb);color:white}
+
+@media (max-width:420px){
+  .ab-modal{padding:14px}
+  .ab-wallet-icon{width:48px;height:48px}
+  .ab-image-preview img{max-width:120px}
+}

@@ -24,7 +24,7 @@ const Profile = () => {
             { id: 3, game: "Dominoes", result: "Loss", coins: "-200", date: "8h ago" }
         ]
     };
-    const { isAuthenticated, balance, logout, user } = useAppContext();
+    const { isAuthenticated, balance, logout, user, saveProfileSelection } = useAppContext();
     const [showEdit, setShowEdit] = useState(false);
     return (
         <div className="container">
@@ -34,7 +34,7 @@ const Profile = () => {
                         <div className="avatar-frame">
                             {/* <span className="level-badge">{profileData.level}</span> */}
                             <div className="avatar-image">
-                                <img src={profilePhoto} alt="Profile" />
+                                <img src={user?.profileImage || profilePhoto} alt="Profile" />
                             </div>
                         </div>
                     </div>
@@ -57,6 +57,9 @@ const Profile = () => {
                                 <span className="stat-label">Coins</span>
                             </div>
                         </div>
+                        <button className="profile-action-btn edit-btn" onClick={() => setShowEdit(true)}>
+                            Edit Profile
+                        </button>
                     </div>
                 </div>
 
@@ -98,9 +101,7 @@ const Profile = () => {
                 {/* </div> */}
 
                 <div className="profile-actions">
-                    <button className="profile-action-btn edit-btn" onClick={() => setShowEdit(true)}>
-                        Edit Profile
-                    </button>
+
                     <button className="profile-action-btn history-btn">
                         Full History
                     </button>
@@ -110,7 +111,11 @@ const Profile = () => {
                     <div className="modal-overlay" onClick={() => setShowEdit(false)}>
                         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                             <button className="modal-close" onClick={() => setShowEdit(false)}>×</button>
-                            <EditProfile />
+                            <EditProfile onSave={({ profileNo, imageSrc }) => {
+                                // persist selection in context and close modal
+                                saveProfileSelection(profileNo, imageSrc);
+                                setShowEdit(false);
+                            }} onCancel={() => setShowEdit(false)} />
                         </div>
                     </div>
                 )}

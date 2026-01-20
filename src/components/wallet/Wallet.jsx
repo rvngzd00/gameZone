@@ -1,10 +1,12 @@
-import React, { use } from 'react';
+import React, { useState } from 'react';
 import './Wallet.css';
 import { useAppContext } from '../../context/AppContext';
+import AddBalance from './AddBalance';
 
 const Wallet = () => {
     // Mock data - replace with real data from your context
     const { isAuthenticated, balance, logout, user } = useAppContext();
+    const [isAddOpen, setIsAddOpen] = useState(false);
 
     const walletData = {
         // balance: 7777,
@@ -26,10 +28,13 @@ const Wallet = () => {
             <div className="balance-card">
                 <div className="balance-glow"></div>
                 <div className="balance-content">
-                    <span className="balance-label">Balance</span>
+                    <div className="balance-header">
+                        <span className="balance-label">Balance</span>
+                        <button className="add-balance-btn" onClick={() => setIsAddOpen(true)} aria-label="Add balance">+</button>
+                    </div>
                     <h1 className="balance-amount-wallet">
                         {/* <span className="currency-icon">💰</span> */}
-                        {balance.toLocaleString() || 0}
+                        {balance ? balance.toLocaleString() : 0}
                     </h1>
                     {/* <div className="balance-actions">
                         <button className="action-btn deposit">
@@ -89,8 +94,15 @@ const Wallet = () => {
                     ))}
                 </div>
             </section>
+            {isAddOpen && (
+                <AddBalance
+                    isOpen={isAddOpen}
+                    onClose={() => setIsAddOpen(false)}
+                    username={user?.username}
+                    walletAddress={user?.walletAddress}
+                />
+            )}
         </div>
-        // </div>
     );
 };
 

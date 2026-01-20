@@ -151,6 +151,23 @@ export function AppProvider({ children }) {
     setUser((prev) => ({ ...prev, ...newData }));
   };
 
+  // Save profile number + image to backend (best-effort) and update local user
+  const saveProfileSelection = async (profileNo, profileImageSrc) => {
+    try {
+      setLoading(true);
+      // Try to persist to backend. Endpoint may differ on your backend.
+      // Adjust the URL and payload to match your API.
+      await api.post('/api/user/profile-selection', { profileNo });
+    } catch (err) {
+      console.warn('Profile selection save failed (this is non-blocking):', err?.response?.data || err.message);
+    } finally {
+      setLoading(false);
+    }
+
+    // Update local user object so UI reflects choice immediately
+    setUser((prev) => ({ ...prev, profileNo, profileImage: profileImageSrc }));
+  };
+
   const value = {
     user,
     balance,
@@ -163,6 +180,7 @@ export function AppProvider({ children }) {
     updateBalance,
     refreshBalance,
     updateUser,
+    saveProfileSelection,
     getUserProfile,
   };
 

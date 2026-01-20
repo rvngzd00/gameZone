@@ -145,9 +145,9 @@ function App() {
               <Route
                 path="/wallet"
                 element={
-                  <ProtectedRouteWrapper>
+                  // <ProtectedRouteWrapper>
                     <Wallet />
-                  </ProtectedRouteWrapper>
+                  // </ProtectedRouteWrapper>
                 }
               />
               <Route
@@ -159,8 +159,8 @@ function App() {
                 }
               />
 
-              <Route path='/admin'
-                element={<AdminDashboard />} />
+              {/* <Route path='/admin'
+                element={<AdminDashboard />} /> */}
 
               {/* <Route path="/test-login" element={<TestLogin />} /> */}
             </Routes>

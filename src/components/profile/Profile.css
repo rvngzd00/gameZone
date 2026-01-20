@@ -312,6 +312,7 @@
     background: linear-gradient(45deg, var(--accent), var(--accent-2));
     color: var(--text-on-accent);
     box-shadow: 0 4px 15px rgba(255,215,0,0.2);
+    margin: 20px 0 0 0;
 }
 
 .edit-btn:hover {
@@ -401,7 +402,7 @@
     /* padding: 1rem; */
 }
 .modal-content {
-    /* background: var(--modal-bg, #0f1724); */
+    background: var(--primary-bg);
     border-radius: 12px;
     max-width: 920px;
     width: 100%;

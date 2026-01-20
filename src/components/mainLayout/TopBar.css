@@ -168,3 +168,25 @@
     height: 16px;
   }
 }
+
+.add-balance-btn-top{
+    /* width:20px; */
+    /* height:44px; */
+    border-radius:50%;
+    border:none;
+    background: linear-gradient(135deg,#ffd66a,#ffb400);
+    color:#2b1b00;
+    font-weight:700;
+    font-size:20px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 8px 20px rgba(255,176,0,0.22);
+    cursor:pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.add-balance-btn-top:hover{transform:scale(1.06);box-shadow:0 12px 28px rgba(255,176,0,0.30)}
+.add-balance-btn-top:active{transform:scale(0.98)}
+.ab-overlay{
+  inset: 1!important;
+}
