@@ -4,47 +4,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seka Oyunu - Premium Casino</title>
+    <title>Seka Oyunu</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     <link rel="stylesheet" href="./Seka.css">
+
 </head>
 
 <body>
     <div class="container">
+        <!-- HEADER -->
         <div class="header">
-            <h1>🃏 SEKA PREMIUM 🃏</h1>
-            <div class="header-subtitle">PROFESSIONAL CARD GAME</div>
-        </div>
-
-        <div class="user-info">
-            <div><strong id="userName">Yüklənir...</strong></div>
-            <div class="balance">💰 <span id="userBalance">0</span> ₼</div>
-        </div>
-
-        <div class="quick-join-section">
-            <h2 style="color: #ffd700; margin-bottom: 15px;">⚡ Tez Qoşul</h2>
-            <p style="color: #94a3b8; margin-bottom: 20px;">Giriş haqqı seçin və avtomatik uyğun otağa qoşulun!</p>
-            <div id="quickJoinGrid" class="quick-join-grid">
-                <div class="loading">
-                    <div class="spinner"></div>
-                </div>
+            <h1>SEKA</h1>
+            <!-- <div class="header-subtitle">PROFESSIONAL CARD GAME</div> -->
+            <div class="user-info">
+                <div><strong id="userName">Loading...</strong></div>
+                <div class="balance">💰 <span id="userBalance">0</span></div>
             </div>
         </div>
 
+        <!-- USER INFO -->
+
+        <!-- QUICK JOIN SECTION -->
+        <!--<div class="quick-join-section">
+            <h2 style="color: #ffd700; margin-bottom: 15px;">⚡ Tez Qoşul</h2>
+            <p style="color: #94a3b8; margin-bottom: 20px;">Giriş haqqı və limit növü seçin və avtomatik uyğun otağa qoşulun!</p>
+            <div id="quickJoinGrid" class="quick-join-grid">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>-->
+
+        <!-- ROOM LIST SECTION -->
         <div id="roomListSection" class="room-list-section">
-            <h2 style="color: #ffd700; margin-bottom: 15px;">🎮 Bütün Otaqlar</h2>
+            <h2 style="color: #ffd700; margin-bottom: 15px;">🎮 All Rooms</h2>
             <div class="room-grid" id="roomGrid">
                 <div class="loading">
-                    <div class="spinner"></div>Otaqlar yüklənir...
+                    <div class="spinner"></div>Rooms Loading...
                 </div>
             </div>
         </div>
 
+        <!-- GAME SECTION -->
         <div id="gameSection" class="game-section">
-            <div style="margin-bottom: 20px;">
-                <h2>Otaq: <span id="currentRoomName">-</span></h2>
+            <div class="game-header">
+                <div>
+                    <h2>Room: <span id="currentRoomName">-</span></h2>
+                </div>
+                <button class="btn btn-leave btn-top" id="leaveBtn">Exit</button>
+
+                <!-- <div class="room-limit-info" id="roomLimitInfo">
+                    POT LIMIT
+                </div> -->
             </div>
 
+            <!-- POKER TABLE -->
             <div class="poker-table" id="pokerTable">
                 <div class="table-center">
                     <div class="pot-amount">POT: <span id="potAmount">0</span> ₼</div>
@@ -52,32 +64,64 @@
                 </div>
             </div>
 
+            <!-- HAND CARDS -->
             <div class="hand-cards" id="handCards"></div>
-
+            <div style="text-align: center; margin-top: 10px;">
+                <div id="handScore" style="
+                    display: none;
+                    font-size: 1rem;
+                    color: #ffd700;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+                ">
+                    Xal: 0
+                </div>
+                <!-- <div class="hand-cards" id="handCards"></div> -->
+            </div>
+            <!-- ACTIONS -->
             <div class="actions">
-                <button class="btn btn-fold" id="foldBtn" disabled>Fold</button>
                 <button class="btn btn-call" id="callBtn" disabled>
                     Call (<span id="callAmount">0</span> ₼)
                 </button>
-                <button class="btn btn-call" id="checkBtn" disabled style="background: #3b82f6;">Check</button>
-                <button class="btn" id="allInBtn" disabled style="background: #f59e0b; color: #fff;">All-In 🔥</button>
-                <div style="display: flex; gap: 10px;">
-                    <input type="number" id="raiseInput" class="bet-input" placeholder="Məbləğ" min="0" step="10"
+                <div class="raise-slider-container" id="raiseSliderContainer">
+                    <div class="slider-header">
+                        <span class="slider-label">Raise Məbləği:</span>
+                        <span class="slider-value" id="raiseValue">0 ₼</span>
+                    </div>
+                    <input type="range" id="raiseSlider" class="raise-slider" min="0" max="1000" step="0.10" value="0"
                         disabled>
+                    <div class="slider-limits">
+                        <span id="sliderMin">Min: 0₼</span>
+                        <span id="sliderMax">Max: 1000₼</span>
+                    </div>
                     <button class="btn btn-raise" id="raiseBtn" disabled>Raise</button>
                 </div>
-                <button class="btn" id="showdownBtn" disabled style="background: #8b5cf6; color: #fff;">Showdown
-                    🎴</button>
-                <button class="btn btn-leave" id="leaveBtn">Çıx</button>
+                <button class="btn btn-fold" id="foldBtn" disabled>Fold</button>
+
+
+                <button class="btn" id="allInBtn" disabled style="background: #f59e0b; color: #fff;">All-In 🔥</button>
+
+                <button class="btn btn-showdown-call" id="showdownCallBtn" disabled>
+                    Showdown Call
+                </button>
+                <!--<button class="btn" id="showdownBtn" disabled style="background: #8b5cf6; color: #fff;">Showdown 🎴</button>-->
             </div>
 
-            <div class="players-list">
+            <!-- PLAYERS LIST -->
+            <div class="players-list" style="display: none;">
                 <h3>Oyunçular</h3>
                 <div id="playersList"></div>
             </div>
         </div>
     </div>
 
+    <!-- ROOM TIMER BADGE -->
+    <div class="room-timer-badge hidden" id="roomTimerBadge">
+        🕐 <span id="roomTimerValue">120</span>s
+    </div>
+
+    <!-- REDIRECT OVERLAY -->
     <div class="redirect-overlay" id="redirectOverlay">
         <div class="redirect-content">
             <h2>🔄 Yönləndirmə</h2>
@@ -86,14 +130,6 @@
         </div>
     </div>
 
-    <div class="showdown-overlay" id="showdownOverlay">
-        <div class="showdown-content">
-            <div class="showdown-title">🎴 SHOWDOWN 🎴</div>
-            <div class="showdown-players" id="showdownPlayers"></div>
-            <div class="showdown-winner-announce" id="showdownWinner"></div>
-            <button class="showdown-close-btn" onclick="closeShowdown()">Davam et</button>
-        </div>
-    </div>
 
     <script>
 
@@ -132,7 +168,7 @@
             return currentUserToken || "";
         }
 
-       
+
         // ✅ Əvəzinə bunu əlavə et:
         document.addEventListener('DOMContentLoaded', () => {
             console.log('📄 [SEKA] DOM loaded');
@@ -149,83 +185,444 @@
         let myHand = [];
         let currentTurnUserId = 0;
         let currentGameBet = 0;
+        let myCurrentBet = 0;
+        let myBalance = 0;
+        let potAmount = 0;
+        let roomLimitType = 'PotLimit';
+        let maxRaiseAmount = 0;
+        let lastRaiserId = 0;
+        let raiseCount = 0;
+        let currentTimer = null;
+        let turnTimeRemaining = 0;
+        let roomEntryFee = 0;
+        let pendingBets = {};
+        let isInSvara = false;
+        let svaraRound = 0;
 
+        function updateActionButtons(gameState) {
+            if (!gameState) return;
 
+            const {
+                currentTurnUserId,
+                canCall,
+                canFold,
+                canRaise,
+                canShowdownCall, // ✅ Backend-dən gələn hazır dəyər
+                callAmount
+            } = gameState;
 
-        function setupEventListeners() {
-            document.getElementById('foldBtn').addEventListener('click', fold);
-            document.getElementById('callBtn').addEventListener('click', call);
-            document.getElementById('checkBtn').addEventListener('click', check);
-            document.getElementById('allInBtn').addEventListener('click', allIn);
-            document.getElementById('raiseBtn').addEventListener('click', raise);
-            document.getElementById('showdownBtn').addEventListener('click', requestShowdown);
-            document.getElementById('leaveBtn').addEventListener('click', leaveRoom);
+            const isMyTurn = (currentTurnUserId === currentUserId);
+
+            console.log('🎬 updateActionButtons:', {
+                isMyTurn,
+                canCall,
+                canShowdownCall,
+                callAmount
+            });
+
+            // ============ FOLD ============
+            const foldBtn = document.getElementById('foldBtn');
+            if (foldBtn) {
+                foldBtn.disabled = !(isMyTurn && canFold);
+                foldBtn.style.opacity = (isMyTurn && canFold) ? '1' : '0.5';
+            }
+
+            // ============ CALL ============
+            const callBtn = document.getElementById('callBtn');
+            if (callBtn) {
+                const canEnable = isMyTurn && canCall && callAmount > 0;
+                callBtn.disabled = !canEnable;
+                callBtn.style.opacity = canEnable ? '1' : '0.5';
+                callBtn.textContent = canEnable
+                    ? `CALL (${callAmount.toFixed(2)}₼)`
+                    : `CALL`;
+            }
+
+            // ============ RAISE ============
+            const raiseBtn = document.getElementById('raiseBtn');
+            const raiseSlider = document.getElementById('raiseSlider');
+            if (raiseBtn && raiseSlider) {
+                const canEnable = isMyTurn && canRaise;
+                raiseBtn.disabled = !canEnable;
+                raiseBtn.style.opacity = canEnable ? '1' : '0.5';
+                raiseSlider.disabled = !canEnable;
+            }
+
+            // ============ ALL-IN ============
+            const allInBtn = document.getElementById('allInBtn');
+            if (allInBtn) {
+                allInBtn.disabled = !(isMyTurn && (canCall || canRaise));
+                allInBtn.style.opacity = allInBtn.disabled ? '0.5' : '1';
+            }
+
+            // ✅ SHOWDOWN CALL - Backend dəyərini istifadə et
+            const showdownCallBtn = document.getElementById('showdownCallBtn');
+            if (showdownCallBtn) {
+                // Backend artıq hamısını hesabladı
+                const canEnable = canShowdownCall === true;
+
+                showdownCallBtn.disabled = !canEnable;
+                showdownCallBtn.style.opacity = canEnable ? '1' : '0.5';
+
+                // ✅ GOLD GLOW
+                showdownCallBtn.classList.toggle('golden-glow', canEnable);
+
+                console.log(`⭐ ShowdownCall: canShowdownCall=${canShowdownCall} | ENABLED=${canEnable}`);
+            }
         }
 
-        // function getToken() {
-        //     const raw = document.cookie
-        //         .split("; ")
-        //         .find(row => row.startsWith("AuthToken="))
-        //         ?.split("=")[1];
-        //     return raw ? decodeURIComponent(raw).trim() : "";
-        // }
+        // ==================== INIT ====================
+        window.addEventListener('load', async () => {
+            setupEventListeners();
+            await initializeSignalR();
+        });
+
+        window.addEventListener('load', async () => {
+            console.log('📄 Page loaded');
+            setupEventListeners();
+            await initializeSignalR();
+        });
+
+        function setupEventListeners() {
+            ['foldBtn', 'callBtn', 'allInBtn', 'raiseBtn', 'showdownCallBtn', 'leaveBtn'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    const handlers = {
+                        'foldBtn': fold,
+                        'callBtn': call,
+                        'allInBtn': allIn,
+                        'raiseBtn': raise,
+                        'showdownCallBtn': showdownCall,
+                        'leaveBtn': leaveRoom
+                    };
+                    if (handlers[id]) btn.addEventListener('click', handlers[id]);
+                }
+            });
+
+            const slider = document.getElementById('raiseSlider');
+            if (slider) slider.addEventListener('input', () => {
+                const raiseValue = document.getElementById('raiseValue');
+                if (raiseValue) raiseValue.textContent = parseFloat(slider.value).toFixed(2) + ' ₼';
+            });
+        }
+
 
         // ==================== SIGNALR CONNECTION ====================
         async function initializeSignalR() {
             try {
+                console.log('🔌 SignalR başlanğıc...');
+
                 connection = new signalR.HubConnectionBuilder()
                     .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/sekaHub", { accessTokenFactory: () => getToken() })
                     .withAutomaticReconnect()
                     .build();
 
                 setupSignalRHandlers();
+
+                // ✅ START ET VƏ GÖZLƏ
                 await connection.start();
                 console.log("✅ SignalR connected");
 
-                await loadQuickJoinButtons();
+                // ✅ SONRA ROOM LİST YÜK LƏ
+                await new Promise(resolve => setTimeout(resolve, 500)); // 500ms gözlə
                 await loadRoomList();
+                console.log('✅ Room list loaded');
+
             } catch (error) {
                 console.error("❌ SignalR error:", error);
                 showMessage("Bağlantı xətası: " + error.message, "error");
+
+                // ✅ YENİDƏN CƏHD ET
+                setTimeout(() => initializeSignalR(), 3000);
             }
         }
+        // function setupSignalRHandlers() {
+        //     if (!connection) return;
+
+        //     connection.on("UserData", (data) => {
+        //         currentUserId = data.userId;
+        //         myBalance = data.balance;
+        //         const userNameEl = document.getElementById('userName');
+        //         const userBalanceEl = document.getElementById('userBalance');
+        //         if (userNameEl) userNameEl.textContent = data.username;
+        //         if (userBalanceEl) userBalanceEl.textContent = data.balance.toFixed(2);
+        //     });
+
+        //     connection.on("BalanceUpdated", (balance) => {
+        //         myBalance = balance;
+        //         const userBalanceEl = document.getElementById('userBalance');
+        //         if (userBalanceEl) userBalanceEl.textContent = balance.toFixed(2);
+        //     });
+
+        //     connection.on("JoinedRoom", (data) => {
+        //         currentRoomId = data.roomId;
+        //         roomLimitType = data.limitType || 'PotLimit';
+        //         roomEntryFee = data.entryFee || 0;
+
+        //         const roomNameEl = document.getElementById('currentRoomName');
+        //         if (roomNameEl) roomNameEl.textContent = data.roomName;
+
+        //         const limitInfo = document.getElementById('roomLimitInfo');
+        //         if (limitInfo) limitInfo.textContent = roomLimitType === 'PotLimit' ? 'POT LIMIT' : 'NO LIMIT';
+
+        //         const roomListSection = document.getElementById('roomListSection');
+        //         const gameSection = document.getElementById('gameSection');
+        //         if (roomListSection) roomListSection.style.display = 'none';
+        //         if (gameSection) gameSection.classList.add('active');
+
+        //         if (data.hand && data.hand.length > 0) {
+        //             myHand = data.hand;
+        //             displayHand();
+        //         }
+
+        //         showMessage("Otağa qoşuldunuz!", "success");
+        //     });
+
+        //     connection.on("PlayersList", (players) => {
+        //         updatePlayersList(players);
+        //         updatePlayersOnTable(players);
+        //     });
+
+        //     connection.on("PotUpdated", (amount) => {
+        //         potAmount = amount;
+        //         const potEl = document.getElementById('potAmount');
+        //         if (potEl) potEl.textContent = amount.toFixed(2);
+        //         updateSliderLimits();
+        //     });
+
+        //     connection.on("GameStarted", () => {
+        //         showMessage("Oyun başladı! 🎮", "success");
+        //         resetGameUI();
+        //         raiseCount = 0;
+        //         lastRaiserId = 0;
+        //     });
+
+        //     connection.on("CardsDealt", (data) => {
+        //         myHand = data.hand;
+        //         displayHand();
+        //         showMessage("Kartlar paylandı!", "info");
+        //     });
+
+        //     // 1. Oyunçu mərc edəndə
+        //     connection.on("PlayerBet", (data) => {
+        //         console.log(`${data.playerName}: ${data.amount}₼`);
+        //         console.log(`Pending Bet: ${data.pendingBet}₼`);
+        //         // Oyunçunun önündə göstər
+        //     });
+
+        //     // 2. Pending betlər update
+        //     connection.on("PendingBetsUpdate", (players) => {
+        //         players.forEach(p => {
+        //             console.log(`${p.name}: ${p.amount}₼ (önündə)`);
+        //         });
+        //     });
+
+        //     // 3. Pending betlər pota köçürüldü
+        //     connection.on("PendingBetsMovedToPot", (data) => {
+        //         console.log(`${data.amount}₼ pota əlavə oldu!`);
+        //         console.log(`Yeni pot: ${data.newPot}₼`);
+        //         // Animasiya göstər: oyunçuların önündən pota
+        //     });
+
+        //     connection.on("PlayerRaised", (data) => {
+        //         showMessage(`${data.playerName} raise etdi: ${data.amount.toFixed(2)}₼`, "info");
+        //         raiseCount++;
+        //         lastRaiserId = data.userId;
+        //     });
+
+        //     connection.on("PlayerFolded", (playerName) => {
+        //         showMessage(`${playerName} fold etdi`, "info");
+        //     });
+
+        //     connection.on("PlayerAllIn", (playerName, amount) => {
+        //         showMessage(`${playerName} ALL-IN! ${amount.toFixed(2)}₼`, "success");
+        //     });
+
+        //     connection.on("BetError", (message) => showMessage(message, "error"));
+        //     connection.on("FoldError", (message) => showMessage(message, "error"));
+        //     connection.on("ActionError", (message) => showMessage(message, "error"));
+        //     connection.on("RaiseError", (message) => showMessage(message, "error"));
+
+        //     connection.on("ShowdownCallMade", (data) => showMessage(data.message, "success"));
+        //     connection.on("WinnerAnnounced", (data) => {
+        //         highlightWinner(data.winnerUserId);
+        //         showWinnerBanner(data);
+        //         setTimeout(() => clearWinnerDisplay(), 5000);
+        //     });
+
+        //     connection.on("GameReset", () => {
+        //         resetGameUI();
+        //         clearWinnerDisplay();
+        //     });
+
+        //     connection.on("LeftRoom", () => {
+        //         currentRoomId = null;
+        //         myHand = [];
+        //         roomEntryFee = 0;
+        //         const gameSection = document.getElementById('gameSection');
+        //         const roomListSection = document.getElementById('roomListSection');
+        //         if (gameSection) gameSection.classList.remove('active');
+        //         if (roomListSection) roomListSection.style.display = 'block';
+        //         loadRoomList();
+        //         showMessage("Otaqdan çıxdınız", "info");
+        //     });
+
+        //     connection.on("PlayerTimeout", (data) => {
+        //         showMessage(data.message, "error");
+        //         stopTurnTimer();
+        //     });
+
+        //     connection.on("GameState", (state) => {
+        //         console.log('🎮 GameState received:', {
+        //             isTurn: state.currentTurnUserId === currentUserId,
+        //             canCall: state.canCall,
+        //             callAmount: state.callAmount,
+        //             lastCallerId: state.lastCallerId,
+        //             myUserId: currentUserId,
+        //             roundFinished: state.roundFinished,
+        //             raiseCount: state.raiseCount
+        //         });
+
+        //         currentTurnUserId = state.currentTurnUserId;
+        //         currentGameBet = state.currentBet;
+        //         myCurrentBet = state.myCurrentBet || 0;
+        //         raiseCount = state.raiseCount || 0;
+        //         lastRaiserId = state.lastRaiserId || 0;
+        //         roomEntryFee = state.entryFee || roomEntryFee;
+        //         potAmount = state.potAmount || 0;
+
+        //         if (state.limitType) roomLimitType = state.limitType;
+
+        //         // ============ POT & BET GÖSTƏRIŞI ============
+        //         const potEl = document.getElementById('potAmount');
+        //         const betEl = document.getElementById('currentBetAmount');
+        //         const callAmountEl = document.getElementById('callAmount');
+
+        //         if (potEl) potEl.textContent = state.potAmount.toFixed(2);
+        //         if (betEl) betEl.textContent = state.currentBet.toFixed(2);
+        //         if (callAmountEl) callAmountEl.textContent = state.callAmount.toFixed(2);
+
+        //         // ============ HAND SCORE GÖSTƏRIŞI ============
+        //         const scoreDisplay = document.getElementById('handScore');
+        //         if (scoreDisplay && state.myHandScore > 0) {
+        //             scoreDisplay.textContent = `Xal: ${state.myHandScore}`;
+        //             scoreDisplay.style.display = 'block';
+        //         }
+
+        //         // ============ TIMER ============
+        //         if (state.turnTimeRemaining && state.currentTurnUserId === currentUserId) {
+        //             turnTimeRemaining = state.turnTimeRemaining;
+        //             startTurnTimer();
+        //         } else {
+        //             stopTurnTimer();
+        //         }
+
+        //         // ============ SLIDER LIMITLƏRINI YENILƏ ============
+        //         updateSliderLimits();
+
+        //         // ============ ACTION DÜYMƏLƏRINI YENILƏ ============
+        //         updateActionButtons(state);
+        //     });
+        // }
+
 
         // ==================== SIGNALR HANDLERS ====================
         function setupSignalRHandlers() {
-            // User data
+            if (!connection) {
+                console.error("❌ Connection is null!");
+                return;
+            }
+
+            console.log('📡 Setting up SignalR handlers...');
+
             connection.on("UserData", (data) => {
                 currentUserId = data.userId;
-                document.getElementById('userName').textContent = data.fullName;
-                document.getElementById('userBalance').textContent = data.balance.toFixed(2);
+                myBalance = data.balance;
+                const userNameEl = document.getElementById('userName');
+                const userBalanceEl = document.getElementById('userBalance');
+                if (userNameEl) userNameEl.textContent = data.username;
+                if (userBalanceEl) userBalanceEl.textContent = data.balance.toFixed(2);
+                console.log('✅ UserData received:', data);
             });
 
             connection.on("BalanceUpdated", (balance) => {
-                document.getElementById('userBalance').textContent = balance.toFixed(2);
-                console.log('💰 Balance updated:', balance);
+                myBalance = balance;
+                const userBalanceEl = document.getElementById('userBalance');
+                if (userBalanceEl) userBalanceEl.textContent = balance.toFixed(2);
             });
 
-            // Room redirect
-            connection.on("RoomRedirect", (data) => {
-                const overlay = document.getElementById('redirectOverlay');
-                const message = document.getElementById('redirectMessage');
-                message.textContent = data.message;
-                overlay.classList.add('active');
-                setTimeout(() => overlay.classList.remove('active'), 3000);
+            connection.on("ShowCardsOnTable", (players) => {
+                console.log('🎴 Showing cards on table:', players);
+                showCardsOnTable(players);
             });
 
-            // Room joining
+            connection.on("WinnerAnnounced", (data) => {
+                console.log('🏆 Winner announced:', data);
+                highlightWinner(data.winnerUserId);
+                showWinnerBanner(data);
+                setTimeout(() => clearWinnerDisplay(), 5000);
+            });
+
+            connection.on("GameReset", () => {
+                resetGameUI();
+                clearWinnerDisplay();
+            });
+
             connection.on("JoinedRoom", (data) => {
                 currentRoomId = data.roomId;
-                document.getElementById('currentRoomName').textContent = data.roomName;
-                document.getElementById('roomListSection').style.display = 'none';
-                document.getElementById('gameSection').classList.add('active');
+                roomLimitType = data.limitType || 'PotLimit';
+                roomEntryFee = data.entryFee || 0;
+
+                console.log('✅ Joined room:', {
+                    roomId: data.roomId,
+                    entryFee: roomEntryFee,
+                    limitType: roomLimitType
+                });
+
+                const roomNameEl = document.getElementById('currentRoomName');
+                if (roomNameEl) roomNameEl.textContent = data.roomName;
+
+                const limitInfo = document.getElementById('roomLimitInfo');
+                if (limitInfo) {
+                    limitInfo.textContent = roomLimitType === 'PotLimit' ? 'POT LIMIT' : 'NO LIMIT';
+                    limitInfo.classList.toggle('no-limit', roomLimitType !== 'PotLimit');
+                }
+                const roomListSection = document.getElementById('roomListSection');
+                const gameSection = document.getElementById('gameSection');
+                if (roomListSection) roomListSection.style.display = 'none';
+                if (gameSection) gameSection.classList.add('active');
+                document.getElementsByClassName("header")[0].style.display = 'none';
 
                 if (data.hand && data.hand.length > 0) {
                     myHand = data.hand;
                     displayHand();
                 }
 
+
                 showMessage("Otağa qoşuldunuz!", "success");
+            });
+
+            connection.on("RoomStartTimer", (remainingSeconds) => {
+                const badge = document.getElementById('roomTimerBadge');
+                const value = document.getElementById('roomTimerValue');
+                if (badge && value) {
+                    badge.classList.remove('hidden');
+                    value.textContent = remainingSeconds;
+                    badge.classList.toggle('warning', remainingSeconds <= 10);
+                }
+            });
+
+            connection.on("RoomStartTimeout", (message) => {
+                const badge = document.getElementById('roomTimerBadge');
+                if (badge) badge.classList.add('hidden');
+                fold();
+                showMessage(message, "success");
+            });
+
+            connection.on("RoomStarting", (message) => {
+                const badge = document.getElementById('roomTimerBadge');
+                if (badge) badge.classList.add('hidden');
+                showMessage(message, "success");
             });
 
             connection.on("JoinError", (message) => showMessage(message, "error"));
@@ -247,228 +644,323 @@
             });
 
             connection.on("PotUpdated", (amount) => {
-                document.getElementById('potAmount').textContent = amount.toFixed(2);
+                potAmount = amount;
+                const potEl = document.getElementById('potAmount');
+                if (potEl) potEl.textContent = amount.toFixed(2);
+                updateSliderLimits();
             });
 
-            connection.on("RoomFull", (message) => {
-                showMessage(message, "info");
-            });
+            connection.on("RoomFull", (message) => showMessage(message, "info"));
+            connection.on("RoomDeleted", (roomId) => loadRoomList());
 
-            connection.on("RoomDeleted", (roomId) => {
-                loadRoomList();
-            });
-
-            // Game events
             connection.on("GameStarted", () => {
+                const badge = document.getElementById('roomTimerBadge');
+                if (badge) badge.classList.add('hidden');
                 showMessage("Oyun başladı! 🎮", "success");
                 resetGameUI();
+                raiseCount = 0;
+                lastRaiserId = 0;
             });
 
             connection.on("CardsDealt", (data) => {
-                console.log('🎴 Cards received from backend:', data);
                 myHand = data.hand;
                 displayHand();
                 showMessage("Kartlar paylandı!", "info");
             });
 
-            connection.on("GameState", (state) => {
-                currentTurnUserId = state.currentTurnUserId;
-                currentGameBet = state.currentBet;
-
-                document.getElementById('potAmount').textContent = state.potAmount.toFixed(2);
-                document.getElementById('currentBetAmount').textContent = state.currentBet.toFixed(2);
-                document.getElementById('callAmount').textContent = state.currentBet.toFixed(2);
-
-                updateActionButtons(state);
+            connection.on("PlayerBet", (data) => {
+                showMessage(`${data.playerName} mərc etdi: ${data.amount.toFixed(2)}₼`, "info");
             });
 
-            connection.on("PlayerBet", (data) => {
-                showMessage(`${data.playerName} mərc etdi: ${data.amount}₼`, "info");
+            connection.on("PlayerRaised", (data) => {
+                showMessage(`${data.playerName} raise etdi: ${data.amount.toFixed(2)}₼`, "info");
+                raiseCount++;
+                lastRaiserId = data.userId;
             });
 
             connection.on("PlayerFolded", (playerName) => {
                 showMessage(`${playerName} fold etdi`, "info");
             });
 
-            connection.on("PlayerChecked", (playerName) => {
-                showMessage(`${playerName} check etdi`, "info");
-            });
-
             connection.on("PlayerAllIn", (playerName, amount) => {
-                showMessage(`${playerName} ALL-IN! ${amount}₼`, "success");
+                showMessage(`${playerName} ALL-IN! ${amount.toFixed(2)}₼`, "success");
             });
 
             connection.on("BetError", (message) => showMessage(message, "error"));
             connection.on("FoldError", (message) => showMessage(message, "error"));
             connection.on("ActionError", (message) => showMessage(message, "error"));
+            connection.on("RaiseError", (message) => showMessage(message, "error"));
 
-            // Showdown
-            connection.on("ShowdownStart", (players) => {
-                showShowdown(players);
-            });
+            connection.on("ShowdownStart", (players) => showShowdown(players));
+            connection.on("ShowdownRequested", () => showMessage("Showdown başlayır...", "info"));
+            connection.on("ShowdownCallMade", (data) => showMessage(data.message, "success"));
+            connection.on("ForceShowdown", (data) => showMessage(data.message, "info"));
+            connection.on("GameOver", (data) => handleGameOver(data));
 
-            connection.on("ShowdownRequested", () => {
-                showMessage("Showdown başlayır...", "info");
-            });
-
-            connection.on("GameOver", (data) => {
-                handleGameOver(data);
-            });
-
-            connection.on("GameReset", () => {
-                resetGameUI();
-                showMessage("Yeni oyun üçün hazırlıq...", "info");
+            connection.on("NewRound", () => {
+                raiseCount = 0;
+                lastRaiserId = 0;
             });
 
             connection.on("LeftRoom", () => {
+                const badge = document.getElementById('roomTimerBadge');
+                if (badge) badge.classList.add('hidden');
                 currentRoomId = null;
                 myHand = [];
-                document.getElementById('gameSection').classList.remove('active');
-                document.getElementById('roomListSection').style.display = 'block';
+                roomEntryFee = 0;
+                const gameSection = document.getElementById('gameSection');
+                const roomListSection = document.getElementById('roomListSection');
+                if (gameSection) gameSection.classList.remove('active');
+                if (roomListSection) roomListSection.style.display = 'block';
+                document.getElementsByClassName("header")[0].style.display = 'flex';
+
                 loadRoomList();
                 showMessage("Otaqdan çıxdınız", "info");
             });
 
-            // Emoji
-            connection.on("PlayerEmoji", (data) => {
-                showFloatingEmoji(data.userId, data.emoji);
+            connection.on("PlayerEmoji", (data) => showFloatingEmoji(data.userId, data.emoji));
+            connection.on("PlayerTimeout", (data) => {
+                showMessage(data.message, "error");
+                stopTurnTimer();
             });
-        }
 
+            connection.on("GameState", (state) => {
+                console.log('🎮 GameState received:', state);
+
+                currentTurnUserId = state.currentTurnUserId;
+                currentGameBet = state.currentBet;
+                myCurrentBet = state.myCurrentBet || 0;
+                raiseCount = state.raiseCount || 0;
+                lastRaiserId = state.lastRaiserId || 0;
+                roomEntryFee = state.entryFee || roomEntryFee;
+                potAmount = state.potAmount || 0;
+
+                if (state.limitType) roomLimitType = state.limitType;
+
+                const potEl = document.getElementById('potAmount');
+                const betEl = document.getElementById('currentBetAmount');
+                if (potEl) potEl.textContent = state.potAmount.toFixed(2);
+                if (betEl) betEl.textContent = state.currentBet.toFixed(2);
+
+                const scoreDisplay = document.getElementById('handScore');
+                if (scoreDisplay && state.myHandScore > 0) {
+                    scoreDisplay.textContent = `Xal: ${state.myHandScore}`;
+                    scoreDisplay.style.display = 'block';
+                }
+
+                const callAmountEl = document.getElementById('callAmount');
+                if (callAmountEl) callAmountEl.textContent = state.callAmount.toFixed(2);
+
+                if (state.turnTimeRemaining && state.currentTurnUserId === currentUserId) {
+                    turnTimeRemaining = state.turnTimeRemaining;
+                    startTurnTimer();
+                } else {
+                    stopTurnTimer();
+                }
+
+                updateSliderLimits();
+                updateActionButtons(state);
+            });
+
+            console.log('✅ All handlers registered');
+        }
+        function findPlayerElement(userId) {
+            const avatars = document.querySelectorAll('.player-avatar');
+            for (const avatar of avatars) {
+                const onclickAttr = avatar.getAttribute('onclick');
+                if (onclickAttr && onclickAttr.includes(`toggleEmojiPopup(${userId})`)) {
+                    return avatar.parentElement;
+                }
+            }
+            return null;
+        }
+        // function getToken() {
+        //     const raw = document.cookie
+        //         .split("; ")
+        //         .find(row => row.startsWith("AuthToken="))
+        //         ?.split("=")[1];
+        //     return raw ? decodeURIComponent(raw).trim() : "";
+        // }
         // ==================== QUICK JOIN ====================
         async function loadQuickJoinButtons() {
             try {
-                const templates = await connection.invoke("GetRoomTemplates");
-                const grid = document.getElementById('quickJoinGrid');
+                console.log('📋 Loading quick join buttons...');
+
+                const templates = [
+                    { fee: 0.20, name: "Kiçik Otaq", maxPlayers: 5, isPotLimit: true },
+                    { fee: 0.50, name: "Standart Otaq", maxPlayers: 5, isPotLimit: true },
+                    { fee: 1.00, name: "Orta Otaq", maxPlayers: 5, isPotLimit: true },
+                    { fee: 2.00, name: "Yüksək Otaq", maxPlayers: 5, isPotLimit: false },
+                    { fee: 5.00, name: "Premium Otaq", maxPlayers: 5, isPotLimit: false },
+                    { fee: 10.00, name: "Elit Otaq", maxPlayers: 5, isPotLimit: false },
+                    { fee: 20.00, name: "Vip Otaq", maxPlayers: 5, isPotLimit: false },
+                    { fee: 50.00, name: "Master Otaq", maxPlayers: 5, isPotLimit: false },
+                    { fee: 100.00, name: "Champion Otaq", maxPlayers: 5, isPotLimit: false }
+                ];
 
                 grid.innerHTML = templates.map(t => `
-            <div class="quick-join-btn" onclick="quickJoin(${t.fee})">
+            <div class="quick-join-btn" onclick="quickJoin(${t.fee}, ${t.isPotLimit})">
                 <div class="name">${t.name}</div>
-                <div class="fee">${t.fee}₼</div>
+                <div class="fee">${t.fee.toFixed(2)}₼</div>
                 <div class="players">Max: ${t.maxPlayers} oyunçu</div>
+                <div class="limit-type">${t.isPotLimit ? 'POT LIMIT' : 'NO LIMIT'}</div>
+                <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">
+                    Max bet: ${(t.fee * 20).toFixed(2)}₼
+                </div>
             </div>
         `).join('');
+
+                console.log('✅ Quick join buttons loaded');
             } catch (error) {
                 console.error("❌ Template error:", error);
             }
         }
-
-        async function quickJoin(entryFee) {
+        async function quickJoin(entryFee, isPotLimit) {
             try {
-                await connection.invoke("QuickJoin", entryFee);
+                await connection.invoke("QuickJoin", entryFee, isPotLimit);
             } catch (error) {
-                console.error("❌ Quick join error:", error);
                 showMessage("Qoşulma xətası: " + error.message, "error");
             }
         }
 
         // ==================== ROOM LIST ====================
+        // ==================== ROOM LIST ====================
         async function loadRoomList() {
             try {
+                // ✅ Connection hazır mı yoxla
+                if (!connection || connection.state !== signalR.HubConnectionState.Connected) {
+                    console.warn('⚠️ Connection not ready, waiting...');
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    return loadRoomList();
+                }
+
+                console.log('📋 Loading room list...');
                 const rooms = await connection.invoke("GetRoomList");
                 const grid = document.getElementById('roomGrid');
-
-                if (rooms.length === 0) {
-                    grid.innerHTML = '<div class="loading">Otaq tapılmadı</div>';
+                if (!grid) {
+                    console.warn('⚠️ roomGrid not found');
                     return;
                 }
 
-                grid.innerHTML = rooms.map(room => `
-            <div class="room-card ${room.isFull ? 'full' : ''}" onclick="joinRoom('${room.roomId}')">
-                ${room.isDefault ? '<div class="default-badge">SYSTEM</div>' : ''}
-                <h3>${room.roomName}</h3>
-                <div class="room-info">
-                    <span>Yaradıcı:</span>
-                    <span>${room.creatorName}</span>
+                // ✅ SADECE NO LIMIT OLAN OTAQLAR
+                const filteredRooms = rooms.filter(room => room.limitType !== 'PotLimit');
+
+                // <div class="limit-badge">NO LIMIT</div>
+                grid.innerHTML = filteredRooms.length === 0
+                    ? '<div class="loading">Uyğun (NO LIMIT) otaq tapılmadı</div>'
+                    : filteredRooms.map(room => `
+                <div class="room-card ${room.isFull ? 'full' : ''}">
+
+                    <div class="room-top">
+                        <div class="room-avatar">${('R').charAt(0).toUpperCase()}</div>
+                        <div style="flex:1">
+                            <h3 class="room-title">Seka Room</h3>
+                            <div class="room-sub">${room.maxPlayers} oyunçu • ${room.isGameStarted ? 'Oyun başladı' : 'Gözləyir'}</div>
+                        </div>
+                    </div>
+
+                    <div class="room-info">
+                        <span>Oyunçular:</span>
+                        <span class="room-players">${room.playerCount}/${room.maxPlayers}</span>
+                    </div>
+
+                    <div class="players-bar" aria-hidden="true">
+                        <div class="players-progress" style="width: ${Math.round((room.playerCount / Math.max(1, room.maxPlayers)) * 100)}%;"></div>
+                    </div>
+
+                    <div class="room-info" style="margin-top:10px;">
+                        <span>Giriş haqqı:</span>
+                        <span class="room-entry">${room.entryFee.toFixed(2)}₼</span>
+                    </div>
+
+                    <div class="room-meta">
+
+                        <div class="meta-pill">Maks: ${room.maxPlayers}</div>
+                        <div style="flex:1;text-align:right;">
+                            <button class="join-btn" onclick="joinRoom('${room.roomId}')" ${room.isFull || room.isGameStarted ? 'disabled' : ''}>
+                                ${room.isFull ? '❌ Dolu' : 'Qoşul'}
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="room-info">
-                    <span>Oyunçular:</span>
-                    <span>${room.playerCount}/${room.maxPlayers}</span>
-                </div>
-                <div class="room-info">
-                    <span>Giriş haqqı:</span>
-                    <span style="color: #ffd700;">${room.entryFee}₼</span>
-                </div>
-                <div class="room-info">
-                    <span>Status:</span>
-                    <span style="color: ${room.isGameStarted ? '#dc2626' : '#4ade80'};">
-                        ${room.isGameStarted ? '🔴 Oyun davam edir' : '🟢 Gözləyir'}
-                    </span>
-                </div>
-                <button class="join-btn" ${room.isFull || room.isGameStarted ? 'disabled' : ''}>
-                    ${room.isFull ? '❌ Dolu' : '✅ Qoşul'}
-                </button>
-            </div>
-        `).join('');
+            `).join('');
+
+                console.log(`✅ ${filteredRooms.length} NO LIMIT otaq yükləndi`);
             } catch (error) {
                 console.error("❌ Room list error:", error);
+                setTimeout(() => loadRoomList(), 2000);
             }
         }
 
+
         async function joinRoom(roomId) {
             try {
+                if (!connection || connection.state !== signalR.HubConnectionState.Connected) {
+                    showMessage("Bağlantı hazır deyil", "error");
+                    return;
+                }
                 await connection.invoke("JoinRoom", roomId, null);
             } catch (error) {
-                console.error("❌ Join error:", error);
                 showMessage("Qoşulma xətası: " + error.message, "error");
             }
         }
 
         async function leaveRoom() {
-            if (!currentRoomId) return;
-
-            if (confirm("Otaqdan çıxmaq istədiyinizdən əminsiniz?")) {
-                try {
-                    await connection.invoke("LeaveRoom");
-                } catch (error) {
-                    console.error("❌ Leave error:", error);
-                    showMessage("Çıxma xətası: " + error.message, "error");
+            if (!currentRoomId || !confirm("Otaqdan çıxmak istədiyinizdən əminsiniz?")) return;
+            try {
+                if (!connection || connection.state !== signalR.HubConnectionState.Connected) {
+                    showMessage("Bağlantı hazır deyil", "error");
+                    return;
                 }
+                await connection.invoke("LeaveRoom");
+            } catch (error) {
+                showMessage("Çıxma xətası: " + error.message, "error");
             }
         }
-
         // ==================== GAME ACTIONS ====================
         async function fold() {
             try {
+                if (!connection || connection.state !== signalR.HubConnectionState.Connected) return;
                 await connection.invoke("Fold");
+                stopTurnTimer();
             } catch (error) {
-                console.error("❌ Fold error:", error);
                 showMessage("Fold xətası: " + error.message, "error");
             }
         }
 
         async function call() {
             try {
+                if (!connection || connection.state !== signalR.HubConnectionState.Connected) return;
                 await connection.invoke("Call");
+                stopTurnTimer();
             } catch (error) {
-                console.error("❌ Call error:", error);
                 showMessage("Call xətası: " + error.message, "error");
             }
         }
 
-        async function check() {
-            try {
-                await connection.invoke("Check");
-            } catch (error) {
-                console.error("❌ Check error:", error);
-                showMessage("Check xətası: " + error.message, "error");
-            }
-        }
-
         async function raise() {
-            const input = document.getElementById('raiseInput');
-            const amount = parseFloat(input.value);
+            const slider = document.getElementById('raiseSlider');
+            const amount = parseFloat(slider.value);
 
             if (!amount || amount <= 0) {
                 showMessage("Düzgün məbləğ daxil edin", "error");
                 return;
             }
 
+            let minRaise = currentGameBet === 0 ? roomEntryFee : currentGameBet * 2;
+            let maxRaise = roomLimitType === 'PotLimit' ? Math.min(potAmount + currentGameBet, myBalance) : myBalance;
+
+            if (amount < minRaise || amount > maxRaise) {
+                showMessage(`Raise aralığı: ${minRaise.toFixed(2)}₼ - ${maxRaise.toFixed(2)}₼`, "error");
+                return;
+            }
+
             try {
+                if (!connection || connection.state !== signalR.HubConnectionState.Connected) return;
                 await connection.invoke("Raise", amount);
-                input.value = '';
+                slider.value = slider.min;
+                stopTurnTimer();
             } catch (error) {
-                console.error("❌ Raise error:", error);
                 showMessage("Raise xətası: " + error.message, "error");
             }
         }
@@ -476,22 +968,35 @@
         async function allIn() {
             if (confirm("ALL-IN etmək istədiyinizdən əminsiniz?")) {
                 try {
+                    if (!connection || connection.state !== signalR.HubConnectionState.Connected) return;
                     await connection.invoke("AllIn");
+                    stopTurnTimer();
                 } catch (error) {
-                    console.error("❌ All-in error:", error);
                     showMessage("All-in xətası: " + error.message, "error");
                 }
+            }
+        }
+
+        async function showdownCall() {
+            try {
+                if (!connection || connection.state !== signalR.HubConnectionState.Connected) return;
+                await connection.invoke("ShowdownCall");
+                stopTurnTimer();
+            } catch (error) {
+                showMessage("Showdown Call xətası: " + error.message, "error");
             }
         }
 
         async function requestShowdown() {
             try {
                 await connection.invoke("RequestShowdown");
+                stopTurnTimer();
             } catch (error) {
-                console.error("❌ Showdown error:", error);
                 showMessage("Showdown xətası: " + error.message, "error");
             }
         }
+
+
 
         async function sendEmoji(emoji) {
             try {
@@ -501,28 +1006,188 @@
             }
         }
 
-        // ==================== UI UPDATES ====================
-        function displayHand() {
-            const container = document.getElementById('handCards');
-            if (!myHand || myHand.length === 0) {
-                container.innerHTML = '';
+        // ==================== TIMER FUNCTIONS ====================
+        function startTurnTimer() {
+            stopTurnTimer();
+            if (currentTurnUserId !== currentUserId || turnTimeRemaining <= 0) return;
+
+            currentTimer = setInterval(() => {
+                turnTimeRemaining--;
+                updateAllPlayerTimers();
+
+                if (turnTimeRemaining <= 0) {
+                    stopTurnTimer();
+                    // Avtomatik fold
+                    if (currentTurnUserId === currentUserId) {
+                        showMessage("Vaxtınız bitdi! Avtomatik fold...", "error");
+                        fold(); // Avtomatik fold funksiyasını çağır
+                    }
+                }
+            }, 1000);
+
+            updateAllPlayerTimers();
+        }
+        function stopTurnTimer() {
+            if (currentTimer) {
+                clearInterval(currentTimer);
+                currentTimer = null;
+            }
+            document.querySelectorAll('.timer-badge').forEach(badge => badge.remove());
+        }
+
+        function updateAllPlayerTimers() {
+            document.querySelectorAll('.player-avatar').forEach(avatar => {
+                const onclickAttr = avatar.getAttribute('onclick');
+                if (!onclickAttr) return;
+
+                const match = onclickAttr.match(/toggleEmojiPopup\((\d+)\)/);
+                if (!match) return;
+
+                const userId = parseInt(match[1]);
+                const oldBadge = avatar.querySelector('.timer-badge');
+                if (oldBadge) oldBadge.remove();
+
+                if (userId === currentTurnUserId && turnTimeRemaining > 0) {
+                    const badge = document.createElement('div');
+                    badge.className = 'timer-badge';
+                    if (turnTimeRemaining <= 3) badge.classList.add('warning');
+                    badge.textContent = turnTimeRemaining;
+                    avatar.appendChild(badge);
+                }
+            });
+        }
+        function updateBetSliderLimits() {
+            const slider = document.getElementById('betSlider');
+            const minSpan = document.getElementById('betSliderMin');
+            const maxSpan = document.getElementById('betSliderMax');
+
+            // ✅ Minimum: room entry fee
+            const minBet = roomEntryFee;
+
+            // ✅ Maksimum: room entry fee × 20 və balans
+            let maxBet = roomEntryFee * 20;
+            if (roomLimitType === 'PotLimit') {
+                maxBet = Math.min(maxBet, potAmount + currentGameBet);
+            }
+            maxBet = Math.min(maxBet, myBalance);
+
+            slider.min = minBet;
+            slider.max = maxBet;
+            slider.value = minBet;
+            slider.step = 0.10;
+
+            minSpan.textContent = `Min: ${minBet.toFixed(2)}₼`;
+            maxSpan.textContent = `Max: ${maxBet.toFixed(2)}₼`;
+
+            document.getElementById('betValue').textContent = `${minBet.toFixed(2)} ₼`;
+            document.getElementById('betAmount').textContent = `${minBet.toFixed(2)} ₼`;
+        }
+
+        async function bet() {
+            const slider = document.getElementById('betSlider');
+            const amount = parseFloat(slider.value);
+
+            if (amount < roomEntryFee) {
+                showMessage(`Minimum bet: ${roomEntryFee.toFixed(2)}₼`, "error");
                 return;
             }
 
-            // ✅ Backend artıq simvolları göndərir, ona görə sadəcə göstəririk
+            if (amount > roomEntryFee * 20) {
+                showMessage(`Maksimum bet: ${(roomEntryFee * 20).toFixed(2)}₼`, "error");
+                return;
+            }
+
+            try {
+                await connection.invoke("Bet", amount);
+                stopTurnTimer();
+            } catch (error) {
+                showMessage("Bet xətası: " + error.message, "error");
+            }
+        }
+        // ==================== SLIDER LIMITS ====================
+        function updateSliderLimits() {
+            const slider = document.getElementById('raiseSlider');
+            const sliderMin = document.getElementById('sliderMin');
+            const sliderMax = document.getElementById('sliderMax');
+
+            // ✅ MİNİMUM RAISE
+            let minRaise;
+            if (currentGameBet === 0) {
+                // İlk mərc - entry fee
+                minRaise = roomEntryFee > 0 ? roomEntryFee : 0.10;
+            } else {
+                // Raise - current bet × 2
+                minRaise = currentGameBet * 2;
+            }
+
+            // ✅ MAKSİMUM RAISE - LIMIT NÖVÜNƏ GÖRƏ
+            let maxRaise;
+            if (roomLimitType === 'PotLimit') {
+                // Pot Limit: pot + current bet, amma balansdан çox ola bilməz
+                const potLimit = potAmount + currentGameBet;
+                maxRaise = Math.min(potLimit, myBalance);
+            } else {
+                // No Limit: yalnız balans limiti
+                maxRaise = myBalance;
+            }
+
+            // ✅ Əgər maksimum minimumdan azdırsa (kifayət qədər balans yoxdur)
+            if (maxRaise < minRaise) {
+                maxRaise = myBalance;
+                minRaise = Math.min(minRaise, myBalance);
+            }
+
+            // ✅ Slider-i təyin et
+            slider.min = minRaise.toFixed(2);
+            slider.max = maxRaise.toFixed(2);
+            slider.value = minRaise.toFixed(2);
+            slider.step = "0.10";
+
+            sliderMin.textContent = `Min: ${minRaise.toFixed(2)}₼`;
+            sliderMax.textContent = `Max: ${maxRaise.toFixed(2)}₼`;
+
+            updateSliderValue();
+
+            console.log('📊 Slider Limits:', {
+                minRaise: minRaise.toFixed(2),
+                maxRaise: maxRaise.toFixed(2),
+                currentBet: currentGameBet,
+                pot: potAmount,
+                balance: myBalance,
+                limitType: roomLimitType
+            });
+        }
+
+        function updateSliderValue() {
+            const slider = document.getElementById('raiseSlider');
+            const value = parseFloat(slider.value);
+            const raiseValue = document.getElementById('raiseValue');
+            if (raiseValue) raiseValue.textContent = value.toFixed(2) + ' ₼';
+        }
+
+        // ==================== UI UPDATES ====================
+        function displayHand() {
+            const container = document.getElementById('handCards');
+            const scoreDisplay = document.getElementById('handScore');
+
+            if (!myHand || myHand.length === 0) {
+                container.innerHTML = '';
+                if (scoreDisplay) scoreDisplay.style.display = 'none';
+                return;
+            }
+
+            const handScore = calculateHandScore(myHand);
+
             const getSuitClass = (suit) => {
-                // Simvola görə class təyin edirik
                 if (suit === '♥') return 'hearts';
                 if (suit === '♦') return 'diamonds';
                 if (suit === '♣') return 'clubs';
                 if (suit === '♠') return 'spades';
-
-                // Fallback: string adlara da dəstək
-                const normalized = suit.toLowerCase();
-                if (normalized.includes('heart') || normalized.includes('ürək')) return 'hearts';
-                if (normalized.includes('diamond') || normalized.includes('karo')) return 'diamonds';
-                if (normalized.includes('club') || normalized.includes('çətənə')) return 'clubs';
-                if (normalized.includes('spade') || normalized.includes('pika')) return 'spades';
+                const n = suit.toLowerCase();
+                if (n.includes('heart') || n.includes('ürək')) return 'hearts';
+                if (n.includes('diamond') || n.includes('karo')) return 'diamonds';
+                if (n.includes('club') || n.includes('çətənə')) return 'clubs';
+                if (n.includes('spade') || n.includes('pika')) return 'spades';
                 return 'hearts';
             };
 
@@ -533,25 +1198,159 @@
         </div>
     `).join('');
 
-            console.log('✅ Hand displayed:', myHand);
-        }
+            if (scoreDisplay) {
+                scoreDisplay.textContent = `Xal: ${handScore}`;
+                scoreDisplay.style.display = 'block';
+            }
 
-        function updateActionButtons(state) {
-            const isMyTurn = state.currentTurnUserId === currentUserId;
-            const hasBet = state.currentBet > 0;
-
-            document.getElementById('foldBtn').disabled = !isMyTurn;
-            document.getElementById('callBtn').disabled = !isMyTurn || !hasBet;
-            document.getElementById('checkBtn').disabled = !isMyTurn || hasBet;
-            document.getElementById('raiseBtn').disabled = !isMyTurn;
-            document.getElementById('raiseInput').disabled = !isMyTurn;
-            document.getElementById('allInBtn').disabled = !isMyTurn;
-            document.getElementById('showdownBtn').disabled = !isMyTurn;
+            console.log('🃏 Hand displayed:', myHand, 'Score:', handScore);
         }
+        // ✅ YENİ - Frontend xal hesablama funksiyası
+        function calculateHandScore(hand) {
+            if (!hand || hand.length !== 3) return 0;
+
+            // ✅ Kart dəyəri funksiyası
+            const getCardValue = (rank) => {
+                if (rank === 'A') return 11;
+                if (['K', 'Q', 'J'].includes(rank)) return 10;
+                return parseInt(rank) || 0;
+            };
+
+            // ✅ Rəngə görə qruplaşdır
+            const suitGroups = {};
+            hand.forEach(card => {
+                if (!suitGroups[card.suit]) suitGroups[card.suit] = [];
+                suitGroups[card.suit].push(card);
+            });
+
+            // ✅ Fiqura görə qruplaşdır
+            const rankGroups = {};
+            hand.forEach(card => {
+                if (!rankGroups[card.rank]) rankGroups[card.rank] = [];
+                rankGroups[card.rank].push(card);
+            });
+
+            // ✅ 1. ÜÇLÜ (3 eyni fiqur) - hamısını topla
+            const triple = Object.values(rankGroups).find(g => g.length === 3);
+            if (triple) {
+                return triple.reduce((sum, card) => sum + getCardValue(card.rank), 0);
+            }
+
+            // ✅ 2. CÜT (2 eyni fiqur) - cütü topla + ən yüksək kartı əlavə et
+            const pair = Object.values(rankGroups).find(g => g.length === 2);
+            if (pair) {
+                const pairSum = pair.reduce((sum, card) => sum + getCardValue(card.rank), 0);
+                const singleCard = hand.find(c => c.rank !== pair[0].rank);
+                return pairSum + getCardValue(singleCard.rank);
+            }
+
+            // ✅ 3. FLUSH (3 eyni rəng) - hamısını topla
+            const flush = Object.values(suitGroups).find(g => g.length === 3);
+            if (flush) {
+                return flush.reduce((sum, card) => sum + getCardValue(card.rank), 0);
+            }
+
+            // ✅ 4. 2 eyni rəng - yalnız onları topla
+            const suitPair = Object.values(suitGroups).find(g => g.length === 2);
+            if (suitPair) {
+                return suitPair.reduce((sum, card) => sum + getCardValue(card.rank), 0);
+            }
+
+            // ✅ 5. Heç biri - yalnız ən yüksək kart
+            return Math.max(...hand.map(card => getCardValue(card.rank)));
+        }
+        // ==================== DÜZƏLDILMIŞ: GameState HANDLER ====================
+        //// Əvvəlki "GameState" handler-ini yerinə yaz
+        //connection.on("GameState", (state) => {
+        //    console.log('🎮 GameState received:', {
+        //        isMyTurn: state.currentTurnUserId === currentUserId,
+        //        canFold: state.canFold,
+        //        canCall: state.canCall,
+        //        canRaise: state.canRaise,
+        //        canShowdownCall: state.canShowdownCall,
+        //        callAmount: state.callAmount,
+        //        currentBet: state.currentBet,
+        //        myCurrentBet: state.myCurrentBet
+        //    });
+
+        //    currentTurnUserId = state.currentTurnUserId;
+        //    currentGameBet = state.currentBet;
+        //    myCurrentBet = state.myCurrentBet || 0;
+        //    raiseCount = state.raiseCount || 0;
+        //    lastRaiserId = state.lastRaiserId || 0;
+        //    roomEntryFee = state.entryFee || roomEntryFee;
+        //    potAmount = state.potAmount || 0;
+
+        //    if (state.limitType) roomLimitType = state.limitType;
+
+        //    // ==================== POT & BET GÖSTƏRIŞI ====================
+        //    document.getElementById('potAmount').textContent = state.potAmount.toFixed(2);
+        //    document.getElementById('currentBetAmount').textContent = state.currentBet.toFixed(2);
+
+        //    // ==================== HAND SCORE GÖSTƏRIŞI ====================
+        //    const scoreDisplay = document.getElementById('handScore');
+        //    if (scoreDisplay && state.myHandScore > 0) {
+        //        scoreDisplay.textContent = `Xal: ${state.myHandScore}`;
+        //        scoreDisplay.style.display = 'block';
+        //    }
+
+        //    // ==================== TIMER ====================
+        //    if (state.turnTimeRemaining && state.currentTurnUserId === currentUserId) {
+        //        turnTimeRemaining = state.turnTimeRemaining;
+        //        startTurnTimer();
+        //    } else {
+        //        stopTurnTimer();
+        //    }
+
+        //    // ==================== SLIDER LIMITLƏRINI YENILƏ ====================
+        //    updateSliderLimits();
+
+        //    // ==================== ACTION DÜYMƏLƏRINI YENILƏ ====================
+        //    updateActionButtons(state);
+        //});
+
+        // ==================== CSS GOLD GLOW EFFECT ====================
+        const goldGlowStyle = document.createElement('style');
+        goldGlowStyle.textContent = `
+    #showdownCallBtn.golden-glow {
+        background: linear-gradient(135deg, #ffd700, #ffed4e) !important;
+        color: #000 !important;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+                    0 0 40px rgba(255, 215, 0, 0.6),
+                    inset 0 0 20px rgba(255, 255, 255, 0.3) !important;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+        animation: goldPulse 1.5s ease-in-out infinite;
+        font-weight: bold !important;
+        border: 2px solid rgba(255, 215, 0, 0.8) !important;
+    }
+
+    @keyframes goldPulse {
+        0%, 100% {
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+                        0 0 40px rgba(255, 215, 0, 0.6),
+                        inset 0 0 20px rgba(255, 255, 255, 0.3);
+            transform: scale(1);
+        }
+        50% {
+            box-shadow: 0 0 30px rgba(255, 215, 0, 1),
+                        0 0 60px rgba(255, 215, 0, 0.8),
+                        inset 0 0 30px rgba(255, 255, 255, 0.5);
+            transform: scale(1.02);
+        }
+    }
+
+    #showdownCallBtn:disabled {
+        background: #4b5563 !important;
+        color: #94a3b8 !important;
+        box-shadow: none !important;
+        animation: none !important;
+        border: 2px solid #64748b !important;
+    }
+`;
+        document.head.appendChild(goldGlowStyle);
 
         function updatePlayersList(players) {
             const list = document.getElementById('playersList');
-
             list.innerHTML = players.map(p => `
         <div class="player-item">
             <div>
@@ -562,57 +1361,329 @@
             </div>
             <div>
                 <span style="color: #4ade80;">${p.balance.toFixed(2)}₼</span>
-                ${p.currentBet > 0 ? `<span style="color: #ffd700;"> | Mərc: ${p.currentBet}₼</span>` : ''}
+                ${p.currentBet > 0 ? `<span style="color: #ffd700;"> | Mərc: ${p.currentBet.toFixed(2)}₼</span>` : ''}
             </div>
-        </div>
-    `).join('');
+                </div>
+        `).join('');
         }
+
+
+
+        function showCardsOnTable(playersData) {
+            const table = document.getElementById('pokerTable');
+
+            // ✅ Hər oyunçu üçün kartları göstər
+            table.querySelectorAll('.player-spot').forEach(spot => {
+                const avatar = spot.querySelector('.player-avatar');
+                if (!avatar) return;
+
+                const onclickAttr = avatar.getAttribute('onclick');
+                if (!onclickAttr) return;
+
+                const match = onclickAttr.match(/toggleEmojiPopup\((\d+)\)/);
+                if (!match) return;
+
+                const userId = parseInt(match[1]);
+
+                // Bu oyunçunun məlumatını tap
+                const playerData = playersData.find(p => p.userId === userId);
+                if (!playerData) return;
+
+                // Köhnə kartları sil
+                const oldCards = spot.querySelector('.player-cards-reveal');
+                if (oldCards) oldCards.remove();
+
+                // ✅ Kartları göstər
+                const cardsContainer = document.createElement('div');
+                cardsContainer.className = 'player-cards-reveal';
+                cardsContainer.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: revealCards 0.5s ease-out;
+        `;
+
+                const getSuitClass = (suit) => {
+                    if (suit === '♥') return 'hearts';
+                    if (suit === '♦') return 'diamonds';
+                    if (suit === '♣') return 'clubs';
+                    if (suit === '♠') return 'spades';
+                    return 'hearts';
+                };
+
+                cardsContainer.innerHTML = `
+            <div style="display: flex; gap: 5px;">
+                ${playerData.hand.map(card => `
+                    <div class="player-card-mini ${getSuitClass(card.suit)}">
+                        <div class="rank">${card.rank}</div>
+                        <div class="suit">${card.suit}</div>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="
+                color: #ffd700;
+                font-size: 0.9rem;
+                font-weight: bold;
+                text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+                background: rgba(0,0,0,0.7);
+                padding: 4px 10px;
+                border-radius: 8px;
+            ">
+                ${playerData.handValue.handName}<br>
+                Xal: ${playerData.handScore}
+            </div>
+        `;
+
+                spot.appendChild(cardsContainer);
+            });
+        }
+
+        // ✅ CSS animasiya əlavə et
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes revealCards {
+                from {
+                    opacity: 0;
+                    transform: scale(0.8);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+    
+            .player-cards-reveal {
+                position: relative;
+                z-index: 10;
+            }
+        `;
+        document.head.appendChild(style);
+
+        function highlightWinner(winnerUserId) {
+            document.querySelectorAll('.player-avatar').forEach(avatar => {
+                const onclickAttr = avatar.getAttribute('onclick');
+                if (!onclickAttr) return;
+
+                const match = onclickAttr.match(/toggleEmojiPopup\((\d+)\)/);
+                if (!match) return;
+
+                const userId = parseInt(match[1]);
+
+                if (userId === winnerUserId) {
+                    avatar.style.cssText = `
+                box-shadow: 0 0 30px #ffd700, 0 0 60px #ffd700;
+                border-color: #ffd700;
+                animation: winnerPulse 1s infinite;
+            `;
+
+                    // Tac əlavə et
+                    const crown = document.createElement('div');
+                    crown.textContent = '👑';
+                    crown.style.cssText = `
+                position: absolute;
+                top: -15px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 2rem;
+                animation: bounce 0.5s infinite;
+            `;
+                    avatar.appendChild(crown);
+                }
+            });
+        }
+
+        function showWinnerBanner(data) {
+            const banner = document.createElement('div');
+            banner.id = 'winnerBanner';
+            banner.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 165, 0, 0.95));
+        padding: 40px 60px;
+        border-radius: 20px;
+        z-index: 3000;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        animation: bannerAppear 0.5s ease-out;
+        border: 5px solid #fff;
+    `;
+
+            banner.innerHTML = `
+        <div style="font-size: 3rem; margin-bottom: 20px;">🏆</div>
+        <div style="font-size: 2.5rem; font-weight: bold; color: #000; margin-bottom: 15px;">
+            ${data.winnerName} QAZANDI!
+        </div>
+        <div style="font-size: 2rem; color: #1a1a1a; margin-bottom: 10px;">
+            ${data.amount.toFixed(2)}₼
+        </div>
+        <div style="font-size: 1.2rem; color: #333;">
+            ${data.reason}
+        </div>
+        <div style="font-size: 0.9rem; color: #666; margin-top: 10px;">
+            Komissiya: ${data.commission.toFixed(2)}₼
+        </div>
+    `;
+
+            document.body.appendChild(banner);
+        }
+
+        function clearWinnerDisplay() {
+            // Banner-i sil
+            const banner = document.getElementById('winnerBanner');
+            if (banner) banner.remove();
+
+            // Avatar vurğulamalarını sil
+            document.querySelectorAll('.player-avatar').forEach(avatar => {
+                avatar.style.cssText = '';
+                const crown = avatar.querySelector('div');
+                if (crown && crown.textContent === '👑') {
+                    crown.remove();
+                }
+            });
+
+            // Kartları gizlət
+            document.querySelectorAll('.player-cards-reveal').forEach(cards => {
+                cards.style.opacity = '0';
+                setTimeout(() => cards.remove(), 500);
+            });
+        }
+
+        // ✅ CSS animasiyalar
+        const winnerStyle = document.createElement('style');
+        winnerStyle.textContent = `
+    @keyframes winnerPulse {
+        0%, 100% {
+            box-shadow: 0 0 30px #ffd700, 0 0 60px #ffd700;
+        }
+        50% {
+            box-shadow: 0 0 50px #ffd700, 0 0 100px #ffd700;
+        }
+    }
+    
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateX(-50%) translateY(0);
+        }
+        50% {
+            transform: translateX(-50%) translateY(-10px);
+        }
+    }
+    
+    @keyframes bannerAppear {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+`;
+        document.head.appendChild(winnerStyle);
 
         function updatePlayersOnTable(players) {
             const table = document.getElementById('pokerTable');
-            const positions = ['bottom', 'left', 'top', 'right', 'top-left', 'top-right'];
 
-            // Clear existing players
+            // ✅ KÖHNƏ PLAYER SPOT-LARI SİL
             table.querySelectorAll('.player-spot').forEach(el => el.remove());
 
-            players.forEach((player, index) => {
+            if (!players || players.length === 0) return;
+
+            // ✅ CARİ İSTİFADƏÇİNİ TAP
+            const currentUserIndex = players.findIndex(p => p.userId === currentUserId);
+            if (currentUserIndex === -1) return;
+
+            // ✅ OYUNÇULARI SIRALA - Cari istifadəçi aşağıda (bottom)
+            const reorderedPlayers = [
+                players[currentUserIndex], // Bottom (mən)
+                ...players.slice(currentUserIndex + 1), // Sağdan başlayaraq
+                ...players.slice(0, currentUserIndex) // Soldan başlayaraq
+            ];
+
+            // ✅ POZİSİYALAR (Saat əqrəbi)
+            const positions = [
+                'bottom',      // 0 - Cari istifadəçi
+                'left',        // 1 - Sol
+                'top-left',    // 2 - Sol yuxarı
+                'top',         // 3 - Yuxarı
+                'top-right',   // 4 - Sağ yuxarı
+                'right'        // 5 - Sağ
+            ];
+
+            reorderedPlayers.forEach((player, index) => {
                 if (index >= positions.length) return;
 
                 const spot = document.createElement('div');
                 spot.className = `player-spot ${positions[index]}`;
-                spot.innerHTML = `
-            <div class="player-avatar ${player.isActive && !player.hasFolded ? 'active' : ''} ${player.hasFolded ? 'folded' : ''}" 
-                 onclick="toggleEmojiPopup(${player.userId})">
-                ${player.name.charAt(0).toUpperCase()}
-                <div class="emoji-popup" id="emojiPopup${player.userId}">
-                    <div class="emoji-grid">
-                        <button class="emoji-btn" onclick="sendEmoji('😀')">😀</button>
-                        <button class="emoji-btn" onclick="sendEmoji('😎')">😎</button>
-                        <button class="emoji-btn" onclick="sendEmoji('😂')">😂</button>
-                        <button class="emoji-btn" onclick="sendEmoji('🔥')">🔥</button>
-                        <button class="emoji-btn" onclick="sendEmoji('👍')">👍</button>
-                        <button class="emoji-btn" onclick="sendEmoji('💪')">💪</button>
-                        <button class="emoji-btn" onclick="sendEmoji('🎉')">🎉</button>
-                        <button class="emoji-btn" onclick="sendEmoji('❤️')">❤️</button>
+
+                const isCurrentUser = player.userId === currentUserId;
+
+                // ✅ Kartları göstər
+                let cardsHTML = '';
+                if (isCurrentUser && myHand.length > 0) {
+                    const handScore = calculateHandScore(myHand);
+                    cardsHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                    <div style="display: flex; gap: 5px;">
+                        ${myHand.map(card => `
+                            <div style="width: 40px; height: 56px; background: #fff; border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; color: ${card.suit === '♥' || card.suit === '♦' ? '#dc2626' : '#000'};">
+                                <div>${card.rank}</div>
+                                <div style="font-size: 1rem;">${card.suit}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="color: #ffd700; font-size: 0.85rem; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);">
+                        Xal: ${handScore}
                     </div>
                 </div>
+            `;
+                }
+
+                spot.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px; ${positions[index] === 'bottom' ? 'flex-direction: column;' : ''}">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                    <div class="player-avatar ${player.isActive && !player.hasFolded ? 'active' : ''} ${player.hasFolded ? 'folded' : ''}"
+                         onclick="toggleEmojiPopup(${player.userId})">
+                        ${player.name.charAt(0).toUpperCase()}
+                        <div class="emoji-popup" id="emojiPopup${player.userId}">
+                            <div class="emoji-grid">
+                                <button class="emoji-btn" onclick="sendEmoji('😀')">😀</button>
+                                <button class="emoji-btn" onclick="sendEmoji('😎')">😎</button>
+                                <button class="emoji-btn" onclick="sendEmoji('😂')">😂</button>
+                                <button class="emoji-btn" onclick="sendEmoji('🔥')">🔥</button>
+                                <button class="emoji-btn" onclick="sendEmoji('👍')">👍</button>
+                                <button class="emoji-btn" onclick="sendEmoji('💪')">💪</button>
+                                <button class="emoji-btn" onclick="sendEmoji('🎉')">🎉</button>
+                                <button class="emoji-btn" onclick="sendEmoji('❤️')">❤️</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="player-name">${player.name}</div>
+                    ${player.currentBet > 0 ? `<div class="player-bet">${player.currentBet.toFixed(2)}₼</div>` : ''}
+                </div>
+                ${cardsHTML}
             </div>
-            <div class="player-name">${player.name}</div>
-            <div class="player-bet">${player.currentBet > 0 ? player.currentBet + '₼' : ''}</div>
         `;
+                console.log('BET:', player.currentBet);
 
                 table.appendChild(spot);
             });
+
+            // ✅ Timer-i yenilə
+            if (currentTurnUserId === currentUserId && turnTimeRemaining > 0) {
+                updateAllPlayerTimers();
+            }
         }
 
         function toggleEmojiPopup(userId) {
             if (userId !== currentUserId) return;
-
             const popup = document.getElementById(`emojiPopup${userId}`);
             if (popup) {
                 popup.classList.toggle('active');
-
-                // Close after 5 seconds
                 if (popup.classList.contains('active')) {
                     setTimeout(() => popup.classList.remove('active'), 5000);
                 }
@@ -632,9 +1703,7 @@
             floater.textContent = emoji;
             floater.style.left = '50%';
             floater.style.top = '50%';
-
             spot.appendChild(floater);
-
             setTimeout(() => floater.remove(), 2000);
         }
 
@@ -648,65 +1717,27 @@
                 if (suit === '♦') return 'diamonds';
                 if (suit === '♣') return 'clubs';
                 if (suit === '♠') return 'spades';
-
-                const normalized = suit.toLowerCase();
-                if (normalized.includes('heart') || normalized.includes('ürək')) return 'hearts';
-                if (normalized.includes('diamond') || normalized.includes('karo')) return 'diamonds';
-                if (normalized.includes('club') || normalized.includes('çətənə')) return 'clubs';
-                if (normalized.includes('spade') || normalized.includes('pika')) return 'spades';
+                const n = suit.toLowerCase();
+                if (n.includes('heart') || n.includes('ürək')) return 'hearts';
+                if (n.includes('diamond') || n.includes('karo')) return 'diamonds';
+                if (n.includes('club') || n.includes('çətənə')) return 'clubs';
+                if (n.includes('spade') || n.includes('pika')) return 'spades';
                 return 'hearts';
             };
 
-            container.innerHTML = players.map(p => `
-        <div class="showdown-player">
-            <div class="showdown-player-header">
-                <div class="showdown-player-name">${p.name}</div>
-            </div>
-            <div class="showdown-hand-name">${p.handValue?.rank || 'Gözləyin...'}</div>
-            <div class="showdown-cards">
-                ${p.hand.map(card => `
-                    <div class="showdown-card ${getSuitClass(card.suit)}">
-                        <div style="font-size: 1.8rem;">${card.rank}</div>
-                        <div style="font-size: 2rem;">${card.suit}</div>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    `).join('');
+            container.innerHTML = players.map(p => {
+                // ✅ XALI HESABLA
+                const handScore = calculateHandScore(p.hand);
 
-            overlay.classList.add('active');
-            console.log('✅ Showdown displayed:', players);
-        }
-
-        function handleGameOver(data) {
-            const winnerDiv = document.getElementById('showdownWinner');
-
-            const getSuitClass = (suit) => {
-                if (suit === '♥') return 'dom';
-                if (suit === '♦') return 'diamonds';
-                if (suit === '♣') return 'clubs';
-                if (suit === '♠') return 'spades';
-
-                const normalized = suit.toLowerCase();
-                if (normalized.includes('heart') || normalized.includes('ürək')) return 'dom';
-                if (normalized.includes('diamond') || normalized.includes('karo')) return 'diamonds';
-                if (normalized.includes('club') || normalized.includes('çətənə')) return 'clubs';
-                if (normalized.includes('spade') || normalized.includes('pika')) return 'spades';
-                return 'hearts';
-            };
-
-            if (data.results && data.results.length > 0) {
-                const container = document.getElementById('showdownPlayers');
-
-                container.innerHTML = data.results.map(p => `
-            <div class="showdown-player ${p.isWinner ? 'winner' : ''}">
+                return `
+            <div class="showdown-player">
                 <div class="showdown-player-header">
-                    <div class="showdown-player-name ${p.isWinner ? 'winner' : ''}">
-                        ${p.rank}. ${p.name}
+                    <div class="showdown-player-name">${p.name}</div>
+                    <div style="font-size: 1.5rem; color: #ffd700;">
+                        Xal: ${handScore}
                     </div>
-                    ${p.isWinner ? '<div style="color: #ffd700; font-size: 2rem;">👑</div>' : ''}
                 </div>
-                <div class="showdown-hand-name">${p.handName}</div>
+                <div class="showdown-hand-name">${p.handValue?.rank || 'Gözləyin...'}</div>
                 <div class="showdown-cards">
                     ${p.hand.map(card => `
                         <div class="showdown-card ${getSuitClass(card.suit)}">
@@ -716,7 +1747,59 @@
                     `).join('')}
                 </div>
             </div>
-        `).join('');
+        `;
+            }).join('');
+
+            overlay.classList.add('active');
+        }
+        function handleGameOver(data) {
+            const winnerDiv = document.getElementById('showdownWinner');
+
+            const getSuitClass = (suit) => {
+                if (suit === '♥') return 'hearts';
+                if (suit === '♦') return 'diamonds';
+                if (suit === '♣') return 'clubs';
+                if (suit === '♠') return 'spades';
+                const normalized = suit.toLowerCase();
+                if (normalized.includes('heart') || normalized.includes('ürək')) return 'hearts';
+                if (normalized.includes('diamond') || normalized.includes('karo')) return 'diamonds';
+                if (normalized.includes('club') || normalized.includes('çətənə')) return 'clubs';
+                if (normalized.includes('spade') || normalized.includes('pika')) return 'spades';
+                return 'hearts';
+            };
+
+            if (data.results && data.results.length > 0) {
+                const container = document.getElementById('showdownPlayers');
+
+                container.innerHTML = data.results.map(p => {
+                    // ✅ XALI HESABLA
+                    const handScore = calculateHandScore(p.hand);
+
+                    return `
+                <div class="showdown-player ${p.isWinner ? 'winner' : ''}">
+                    <div class="showdown-player-header">
+                        <div class="showdown-player-name ${p.isWinner ? 'winner' : ''}">
+                            ${p.rank}. ${p.name}
+                        </div>
+                        ${p.isWinner ? '<div style="color: #ffd700; font-size: 2rem;">👑</div>' : ''}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <div class="showdown-hand-name">${p.handName}</div>
+                        <div style="font-size: 1.3rem; color: #ffd700; font-weight: bold;">
+                            Xal: ${handScore}
+                        </div>
+                    </div>
+                    <div class="showdown-cards">
+                        ${p.hand.map(card => `
+                            <div class="showdown-card ${getSuitClass(card.suit)}">
+                                <div style="font-size: 1.8rem;">${card.rank}</div>
+                                <div style="font-size: 2rem;">${card.suit}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+                }).join('');
             }
 
             if (data.winners) {
@@ -734,9 +1817,7 @@
             }
 
             document.getElementById('showdownOverlay').classList.add('active');
-            console.log('✅ Game Over:', data);
         }
-
         function closeShowdown() {
             document.getElementById('showdownOverlay').classList.remove('active');
         }
@@ -759,12 +1840,42 @@
             document.getElementById('currentBetAmount').textContent = '0';
             document.getElementById('callAmount').textContent = '0';
 
-            const buttons = ['foldBtn', 'callBtn', 'checkBtn', 'raiseBtn', 'allInBtn', 'showdownBtn'];
-            buttons.forEach(id => document.getElementById(id).disabled = true);
+            const buttons = ['foldBtn', 'callBtn', 'raiseBtn', 'allInBtn', 'showdownBtn', 'showdownCallBtn'];
+            buttons.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.disabled = true;
+            });
 
-            document.getElementById('raiseInput').disabled = true;
-            document.getElementById('raiseInput').value = '';
+            document.getElementById('raiseSlider').disabled = true;
+            document.getElementById('raiseSlider').value = 0;
+            updateSliderValue();
+
+            stopTurnTimer();
+            turnTimeRemaining = 0;
+
+            // ✅ YENİ - Pending bets və svara reset
+            document.querySelectorAll('.pending-bet').forEach(badge => badge.remove());
+            isInSvara = false;
+            svaraRound = 0;
         }
+        const minimalStyles = document.createElement('style');
+        minimalStyles.textContent = `
+            .pending-bet {
+                animation: pendingPulse 1.5s infinite;
+            }
+
+            @keyframes pendingPulse {
+                0%, 100% {
+                    transform: scale(1);
+                    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.6);
+                }
+                50% {
+                    transform: scale(1.05);
+                    box-shadow: 0 6px 25px rgba(255, 215, 0, 0.9);
+                }
+            }
+        `;
+        document.head.appendChild(minimalStyles);
     </script>
 </body>
 

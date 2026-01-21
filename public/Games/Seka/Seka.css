@@ -1,3 +1,11 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    /* overflow: hidden;  */
+}
+
 body::before {
     content: '';
     position: fixed;
@@ -13,19 +21,23 @@ body::before {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0 17px;
     position: relative;
     z-index: 1;
 }
 
 .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     text-align: center;
-    padding: 30px 20px;
+    padding: 0 37px;
     background: rgba(0, 0, 0, 0.4);
     border-radius: 20px;
-    margin-bottom: 20px;
-    backdrop-filter: blur(10px);
+    /* margin-bottom: 20px; */
+    /* backdrop-filter: blur(10px); */
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
 }
 
 .header h1 {
@@ -33,7 +45,6 @@ body::before {
     background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 10px;
 }
 
 .header-subtitle {
@@ -47,15 +58,16 @@ body::before {
     justify-content: space-between;
     align-items: center;
     background: rgba(255, 255, 255, 0.05);
-    padding: 20px 30px;
+    padding: 10px 20px;
     border-radius: 15px;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
     backdrop-filter: blur(10px);
+    color: #fff;
     border: 1px solid rgba(74, 222, 128, 0.2);
 }
 
 .balance {
-    font-size: 1.8rem;
+    font-size: 1rem;
     font-weight: bold;
     color: #4ade80;
     text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
@@ -112,6 +124,16 @@ body::before {
     margin-top: 5px;
 }
 
+.quick-join-btn .limit-type {
+    font-size: 0.75rem;
+    color: #fbbf24;
+    margin-top: 8px;
+    padding: 4px 8px;
+    background: rgba(251, 191, 36, 0.2);
+    border-radius: 5px;
+    display: inline-block;
+}
+
 .room-list-section {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 20px;
@@ -166,6 +188,22 @@ body::before {
     border-bottom: none;
 }
 
+.limit-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #8b5cf6;
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.limit-badge.no-limit {
+    background: #f59e0b;
+}
+
 .join-btn {
     width: 100%;
     padding: 12px;
@@ -204,7 +242,7 @@ body::before {
 
 .game-section {
     display: none;
-    background: rgba(0, 0, 0, 0.3);
+    /* background: rgba(0, 0, 0, 0.3); */
     border-radius: 20px;
     padding: 30px;
 }
@@ -213,8 +251,34 @@ body::before {
     display: block;
 }
 
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* margin-bottom: 20px; */
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.room-limit-info {
+    background: rgba(139, 92, 246, 0.2);
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid #8b5cf6;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.room-limit-info.no-limit {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: #f59e0b;
+}
+
 .poker-table {
-    background: linear-gradient(145deg, #0f5132, #1e7e34);
+    background: url("./images/tableBg.jpg");
+    background-position: center;
+    background-size: cover;
     border: 20px solid #8b4513;
     border-radius: 50%;
     width: 90%;
@@ -246,46 +310,60 @@ body::before {
     color: #fff;
 }
 
+/* ✅ YENİ - Player Spot (İkon + Kartlar yan-yana) */
 .player-spot {
     position: absolute;
-    width: 120px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .player-spot.bottom {
-    bottom: -60px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.player-spot.top {
-    top: -60px;
+    bottom: -100px;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .player-spot.left {
-    left: -80px;
+    left: -140px;
     top: 50%;
     transform: translateY(-50%);
-}
-
-.player-spot.right {
-    right: -80px;
-    top: 50%;
-    transform: translateY(-50%);
+    flex-direction: row;
 }
 
 .player-spot.top-left {
-    top: 10%;
+    top: 5%;
     left: 10%;
 }
 
-.player-spot.top-right {
-    top: 10%;
-    right: 10%;
+.player-spot.top {
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
+.player-spot.top-right {
+    top: 5%;
+    right: 10%;
+    flex-direction: row-reverse;
+}
+
+.player-spot.right {
+    right: -140px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: row-reverse;
+}
+
+/* ✅ Player Info Container (İkon + Ad + Balans) */
+.player-info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* ✅ Player Avatar */
 .player-avatar {
     width: 80px;
     height: 80px;
@@ -296,7 +374,6 @@ body::before {
     justify-content: center;
     font-size: 2rem;
     font-weight: bold;
-    margin: 0 auto 10px;
     border: 4px solid #ffd700;
     cursor: pointer;
     position: relative;
@@ -329,6 +406,86 @@ body::before {
     }
 }
 
+/* ✅ Timer Badge (İkonun sağ üst küncündə) */
+.timer-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 32px;
+    height: 32px;
+    background: #3b82f6;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #fff;
+    z-index: 10;
+    transition: all 0.3s;
+}
+
+.timer-badge.warning {
+    background: #ef4444;
+    animation: pulse-timer 0.5s infinite;
+}
+
+@keyframes pulse-timer {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* ✅ Player Cards Container */
+.player-cards-container {
+    display: flex;
+    gap: 8px;
+}
+
+.player-card-mini {
+    width: 50px;
+    height: 70px;
+    background: #fff;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s;
+}
+
+.player-card-mini:hover {
+    transform: translateY(-5px) scale(1.05);
+}
+
+.player-card-mini.hearts,
+.player-card-mini.diamonds {
+    color: #dc2626;
+}
+
+.player-card-mini.spades,
+.player-card-mini.clubs {
+    color: #000;
+}
+
+.player-card-mini .rank {
+    font-size: 1.2rem;
+}
+
+.player-card-mini .suit {
+    font-size: 1.5rem;
+}
+
+/* ✅ Emoji Popup */
 .emoji-popup {
     display: none;
     position: absolute;
@@ -391,14 +548,18 @@ body::before {
 
 .player-name {
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    text-align: center;
 }
 
 .player-bet {
     color: #ffd700;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    margin-top: 4px;
 }
 
+/* ✅ Əl Kartları (Aşağıda böyük kartlar) */
 .hand-cards {
     display: flex;
     justify-content: center;
@@ -442,12 +603,14 @@ body::before {
     font-size: 3rem;
 }
 
+/* ✅ Action Buttons */
 .actions {
     display: flex;
     justify-content: center;
     gap: 15px;
     margin-top: 30px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .btn {
@@ -493,6 +656,16 @@ body::before {
     background: #f59e0b;
 }
 
+.btn-showdown-call {
+    background: #8b5cf6;
+    color: #fff;
+    position: relative;
+}
+
+.btn-showdown-call:hover:not(:disabled) {
+    background: #7c3aed;
+}
+
 .btn-leave {
     background: #6b7280;
     color: #fff;
@@ -502,13 +675,84 @@ body::before {
     background: #4b5563;
 }
 
-.bet-input {
-    padding: 12px;
-    font-size: 1.1rem;
+/* ✅ Raise Slider Container */
+.raise-slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 15px;
     border: 2px solid #4ade80;
-    border-radius: 8px;
-    width: 150px;
-    background: rgba(255, 255, 255, 0.9);
+    min-width: 300px;
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.slider-label {
+    color: #4ade80;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.slider-value {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.raise-slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.raise-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #ffd700;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    transition: all 0.3s;
+}
+
+.raise-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+}
+
+.raise-slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #ffd700;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    transition: all 0.3s;
+}
+
+.raise-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+}
+
+.slider-limits {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #94a3b8;
 }
 
 .players-list {
@@ -740,6 +984,29 @@ body::before {
     transform: scale(1.05);
 }
 
+.room-timer-badge {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    background: rgba(59, 130, 246, 0.95);
+    color: #fff;
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: 2px solid #3b82f6;
+    z-index: 1000;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+}
+
+.room-timer-badge.warning {
+    background: rgba(239, 68, 68, 0.95);
+    border-color: #ef4444;
+    animation: pulse-timer 1s infinite;
+}
+
 .hidden {
     display: none !important;
 }
@@ -774,3 +1041,305 @@ body::before {
     margin-bottom: 20px;
 }
 
+/* ✅ Responsive Design */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .poker-table {
+        width: 95%;
+    }
+
+    .player-spot {
+        gap: 8px;
+    }
+
+    .player-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+
+    .player-card-mini {
+        width: 40px;
+        height: 56px;
+    }
+
+    .player-card-mini .rank {
+        font-size: 1rem;
+    }
+
+    .player-card-mini .suit {
+        font-size: 1.2rem;
+    }
+
+    .card {
+        width: 90px;
+        height: 126px;
+    }
+
+    .card-rank {
+        font-size: 2rem;
+    }
+
+    .card-suit {
+        font-size: 2.5rem;
+    }
+}
+
+/* Casino-style room grid */
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+    align-items: stretch;
+}
+
+.room-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: 0 8px 28px rgba(4, 4, 10, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    transition: transform 220ms cubic-bezier(.2, .8, .2, 1), box-shadow 220ms;
+    color: #e6eef8;
+    overflow: hidden;
+    min-height: 140px;
+    backdrop-filter: blur(6px) saturate(120%);
+}
+
+.room-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 18px 48px rgba(8, 6, 20, 0.85), 0 0 18px rgba(255, 200, 60, 0.06);
+}
+
+.room-card.full {
+    opacity: 0.6;
+    transform: none;
+}
+
+.limit-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.6px;
+    color: #111;
+    background: linear-gradient(90deg, #ffd700, #ffb142);
+    box-shadow: 0 6px 18px rgba(255, 183, 0, 0.12);
+}
+
+.room-top {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.room-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #111;
+    background: radial-gradient(circle at 30% 20%, #ffd27a, #ff9f1c);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 160, 20, 0.12) inset;
+    flex-shrink: 0;
+}
+
+.room-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0;
+}
+
+.room-sub {
+    font-size: 0.85rem;
+    color: #9fb0d0;
+    margin-top: 4px;
+}
+
+.room-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.room-info span {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+}
+
+.room-entry {
+    color: #ffd700;
+    font-weight: 900;
+}
+
+.players-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 12px;
+}
+
+.players-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #34d399, #10b981);
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.08);
+}
+
+.join-btn {
+    margin-top: 12px;
+    padding: 10px 14px;
+    font-weight: 900;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    color: #111;
+    background: linear-gradient(90deg, #ffd700, #ffb142);
+    box-shadow: 0 10px 30px rgba(255, 183, 0, 0.12);
+    transition: transform 150ms;
+}
+
+.join-btn:active {
+    transform: translateY(1px);
+}
+
+.join-btn[disabled] {
+    background: linear-gradient(90deg, #475569, #374151);
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.room-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.meta-pill {
+    font-size: 0.78rem;
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+@media (max-width: 520px) {
+    .game-section {
+        padding: 0 20px;
+    }
+
+    .room-card {
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .room-avatar {
+        width: 48px;
+        height: 48px;
+    }
+
+    .game-header {
+        font-size: 13px;
+    }
+
+    .btn-top {
+        font-size: 14px;
+    }
+
+    .player-spot.left {
+        left: -52px;
+    }
+
+    .pot-amount {
+        font-size: 1.7rem;
+    }
+
+    .current-bet {
+        font-size: 1rem;
+    }
+
+    .raise-slider-container {
+        gap: 7px;
+        min-width: 160px;
+        padding: 12px;
+    }
+
+    .slider-header {
+        margin: 0;
+    }
+
+    .slider-label {
+        font-size: 0.7rem;
+    }
+
+    .slider-value {
+        font-size: 1rem;
+    }
+
+    .slider-limits {
+        font-size: 0.6rem;
+    }
+
+    .btn-raise {
+        padding: 7px 15px;
+    }
+
+    .actions {
+        margin: 0;
+    }
+
+    .btn {
+        padding: 7px 10px;
+    }
+
+    .card {
+        width: 72px;
+        height: 100px;
+    }
+
+    .card-rank {
+        font-size: 1.5rem;
+    }
+
+    .card-suit {
+        font-size: 2rem;
+    }
+
+    .hand-cards {
+        margin: 67px 0 0 0;
+    }
+
+    .player-avatar {
+        width: 47px;
+        height: 47px;
+        font-size: 1rem;
+    }
+
+    .player-spot.bottom {
+        bottom: -55px;
+    }
+    .player-name{
+        margin: 0 0 0 0;
+    }
+    .poker-table{
+        border: 7px solid #8b4513;
+    }
+}
