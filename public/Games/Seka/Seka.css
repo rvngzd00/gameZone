@@ -37,7 +37,7 @@ body::before {
     /* margin-bottom: 20px; */
     /* backdrop-filter: blur(10px); */
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    margin-bottom: 10px;
+    margin: 17px 0 10px 0;
 }
 
 .header h1 {
@@ -64,6 +64,7 @@ body::before {
     backdrop-filter: blur(10px);
     color: #fff;
     border: 1px solid rgba(74, 222, 128, 0.2);
+    gap: 7px;
 }
 
 .balance {
@@ -137,7 +138,7 @@ body::before {
 .room-list-section {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 20px;
-    padding: 30px;
+    padding: 7px;
     margin-bottom: 20px;
     backdrop-filter: blur(10px);
 }
@@ -1256,8 +1257,8 @@ body::before {
         height: 48px;
     }
 
-    .game-header {
-        font-size: 13px;
+    .room-name {
+        font-size: 13px !important;
     }
 
     .btn-top {
@@ -1336,10 +1337,26 @@ body::before {
     .player-spot.bottom {
         bottom: -55px;
     }
-    .player-name{
+
+    .player-name {
         margin: 0 0 0 0;
     }
-    .poker-table{
+
+    .poker-table {
         border: 7px solid #8b4513;
+    }
+
+    .header {
+        padding: 0 17px;
+    }
+}
+
+@media (max-width: 370px) {
+    .btn {
+        padding: 3px 10px;
+        font-size: 0.7rem;
+    }
+    .actions{
+        gap: 2px;
     }
 }

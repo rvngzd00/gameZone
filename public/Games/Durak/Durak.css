@@ -1,3 +1,17 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    /* overflow: hidden;  */
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
 .header {
     text-align: center;
     padding: 20px;
@@ -62,6 +76,10 @@
     background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 }
 
+.btn-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
 /* Lobby */
 .lobby-screen {
     display: none;
@@ -88,8 +106,16 @@
 }
 
 .player-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
     background: rgba(255, 255, 255, 0.15);
-    padding: 30px;
+    /* padding: 30px; */
+.player-option.selected {
+    border-color: #fbbf24;
+    background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(255,255,255,0.02));
+    box-shadow: 0 12px 30px rgba(251,191,36,0.12);
+}
     border-radius: 15px;
     text-align: center;
     cursor: pointer;
@@ -104,14 +130,14 @@
 }
 
 .player-option .player-count {
-    font-size: 3em;
+    font-size: 2em;
     font-weight: 700;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
     color: #fbbf24;
 }
 
 .player-option .player-label {
-    font-size: 1.2em;
+    font-size: 1em;
     opacity: 0.9;
 }
 
@@ -177,6 +203,35 @@
     color: #fbbf24;
 }
 
+/* ✅ YENİ - Deck Size Badge */
+.deck-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-left: 10px;
+    background: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+}
+
+/* ✅ YENİ - Transfer Badge */
+.transfer-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-left: 5px;
+    background: rgba(16, 185, 129, 0.3);
+    color: #6ee7b7;
+}
+
+.transfer-badge.disabled {
+    background: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
 /* Game Screen */
 .game-screen {
     display: none;
@@ -223,6 +278,7 @@
 .game-actions {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 /* Players */
@@ -304,12 +360,58 @@
     padding: 15px;
     border-radius: 12px;
     backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .trump-label {
     font-size: 0.9em;
     margin-bottom: 10px;
     opacity: 0.9;
+}
+
+.deck-stack {
+    position: relative;
+    width: 70px;
+    height: 100px;
+}
+
+.deck-card {
+    position: absolute;
+    width: 70px;
+    height: 100px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.deck-card:nth-child(1) {
+    top: 0px;
+    left: 0px;
+}
+
+.deck-card:nth-child(2) {
+    top: 2px;
+    left: 2px;
+}
+
+.deck-card:nth-child(3) {
+    top: 4px;
+    left: 4px;
+}
+
+.deck-count {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 10;
 }
 
 .table-cards {
@@ -367,6 +469,25 @@
 .card.drag-over {
     border: 3px dashed #10b981;
     background: rgba(16, 185, 129, 0.1);
+}
+
+/* ✅ YENİ - Transfer highlight */
+.card.transfer-highlight {
+    border: 3px solid #10b981;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 .card-rank {
@@ -610,66 +731,6 @@
     cursor: grabbing;
 }
 
-
-.trump-card-display {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 15px;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    /* ✅ Yeni */
-}
-
-/* ✅ YENİ - Deck stack */
-.deck-stack {
-    position: relative;
-    width: 70px;
-    height: 100px;
-}
-
-.deck-card {
-    position: absolute;
-    width: 70px;
-    height: 100px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 8px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.deck-card:nth-child(1) {
-    top: 0px;
-    left: 0px;
-}
-
-.deck-card:nth-child(2) {
-    top: 2px;
-    left: 2px;
-}
-
-.deck-card:nth-child(3) {
-    top: 4px;
-    left: 4px;
-}
-
-.deck-count {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.5em;
-    font-weight: bold;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    z-index: 10;
-}
-
-/* ✅ Vote notification */
 .vote-notification {
     position: fixed;
     top: 100px;
@@ -682,4 +743,71 @@
     z-index: 1500;
     animation: slideIn 0.3s ease-out;
     box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+}
+
+/* Minimal, mobile-first styles for the new room options panel */
+.room-options-panel {
+    background: rgba(255,255,255,0.04);
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: block;
+}
+.room-options-panel h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #f3f4f6;
+}
+.deck-size-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+.deck-pill {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+.deck-pill.selected {
+    background: #ffffff;
+    color: #1f2937;
+    border-color: rgba(251,191,36,0.9);
+}
+.bet-row { margin: 12px 0; text-align: center; }
+.bet-row label { display:block; margin-bottom: 8px; opacity: 0.9; }
+.bet-presets { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:8px; }
+.bet-presets { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:8px; overflow-x:auto; padding-bottom:4px; }
+.bet-btn { padding:8px 14px; border-radius:12px; background:rgba(255,255,255,0.06); color:#fff; border:2px solid transparent; cursor:pointer; min-width:56px; }
+.bet-btn.active { background:#fbbf24; color:#1f2937; border-color:#f59e0b; }
+.bet-custom input { width:120px; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); background:transparent; color:#fff; }
+.modes-row { margin: 10px 0 16px; }
+.modes-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.mode-col { background: rgba(255,255,255,0.03); padding:8px; border-radius:10px; }
+.mode-title { font-size:0.85em; opacity:0.8; margin-bottom:8px; text-align:center; }
+.mode-card { padding: 12px; border-radius:12px; background: rgba(255,255,255,0.04); text-align:center; cursor:pointer; font-weight:700; margin-bottom:8px; }
+.mode-card.selected { background:#ffffff; color:#1f2937; box-shadow:0 8px 20px rgba(0,0,0,0.25); }
+.mode-card .check { margin-left:8px; color:#059669; font-weight:800; }
+.start-row { display:flex; gap:10px; justify-content:center; align-items:center; margin-top:8px; }
+
+/* Responsive tweaks */
+@media (min-width: 700px) {
+    .modes-grid { grid-template-columns: repeat(4, 1fr); }
+    .player-options { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 420px) {
+    .deck-pill { padding: 6px 10px; }
+    .bet-custom input { width: 100px; }
+    .card { width: 70px; height: 100px; }
+}
+@media (max-width: 600px) {
+    .info-item .value{
+        font-size: inherit;
+    }
 }
