@@ -9,20 +9,23 @@ import durakImg from './gameLogoImages/durakLogo.png';
 import okayImg from './gameLogoImages/okeyLogo.png';
 import sekaImg from './gameLogoImages/sekaLogo.png';
 import pokerImg from './gameLogoImages/pokerLogo.png';
+import { useAppContext } from '../../context/AppContext';
 
 
 
 const GAMES = [
-  { id: 'domino', name: 'Dominoes', img: dominoImg },
-  { id: 'backgammon', name: 'Backgammon', img: backgammonImg },
-  { id: 'loto', name: 'Loto', img: lotoImg },
-  { id: 'okey', name: 'Okey' ,img: okayImg },
-  { id: 'durak', name: 'Durak' ,img: durakImg },
-  { id: 'seka', name: 'Seka', img: sekaImg },
-  { id: 'poker', name: 'Poker', img: pokerImg }
+  { id: 'domino', name: 'game_domino', img: dominoImg },
+  { id: 'backgammon', name: 'game_backgammon', img: backgammonImg },
+  { id: 'loto', name: 'game_loto', img: lotoImg },
+  { id: 'okey', name: 'game_okey' ,img: okayImg },
+  { id: 'durak', name: 'game_durak' ,img: durakImg },
+  { id: 'seka', name: 'game_seka', img: sekaImg },
+  { id: 'poker', name: 'game_poker', img: pokerImg }
 ];
 
 function GameCard({ game }) {
+  const { t } = useAppContext();
+
   return (
     <Link to={`/games/${game.id}`} className="game-card" aria-labelledby={`game-${game.id}`}>
       <div className="game-art" aria-hidden>
@@ -90,7 +93,7 @@ function GameCard({ game }) {
           // </svg>
         )} */}
       </div>
-      <h3 id={`game-${game.id}`}>{game.name}</h3>
+      <h3 id={`game-${game.id}`}>{t(game.name)}</h3>
     </Link>
   );
 }

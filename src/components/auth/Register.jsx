@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
 import EditProfile from "../profile/EditProfile";
 const Register = () => {
-  const { register, saveProfileSelection } = useAppContext();
+  const { register, saveProfileSelection, t } = useAppContext();
   const [formData, setFormData] = useState({
     username: "",
     image: "",
@@ -22,7 +22,7 @@ const Register = () => {
     setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      setError(t('passwords_not_match'));
       return;
     }
 
@@ -37,7 +37,7 @@ const Register = () => {
     });
 
     if (!result.success) {
-      setError(result.error || "Registration failed");
+      setError(result.error || t('registration_failed'));
     }
   };
 
@@ -73,13 +73,13 @@ const Register = () => {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <h2>Create Account</h2>
-          <p>Join the excitement today</p>
+          <h2>{t('create_account')}</h2>
+          <p>{t('join_excited')}</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">{t('name')}</label>
             <div className="input-wrapper">
               <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 18H4V6H20V18ZM6 10H8V12H6V10ZM6 14H8V16H6V14ZM18 14H10V16H18V14ZM18 10H10V12H18V10Z"
@@ -95,7 +95,7 @@ const Register = () => {
             </div>
           </div>
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">{t('username_label')}</label>
             <div className="input-wrapper">
               <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
@@ -114,7 +114,7 @@ const Register = () => {
 
 
           <div className="form-group">
-            <label htmlFor="surname">Surname</label>
+            <label htmlFor="surname">{t('surname')}</label>
             <div className="input-wrapper">
 
               <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -132,7 +132,7 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('email_label')}</label>
             <div className="input-wrapper">
               <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6ZM20 6L12 11L4 6H20ZM20 18H4V8L12 13L20 8V18Z"
@@ -149,26 +149,26 @@ const Register = () => {
           </div>
 
           <div className="form-group image-group">
-            <label htmlFor="image">Profile Photo</label>
+            <label htmlFor="image">{t('profile_photo')}</label>
             <div className="image-preview-row">
               <div className="preview-box-small">
                 {formData.image ? (
                   <img src={formData.image} alt="preview" className="preview-img-small" />
                 ) : (
-                  <div className="preview-placeholder">No image</div>
+                  <div className="preview-placeholder">{t('no_image')}</div>
                 )}
               </div>
 
               <div className="image-actions">
                 <input type="file" accept="image/*" id="imageFile" style={{display:'none'}} onChange={handleFileInput} />
-                <button type="button" className="btn" onClick={() => document.getElementById('imageFile').click()}>Upload</button>
-                <button type="button" className="btn" onClick={() => setShowEditProfile(true)}>Edit Profile Pic</button>
+                <button type="button" className="btn" onClick={() => document.getElementById('imageFile').click()}>{t('upload')}</button>
+                <button type="button" className="btn" onClick={() => setShowEditProfile(true)}>{t('edit_profile_pic')}</button>
               </div>
             </div>
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('password')}</label>
             <div className="input-wrapper">
               <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM15.1 8H8.9V6C8.9 4.29 10.29 2.9 12 2.9C13.71 2.9 15.1 4.29 15.1 6V8Z"
@@ -185,7 +185,7 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
+            <label htmlFor="confirmPassword">{t('confirm_password')}</label>
             <div className="input-wrapper">
               <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM15.1 8H8.9V6C8.9 4.29 10.29 2.9 12 2.9C13.71 2.9 15.1 4.29 15.1 6V8Z"
@@ -201,15 +201,15 @@ const Register = () => {
             </div>
           </div>
 
-          {error && <p className="error-message">{error}</p>}
+          {/* {error && <p className="error-message">{error}</p>} */}
 
           <button type="submit" className="auth-submit">
-            Create Account
+            {t('create_account_btn')}
           </button>
         </form>
 
         <p className="auth-switch">
-          Already have an account? <Link to="/login">Login Here</Link>
+          {t('already_have_account')} <Link to="/login">{t('login_here')}</Link>
         </p>
       </div>
       {showEditProfile && (

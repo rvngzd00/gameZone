@@ -24,7 +24,7 @@ const Profile = () => {
             { id: 3, game: "Dominoes", result: "Loss", coins: "-200", date: "8h ago" }
         ]
     };
-    const { isAuthenticated, balance, logout, user, saveProfileSelection } = useAppContext();
+    const { isAuthenticated, balance, logout, user, saveProfileSelection, t } = useAppContext();
     const [showEdit, setShowEdit] = useState(false);
     return (
         <div className="container">
@@ -39,12 +39,12 @@ const Profile = () => {
                         </div>
                     </div>
                     <div className="profile-info">
-                        <h1>{user?.username || "Loading..."}</h1>
+                        <h1>{user?.username || t('loading')}</h1>
                         <div className="profile-stats">
                             <div className="stat-item">
                                 <span className="stat-icon">🎲</span>
                                 <span className="stat-value">{profileData.gamesPlayed}</span>
-                                <span className="stat-label">Games</span>
+                                <span className="stat-label">{t('games')}</span>
                             </div>
                             {/* <div className="stat-item">
                                 <span className="stat-icon">⚡</span>
@@ -54,11 +54,11 @@ const Profile = () => {
                             <div className="stat-item">
                                 <span className="stat-icon">🪙</span>
                                 <span className="stat-value">{balance}</span>
-                                <span className="stat-label">Coins</span>
+                                <span className="stat-label">{t('coins')}</span>
                             </div>
                         </div>
                         <button className="profile-action-btn edit-btn" onClick={() => setShowEdit(true)}>
-                            Edit Profile
+                            {t('edit_profile')}
                         </button>
                     </div>
                 </div>
@@ -78,7 +78,7 @@ const Profile = () => {
                     </div> */}
 
                 <div className="profile-section recent-games-section">
-                    <h2>Recent Games</h2>
+                    <h2>{t('recent_games')}</h2>
                     <div className="games-history">
                         {profileData.recentGames.map(game => (
                             <div key={game.id} className="game-history-item">
@@ -88,7 +88,7 @@ const Profile = () => {
                                 </div>
                                 <div className="game-result">
                                     <span className={`result-badge ${game.result.toLowerCase()}`}>
-                                        {game.result}
+                                        {game.result === 'Win' ? t('win') : game.result === 'Loss' ? t('loss') : game.result}
                                     </span>
                                     <span className={`coins ${game.coins.startsWith('+') ? 'positive' : 'negative'}`}>
                                         {game.coins}
@@ -103,7 +103,7 @@ const Profile = () => {
                 <div className="profile-actions">
 
                     <button className="profile-action-btn history-btn">
-                        Full History
+                        {t('full_history')}
                     </button>
                 </div>
 

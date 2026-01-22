@@ -190,3 +190,76 @@
 .ab-overlay{
   inset: 1!important;
 }
+
+/* Language select styling */
+.language-select {
+  display: flex;
+  align-items: center;
+}
+
+.lang-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: linear-gradient(90deg, rgba(255,215,0,0.06), rgba(255,215,0,0.02));
+  color: var(--text-primary, #fff);
+  border: 1px solid rgba(255,215,0,0.12);
+  padding: 6px 36px 6px 10px;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.25), inset 0 -1px 0 rgba(0,0,0,0.06);
+  transition: all 0.18s ease;
+  min-width: 110px;
+  text-align: left;
+  direction: ltr; /* keep emoji left-to-right */
+  backdrop-filter: blur(4px);
+  margin-left: 6px;
+  position: relative;
+  min-width: 70px;
+}
+
+.lang-select:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,215,0,0.22);
+  box-shadow: 0 8px 28px rgba(255,215,0,0.06), inset 0 -1px 0 rgba(0,0,0,0.08);
+}
+
+.lang-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255,215,0,0.06), 0 8px 28px rgba(255,215,0,0.06);
+  border-color: rgba(255,215,0,0.35);
+}
+
+/* custom arrow using linear-gradient + SVG mask */
+.lang-select {
+  background-image: linear-gradient(90deg, rgba(255,215,0,0.06), rgba(255,215,0,0.02)),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23FFD700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px 14px;
+}
+
+.lang-select option {
+  padding: 8px 12px;
+  background: var(--surface-1);
+  color: var(--text-primary, #111);
+}
+
+/* smaller compact style on mobile */
+@media (max-width: 480px) {
+  .lang-select {
+    padding: 6px 30px 6px 8px;
+    font-size: 0.82rem;
+
+  }
+}
+
+/* RTL: keep select aligned correctly when page dir is rtl */
+[dir='rtl'] .lang-select {
+  direction: rtl;
+  padding-left: 36px;
+  padding-right: 10px;
+  background-position: left 10px center;
+}

@@ -11,7 +11,7 @@ const ROOM_REFRESH_INTERVAL = 3000;
 
 // ==================== BACKGAMMON GAME ====================
 function BackgammonREACT() {
-    const { user, balance, token, updateBalance } = useAppContext();
+    const { user, balance, token, updateBalance, t } = useAppContext();
 
     // SignalR Connection
     const [connection, setConnection] = useState(null);
@@ -623,16 +623,16 @@ function BackgammonREACT() {
                     <div className="chat-panel-header">
                         <div className="chat-panel-title">
                             <span className="chat-icon-header">💬</span>
-                            <h3>Live Chat</h3>
+                            <h3>{t('live_chat')}</h3>
                         </div>
                         <button className="chat-panel-close" onClick={() => setChatOpen(false)}>✕</button>
                     </div>
 
                     <div className="chat-messages-container">
                         {chatMessages.length === 0 ? (
-                            <div className="chat-empty-state">
+                                <div className="chat-empty-state">
                                 <div className="empty-icon">💭</div>
-                                <p>No messages yet</p>
+                                <p>{t('no_messages_yet')}</p>
                             </div>
                         ) : (
                             chatMessages.map((msg, i) => (
@@ -704,7 +704,7 @@ function BackgammonREACT() {
                                 value={chatInput}
                                 onChange={(e) => setChatInput(e.target.value)}
                                 onKeyPress={(e) => e.key === 'Enter' && sendChatMessage()}
-                                placeholder="Type a message..."
+                                placeholder={t('type_a_message')}
                                 maxLength={200}
                             />
                             <button className="chat-send-btn" onClick={sendChatMessage}>
@@ -724,8 +724,8 @@ function BackgammonREACT() {
                             <div className="section-header">
                                 <div className="section-icon">⚡</div>
                                 <div>
-                                    <h2>Quick Match</h2>
-                                    <p>Select your bet and find an opponent instantly</p>
+                                            <h2>{t('quick_match')}</h2>
+                                            <p>{t('select_bet_find_opponent')}</p>
                                 </div>
                             </div>
 
@@ -746,7 +746,7 @@ function BackgammonREACT() {
                                 className="vip-match-btn"
                                 onClick={() => quickMatch(1000)}
                             >
-                                <span className="vip-badge">VIP</span>
+                                <span className="vip-badge">{t('vip')}</span>
                                 <span className="vip-amount">1000 💰</span>
                             </button>
                         </section>
@@ -756,16 +756,16 @@ function BackgammonREACT() {
                             <div className="section-header">
                                 <div className="section-icon">📋</div>
                                 <div>
-                                    <h2>Active Games</h2>
-                                    <p>{rooms.length} game{rooms.length !== 1 ? 's' : ''} available</p>
+                                    <h2>{t('active_games')}</h2>
+                                    <p>{rooms.length} {t('games')} {t('available')}</p>
                                 </div>
                             </div>
 
                             {rooms.length === 0 ? (
                                 <div className="no-rooms-state">
                                     <div className="no-rooms-icon">🎮</div>
-                                    <p>No active games right now</p>
-                                    <small>Start a quick match to find an opponent</small>
+                                    <p>{t('no_active_games')}</p>
+                                    <small>{t('start_quick_match_help')}</small>
                                 </div>
                             ) : (
                                 <div className="rooms-list">

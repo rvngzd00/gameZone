@@ -6,7 +6,7 @@ import { useAppContext } from "../../context/AppContext";
 
 
 const Login = () => {
-    const { login } = useAppContext();
+    const { login, t } = useAppContext();
     const [formData, setFormData] = useState({
         userNameOrEmail: "",
         password: "",
@@ -34,13 +34,13 @@ const Login = () => {
         <div className="auth-container">
             <div className="auth-card">
                 <div className="auth-header">
-                    <h2>Welcome Back</h2>
-                    <p>Enter your credentials to continue</p>
+                    <h2>{t('welcome_back')}</h2>
+                    <p>{t('enter_credentials')}</p>
                 </div>
 
                 <form className="auth-form" onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="userNameOrEmail">Username or Email</label>
+                        <label htmlFor="userNameOrEmail">{t('username_or_email')}</label>
                         <div className="input-wrapper">
                             <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                                 <path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6ZM20 6L12 11L4 6H20ZM20 18H4V8L12 13L20 8V18Z"
@@ -52,14 +52,14 @@ const Login = () => {
                                 name="userNameOrEmail"
                                 value={formData.userNameOrEmail}
                                 onChange={handleChange}
-                                placeholder="Enter your username or email"
+                                placeholder={t('placeholder_username_email')}
                                 required
                             />
                         </div>
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">{t('password')}</label>
                         <div className="input-wrapper">
                             <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                                 <path d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM15.1 8H8.9V6C8.9 4.29 10.29 2.9 12 2.9C13.71 2.9 15.1 4.29 15.1 6V8Z"
@@ -71,7 +71,7 @@ const Login = () => {
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                placeholder="Enter your password"
+                                placeholder={t('placeholder_password')}
                                 required
                             />
                         </div>
@@ -80,12 +80,12 @@ const Login = () => {
                     {error && <p className="error-message">{error}</p>}
 
                     <button type="submit" className="auth-submit">
-                        Login
+                        {t('login')}
                     </button>
                 </form>
 
                 <p className="auth-switch">
-                    Don't have an account? <Link to="/register">Register Here</Link>
+                    {t('no_account')} <Link to="/register">{t('register_here')}</Link>
                 </p>
             </div>
         </div>

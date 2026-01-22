@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import * as signalR from "@microsoft/signalr";
 import "./Chat.css";
+import { useAppContext } from '../../context/AppContext';
 
 export default function Chat() {
+    const { t } = useAppContext();
     const [connection, setConnection] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -136,7 +138,7 @@ export default function Chat() {
         if (!response.ok) {
             const errorText = await response.text();
             console.error("❌ Upload xətası:", response.status, errorText);
-            throw new Error("Upload failed");
+            throw new Error(t('upload_failed'));
         }
 
         const data = await response.json();
@@ -226,7 +228,7 @@ export default function Chat() {
         } catch (err) {
             console.error("❌ Xəta göndərərkən:", err);
             console.error("❌ Error stack:", err.stack);
-            alert("Mesaj göndərilmədi! Xəta: " + err.message);
+            alert(t('send_message') + " " + (err.message || ''));
         }
     };
 
@@ -246,15 +248,15 @@ export default function Chat() {
                             </defs>
                         </svg>
                     </div>
-                    <div className="admin-details">
-                        <h2>Admin</h2>
-                        <span className="admin-status">Online</span>
-                    </div>
+                        <div className="admin-details">
+                            <h2>{t('admin')}</h2>
+                            <span className="admin-status">{t('online')}</span>
+                        </div>
                 </div>
             </header>
 
             <div className="messages-container">
-                <div className="chat-date-divider">Today</div>
+                <div className="chat-date-divider">{t('today')}</div>
                 {messages.map((msg) => (
                     <div
                         key={msg.id}
@@ -310,7 +312,7 @@ export default function Chat() {
                         type="text"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type your message..."
+                        placeholder={t('type_your_message')}
                         className="message-input"
                     />
                     <input
@@ -332,7 +334,7 @@ export default function Chat() {
                         type="submit"
                         className="send-button"
                         disabled={!newMessage.trim() && !selectedImage}
-                        aria-label="Send message"
+                        aria-label={t('send_message')}
                     >
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path

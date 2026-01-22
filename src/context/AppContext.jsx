@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import translations from '../i18n/translations';
 
 export const AppContext = createContext(null);
 
@@ -22,6 +23,7 @@ export function AppProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(0);
+  const [language, setLanguage] = useState('en');
   const navigate = useNavigate();
 
   // 🔧 Axios instance
@@ -53,6 +55,11 @@ export function AppProvider({ children }) {
       setIsAuthenticated(true);
       getUserProfile();
     }
+    // Load language from localStorage or default
+    const savedLang = localStorage.getItem('app_language') || 'en';
+    setLanguage(savedLang);
+    // set document direction
+    document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
   }, []);
 
   // 👤 USER məlumatlarını çək
@@ -151,6 +158,18 @@ export function AppProvider({ children }) {
     setUser((prev) => ({ ...prev, ...newData }));
   };
 
+  // --- Language handling (simple, no external libs) ---
+  const setAppLanguage = (lang) => {
+    setLanguage(lang);
+    localStorage.setItem('app_language', lang);
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  };
+
+  const t = (key) => {
+    const lang = language || 'en';
+    return (translations[lang] && translations[lang][key]) || key;
+  };
+
   // Save profile number + image to backend (best-effort) and update local user
   const saveProfileSelection = async (profileNo, profileImageSrc) => {
     try {
@@ -182,6 +201,10 @@ export function AppProvider({ children }) {
     updateUser,
     saveProfileSelection,
     getUserProfile,
+    // language helpers
+    language,
+    setAppLanguage,
+    t,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

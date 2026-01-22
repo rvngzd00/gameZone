@@ -3,9 +3,11 @@ import './LandingPage.css';
 import Ranking from './Ranking';
 import Games from "../games/Games";
 import { Link } from 'react-router-dom';
+import { useAppContext } from '../../context/AppContext';
 
 
 const LandingPage = () => {
+    const { t } = useAppContext();
     return (
         <div className="container">
 
@@ -15,17 +17,14 @@ const LandingPage = () => {
                             <Ranking />
                         <div className="hero-content-1">
                             <div className="hero-text">
-                                <h1>Classic Table Games, Modern Experience</h1>
-                                <p>
-                                    Join our community of players and experience your favorite table games
-                                    in a whole new way. 
-                                </p>
+                                <h1>{t('home_tagline')}</h1>
+                                <p>{t('home_sub')}</p>
                                 <div className="hero-features">
                                     <div className="feature-item">
-                                        <span>✓ Live Matches</span>
+                                        <span>{t('feature_live_matches')}</span>
                                     </div>
                                     <div className="feature-item">
-                                        <span>✓ Global Rankings</span>
+                                        <span>{t('feature_global_rankings')}</span>
                                     </div>
                                 </div>
                                 <div className="cta-buttons">

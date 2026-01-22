@@ -5,7 +5,7 @@ import AddBalance from './AddBalance';
 
 const Wallet = () => {
     // Mock data - replace with real data from your context
-    const { isAuthenticated, balance, logout, user } = useAppContext();
+    const { isAuthenticated, balance, logout, user, t } = useAppContext();
     const [isAddOpen, setIsAddOpen] = useState(false);
 
     const walletData = {
@@ -29,8 +29,8 @@ const Wallet = () => {
                 <div className="balance-glow"></div>
                 <div className="balance-content">
                     <div className="balance-header">
-                        <span className="balance-label">Balance</span>
-                        <button className="add-balance-btn" onClick={() => setIsAddOpen(true)} aria-label="Add balance">+</button>
+                        <span className="balance-label">{t('balance')}</span>
+                        <button className="add-balance-btn" onClick={() => setIsAddOpen(true)} aria-label={t('add_balance')}>+</button>
                     </div>
                     <h1 className="balance-amount-wallet">
                         {/* <span className="currency-icon">💰</span> */}
@@ -71,7 +71,7 @@ const Wallet = () => {
                 </section> */}
 
             <section className="wallet-section history-section">
-                <h2>Recent Transactions</h2>
+                <h2>{t('recent_transactions')}</h2>
                 <div className="transactions-list">
                     {walletData.transactions.map(tx => (
                         <div key={tx.id} className={`transaction-item ${tx.type}`}>

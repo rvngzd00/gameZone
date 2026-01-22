@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useAppContext } from '../../context/AppContext';
 // import { User, Palette, Download, RotateCcw, Upload, Grid3x3 } from 'lucide-react';
 import "./EditProfile.css";
 
@@ -37,9 +38,11 @@ const CharacterCreator = ({ onSave, onCancel }) => {
         ]
     };
 
+    const { t } = useAppContext();
+
     const mainTabs = [
-        { id: 'gallery', name: 'Gallery', icon: "Grid3x3" },
-        { id: 'creator', name: 'Design', icon: "Palette" }
+        { id: 'gallery', name: t('gallery'), icon: "Grid3x3" },
+        { id: 'creator', name: t('design'), icon: "Palette" }
     ];
 
     const handleTabClick = (id) => {
@@ -155,8 +158,8 @@ const CharacterCreator = ({ onSave, onCancel }) => {
                     })}
                 </div>
                         <div className="modal-save-bar" style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
-                            <button className="btn" onClick={() => onCancel && onCancel()}>Cancel</button>
-                            <button className="btn btn-primary" onClick={handleSave}>Save</button>
+                            <button className="btn" onClick={() => onCancel && onCancel()}>{t('cancel')}</button>
+                            <button className="btn btn-primary" onClick={handleSave}>{t('save')}</button>
                         </div>
             </div>
 
@@ -180,10 +183,10 @@ const CharacterCreator = ({ onSave, onCancel }) => {
                         ) : (
                             <div className="empty-state">
                                 <button className="btn btn-primary" onClick={handleSave}>
-                                    Save
+                                    {t('save')}
                                 </button>
                                 {/* <User className="empty-state-icon" /> */}
-                                <p className="empty-state-text">Profile is not Selected</p>
+                                <p className="empty-state-text">{t('profile_not_selected')}</p>
                             </div>
                         )}
                     </div>
@@ -238,7 +241,7 @@ const CharacterCreator = ({ onSave, onCancel }) => {
                                 ) : (
                                     <div className="upload-placeholder">+</div>
                                 )}
-                                <div className="gallery-name">Upload</div>
+                                <div className="gallery-name">{t('upload_label')}</div>
                             </div>
 
                             {/* Hidden file input used by upload card */}
@@ -265,13 +268,13 @@ const CharacterCreator = ({ onSave, onCancel }) => {
                                         className={`choice-btn ${character.gender === 'man' ? 'active' : ''}`}
                                         onClick={() => updateGender('man')}
                                     >
-                                        👨 Male
+                                        👨 {t('male')}
                                     </button>
                                     <button
                                         className={`choice-btn ${character.gender === 'woman' ? 'active' : ''}`}
                                         onClick={() => updateGender('woman')}
                                     >
-                                        👩 Female
+                                        👩 {t('female')}
                                     </button>
                                 </div>
                             </div>

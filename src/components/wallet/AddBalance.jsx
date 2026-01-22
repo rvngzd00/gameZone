@@ -2,8 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import * as signalR from "@microsoft/signalr";
 import "./AddBalance.css";
+import { useAppContext } from '../../context/AppContext';
 
 export default function AddBalance({ isOpen, onClose, username: propUsername, walletAddress }) {
+    const { t } = useAppContext();
     const [amount, setAmount] = useState("");
     const [selectedImage, setSelectedImage] = useState(null);
     const [isSending, setIsSending] = useState(false);
@@ -41,7 +43,7 @@ export default function AddBalance({ isOpen, onClose, username: propUsername, wa
 
         if (!response.ok) {
             const text = await response.text();
-            throw new Error(text || "Upload failed");
+            throw new Error(text || t('upload_failed'));
         }
 
         const data = await response.json();
@@ -144,20 +146,20 @@ export default function AddBalance({ isOpen, onClose, username: propUsername, wa
     const modal = (
         <div className="ab-overlay">
             <div className="ab-modal">
-                <button className="ab-close" onClick={onClose} aria-label="Close">×</button>
+                <button className="ab-close" onClick={onClose} aria-label={t('close')}>×</button>
 
                 <div className="ab-wallet-card">
                     <div className="ab-wallet-icon">฿</div>
                     <div className="ab-wallet-info">
-                        <div className="ab-wallet-label">Bitcoin Wallet</div>
-                        <div className="ab-wallet-address">{walletAddress || "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"}</div>
+                        <div className="ab-wallet-label">{t('bitcoin_wallet')}</div>
+                        <div className="ab-wallet-address">{walletAddress || t('wallet_address') + ': 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'}</div>
                     </div>
                 </div>
 
                 <div className="ab-username">{username}</div>
 
                 <form className="ab-form" onSubmit={handleSend}>
-                    <label className="ab-label">Amount</label>
+                    <label className="ab-label">{t('amount')}</label>
                     <input
                         className="ab-input"
                         type="number"
@@ -165,11 +167,11 @@ export default function AddBalance({ isOpen, onClose, username: propUsername, wa
                         min="0"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
-                        placeholder="Enter amount"
+                        placeholder={t('enter_amount')}
                         required
                     />
 
-                    <p className="ab-note">Please upload the receipt image below after transfer. Click Send to notify admin.</p>
+                    <p className="ab-note">{t('please_upload_receipt')}</p>
 
                     {selectedImage && (
                         <div className="ab-image-preview">
@@ -187,18 +189,18 @@ export default function AddBalance({ isOpen, onClose, username: propUsername, wa
                             onChange={handleImageSelect}
                             className="ab-file-input"
                         />
-                        <label htmlFor="ab-file-input" className="ab-file-label">Upload Receipt</label>
+                        <label htmlFor="ab-file-input" className="ab-file-label">{t('upload_receipt')}</label>
                     </div>
 
                     <div className="ab-actions">
-                        <button type="button" className="ab-btn ab-cancel" onClick={onClose} disabled={isSending}>Close</button>
+                        <button type="button" className="ab-btn ab-cancel" onClick={onClose} disabled={isSending}>{t('close')}</button>
                         <button
                             type="submit"
                             className="ab-btn ab-send"
                             disabled={isSending || !amount || !selectedImage || !isConnected}
-                            aria-label="Send"
+                            aria-label={t('send')}
                         >
-                            {isSending ? "Sending..." : !isConnected ? "Connecting..." : "Send"}
+                            {isSending ? t('sending') : !isConnected ? t('connecting') : t('send')}
                         </button>
                     </div>
                 </form>
