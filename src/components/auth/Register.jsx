@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import "./AuthForms.css";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
-
+import EditProfile from "../profile/EditProfile";
 const Register = () => {
-  const { register } = useAppContext();
+  const { register, saveProfileSelection } = useAppContext();
   const [formData, setFormData] = useState({
     username: "",
     image: "",
@@ -15,6 +15,7 @@ const Register = () => {
     confirmPassword: "",
   });
   const [error, setError] = useState("");
+  const [showEditProfile, setShowEditProfile] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +39,27 @@ const Register = () => {
     if (!result.success) {
       setError(result.error || "Registration failed");
     }
+  };
+
+  const handleFileInput = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target.result;
+      setFormData(prev => ({ ...prev, image: dataUrl }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleProfileModalSave = ({ profileNo, imageSrc }) => {
+    // set image data (could be data-uri or URL)
+    setFormData(prev => ({ ...prev, image: imageSrc }));
+    // save selection in context (non-blocking)
+    if (saveProfileSelection) saveProfileSelection(profileNo, imageSrc);
+    setShowEditProfile(false);
   };
 
   const handleChange = (e) => {
@@ -92,7 +114,7 @@ const Register = () => {
 
 
           <div className="form-group">
-            <label htmlFor="surname">LEGV</label>
+            <label htmlFor="surname">Surname</label>
             <div className="input-wrapper">
 
               <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -126,14 +148,23 @@ const Register = () => {
             </div>
           </div>
 
-          <div className="form-group" style={{display:"hidden"}}>
-            <label htmlFor="image">LEGV</label>
-            <input
-              type="text"
-              name="image"
-              value={formData.image}
-              onChange={handleChange}
-            />
+          <div className="form-group image-group">
+            <label htmlFor="image">Profile Photo</label>
+            <div className="image-preview-row">
+              <div className="preview-box-small">
+                {formData.image ? (
+                  <img src={formData.image} alt="preview" className="preview-img-small" />
+                ) : (
+                  <div className="preview-placeholder">No image</div>
+                )}
+              </div>
+
+              <div className="image-actions">
+                <input type="file" accept="image/*" id="imageFile" style={{display:'none'}} onChange={handleFileInput} />
+                <button type="button" className="btn" onClick={() => document.getElementById('imageFile').click()}>Upload</button>
+                <button type="button" className="btn" onClick={() => setShowEditProfile(true)}>Edit Profile Pic</button>
+              </div>
+            </div>
           </div>
 
           <div className="form-group">
@@ -181,6 +212,13 @@ const Register = () => {
           Already have an account? <Link to="/login">Login Here</Link>
         </p>
       </div>
+      {showEditProfile && (
+        <div className="modal-backdrop">
+          <div className="modal-content">
+            <EditProfile onSave={handleProfileModalSave} onCancel={() => setShowEditProfile(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
