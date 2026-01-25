@@ -25,7 +25,7 @@
 
         <!-- ROOM LIST SECTION -->
         <div id="roomListSection" class="room-list-section">
-            <h2 style="color: #ffd700; margin-bottom: 15px;">🎮 All Rooms</h2>
+            <h2 style="color: #ffd700; margin: 10px 0 15px 10px">🎮 All Rooms</h2>
             <div class="room-grid" id="roomGrid">
                 <div class="loading">
                     <div class="spinner"></div>Rooms Loading...
@@ -105,19 +105,19 @@
                 </div>
                 <div class="actions-overlay-inner">
                     <div class="overlay-top-row">
-                        <button class="overlay-btn overlay-raise-display" id="raiseBtn"disabled>
-                            <div class="small-up">Raise</div>
+                        <button class="overlay-btn overlay-raise-display" id="raiseBtn" disabled>
+                            <div class="small-up">Raise </div>
                             <div class="big-amount" id="raiseValue">0 </div>
                         </button>
 
-                        <button class="overlay-btn overlay-confirm" id="callBtn"disabled>
+                        <button class="overlay-btn overlay-confirm" id="callBtn" disabled>
                             <div class="check">✔</div>
-                            <div class="label">Call</div>
+                            <div class="label">Call </div>
                             <div class="small-amount" id="callAmount">0</div>
                         </button>
 
-                        <button class="overlay-btn overlay-fold" id="foldBtn"disabled>
-                            <div class="cross">✖</div>
+                        <button class="overlay-btn overlay-fold" id="foldBtn" disabled>
+                            <div class="cross">✖ </div>
                             <div class="label">Fold</div>
                         </button>
                     </div>
@@ -128,8 +128,8 @@
                         <!-- <button class="overlay-sm-btn" id="overlayRaiseBtn">Raise</button> -->
 
                         <!-- </div> -->
-                        <button class="overlay-sm-btn" id="allInBtn"disabled>All-In 🔥</button>
-                        <button class="overlay-sm-btn" id="showdownCallBtn"disabled>Showdown</button>
+                        <button class="overlay-sm-btn" id="allInBtn" disabled>All-In 🔥</button>
+                        <button class="overlay-sm-btn" id="showdownCallBtn" disabled>Showdown</button>
                     </div>
 
                     <div class="overlay-slider-row">
@@ -243,73 +243,92 @@
         function updateActionButtons(gameState) {
             if (!gameState) return;
 
-            const {
-                currentTurnUserId,
-                canCall,
-                canFold,
-                canRaise,
-                canShowdownCall, // ✅ Backend-dən gələn hazır dəyər
-                callAmount
-            } = gameState;
-
-            const isMyTurn = (currentTurnUserId === currentUserId);
+            // ✅ Backend-dən gələn məlumatlardan buttons hesabla
+            const isTurn = (gameState.currentTurnUserId === currentUserId);
+            const canFold = isTurn;
+            const canRaise = isTurn && (gameState.canCall || gameState.currentBet === 0);
+            const canAllIn = isTurn && myBalance < gameState.currentBet;
 
             console.log('🎬 updateActionButtons:', {
-                isMyTurn,
-                canCall,
-                canShowdownCall,
-                callAmount
+                isTurn: isTurn,
+                canFold: canFold,
+                canCall: gameState.canCall,
+                canRaise: canRaise,
+                canShowdownCall: gameState.canShowdownCall,
+                canAllIn: canAllIn
             });
 
             // ============ FOLD ============
             const foldBtn = document.getElementById('foldBtn');
             if (foldBtn) {
-                foldBtn.disabled = !(isMyTurn && canFold);
-                foldBtn.style.opacity = (isMyTurn && canFold) ? '1' : '0.5';
+                foldBtn.disabled = !canFold;
+                foldBtn.style.opacity = canFold ? '1' : '0.5';
             }
 
             // ============ CALL ============
             const callBtn = document.getElementById('callBtn');
             if (callBtn) {
-                const canEnable = isMyTurn && canCall && callAmount > 0;
-                callBtn.disabled = !canEnable;
-                callBtn.style.opacity = canEnable ? '1' : '0.5';
-                callBtn.textContent = canEnable
-                    ? `CALL (${callAmount.toFixed(2)})`
-                    : `CALL`;
+                callBtn.disabled = !gameState.canCall;
+                callBtn.style.opacity = gameState.canCall ? '1' : '0.5';
+                if (gameState.canCall && gameState.callAmount > 0) {
+                    callBtn.innerHTML = `CALL(${gameState.callAmount.toFixed(2)}₼)`;
+                } else {
+                    callBtn.innerHTML = `Call(${gameState.entryFee.toFixed(2)}₼)`;
+                }
             }
 
             // ============ RAISE ============
             const raiseBtn = document.getElementById('raiseBtn');
             const raiseSlider = document.getElementById('raiseSlider');
             if (raiseBtn && raiseSlider) {
-                const canEnable = isMyTurn && canRaise;
-                raiseBtn.disabled = !canEnable;
-                raiseBtn.style.opacity = canEnable ? '1' : '0.5';
-                raiseSlider.disabled = !canEnable;
+                raiseBtn.disabled = !canRaise;
+                raiseBtn.style.opacity = canRaise ? '1' : '0.5';
+                raiseSlider.disabled = !canRaise;
+
+                if (gameState.minRaise !== undefined && gameState.maxRaise !== undefined) {
+                    const minVal = parseFloat(gameState.minRaise.toFixed(2));
+                    const maxVal = parseFloat(gameState.maxRaise.toFixed(2));
+                    raiseSlider.min = minVal;
+                    raiseSlider.max = maxVal;
+                    raiseSlider.value = minVal;
+                    // document.getElementById('sliderMin').textContent = `Min: ${minVal.toFixed(2)}₼`;
+                    // document.getElementById('sliderMax').textContent = `Max: ${maxVal.toFixed(2)}₼`;
+                    document.getElementById('raiseValue').textContent = `${minVal.toFixed(2)}`;
+                }
             }
 
             // ============ ALL-IN ============
             const allInBtn = document.getElementById('allInBtn');
             if (allInBtn) {
-                allInBtn.disabled = !(isMyTurn && (canCall || canRaise));
-                allInBtn.style.opacity = allInBtn.disabled ? '0.5' : '1';
+                allInBtn.disabled = !canAllIn;
+                allInBtn.style.opacity = canAllIn ? '1' : '0.5';
             }
 
-            // ✅ SHOWDOWN CALL - Backend dəyərini istifadə et
+            // ============ SHOWDOWN CALL ============
+
             const showdownCallBtn = document.getElementById('showdownCallBtn');
             if (showdownCallBtn) {
-                // Backend artıq hamısını hesabladı
-                const canEnable = canShowdownCall === true;
+                // ✅ currentBet = 0 olarsa və ya canShowdownCall false olarsa disabled
+                const isShowdownDisabled = gameState.currentBet === 0 || !gameState.canShowdownCall;
 
-                showdownCallBtn.disabled = !canEnable;
-                showdownCallBtn.style.opacity = canEnable ? '1' : '0.5';
+                showdownCallBtn.disabled = isShowdownDisabled;
+                showdownCallBtn.style.opacity = !isShowdownDisabled ? '1' : '0.5';
 
-                // ✅ GOLD GLOW
-                showdownCallBtn.classList.toggle('golden-glow', canEnable);
-
-                console.log(`⭐ ShowdownCall: canShowdownCall=${canShowdownCall} | ENABLED=${canEnable}`);
+                if (!isShowdownDisabled) {
+                    showdownCallBtn.classList.add('golden-glow');
+                } else {
+                    showdownCallBtn.classList.remove('golden-glow');
+                }
             }
+
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('✅ Buttons updated');
+            console.log(`🔴 FOLD: ${canFold ? '✅' : '❌'}`);
+            console.log(`📞 CALL: ${gameState.canCall ? '✅' : '❌'}`);
+            console.log(`📈 RAISE: ${canRaise ? '✅' : '❌'}`);
+            console.log(`🔥 ALL - IN: ${canAllIn ? '✅' : '❌'}`);
+            console.log(`⭐ SHOWDOWN: ${gameState.canShowdownCall ? '✅' : '❌'}`);
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         }
 
         // ==================== INIT ====================
@@ -436,11 +455,11 @@
                 // const roomNameEl = document.getElementById('currentRoomName');
                 // if (roomNameEl) roomNameEl.textContent = data.roomName;
 
-                const limitInfo = document.getElementById('roomLimitInfo');
-                if (limitInfo) {
-                    limitInfo.textContent = roomLimitType === 'PotLimit' ? 'POT LIMIT' : 'NO LIMIT';
-                    limitInfo.classList.toggle('no-limit', roomLimitType !== 'PotLimit');
-                }
+                // const limitInfo = document.getElementById('roomLimitInfo');
+                // if (limitInfo) {
+                //     limitInfo.textContent = roomLimitType === 'PotLimit' ? 'POT LIMIT' : 'NO LIMIT';
+                //     limitInfo.classList.toggle('no-limit', roomLimitType !== 'PotLimit');
+                // }
                 const roomListSection = document.getElementById('roomListSection');
                 const gameSection = document.getElementById('gameSection');
                 if (roomListSection) roomListSection.style.display = 'none';
@@ -457,9 +476,9 @@
             });
 
             connection.on("RoomStartTimer", (remainingSeconds) => {
+                console.log('⏱️ Room start timer:', remainingSeconds);
                 const badge = document.getElementById('roomTimerBadge');
                 const value = document.getElementById('roomTimerValue');
-                console.log('⏱️ Room start timer:', remainingSeconds);
                 if (badge && value) {
                     badge.classList.remove('hidden');
                     value.textContent = remainingSeconds;
@@ -470,7 +489,7 @@
             connection.on("RoomStartTimeout", (message) => {
                 const badge = document.getElementById('roomTimerBadge');
                 if (badge) badge.classList.add('hidden');
-                fold();
+                // fold();
                 showMessage(message, "success");
             });
 
@@ -498,10 +517,51 @@
                 updatePlayersOnTable(players);
             });
 
-            connection.on("PotUpdated", (amount) => {
-                potAmount = amount;
+            connection.on("PotUpdated", (data) => {
+                console.log('💰 PotUpdated received:', data);
+
+                // ✅ DATA TİPİ KONTROL
+                let potValue = 0;
+
+                if (typeof data === 'number') {
+                    // ESKI FORMAT: PotUpdated(amount) - sayı olarak
+                    potValue = data;
+                    console.log('📊 Pot (number):', potValue);
+                } else if (typeof data === 'object' && data.potAmount !== undefined) {
+                    // YENİ FORMAT: PotUpdated({potAmount, currentPot, frozenPot, ...})
+                    potValue = data.potAmount || 0;
+                    console.log('📊 Pot (object):', {
+                        potAmount: data.potAmount,
+                        currentPot: data.currentPot,
+                        frozenPot: data.frozenPot,
+                        totalPot: data.totalPot
+                    });
+                } else {
+                    console.warn('⚠️ PotUpdated data format unknown:', data);
+                    return;
+                }
+
+                // ✅ GLOBAL VARIABLE GÜNCELLE
+                potAmount = potValue;
+
+                // ✅ POT DISPLAY GÜNCELLE
                 const potEl = document.getElementById('potAmount');
-                if (potEl) potEl.textContent = amount.toFixed(2);
+                if (potEl) {
+                    potEl.textContent = potValue.toFixed(2);
+                    potEl.style.color = potValue > 0 ? '#FFD700' : '#888';
+
+                    // ✅ ANIMATION
+                    potEl.style.animation = 'none';
+                    setTimeout(() => {
+                        potEl.style.animation = 'potPulse 0.5s ease';
+                    }, 10);
+
+                    console.log('✅ Pot display güncellendi: ' + potValue.toFixed(2) + '₼');
+                } else {
+                    console.warn('⚠️ potAmount element not found');
+                }
+
+                // ✅ SLIDER LIMITLERINI GÜNCELLE
                 updateSliderLimits();
             });
 
@@ -524,7 +584,27 @@
             });
 
             connection.on("PlayerBet", (data) => {
-                showMessage(`${data.playerName} mərc etdi: ${data.amount.toFixed(2)}`, "info");
+                console.log('📢 PlayerBet received:', data);
+
+                // ✅ POT GÜNCELLE (eğer varsa)
+                if (data.potAmount !== undefined) {
+                    potAmount = data.potAmount;
+                    const potEl = document.getElementById('potAmount');
+                    if (potEl) {
+                        potEl.textContent = data.potAmount.toFixed(2);
+                        potEl.style.color = '#FFD700';
+                        // console.log(⁠ ✅ PlayerBet'ten Pot güncellemeldi: ${data.potAmount.toFixed(2)}₼ ⁠);
+                    }
+
+                    // ✅ SLIDER LIMITLERINI GÜNCELLE
+                    updateSliderLimits();
+                }
+
+                // ✅ OYUNCU BET İNFOSU
+                const message = `${data.playerName} ${data.isShowdownCall ? '⭐ ShowdownCall' : 'Bet'} etti: ${data.amount.toFixed(2)}₼`;
+                showMessage(message, "info");
+
+                console.log('💰 Pot şimdi: ' + potAmount.toFixed(2) + '₼');
             });
 
             connection.on("PlayerRaised", (data) => {
@@ -593,13 +673,18 @@
                 if (state.limitType) roomLimitType = state.limitType;
 
                 const potEl = document.getElementById('potAmount');
+                if (potEl) {
+                    potEl.textContent = state.potAmount.toFixed(2);
+                    potEl.style.color = state.potAmount > 0 ? '#FFD700' : '#888';
+                    console.log('✅ GameStateten Pot güncellemeldi: ' + state.potAmount.toFixed(2) + '₼');
+                }
+
                 const betEl = document.getElementById('currentBetAmount');
-                if (potEl) potEl.textContent = state.potAmount.toFixed(2);
                 if (betEl) betEl.textContent = state.currentBet.toFixed(2);
 
                 const scoreDisplay = document.getElementById('handScore');
                 if (scoreDisplay && state.myHandScore > 0) {
-                    scoreDisplay.textContent = `Xal: ${state.myHandScore}`;
+                    scoreDisplay.textContent = 'Xal: ' + state.myHandScore;
                     scoreDisplay.style.display = 'block';
                 }
 
@@ -613,8 +698,8 @@
                     stopTurnTimer();
                 }
 
-                updateActionButtons(state);
                 updateSliderLimits();
+                updateActionButtons(state);
             });
 
             console.log('✅ All handlers registered');
@@ -911,32 +996,32 @@
                 }
             });
         }
-        function updateBetSliderLimits() {
-            const slider = document.getElementById('betSlider');
-            const minSpan = document.getElementById('betSliderMin');
-            const maxSpan = document.getElementById('betSliderMax');
+        // function updateBetSliderLimits() {
+        //     const slider = document.getElementById('betSlider');
+        //     const minSpan = document.getElementById('betSliderMin');
+        //     const maxSpan = document.getElementById('betSliderMax');
 
-            // ✅ Minimum: room entry fee
-            const minBet = roomEntryFee;
+        //     // ✅ Minimum: room entry fee
+        //     const minBet = roomEntryFee;
 
-            // ✅ Maksimum: room entry fee × 20 və balans
-            let maxBet = roomEntryFee * 20;
-            if (roomLimitType === 'PotLimit') {
-                maxBet = Math.min(maxBet, potAmount + currentGameBet);
-            }
-            maxBet = Math.min(maxBet, myBalance);
+        //     // ✅ Maksimum: room entry fee × 20 və balans
+        //     let maxBet = roomEntryFee * 20;
+        //     if (roomLimitType === 'PotLimit') {
+        //         maxBet = Math.min(maxBet, potAmount + currentGameBet);
+        //     }
+        //     maxBet = Math.min(maxBet, myBalance);
 
-            slider.min = minBet;
-            slider.max = maxBet;
-            slider.value = minBet;
-            slider.step = 0.10;
+        //     slider.min = minBet;
+        //     slider.max = maxBet;
+        //     slider.value = minBet;
+        //     slider.step = 0.10;
 
-            minSpan.textContent = `Min: ${minBet.toFixed(2)}`;
-            maxSpan.textContent = `Max: ${maxBet.toFixed(2)}`;
+        //     minSpan.textContent = `Min: ${minBet.toFixed(2)}`;
+        //     maxSpan.textContent = `Max: ${maxBet.toFixed(2)}`;
 
-            document.getElementById('betValue').textContent = `${minBet.toFixed(2)} `;
-            document.getElementById('betAmount').textContent = `${minBet.toFixed(2)} `;
-        }
+        //     document.getElementById('betValue').textContent = `${minBet.toFixed(2)} `;
+        //     document.getElementById('betAmount').textContent = `${minBet.toFixed(2)} `;
+        // }
 
         async function bet() {
             const slider = document.getElementById('betSlider');
@@ -962,8 +1047,8 @@
         // ==================== SLIDER LIMITS ====================
         function updateSliderLimits() {
             const slider = document.getElementById('raiseSlider');
-            const sliderMin = document.getElementById('sliderMin');
-            const sliderMax = document.getElementById('sliderMax');
+            // const sliderMin = document.getElementById('sliderMin');
+            // const sliderMax = document.getElementById('sliderMax');
 
             // ✅ MİNİMUM RAISE
             let minRaise;
@@ -998,8 +1083,8 @@
             slider.value = minRaise.toFixed(2);
             slider.step = "0.10";
 
-            sliderMin.textContent = `Min: ${minRaise.toFixed(2)}`;
-            sliderMax.textContent = `Max: ${maxRaise.toFixed(2)}`;
+            // sliderMin.textContent = `Min: ${minRaise.toFixed(2)}`;
+            // sliderMax.textContent = `Max: ${maxRaise.toFixed(2)}`;
 
             updateSliderValue();
 

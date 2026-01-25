@@ -17,6 +17,25 @@ export const useAppContext = () => {
 // 🔗 Backend URL-ni burda dəyiş
 const API_BASE = "https://nehemiah-paginal-alan.ngrok-free.dev/";
 
+// Normalize image URL coming from backend.
+// - If it's already absolute (http/https) -> return as-is
+// - If it contains an uploaded filename/UUID -> prefix with API_BASE
+// - Otherwise assume it's a public/local asset path and return as-is (ensure leading slash)
+const getImageUrl = (img) => {
+  if (!img) return null;
+  const trimmed = String(img).trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+
+  // UUID-like filename detection (e.g. f5c143a9-bca1-4697-8069-4e18b2fb6672.png)
+  const uuidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+  if (uuidRegex.test(trimmed)) {
+    const base = API_BASE.replace(/\/$/, '');
+    return base + (trimmed.startsWith('/') ? trimmed : '/' + trimmed);
+  }
+
+  // Fallback: treat as app-local public asset path
+  return trimmed.startsWith('/') ? trimmed : '/' + trimmed;
+};
 
 export function AppProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -24,6 +43,7 @@ export function AppProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(0);
   const [language, setLanguage] = useState('en');
+  const [recentGames, setRecentGames] = useState([]);
   const navigate = useNavigate();
 
   // 🔧 Axios instance
@@ -69,8 +89,11 @@ export function AppProvider({ children }) {
       setLoading(true);
       const res = await api.get("/api/Auths/GetCurrentUser/current", { withCredentials: true });
       console.log("User data:", res.data);
-      setUser(res.data);
-      setBalance(res.data.balance || 0);
+      const userData = res.data || {};
+      // Normalize image URL so UI can use it directly
+      if (userData.image) userData.image = getImageUrl(userData.image);
+      setUser(userData);
+      setBalance(userData.balance || 0);
     } catch (err) {
       console.error("User fetch error:", err);
       setIsAuthenticated(false);
@@ -147,7 +170,11 @@ export function AppProvider({ children }) {
   const refreshBalance = async () => {
     try {
       const res = await api.get("/api/Auths/GetCurrentUser/current", { withCredentials: true });
-      setBalance(res.data.balance || 0);
+      const userData = res.data || {};
+      if (userData.image) userData.image = getImageUrl(userData.image);
+      setBalance(userData.balance || 0);
+      // keep local user object in sync with refreshed profile
+      setUser((prev) => ({ ...prev, ...(userData || {}) }));
     } catch (err) {
       console.error('Balance refresh error:', err);
     }
@@ -170,22 +197,83 @@ export function AppProvider({ children }) {
     return (translations[lang] && translations[lang][key]) || key;
   };
 
-  // Save profile number + image to backend (best-effort) and update local user
+  // Save profile number + image locally (no backend endpoint available)
   const saveProfileSelection = async (profileNo, profileImageSrc) => {
-    try {
-      setLoading(true);
-      // Try to persist to backend. Endpoint may differ on your backend.
-      // Adjust the URL and payload to match your API.
-      await api.post('/api/user/profile-selection', { profileNo });
-    } catch (err) {
-      console.warn('Profile selection save failed (this is non-blocking):', err?.response?.data || err.message);
-    } finally {
-      setLoading(false);
-    }
-
     // Update local user object so UI reflects choice immediately
-    setUser((prev) => ({ ...prev, profileNo, profileImage: profileImageSrc }));
+    setUser((prev) => ({
+      ...prev,
+      profileNo,
+      profileImage: profileImageSrc,
+      // also set `image` normalized so UI components reading `user.image` get updated
+      image: getImageUrl(profileImageSrc) || prev?.image,
+    }));
+
+    return { success: true };
   };
+
+  // --- Leaderboard / recent games fetch and transform ---
+  const formatDateLabel = (iso) => {
+    if (!iso) return '—';
+    const last = new Date(iso);
+    if (isNaN(last)) return '—';
+    const now = new Date();
+    const diffMs = now - last;
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    if (hours < 24) return `${hours} saat əvvəl`;
+    const dd = String(last.getDate()).padStart(2, '0');
+    const mm = String(last.getMonth() + 1).padStart(2, '0');
+    const yy = String(last.getFullYear()).slice(-2);
+    return `${dd}.${mm}.${yy}`;
+  };
+
+  const formatCoinsString = (num) => {
+    const v = Number(num) || 0;
+    const s = Number.isInteger(v) ? String(v) : v.toFixed(2);
+    return s.replace(/\.00$/, '');
+  };
+
+  const fetchLeaderboard = async () => {
+    try {
+      const res = await api.get('/api/Leaderboard/player/all');
+      console.log('Leaderboard raw response:', res.data);
+      const data = Array.isArray(res.data) ? res.data : (res.data && res.data.result) || [];
+
+      const sorted = (data || []).slice().sort((a, b) => {
+        const da = a && a.lastGamePlayed ? new Date(a.lastGamePlayed) : new Date(0);
+        const db = b && b.lastGamePlayed ? new Date(b.lastGamePlayed) : new Date(0);
+        return db - da; // newest first
+      });
+
+      const transformed = (sorted || []).map((it, idx) => {
+        const totalEarnings = Number(it.totalEarnings) || 0;
+        const totalLossAmount = Number(it.totalLossAmount) || 0;
+        const isWin = totalEarnings >= totalLossAmount;
+        const coinsValue = isWin ? (totalEarnings - totalLossAmount) : (totalLossAmount - totalEarnings);
+        const coinsFormatted = (isWin ? '+' : '-') + formatCoinsString(coinsValue);
+
+        return {
+          id: idx + 1,
+          game: it.gameType || it.GameType || 'Unknown',
+          result: isWin ? 'Win' : 'Loss',
+          coins: coinsFormatted,
+          // keep original for debugging/other UI needs
+          raw: it,
+          date: formatDateLabel(it.lastGamePlayed),
+        };
+      });
+
+      // Keep the order as received: first item remains first
+      setRecentGames(transformed);
+      console.log('Leaderboard data:', transformed);
+    } catch (err) {
+      console.error('Leaderboard fetch error:', err);
+    }
+  };
+
+  // fetch leaderboard on mount and whenever user/token changes
+  useEffect(() => {
+    fetchLeaderboard();
+  }, [user?.id, localStorage.getItem('token')]);
 
   const value = {
     user,
@@ -201,10 +289,14 @@ export function AppProvider({ children }) {
     updateUser,
     saveProfileSelection,
     getUserProfile,
+    recentGames,
+    refreshLeaderboard: fetchLeaderboard,
     // language helpers
     language,
     setAppLanguage,
     t,
+    // Derived profile image for components: prefer backend `image`, then local `profileImage`
+    profileImage: (user && (user.image || user.profileImage)) || null,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

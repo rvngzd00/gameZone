@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAppContext } from '../../context/AppContext';
 import axios from 'axios';
 import './Ranking.css';
 
@@ -29,8 +30,8 @@ const Ranking = () => {
         
         // Fetch both weekly and alltime data
         const [weeklyResponse, alltimeResponse] = await Promise.all([
-          api.get('/api/leaderboard/all/weekly'),
-          api.get('/api/leaderboard/all/alltime')
+          api.get('/api/leaderboard/seka/weekly'),
+          api.get('/api/leaderboard/seka/alltime')
         ]);
         
         setWeeklyData(weeklyResponse.data.slice(0, 5)); // Top 5
@@ -88,26 +89,26 @@ const Ranking = () => {
         
         {/* Player Info */}
         <div className="player-info">
-          <div className="player-name">{player.username || 'Anonim'}</div>
+          <div className="player-name">{player.username || t('anonymous')}</div>
           <div className="player-rank">
-            {getRankIcon(player.currentRank)} {player.currentRank || 'Beginner'}
+            {getRankIcon(player.currentRank)} {player.currentRank || t('Beginner')}
           </div>
         </div>
         
         {/* Qazanc - sadəcə rəqəm */}
-        <div className="table-cell">
+          <div className="table-cell">
           <span className="cell-value earnings">
             {(player.totalEarnings || 0).toFixed(2)} 
           </span>
         </div>
         
         {/* Qalib % - sadəcə rəqəm */}
-        <div className="table-cell">
+          <div className="table-cell">
           <span className="cell-value winrate">{winRate}%</span>
         </div>
         
         {/* Oyunlar - sadəcə rəqəm */}
-        <div className="table-cell">
+          <div className="table-cell">
           <span className="cell-value games">{player.totalGamesPlayed || 0}</span>
         </div>
       </div>
@@ -116,22 +117,24 @@ const Ranking = () => {
 
   const currentData = activeTab === 'weekly' ? weeklyData : alltimeData;
 
+  const { t } = useAppContext();
+
   return (
     <div className="leaderboard-container">
       <div className="leaderboard-header">
-        <h2 className="leaderboard-title">🏆 TOP OYUNÇULAR</h2>
+        <h2 className="leaderboard-title">{t('leaderboard_title')}</h2>
         <div className="tab-container">
           <button
             className={`tab-button ${activeTab === 'weekly' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('weekly')}
           >
-            📅 Bu Həftə
+            📅 {t('tab_weekly')}
           </button>
           <button
             className={`tab-button ${activeTab === 'alltime' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('alltime')}
           >
-            ♾️ Bütün Vaxtlar
+            ♾️ {t('tab_alltime')}
           </button>
         </div>
       </div>
@@ -140,26 +143,15 @@ const Ranking = () => {
         {loading ? (
           <div className="loading-state">
             <div className="spinner"></div>
-            <p>Yüklənir...</p>
+            <p>{t('loading')}</p>
           </div>
         ) : currentData.length === 0 ? (
           <div className="empty-state">
             <span className="empty-icon">🎮</span>
-            <p>Məlumat tapılmadı</p>
+            <p>{t('no_data')}</p>
           </div>
         ) : (
           <div className="ranking-list">
-            {/* Table Header */}
-            {/* <div className="ranking-header">
-              <span>Sıra</span>
-              <span>Avatar</span>
-              <span>Oyunçu</span>
-              <span>Qazanc</span>
-              <span>Qalib %</span>
-              <span>Oyunlar</span>
-            </div> */}
-            
-            {/* Table Rows */}
             {currentData.map((player, index) => (
               <RankingItem key={player.id || index} player={player} index={index} />
             ))}

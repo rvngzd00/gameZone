@@ -24,7 +24,8 @@ const Profile = () => {
             { id: 3, game: "Dominoes", result: "Loss", coins: "-200", date: "8h ago" }
         ]
     };
-    const { isAuthenticated, balance, logout, user, saveProfileSelection, t } = useAppContext();
+    const { isAuthenticated, balance, logout, user, saveProfileSelection, t, profileImage, recentGames } = useAppContext();
+    const gamesPlayed = (recentGames && recentGames.length) ? recentGames.length : profileData.gamesPlayed;
     const [showEdit, setShowEdit] = useState(false);
     return (
         <div className="container">
@@ -34,7 +35,11 @@ const Profile = () => {
                         <div className="avatar-frame">
                             {/* <span className="level-badge">{profileData.level}</span> */}
                             <div className="avatar-image">
-                                <img src={user?.profileImage || profilePhoto} alt="Profile" />
+                                <img
+                                    src={profileImage || profilePhoto}
+                                    alt="Profile"
+                                    onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = profilePhoto; }}
+                                />
                             </div>
                         </div>
                     </div>
@@ -43,7 +48,7 @@ const Profile = () => {
                         <div className="profile-stats">
                             <div className="stat-item">
                                 <span className="stat-icon">🎲</span>
-                                <span className="stat-value">{profileData.gamesPlayed}</span>
+                                <span className="stat-value">{gamesPlayed}</span>
                                 <span className="stat-label">{t('games')}</span>
                             </div>
                             {/* <div className="stat-item">
@@ -80,7 +85,7 @@ const Profile = () => {
                 <div className="profile-section recent-games-section">
                     <h2>{t('recent_games')}</h2>
                     <div className="games-history">
-                        {profileData.recentGames.map(game => (
+                        {(recentGames && recentGames.length ? recentGames : profileData.recentGames).map(game => (
                             <div key={game.id} className="game-history-item">
                                 <div className="game-info">
                                     <span className="game-name">{game.game}</span>
@@ -90,7 +95,7 @@ const Profile = () => {
                                     <span className={`result-badge ${game.result.toLowerCase()}`}>
                                         {game.result === 'Win' ? t('win') : game.result === 'Loss' ? t('loss') : game.result}
                                     </span>
-                                    <span className={`coins ${game.coins.startsWith('+') ? 'positive' : 'negative'}`}>
+                                    <span className={`coins ${(String(game.coins || '').startsWith('+')) ? 'positive' : 'negative'}`}>
                                         {game.coins}
                                     </span>
                                 </div>
