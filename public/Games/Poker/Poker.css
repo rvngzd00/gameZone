@@ -11,9 +11,9 @@ body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle at 10% 20%, rgba(255,215,100,0.03), transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(16,185,129,0.02), transparent 20%),
-                linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5));
+    background: radial-gradient(circle at 10% 20%, rgba(255, 215, 100, 0.03), transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.02), transparent 20%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
     pointer-events: none;
     z-index: 0;
 }
@@ -39,13 +39,17 @@ body::before {
 }
 
 .header {
-    text-align: center;
-    padding: 26px 18px;
-    background: linear-gradient(180deg, rgba(10,10,10,0.6), rgba(20,12,6,0.25));
+    /* text-align: center;
+     */
+    padding: 0 7px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(7, 59, 34, 0.6), rgba(8, 60, 40, 0.69));
     border-radius: 16px;
     margin-bottom: 18px;
     backdrop-filter: blur(6px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), inset 0 -6px 30px rgba(255,200,60,0.03);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), inset 0 -6px 30px rgba(255, 200, 60, 0.03);
     animation: slideDown 0.45s ease-out;
 }
 
@@ -62,14 +66,13 @@ body::before {
 }
 
 .header h1 {
-    font-size: 2.6rem;
+    font-size: 1.37rem;
     letter-spacing: 1px;
     background: linear-gradient(90deg, #ffd36b 0%, #ffed9a 50%, #ffd36b 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 6px 20px rgba(0,0,0,0.6);
-    margin-bottom: 8px;
+    text-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
 }
 
 @keyframes shimmer {
@@ -94,20 +97,18 @@ body::before {
 .user-info {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 20px 30px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(74, 222, 128, 0.2);
+    align-items: end;
 }
 
 .balance {
-    font-size: 1.8rem;
+    font-size: 1rem;
     font-weight: bold;
     color: #4ade80;
     text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+}
+
+#userName {
+    font-size: 1rem;
 }
 
 .game-type-badge {
@@ -145,8 +146,8 @@ body::before {
 }
 
 .room-card {
-    background: linear-gradient(180deg, rgba(18,12,10,0.7), rgba(40,22,12,0.35));
-    border: 2px solid rgba(255,215,0,0.06);
+    background: linear-gradient(180deg, rgba(18, 12, 10, 0.7), rgba(40, 22, 12, 0.35));
+    border: 2px solid rgba(255, 215, 0, 0.06);
     border-radius: 14px;
     padding: 20px;
     cursor: pointer;
@@ -154,7 +155,7 @@ body::before {
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(4px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.6), inset 0 -3px 12px rgba(255,200,60,0.02);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), inset 0 -3px 12px rgba(255, 200, 60, 0.02);
 }
 
 .room-card::after {
@@ -162,26 +163,30 @@ body::before {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background-image: radial-gradient(circle at 10% 10%, rgba(255,215,0,0.02), transparent 10%),
-                      radial-gradient(circle at 90% 90%, rgba(255,255,255,0.02), transparent 10%);
+    background-image: radial-gradient(circle at 10% 10%, rgba(255, 215, 0, 0.02), transparent 10%),
+        radial-gradient(circle at 90% 90%, rgba(255, 255, 255, 0.02), transparent 10%);
 }
 
 .room-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 6px 30px rgba(255, 215, 0, 0.06);
-    border-color: rgba(255,215,0,0.18);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 6px 30px rgba(255, 215, 0, 0.06);
+    border-color: rgba(255, 215, 0, 0.18);
 }
 
 .room-card h3 {
     color: #ffd97a;
     margin-bottom: 12px;
     font-size: 1.25rem;
-    text-shadow: 0 4px 18px rgba(0,0,0,0.6);
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
 }
 
 .room-info {
     margin: 10px 0;
     line-height: 1.8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .room-info div {
@@ -202,12 +207,12 @@ body::before {
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     text-transform: uppercase;
     letter-spacing: 0.6px;
-    box-shadow: 0 6px 20px rgba(255,180,60,0.12);
+    box-shadow: 0 6px 20px rgba(255, 180, 60, 0.12);
 }
 
 .join-btn:hover {
     transform: translateY(-4px);
-    box-shadow: 0 14px 40px rgba(255,180,60,0.18);
+    box-shadow: 0 14px 40px rgba(255, 180, 60, 0.18);
 }
 
 .game-section {
@@ -290,15 +295,15 @@ body::before {
 }
 
 .poker-table {
-    background: radial-gradient(circle at 30% 30%, rgba(20,90,60,0.9), rgba(12,50,30,0.95));
-    border: 20px solid rgba(139,69,19,0.9);
+    background: radial-gradient(circle at 30% 30%, rgba(20, 90, 60, 0.9), rgba(12, 50, 30, 0.95));
+    border: 20px solid rgba(139, 69, 19, 0.9);
     border-radius: 50%;
     width: 92%;
     max-width: 980px;
     aspect-ratio: 1.4;
     margin: 10px auto 110px;
     position: relative;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 12px 40px rgba(0,0,0,0.25);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 12px 40px rgba(0, 0, 0, 0.25);
 }
 
 .table-center {
@@ -341,22 +346,70 @@ body::before {
     .room-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     }
-    .container { padding: 14px; }
-    .header h1 { font-size: 1.9rem; }
-    .user-info { flex-direction: column; gap: 8px; align-items: flex-start; }
-    .balance { font-size: 1.4rem; }
-    .poker-table { max-width: 720px; aspect-ratio: 1.2; margin-bottom: 80px; }
-    .player-spot { width: 120px; }
-    .player-avatar { width: 64px; height: 64px; font-size: 1.4rem; }
+
+    .container {
+        padding: 14px;
+    }
+
+    .header h1 {
+        font-size: 1.9rem;
+    }
+
+    .user-info {
+        /* flex-direction: column; */
+        gap: 7px;
+        /* align-items: flex-start; */
+    }
+
+    .balance {
+        font-size: 1rem;
+    }
+
+    .poker-table {
+        max-width: 720px;
+        aspect-ratio: 1.2;
+        margin-bottom: 80px;
+    }
+
+    .player-spot {
+        width: 120px;
+    }
+
+    .player-avatar {
+        width: 64px;
+        height: 64px;
+        font-size: 1.4rem;
+    }
 }
 
 @media (max-width: 480px) {
-    .room-grid { grid-template-columns: 1fr; }
-    .header h1 { font-size: 1.6rem; }
-    .room-card { padding: 14px; }
-    .join-btn { font-size: 0.95rem; padding: 10px; }
-    .poker-table { width: 100%; max-width: 420px; aspect-ratio: 1.05; margin-bottom: 70px; }
-    .player-spot.bottom { bottom: -70px; }
+    .room-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header h1 {
+        font-size: 1.6rem;
+    }
+
+    .room-card {
+        padding: 14px;
+    }
+
+    .join-btn {
+        font-size: 0.95rem;
+        padding: 10px;
+    }
+
+    .poker-table {
+        width: 100%;
+        max-width: 420px;
+        aspect-ratio: 1.05;
+        margin-bottom: 70px;
+    }
+
+    .player-spot.bottom {
+        bottom: -70px;
+    }
 }
 
 .player-spot .player-cards {
@@ -734,7 +787,7 @@ body::before {
 
 .raise-slider-panel {
     position: fixed;
-    bottom: -250px;
+    display: none;
     left: 0;
     right: 0;
     background: linear-gradient(145deg, rgba(20, 40, 80, 0.98), rgba(30, 60, 114, 0.98));
@@ -748,6 +801,7 @@ body::before {
 
 .raise-slider-panel.active {
     bottom: 0;
+    display: block;
 }
 
 .raise-slider-content {
