@@ -112,12 +112,23 @@
             <div class="lobby-content">
                 <section class="quick-match-section">
                     <div class="section-header">
-                        <div class="section-icon">⚡</div>
-                        <div>
-                            <h2>Quick Match</h2>
-                            <p>Select your bet and find an opponent instantly</p>
+                        <div class="section-icon dice-icon" aria-hidden="true">
+                            <div class="diceWrap">
+                                <div class="dice rolling">
+                                    <div class="diceFace front"></div>
+                                    <div class="diceFace up"></div>
+                                    <div class="diceFace left"></div>
+                                    <div class="diceFace right"></div>
+                                    <div class="diceFace bottom"></div>
+                                    <div class="diceFace back"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="balance">💰 <span id="userBalance">0</span></div>
+                        <div>
+                            <h2>Backgammon</h2>
+                            <!-- <p>Select your bet and find an opponent instantly</p> -->
+                        </div>
+                        <div class="balance"><span id="userBalance">0</span></div>
 
                     </div>
                     <div class="bet-options-grid">
@@ -332,96 +343,126 @@
             }
             return currentUserToken || "";
         }
+        function createBackgammonConnection() {
+            const token = getToken();
+            const hubUrl = "https://nehemiah-paginal-alan.ngrok-free.dev/backgammonhub";
+
+            const isMobile = /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent);
+
+            // ✅ Stabil seçim:
+            // - Mobil: LongPolling (skipNegotiation OLMAZ)
+            // - Desktop: WebSockets (mümkünsə) + fallback LongPolling (skipNegotiation OLMAZ, çünki fallback var)
+            const transport = isMobile
+                ? signalR.HttpTransportType.LongPolling
+                : (signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling);
+
+            // ✅ skipNegotiation yalnız WebSockets-only olarsa true edilməlidir.
+            // Burda fallback olduğuna görə false saxlayırıq.
+            const skipNegotiation = false;
+
+            return new signalR.HubConnectionBuilder()
+                .withUrl(hubUrl, {
+                    accessTokenFactory: () => getToken() || "",
+                    transport,
+                    skipNegotiation,
+                    // withCredentials: false, // lazım olsa açarsan (CORS/credentials vəziyyətindən asılıdır)
+                })
+                .withAutomaticReconnect([0, 2000, 5000, 10000])
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+        }
+
         async function initSignalR() {
             try {
                 const token = getToken();
-
                 if (!token) {
-                    console.error('❌ [BACKGAMMON] Token yoxdur!');
-                    showNotification('Token tapılmadı!', 'error');
+                    console.error("❌ [BACKGAMMON] Token yoxdur!");
+                    showNotification("Token tapılmadı!", "error");
+                    window.parent.postMessage({
+                        type: "ERROR",
+                        payload: { message: "Token tapılmadı!" }
+                    }, "*");
                     return;
                 }
 
-                console.log('🔐 [BACKGAMMON] Token var, SignalR başlayır...');
-                console.log('📱 Device:', navigator.userAgent);
-                console.log('🌐 Online:', navigator.onLine);
+                console.log("🔐 [BACKGAMMON] Token var, SignalR başlayır...");
+                console.log("📱 Device:", navigator.userAgent);
+                console.log("🌐 Online:", navigator.onLine);
 
-                // ✅ MOBİL ÜÇÜN TRANSPORT OPTIONS
-                const isMobile = /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent);
+                // Əgər əvvəlki connection varsa təmiz bağla (double start problemini də önləyir)
+                if (connection && connection.state !== signalR.HubConnectionState.Disconnected) {
+                    try { await connection.stop(); } catch (_) { }
+                }
 
-                connection = new signalR.HubConnectionBuilder()
-                    .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/backgammonhub", {
-                        accessTokenFactory: () => {
-                            const t = getToken();
-                            console.log('🔑 Token request:', t ? 'VAR' : 'YOX');
-                            return t;
-                        },
-                        // ✅ Mobil üçün transport priority
-                        transport: isMobile
-                            ? signalR.HttpTransportType.LongPolling  // Mobil üçün LongPolling
-                            : signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
-                        skipNegotiation: isMobile ? true : false, // Mobil üçün negotiate skip
-                    })
-                    .withAutomaticReconnect([0, 2000, 5000, 10000]) // Reconnect delays
-                    .configureLogging(signalR.LogLevel.Information) // Debug logging
-                    .build();
+                connection = createBackgammonConnection();
 
-                // ✅ Connection state events
-                connection.onreconnecting(error => {
-                    console.warn('⚠️ Reconnecting...', error);
-                    showNotification('Bağlantı bərpa olunur...', 'info');
+                // State event-lər
+                connection.onreconnecting((error) => {
+                    console.warn("⚠️ Reconnecting...", error);
+                    showNotification("Bağlantı bərpa olunur...", "info");
                 });
 
-                connection.onreconnected(connectionId => {
-                    console.log('✅ Reconnected:', connectionId);
-                    showNotification('Bağlantı bərpa olundu!', 'success');
+                connection.onreconnected((connectionId) => {
+                    console.log("✅ Reconnected:", connectionId);
+                    showNotification("Bağlantı bərpa olundu!", "success");
                 });
 
-                connection.onclose(error => {
-                    console.error('❌ Connection closed:', error);
-                    showNotification('Bağlantı kəsildi!', 'error');
+                connection.onclose((error) => {
+                    console.error("❌ Connection closed:", error);
+                    showNotification("Bağlantı kəsildi!", "error");
                 });
 
-                // ✅ Event handler-ləri qur
-                setupEventHandlers();
+                // Handler-lər start-dan ƏVVƏL qurulmalıdır
+                setupEventHandlers?.();
 
-                // ✅ Connection-u başlat
-                console.log('🚀 Starting connection...');
+                console.log("🚀 Starting connection...");
                 await connection.start();
 
                 console.log("✅ [BACKGAMMON] SignalR connected!");
                 console.log("🔗 Connection ID:", connection.connectionId);
-                console.log("🔗 Transport:", connection.connection?.transport?.name || 'Unknown');
+                console.log("🔗 State:", connection.state);
 
-                showNotification('Serverə qoşuldu! ✅', 'success');
+                showNotification("Serverə qoşuldu! ✅", "success");
 
-                // ✅ Otaqları yüklə
-                await refreshRooms();
+                // ✅ init() kimi: roomId varsa reconnect et, yoxdursa rooms/lobby göstər
+                if (typeof roomIdFromUrl !== "undefined" && roomIdFromUrl) {
+                    console.log("🔄 ReconnectToRoom:", roomIdFromUrl);
+                    await connection.invoke("ReconnectToRoom", roomIdFromUrl);
+                } else {
+                    // await refreshRooms();
+                    // showLobby?.(); // səndə lobby UI varsa aç
+                }
+
+                // ✅ init() kimi polling refresh (istəsən interval-ı saxla)
+                if (typeof isInGame !== "undefined") {
+                    setInterval(() => {
+                        // if (!isInGame) refreshRooms();
+                    }, 5000);
+                } else {
+                    // isInGame yoxdursa da yeniləyə bilər
+                    // setInterval(() => refreshRooms(), 5000);
+                }
 
             } catch (err) {
                 console.error("❌ [BACKGAMMON] Connection error:", err);
-                console.error("Error name:", err.name);
-                console.error("Error message:", err.message);
-                console.error("Error stack:", err.stack);
 
-                // Xəta tipinə görə mesaj
-                let errorMsg = 'Serverə qoşulmaq alınmadı';
+                let errorMsg = "Serverə qoşulmaq alınmadı";
+                const msg = (err && err.message) ? err.message : "";
 
-                if (err.message?.includes('401') || err.message?.includes('Unauthorized')) {
-                    errorMsg = 'Token yanlışdır! Yenidən daxil olun.';
-                } else if (err.message?.includes('negotiate')) {
-                    errorMsg = 'Server cavab vermir. İnternet yoxlayın.';
-                } else if (err.message?.includes('timeout')) {
-                    errorMsg = 'Bağlantı vaxtı keçdi. Yenidən cəhd edin.';
+                if (msg.includes("401") || msg.includes("Unauthorized")) {
+                    errorMsg = "Token yanlışdır! Yenidən daxil olun.";
+                } else if (msg.toLowerCase().includes("negotiate")) {
+                    errorMsg = "Server negotiate cavabı vermir (CORS/URL/SSL ola bilər).";
+                } else if (msg.toLowerCase().includes("timeout")) {
+                    errorMsg = "Bağlantı vaxtı keçdi. Yenidən cəhd edin.";
                 }
 
-                showNotification(errorMsg, 'error');
+                showNotification(errorMsg, "error");
 
-                // React-ə error göndər
                 window.parent.postMessage({
-                    type: 'ERROR',
-                    payload: { message: errorMsg, error: err.message }
-                }, '*');
+                    type: "ERROR",
+                    payload: { message: errorMsg, error: msg }
+                }, "*");
             }
         }
         // 4️⃣ window.onload-dan initSignalR() çağırmasını SİL
@@ -471,7 +512,7 @@
             });
 
             connection.on("BackgammonRoomCreated", () => {
-                refreshRooms();
+                // refreshRooms();
             });
 
             connection.on("JoinedRoom", (data) => {
@@ -640,14 +681,14 @@
             console.log(`✅ Player info updated: P1=${document.getElementById('p1Name').textContent}, P2=${document.getElementById('p2Name').textContent}`);
         }
 
-        async function refreshRooms() {
-            try {
-                const rooms = await connection.invoke("GetAvailableRooms");
-                displayRooms(rooms);
-            } catch (err) {
-                console.error("❌ GetAvailableRooms error:", err);
-            }
-        }
+        // async function refreshRooms() {
+        //     try {
+        //         const rooms = await connection.invoke("GetAvailableRooms");
+        //         displayRooms(rooms);
+        //     } catch (err) {
+        //         console.error("❌ GetAvailableRooms error:", err);
+        //     }
+        // }
 
         async function quickMatch(betAmount) {
             try {
@@ -662,34 +703,34 @@
             }
         }
 
-        setInterval(() => {
-            if (document.getElementById('lobbyView').style.display !== 'none') {
-                refreshRooms();
-            }
-        }, 3000);
+        // setInterval(() => {
+        //     if (document.getElementById('lobbyView').style.display !== 'none') {
+        //         refreshRooms();
+        //     }
+        // }, 3000);
 
-        function displayRooms(rooms) {
-            const grid = document.getElementById('roomsGrid');
-            if (rooms.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; color: #999; padding: 20px; font-size: 13px;">Hazırda aktiv otaq yoxdur</p>';
-                return;
-            }
-            grid.innerHTML = rooms.map(room => {
-                const statusText = room.isAvailable
-                    ? `<span style="color: #10b981;">● Açıq (${room.playerCount}/2)</span>`
-                    : `<span style="color: #ef4444;">● Oyunda</span>`;
-                return `
-                        <div class="room-card" style="padding: 12px;">
-                            <div>
-                                <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">${room.roomName}</div>
-                                <div style="color: #666; font-size: 12px;">
-                                    💰 ${room.betAmount} Coin • ${statusText}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-            }).join('');
-        }
+        // function displayRooms(rooms) {
+        //     const grid = document.getElementById('roomsGrid');
+        //     if (rooms.length === 0) {
+        //         grid.innerHTML = '<p style="text-align: center; color: #999; padding: 20px; font-size: 13px;">Hazırda aktiv otaq yoxdur</p>';
+        //         return;
+        //     }
+        //     grid.innerHTML = rooms.map(room => {
+        //         const statusText = room.isAvailable
+        //             ? `<span style="color: #10b981;">● Açıq (${room.playerCount}/2)</span>`
+        //             : `<span style="color: #ef4444;">● Oyunda</span>`;
+        //         return `
+        //                 <div class="room-card" style="padding: 12px;">
+        //                     <div>
+        //                         <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">${room.roomName}</div>
+        //                         <div style="color: #666; font-size: 12px;">
+        //                             💰 ${room.betAmount} Coin • ${statusText}
+        //                         </div>
+        //                     </div>
+        //                 </div>
+        //             `;
+        //     }).join('');
+        // }
 
         function renderBoard(board) {
             console.log("🎨 Rendering board...", board);

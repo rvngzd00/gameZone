@@ -28,10 +28,10 @@ function BackgammonGame() {
 
     const handleLoad = () => {
       console.log('📺 Backgammon iframe loaded');
-      
+
       setTimeout(() => {
         const iframe = iframeRef.current;
-        
+
         if (!iframe || !iframe.contentWindow) {
           console.error('❌ iframe or contentWindow is null');
           return;
@@ -55,11 +55,31 @@ function BackgammonGame() {
       }, 500);
     };
 
+    // 📩 Oyundan gələn mesajlar (optional)
+
+    const handleMessage = (event) => {
+      const { type, payload } = event.data;
+
+      if (type === 'GAME_ENDED') {
+        console.log('🏁 Game ended:', payload);
+        // Oyun bitəndə nə etsək?
+      } else if (type === 'ERROR') {
+        console.error('❌ Game error:', payload);
+      } else if (type === 'BALANCE_CHANGE') {
+        console.log('💰 Balance changed:', payload);
+      } else if (event.data?.type === 'BACK_TO_GAMES') {
+        console.log(`🎮 Returning to lobby`);
+        navigate(`/games`);
+      }
+    };
+
     const iframe = iframeRef.current;
-    
+
     if (iframe) {
       console.log('✅ iframe exists, adding listener');
       iframe.addEventListener('load', handleLoad);
+      window.addEventListener('message', handleMessage);
+
 
       if (iframe.contentDocument?.readyState === 'complete') {
         console.log('⚡ iframe already loaded');
@@ -73,27 +93,14 @@ function BackgammonGame() {
       if (iframe) {
         iframe.removeEventListener('load', handleLoad);
       }
+      window.removeEventListener('message', handleMessage);
+
     };
   }, [user, token, balance]);
 
-  // 📩 Oyundan gələn mesajlar (optional)
-  useEffect(() => {
-    const handleMessage = (event) => {
-      const { type, payload } = event.data;
 
-      if (type === 'GAME_ENDED') {
-        console.log('🏁 Game ended:', payload);
-        // Oyun bitəndə nə etsək?
-      } else if (type === 'ERROR') {
-        console.error('❌ Game error:', payload);
-      } else if (type === 'BALANCE_CHANGE') {
-        console.log('💰 Balance changed:', payload);
-      }
-    };
 
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
+
 
   return (
     <div className="backgammon-container">
