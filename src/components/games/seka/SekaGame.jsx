@@ -28,10 +28,10 @@ function SekaGame() {
 
     const handleLoad = () => {
       console.log('📺 Seka iframe loaded');
-      
+
       setTimeout(() => {
         const iframe = iframeRef.current;
-        
+
         if (!iframe || !iframe.contentWindow) {
           console.error('❌ iframe or contentWindow is null');
           return;
@@ -53,12 +53,19 @@ function SekaGame() {
         console.log('✅ User data sent to Seka');
       }, 500);
     };
-
+    const handleMessage = (event) => {
+      console.log('📩 Message from lobby iframe:', event.data);
+      if (event.data?.type === 'BACK_TO_GAMES') {
+        console.log(`🎮 Returning to lobby`);
+        navigate(`/games`);
+      }
+    };
     const iframe = iframeRef.current;
-    
+
     if (iframe) {
       console.log('✅ iframe exists, adding listener');
       iframe.addEventListener('load', handleLoad);
+      window.addEventListener('message', handleMessage);
 
       if (iframe.contentDocument?.readyState === 'complete') {
         console.log('⚡ iframe already loaded');
@@ -72,6 +79,7 @@ function SekaGame() {
       if (iframe) {
         iframe.removeEventListener('load', handleLoad);
       }
+      window.removeEventListener('message', handleMessage);
     };
   }, [user, token, balance]);
 

@@ -15,7 +15,7 @@ const LandingPage = () => {
                 <div className="hero-content">
                     <div className="hero-grid">
                             <Ranking />
-                        <div className="hero-content-1">
+                        {/* <div className="hero-content-1">
                             <div className="hero-text">
                                 <h1>{t('home_tagline')}</h1>
                                 <p>{t('home_sub')}</p>
@@ -28,12 +28,12 @@ const LandingPage = () => {
                                     </div>
                                 </div>
                                 <div className="cta-buttons">
-                                    {/* <Link to="/games" className="btn btn-primary">Start Playing Now</Link> */}
-                                    {/* <button className="btn btn-secondary">Learn More</button> */}
+                                    <Link to="/games" className="btn btn-primary">Start Playing Now</Link>
+                                    <button className="btn btn-secondary">Learn More</button>
                                 </div>
                             </div>
                             
-                        </div>
+                        </div> */}
                         {/* <div className="hero-image">
                             <div className="game-preview">
                                 <div className="game-card">

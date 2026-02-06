@@ -30,12 +30,46 @@ body {
 }
 
 .header-title {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     font-size: clamp(20px, 4vw, 32px);
     font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.header-title .header-tile {
+    position: absolute;
+    left: -11px;
+    width: clamp(27px, 4.2vw, 48px);
+    height: auto;
+    opacity: 0.5;
+    transform: rotate(-22deg);
+    pointer-events: none;
+    z-index: 0;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+}
+
+.header-title .h-tile-r {
+    position: absolute;
+    right: -11px;
+    width: clamp(24px, 4.2vw, 48px);
+    height: auto;
+    opacity: 0.5;
+    transform: rotate(22deg);
+    pointer-events: none;
+    z-index: 0;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+}
+
+.header-title .header-text {
+    position: relative;
+    z-index: 1;
     background: linear-gradient(135deg, #ffd700, #ffed4e, #ff6b35);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 2px;
 }
 
 .balance {
@@ -391,7 +425,8 @@ body {
     border-radius: 16px;
     padding: 0 20px;
     display: flex;
-    align-items: center; /*9 cu dasdan sonra start a kecmelidir*/
+    align-items: center;
+    /*9 cu dasdan sonra start a kecmelidir*/
     justify-content: center;
     overflow-x: auto;
     overflow-y: hidden;
@@ -817,7 +852,7 @@ body {
     border-radius: 16px;
     margin-bottom: 24px;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     border: 2px solid rgba(255, 215, 0, 0.3);
     box-shadow: 0 8px 32px rgba(255, 215, 0, 0.15);
@@ -844,11 +879,12 @@ body {
 }
 
 /* Game Sections */
-.game-sections{
+.game-sections {
     display: flex;
     flex-direction: column;
 }
-.top-game{
+
+.top-game {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1215,7 +1251,7 @@ body {
     } */
 
     .player-count-selector {
-        gap: 12px;
+        gap: 7px;
     }
 
     .count-btn {
@@ -1245,7 +1281,7 @@ body {
 
     .header {
         padding: 12px 16px;
-        flex-direction: column;
+        /* flex-direction: column; */
         gap: 12px;
     }
 
@@ -1254,7 +1290,7 @@ body {
     }
 
     .player-count-selector {
-        gap: 10px;
+        gap: 7px;
     }
 
     .count-btn {
@@ -1311,12 +1347,45 @@ body {
 
 
 .section-icon {
-    font-size: 20px;
-    filter: drop-shadow(0 5px 15px rgba(255, 215, 0, 0.5));
-    animation: float 3s ease-in-out infinite;
+    width: clamp(26px, 5vw, 46px);
+    height: clamp(38px, 7.5vw, 66px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 6px 14px rgba(15, 23, 42, 0.35));
+    transform-origin: center;
 }
 
-@keyframes float {
+.section-icon .domino-icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+.classic-header .section-icon {
+    animation: classic-rotate 4s linear infinite;
+}
+
+.quick-header .section-icon {
+    animation: quick-float 3s ease-in-out infinite;
+}
+
+.allfives-header .section-icon {
+    animation: allfives-wobble 2.6s ease-in-out infinite;
+}
+
+@keyframes classic-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes quick-float {
 
     0%,
     100% {
@@ -1325,6 +1394,18 @@ body {
 
     50% {
         transform: translateY(-10px);
+    }
+}
+
+@keyframes allfives-wobble {
+
+    0%,
+    100% {
+        transform: rotate(-6deg) translateY(0px);
+    }
+
+    50% {
+        transform: rotate(6deg) translateY(-6px);
     }
 }
 
@@ -1443,16 +1524,16 @@ body {
 
 /* Modal Content - Glassmorphism effekti */
 .modal-content {
-    background: linear-gradient(145deg, 
-        rgba(255, 255, 255, 0.1), 
-        rgba(255, 255, 255, 0.05));
+    background: linear-gradient(145deg,
+            rgba(255, 255, 255, 0.1),
+            rgba(255, 255, 255, 0.05));
     backdrop-filter: blur(20px);
     border: 2px solid rgba(255, 215, 0, 0.3);
     border-radius: 30px;
     padding: 45px;
     max-width: 750px;
     width: 65%;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.4),
         0 0 80px rgba(255, 215, 0, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -1475,8 +1556,17 @@ body {
 }
 
 @keyframes glow {
-    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-    50% { transform: translate(10px, 10px) scale(1.1); opacity: 0.8; }
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translate(10px, 10px) scale(1.1);
+        opacity: 0.8;
+    }
 }
 
 @keyframes modalSlide {
@@ -1484,6 +1574,7 @@ body {
         opacity: 0;
         transform: translateY(60px) scale(0.85);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -1491,8 +1582,13 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* Modal Header */
@@ -1520,8 +1616,13 @@ body {
 }
 
 @keyframes shimmer {
-    0% { background-position: 0% center; }
-    100% { background-position: 200% center; }
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
 }
 
 /* Close Button - Daha interaktiv */
@@ -1634,7 +1735,7 @@ body {
 .bet-card:hover {
     transform: translateY(-8px) scale(1.05);
     border-color: rgba(255, 215, 0, 0.8);
-    box-shadow: 
+    box-shadow:
         0 12px 40px rgba(255, 215, 0, 0.3),
         0 0 60px rgba(255, 215, 0, 0.15);
 }
@@ -1701,8 +1802,17 @@ body {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(0.98); }
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: scale(0.98);
+    }
 }
 
 /* Responsive */
@@ -1711,16 +1821,16 @@ body {
         width: 90%;
         padding: 30px 25px;
     }
-    
+
     .modal-header h2 {
         font-size: 26px;
     }
-    
+
     #betOptions {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 15px;
     }
-    
+
     .bet-amount {
         font-size: 20px;
     }
@@ -1755,6 +1865,7 @@ body {
     align-items: center;
 
 }
+
 /* .bet-card {
     background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
     border: 3px solid rgba(16, 185, 129, 0.3);
@@ -2841,12 +2952,14 @@ body {
     align-items: center;
     gap: 8px;
 }
-.players-hands{
+
+.players-hands {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 7px;
 }
+
 .player-result-score {
     font-size: clamp(18px, 4vw, 24px);
     font-weight: 800;
@@ -2970,5 +3083,42 @@ body {
     .player-result-hand {
         gap: 4px;
         padding: 12px;
+    }
+}
+
+.back-btn {
+    width: 42px;
+    height: 42px;
+    padding: 20px 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 480px) {
+    .back-btn {
+        width: 17px;
+        height: 17px;
+        font-size: 17px;
+        padding: 15px 15px;
     }
 }

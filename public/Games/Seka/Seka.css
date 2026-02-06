@@ -1,4 +1,3 @@
-
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #ffffff;
@@ -42,11 +41,49 @@ body::before {
     margin: 17px 0 10px 0;
 }
 
-.header h1 {
+.game-header-text {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 72px;
+    margin: 0;
+    padding: 8px 10px;
+}
+
+.game-header-text .header-cards {
+    position: absolute;
+    width: min(160px, 20vw);
+    height: auto;
+    opacity: 0.7;
+    transform: translate(-18px, -6px);
+    pointer-events: none;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
+}
+
+.game-header-text .header-title {
+    position: relative;
     font-size: 3rem;
+    letter-spacing: 2px;
     background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    text-shadow: 0 6px 12px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 720px) {
+    .game-header-text {
+        min-height: 56px;
+    }
+
+    .game-header-text .header-title {
+        font-size: 2.2rem;
+    }
+
+    .game-header-text .header-cards {
+        width: min(140px, 34vw);
+        transform: translate(-14px, -6px);
+    }
 }
 
 .header-subtitle {
@@ -185,6 +222,10 @@ body::before {
     margin: 8px 0;
     padding: 5px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.room-info span {
+    font-weight: 900;
 }
 
 .room-info:last-of-type {
@@ -1649,4 +1690,41 @@ body::before {
     /* .actions {
         gap: 2px;
     } */
+}
+
+.back-btn {
+    width: 42px;
+    height: 42px;
+    padding: 20px 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 480px) {
+    .back-btn {
+        width: 17px;
+        height: 17px;
+        font-size: 17px;
+        padding: 15px 15px;
+    }
 }

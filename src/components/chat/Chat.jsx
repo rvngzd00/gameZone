@@ -237,16 +237,7 @@ export default function Chat() {
             <header className="chat-header">
                 <div className="admin-info">
                     <div className="admin-avatar">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="12" cy="12" r="11" fill="url(#adminGrad)" stroke="var(--accent)" strokeWidth="1" />
-                            <path d="M8 15c2-2.5 6-2.5 8 0M9 10h.01M15 10h.01" stroke="var(--brown-dark)" strokeWidth="1.5" strokeLinecap="round" />
-                            <defs>
-                                <linearGradient id="adminGrad" x1="2" y1="2" x2="22" y2="22">
-                                    <stop stopColor="var(--accent)" />
-                                    <stop offset="1" stopColor="var(--accent)" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
+                        <img className="admin-profile" src="../assets/siteImages/adminProfile.png" alt="Admin Profile Image" />
                     </div>
                         <div className="admin-details">
                             <h2>{t('admin')}</h2>

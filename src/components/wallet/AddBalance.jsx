@@ -12,6 +12,7 @@ export default function AddBalance({ isOpen, onClose, username: propUsername, wa
     const fileInputRef = useRef(null);
     const connectionRef = useRef(null);
     const [isConnected, setIsConnected] = useState(false);
+    const [copySuccess, setCopySuccess] = useState(false);
 
     const BASE_URL = "https://nehemiah-paginal-alan.ngrok-free.dev";
 
@@ -101,6 +102,26 @@ export default function AddBalance({ isOpen, onClose, username: propUsername, wa
         }
     };
 
+    const handleCopy = async () => {
+        try {
+            const text = '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa';
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                const el = document.createElement('textarea');
+                el.value = text;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+            }
+            setCopySuccess(true);
+            setTimeout(() => setCopySuccess(false), 1800);
+        } catch (err) {
+            console.error('Copy failed', err);
+        }
+    };
+
     // Open SignalR connection when modal opens, close when it closes
     useEffect(() => {
         let mounted = true;
@@ -149,10 +170,32 @@ export default function AddBalance({ isOpen, onClose, username: propUsername, wa
                 <button className="ab-close" onClick={onClose} aria-label={t('close')}>×</button>
 
                 <div className="ab-wallet-card">
-                    <div className="ab-wallet-icon">฿</div>
+                    <div className="ab-wallet-icon">
+                        <img src="../assets/siteImages/usdT.svg" alt="USDT" className="ab-wallet-svg" />
+                    </div>
                     <div className="ab-wallet-info">
-                        <div className="ab-wallet-label">{t('bitcoin_wallet')}</div>
-                        <div className="ab-wallet-address">{walletAddress || t('wallet_address') + ': 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'}</div>
+                        <div className="ab-wallet-label">USDT Wallet</div>
+                        <div className="ab-wallet-address-row">
+                            <div className="ab-wallet-address">{t('wallet_address') + ': 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'}</div>
+                            <button
+                                type="button"
+                                className={"ab-copy-btn " + (copySuccess ? 'copied' : '')}
+                                onClick={handleCopy}
+                                aria-label={t('copy_address')}
+                                title={copySuccess ? (t('copied') || 'Copied') : (t('copy') || 'Copy')}
+                            >
+                                {copySuccess ? (
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                                        <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                ) : (
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                                        <rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" strokeWidth="1.6" />
+                                        <path d="M5 15V7a2 2 0 0 1 2-2h8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </div>
 

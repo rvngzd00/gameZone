@@ -14,7 +14,13 @@
     <div class="container">
         <!-- HEADER -->
         <div class="header">
-            <h1>SEKA</h1>
+            <button class="back-btn" onclick="backToGames()">
+                ←
+            </button>
+            <h1 class="game-header-text">
+                <img class="header-cards" src="./images/3tuzHeader.png" alt="Three aces cards">
+                <span class="header-title">SEKA</span>
+            </h1>
             <!-- <div class="header-subtitle">PROFESSIONAL CARD GAME</div> -->
             <div class="user-info">
                 <div><strong id="userName">Loading...</strong></div>
@@ -25,7 +31,7 @@
 
         <!-- ROOM LIST SECTION -->
         <div id="roomListSection" class="room-list-section">
-            <h2 style="color: #ffd700; margin: 10px 0 15px 10px">🎮 All Rooms</h2>
+            <h2 style="color: #ffd700; margin: 10px 0 15px 10px">All Rooms</h2>
             <div class="room-grid" id="roomGrid">
                 <div class="loading">
                     <div class="spinner"></div>Rooms Loading...
@@ -50,7 +56,8 @@
             <div class="poker-table" id="pokerTable">
                 <div class="table-center">
                     <div class="pot-amount">POT: <span id="potAmount">0</span></div>
-                    <div class="current-bet">Cari mərc: <span id="currentBetAmount">0</span></div>
+                    <div class="current-bet" style="display: none;">Cari mərc: <span id="currentBetAmount">0</span>
+                    </div>
                 </div>
             </div>
 
@@ -789,14 +796,14 @@
                 // ✅ SADECE NO LIMIT OLAN OTAQLAR
                 const filteredRooms = rooms.filter(room => room.limitType !== 'PotLimit');
 
+                // <div class="room-avatar">${('R').charAt(0).toUpperCase()}</div>
                 // <div class="limit-badge">NO LIMIT</div>
                 grid.innerHTML = filteredRooms.length === 0
-                    ? '<div class="loading">Uyğun (NO LIMIT) otaq tapılmadı</div>'
+                    ? '<div class="loading">Uyğun otaq tapılmadı</div>'
                     : filteredRooms.map(room => `
                 <div class="room-card ${room.isFull ? 'full' : ''}">
 
                     <div class="room-top">
-                        <div class="room-avatar">${('R').charAt(0).toUpperCase()}</div>
                         <div style="flex:1">
                             <h3 class="room-title">Seka Room</h3>
                             <div class="room-sub">${room.maxPlayers} oyunçu • ${room.isGameStarted ? 'Oyun başladı' : 'Gözləyir'}</div>
@@ -813,22 +820,26 @@
                     </div>
 
                     <div class="room-info" style="margin-top:10px;">
-                        <span>Giriş haqqı:</span>
+                        <span>Bet:</span>
                         <span class="room-entry">${room.entryFee.toFixed(2)}</span>
+                    </div>
+                    <div class="room-info" style="margin-top:10px;">
+                        <span>Bahis Aralığı:</span>
+                        <span class="room-entry">${(room.entryFee * 20).toFixed(2)} - ${(room.entryFee * 100).toFixed(2)}</span>
                     </div>
 
                     <div class="room-meta">
 
-                        <div class="meta-pill">Maks: ${room.maxPlayers}</div>
                         <div style="flex:1;text-align:right;">
                             <button class="join-btn" onclick="joinRoom('${room.roomId}')" ${room.isFull || room.isGameStarted ? 'disabled' : ''}>
                                 ${room.isFull ? '❌ Dolu' : 'Qoşul'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+                                </button>
+                                </div>
+                                </div>
+                                </div>
+                                `).join('');
 
+                // <div class="meta-pill">Maks: ${room.maxPlayers}</div>
                 console.log(`✅ ${filteredRooms.length} NO LIMIT otaq yükləndi`);
             } catch (error) {
                 console.error("❌ Room list error:", error);
@@ -1891,6 +1902,10 @@
             }
         `;
         document.head.appendChild(minimalStyles);
+
+        function backToGames() {
+            window.parent.postMessage({ type: 'BACK_TO_GAMES', payload: {} }, '*');
+        }
 
     </script>
 </body>

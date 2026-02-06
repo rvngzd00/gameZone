@@ -35,7 +35,7 @@ import AdminDashboard from './components/admin/AdminDashboard'
 import BackgammonGame from './components/games/BACKGAMMMONN/BackgammonREACT.jsx'
 
 // import { Howler } from "howler";
-import { SoundProvider } from './context/SoundContext.jsx'
+// import { SoundProvider } from './context/SoundContext.jsx'
 
 const ProtectedRouteWrapper = ({ children }) => {
   const { isAuthenticated } = useAppContext();
@@ -48,7 +48,6 @@ function App() {
   return (
     <BrowserRouter>
       <AppProvider>
-        <SoundProvider>
           <div className="app">
             <TopBar />
             <main className="main-content">
@@ -174,7 +173,6 @@ function App() {
             <Navbar />
             {/* <Footer /> */}
           </div>
-        </SoundProvider>
       </AppProvider>
     </BrowserRouter>
   );

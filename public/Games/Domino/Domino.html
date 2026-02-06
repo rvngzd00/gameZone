@@ -77,20 +77,33 @@
         <!-- ====== LOBBY VIEW ====== -->
         <div id="lobbyView" class="lobby-container" style="display: none;">
             <div class="header">
-                <div class="header-title">DOMINO GAMES</div>
-                <div class="balance">💰 <span id="userBalance">0</span> coin</div>
+                <button class="back-btn" onclick="backToGames()">
+                    ←
+                </button>
+                <div class="header-title">
+                    <img class="header-tile" src="images/headerTiles/domino66.svg" alt="Domino 6:6" />
+                    <img class="h-tile-r" src="images/headerTiles/domino11.svg" alt="Domino 6:6" />
+                    <span class="header-text">DOMINO</span>
+                </div>
+                <div class="balance"><span id="userBalance">0</span> coin</div>
             </div>
             <div class="game-sections">
                 <div class="top-game">
                     <!-- Classic 101 Section -->
                     <div class="game-section">
                         <div class="section-header classic-header">
-                            <div class="section-icon">🎯</div>
+                            <div class="section-icon">
+                                <img class="domino-icon domino-1-1" src="images/headerTiles/domino11.svg" alt="Domino 1:1" />
+                            </div>
                             <div class="section-title">CLASSIC 101</div>
                         </div>
                         <div class="player-count-selector">
                             <button class="count-btn" onclick="showBetModal('Classic101', 2)">
                                 <div class="count-number">2</div>
+                                <div class="count-label">Players</div>
+                            </button>
+                            <button class="count-btn" onclick="showBetModal('Classic101', 3)">
+                                <div class="count-number">3</div>
                                 <div class="count-label">Players</div>
                             </button>
                             <button class="count-btn" onclick="showBetModal('Classic101', 4)">
@@ -103,12 +116,18 @@
                     <!-- Quick 5 Section -->
                     <div class="game-section">
                         <div class="section-header quick-header">
-                            <div class="section-icon">⚡</div>
+                            <div class="section-icon">
+                                <img class="domino-icon domino-6-6" src="images/headerTiles/domino66.svg" alt="Domino 6:6" />
+                            </div>
                             <div class="section-title">QUICK 5</div>
                         </div>
                         <div class="player-count-selector">
                             <button class="count-btn" onclick="showBetModal('Quick5', 2)">
                                 <div class="count-number">2</div>
+                                <div class="count-label">Players</div>
+                            </button>
+                            <button class="count-btn" onclick="showBetModal('Quick5', 3)">
+                                <div class="count-number">3</div>
                                 <div class="count-label">Players</div>
                             </button>
                             <button class="count-btn" onclick="showBetModal('Quick5', 4)">
@@ -122,7 +141,9 @@
                 <!-- All Fives Section -->
                 <div class="game-section">
                     <div class="section-header allfives-header">
-                        <div class="section-icon">🔥</div>
+                        <div class="section-icon">
+                            <img class="domino-icon domino-5-5" src="images/headerTiles/domino55.svg" alt="Domino 5:5" />
+                        </div>
                         <div class="section-title">ALL FIVES</div>
                     </div>
                     <div class="player-count-selector selector-all-five">
@@ -2300,13 +2321,13 @@
                     
                 </div>
                 `;
-                grid.appendChild(wrapper);
+                    grid.appendChild(wrapper);
                 }
                 // Grid-i təmizlə
 
                 modal.classList.add('active');
-            }else{
-                domcument.getElementById('drawStack').textContent="Pass";
+            } else {
+                domcument.getElementById('drawStack').textContent = "Pass";
                 connection.invoke("TakeFromStock");
 
             }
@@ -2371,7 +2392,9 @@
                 showToast("Serverə qoşulmaq alınmadı");
             }
         }
-
+        function backToGames() {
+            window.parent.postMessage({ type: 'BACK_TO_GAMES', payload: {} }, '*');
+        }
         // init();
     </script>
 </body>

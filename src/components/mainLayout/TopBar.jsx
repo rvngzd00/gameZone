@@ -26,7 +26,7 @@ const TopBar = () => {
               className="lang-select"
             >
               {/* <option value="az">🇦🇿 AZ</option> */}
-              <option  value="en">🇬🇧 EN</option>
+              <option value="en">🇬🇧 EN</option>
               <option value="tr">🇹🇷 TR</option>
               <option value="hi">🇮🇳 HI</option>
               <option value="ar">🇸🇦 AR</option>

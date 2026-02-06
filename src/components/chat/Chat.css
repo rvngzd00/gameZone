@@ -32,8 +32,25 @@
   height: 42px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent-opaque-01), var(--accent-opaque-05));
+  background-color: #eee;
   padding: 2px;
   animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.admin-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.admin-avatar img,
+.admin-profile {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .admin-avatar svg {
@@ -59,6 +76,7 @@
   color: var(--success);
   display: flex;
   align-items: center;
+  margin: 3px 0 0 0;
   gap: 4px;
 }
 

@@ -5,7 +5,7 @@ import { useAppContext } from '../../context/AppContext';
 
 const RequireAuth = () => {
     const { t } = useAppContext();
-    let click = new Audio("./Sounds/clickPageSwitch.mp3")
+
     return (
         <div className="require-auth-container" style={{
             position: "absolute",
@@ -44,10 +44,10 @@ const RequireAuth = () => {
                     </div>
 
                     <div className="auth-buttons">
-                        <Link to="/login" className="auth-btn login-btn" onClick={click.play()}>
+                        <Link to="/login" className="auth-btn login-btn">
                             {t('login')}
                         </Link>
-                        <Link to="/register" className="auth-btn register-btn" onClick={click.play()}>
+                        <Link to="/register" className="auth-btn register-btn">
                             {t('register_now')}
                         </Link>
                     </div>
