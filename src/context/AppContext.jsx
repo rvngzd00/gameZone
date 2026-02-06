@@ -115,7 +115,7 @@ export function AppProvider({ children }) {
         localStorage.setItem("token", token);
         setIsAuthenticated(true);
         await getUserProfile();
-        navigate("/");
+        navigate("/games");
         return { success: true };
       } else {
         return { success: false, error: "Token tapılmadı" };

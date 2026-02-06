@@ -112,6 +112,9 @@
             <div class="lobby-content">
                 <section class="quick-match-section">
                     <div class="section-header">
+                        <button class="back-btn" onclick="backToGames()">
+                            ←
+                        </button>
                         <div class="section-icon dice-icon" aria-hidden="true">
                             <div class="diceWrap">
                                 <div class="dice rolling">
@@ -1428,16 +1431,9 @@
             input.focus();
         }
 
-
-        // window.onload = () => {
-
-        // };
-
-        // window.onbeforeunload = () => {
-        //     if (connection) {
-        //         connection.stop();
-        //     }
-        // };
+        function backToGames() {
+            window.parent.postMessage({ type: 'BACK_TO_GAMES', payload: {} }, '*');
+        }
     </script>
 </body>
 

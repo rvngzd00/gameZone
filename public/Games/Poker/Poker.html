@@ -1,98 +1,1435 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="az">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>API Problem</title>
-  <style>
-    :root{
-      --bg1:#0f1724; --bg2:#0b1020; --accent:#ff6b6b; --accent2:#7c5cff;
-      --glass: rgba(255,255,255,0.06);
-    }
-    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#e6eef8}
-    body{
-      background: radial-gradient(1200px 600px at 10% 20%, rgba(124,92,255,0.12), transparent 10%),
-                  radial-gradient(900px 400px at 90% 80%, rgba(255,107,107,0.08), transparent 10%),
-                  linear-gradient(180deg,var(--bg1),var(--bg2));
-      display:grid;place-items:center;padding:48px;overflow:hidden;
-    }
-    .card{
-      width:min(920px,96%);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:18px;padding:36px;box-shadow:0 10px 40px rgba(2,6,23,0.6);
-      border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(6px);
-      position:relative;overflow:hidden;
-    }
-    .glow{
-      position:absolute;inset:-30% -10%;background:conic-gradient(from 200deg at 50% 50%, rgba(124,92,255,0.12), rgba(255,107,107,0.09), rgba(124,92,255,0.12));
-      filter:blur(48px);transform:scale(1.2);opacity:0.9;mix-blend-mode:screen;pointer-events:none;
-    }
-    h1{font-size:48px;line-height:1;margin:0 0 8px;font-weight:700;letter-spacing:-0.02em;color:#f6fbff}
-    .muted{color:rgba(230,238,248,0.75);font-size:16px;margin-bottom:18px}
-    .pill{
-      display:inline-flex;gap:10px;align-items:center;padding:8px 12px;border-radius:999px;background:var(--glass);border:1px solid rgba(255,255,255,0.03);font-weight:600;color:var(--accent);
-    }
-    .actions{display:flex;gap:12px;margin-top:22px}
-    .btn{appearance:none;border:0;padding:12px 16px;border-radius:12px;font-weight:700;cursor:pointer}
-    .btn-retry{background:linear-gradient(90deg,var(--accent),var(--accent2));color:white;box-shadow:0 6px 24px rgba(124,92,255,0.12);}
-    .btn-home{background:transparent;border:1px solid rgba(255,255,255,0.06);color:rgba(230,238,248,0.9)}
-
-    /* fancy error icon */
-    .icon{width:84px;height:84px;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));display:grid;place-items:center;margin-right:18px;border:1px solid rgba(255,255,255,0.04)}
-    .row{display:flex;align-items:center}
-    .codebox{margin-top:20px;background:rgba(8,12,22,0.45);padding:14px;border-radius:12px;font-family:ui-monospace, SFMono-Regular, Menlo, monospace;font-size:13px;color:#cfe7ff;border:1px solid rgba(255,255,255,0.03)}
-
-    /* subtle floating particles */
-    .particle{position:absolute;width:8px;height:8px;background:rgba(255,255,255,0.06);border-radius:50%;filter:blur(1px);animation:float 6s linear infinite}
-    .p1{left:8%;top:14%;transform:scale(1.6);animation-duration:7s}
-    .p2{left:86%;top:8%;transform:scale(1.1);animation-duration:10s}
-    .p3{left:72%;top:70%;transform:scale(0.9);animation-duration:8.5s}
-    .p4{left:18%;top:78%;transform:scale(1.2);animation-duration:9s}
-    @keyframes float{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-18px) scale(1.05)}100%{transform:translateY(0) scale(1)}}
-
-    /* responsive */
-    @media (max-width:620px){h1{font-size:32px}.row{flex-direction:column;align-items:flex-start}.icon{margin-right:0;margin-bottom:12px}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 Poker Casino</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <link rel="stylesheet" href="./Poker.css">
 </head>
-<body>
-  <div class="card" role="alert" aria-live="polite">
-    <div class="glow" aria-hidden></div>
-    <div class="row">
-      <div class="icon" aria-hidden>
-        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M11.07 2.25a9 9 0 1 0 1.86 0" stroke="#ff9a9a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M12 7v5" stroke="#ffd1d1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M12 15.01h.01" stroke="#ffd1d1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div style="flex:1">
-        <div class="pill">API Problem</div>
-        <h1>We’re having trouble reaching our servers</h1>
-        <div class="muted">Something went wrong while contacting the game API. Your session is intact — you can retry or go back to the lobby.</div>
-        <div class="actions">
-          <button class="btn btn-retry" id="retryBtn">Retry connection</button>
-          <a href="Durak.html" class="btn btn-home" role="button">Return to Game</a>
-        </div>
-        <div class="codebox" aria-hidden>
-          <strong>Error:</strong> Failed to fetch game API (status unknown). Try refreshing or check your connection.
-        </div>
-      </div>
-    </div>
-    <div class="particle p1"></div>
-    <div class="particle p2"></div>
-    <div class="particle p3"></div>
-    <div class="particle p4"></div>
-  </div>
 
-  <script>
-    document.getElementById('retryBtn').addEventListener('click', function(){
-      // simple visual retry: try to re-load current page script resources
-      this.disabled = true;
-      this.textContent = 'Retrying...';
-      setTimeout(function(){
-        location.reload();
-      }, 700);
-    });
-  </script>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="backToGames()">
+                ←
+            </button>
+            <h1 class="header-title">POKER</h1>
+            <!-- <div class="subtitle">🔴 No-Limit | 🟢 Limit | 🟡 Pot-Limit</div> -->
+            <div class="user-info">
+                <!-- <div id="userName">Yüklənir...</div> -->
+                <div class="balance"><span id="userBalance">0</span></div>
+            </div>
+        </div>
+        <!-- <div class="user-info">
+        </div> -->
+
+        <!-- Buy-in Seçimi Modal -->
+        <div id="buyInModal"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+            <div
+                style="background: #1e293b; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; box-shadow: 0 10px 50px rgba(0,0,0,0.7);">
+                <h3 style="color: #10b981; margin-bottom: 20px; text-align: center; font-size: 1.5rem;">💰 Buy-in
+                    Məbləği Seçin</h3>
+
+                <div style="margin-bottom: 20px;">
+                    <label
+                        style="color: #94a3b8; font-size: 14px; display: block; margin-bottom: 8px; font-weight: 600;">
+                        Məbləğ (Min: <span id="minBuyIn">0</span>₼ - Max: <span id="maxBuyIn">0</span>₼)
+                    </label>
+                    <input type="number" id="buyInInput" style="
+                    width: 100%;
+                    padding: 12px;
+                    border-radius: 8px;
+                    border: 2px solid #334155;
+                    background: #0f172a;
+                    color: white;
+                    font-size: 16px;
+                    font-weight: bold;
+                    box-sizing: border-box;
+                " placeholder="Məbləğ daxil edin" inputmode="numeric" />
+                </div>
+
+                <!-- Hazır məbləğlər -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+                    <button onclick="setQuickBuyIn('min')" style="
+                    padding: 10px;
+                    background: linear-gradient(135deg, #3b82f6, #1e40af);
+                    border: 2px solid transparent;
+                    border-radius: 8px;
+                    color: white;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.3s;
+                " onmouseover="this.style.borderColor='#60a5fa'" onmouseout="this.style.borderColor='transparent'">
+                        🔽 Min
+                    </button>
+                    <button onclick="setQuickBuyIn('mid')" style="
+                    padding: 10px;
+                    background: linear-gradient(135deg, #f59e0b, #d97706);
+                    border: 2px solid transparent;
+                    border-radius: 8px;
+                    color: white;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.3s;
+                " onmouseover="this.style.borderColor='#fbbf24'" onmouseout="this.style.borderColor='transparent'">
+                        ⚖️ Orta
+                    </button>
+                    <button onclick="setQuickBuyIn('max')" style="
+                    padding: 10px;
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    border: 2px solid transparent;
+                    border-radius: 8px;
+                    color: white;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.3s;
+                " onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='transparent'">
+                        🔼 Max
+                    </button>
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="closeBuyInModal()" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: linear-gradient(135deg, #6b7280, #4b5563);
+                    border: none;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        ❌ Ləğv et
+                    </button>
+                    <button onclick="confirmBuyIn()" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    border: none;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                " onmouseover="this.style.transform='scale(1.05); box-shadow=0 10px 25px rgba(16, 185, 129, 0.6);'"
+                        onmouseout="this.style.transform='scale(1)'">
+                        ✅ Təsdiq et
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Re-buy Modal -->
+        <div id="reBuyModal" style="display: none;">
+            <div
+                style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+                <div
+                    style="background: #1e293b; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; box-shadow: 0 10px 50px rgba(0,0,0,0.5);">
+                    <h3 style="color: #fbbf24; margin-bottom: 20px; text-align: center; font-size: 24px;">🔄 Re-buy
+                        Məbləği Seçin</h3>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="color: #94a3b8; font-size: 14px; display: block; margin-bottom: 8px;">
+                            Məbləğ (Min: <span id="reBuyMinAmount">0</span>₼ - Max: <span id="reBuyMaxAmount">0</span>₼)
+                        </label>
+                        <input type="number" id="reBuyInput"
+                            style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #334155; background: #0f172a; color: white; font-size: 16px; box-sizing: border-box;"
+                            placeholder="Məbləğ daxil edin">
+                    </div>
+
+                    <!-- Hazır məbləğlər -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+                        <button onclick="setQuickReBuy('min')"
+                            style="padding: 10px; background: #f59e0b; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">
+                            Min
+                        </button>
+                        <button onclick="setQuickReBuy('mid')"
+                            style="padding: 10px; background: #f59e0b; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">
+                            Orta
+                        </button>
+                        <button onclick="setQuickReBuy('max')"
+                            style="padding: 10px; background: #f59e0b; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">
+                            Max
+                        </button>
+                    </div>
+
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="closeReBuyModal()"
+                            style="flex: 1; padding: 12px; background: #ef4444; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">
+                            Ləğv et
+                        </button>
+                        <button onclick="confirmReBuy()"
+                            style="flex: 1; padding: 12px; background: #10b981; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">
+                            Təsdiq et
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="rebuy-countdown-banner" id="rebuyCountdownBanner">
+            <div style="font-size: 1.2rem; margin-bottom: 10px;">⏳ RE-BUY VAXT</div>
+            <div class="rebuy-countdown-timer" id="rebuyCountdownTimer">20</div>
+            <div style="font-size: 0.9rem;" id="rebuyWaitingPlayers"></div>
+        </div>
+
+        <div id="roomListSection">
+            <!-- <h2 style="margin-bottom: 15px;">Poker Otaqları</h2> -->
+            <div class="room-grid" id="roomGrid">
+                <div style="text-align: center; padding: 40px;">Yüklənir...</div>
+            </div>
+        </div>
+
+        <div id="gameSection" class="game-section">
+            <div class="game-info-bar">
+                <h2>
+                    <span id="gameTypeIcon">🎮</span>
+                    <span id="currentRoomName">-</span>
+                </h2>
+                <div class="game-type-description" id="gameTypeDescription">No-Limit Texas Hold'em</div>
+                <div class="game-balance-info">
+                    Balans: <span id="gameBalance">0</span> AZN |
+                    Çiplər: <span id="playerChips" style="color: #4ade80;">0</span>
+                </div>
+            </div>
+
+            <div class="poker-table" id="pokerTable">
+                <div class="table-center">
+                    <div class="pot-amount">POT: <span id="potAmount">0</span></div>
+                    <div class="current-bet-display">Mərc: <span id="currentBet">0</span></div>
+                    <div class="community-cards-area" id="communityCards"></div>
+                </div>
+            </div>
+
+            <div class="hand-cards" id="handCards">
+                <div style="color: #ffd700; text-align: center;">Kartlarınızı gözləyin...</div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-fold" id="foldBtn" onclick="playerAction('fold')" disabled>FOLD</button>
+                <button class="btn btn-check" id="checkBtn" onclick="playerAction('check')" disabled>CHECK</button>
+                <button class="btn btn-call" id="callBtn" onclick="playerAction('call')" disabled>
+                    CALL <span id="callAmount" style="font-weight: bold; color: #ffd700;"></span>
+                </button>
+                <button class="btn btn-raise" id="raiseBtn" onclick="openRaisePanel()" disabled>RAISE</button>
+                <button class="btn btn-rebuy" id="reBuyBtn" onclick="reBuy()" style="display: none;">💰 RE-BUY</button>
+                <button class="btn btn-allin" id="allinBtn" onclick="playerAction('allin')" disabled>ALL-IN</button>
+                <button class="btn btn-leave" onclick="leaveRoom()">❌ ÇIX</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="raise-slider-panel" id="raiseSliderPanel">
+        <div class="raise-slider-content">
+            <div class="raise-amount-display" id="raiseAmountDisplay">$100</div>
+            <div class="raise-slider-info">
+                <div>Min: <span id="raiseMinAmount">20</span> | Max: <span id="raiseMaxAmount">1000</span></div>
+            </div>
+            <input type="range" id="raiseSlider" class="raise-slider" min="20" max="1000" step="10" value="100">
+            <div class="raise-slider-buttons">
+                <button class="btn-slider-ok" onclick="confirmRaise()">✓ OK</button>
+                <button class="btn-slider-cancel" onclick="closeRaisePanel()">✗ CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        let currentUserToken = null;
+        let currentUserData = null;
+
+        console.log('♠ [POKER] Script yükləndi');
+
+        window.addEventListener('message', (event) => {
+            console.log('📨 [POKER] Message alındı:', event.data);
+
+            if (event.data && event.data.type === 'INIT_USER') {
+                console.log('✅ [POKER] INIT_USER qəbul edildi');
+
+                currentUserData = event.data.payload;
+                currentUserToken = currentUserData.token;
+
+                console.log('👤 [POKER] User:', currentUserData.username);
+                console.log('🎫 [POKER] Token:', currentUserToken ? 'VAR' : 'YOX');
+
+                // UI-ı yenilə
+                // document.getElementById('userName').textContent = currentUserData.username;
+                document.getElementById('userBalance').textContent = currentUserData.balance.toFixed(2);
+
+                console.log('🚀 [POKER] initializeSignalR() çağırılır...');
+                // SignalR başlat
+                initializeSignalR();
+            }
+        });
+
+        // ============================================
+        // getToken funksiyasını dəyişdir
+        // ============================================
+        function getToken() {
+            return currentUserToken || "";
+        }
+
+        // ============================================
+        // Qalan kod eyni qalır
+        // ============================================
+        let connection = null;
+        let currentUserId = 0;
+        let currentRoomId = null;
+        let myHoleCards = [];
+        let currentPlayerName = '';
+        let currentGameType = 0;
+        let currentBigBlind = 0;
+        let currentPot = 0;
+        let raiseSliderMin = 0;
+        let raiseSliderMax = 1000;
+        let rebuyCountdownInterval = null;
+
+        let currentMinBuyIn = 0;
+        let currentMaxBuyIn = 0;
+
+        let currentReBuyMin = 0;
+        let currentReBuyMax = 0;
+
+        let turnTimeoutTimer = null;
+        let currentTurnTimeRemaining = 0;
+
+
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // await initializeSignalR();
+            setupRaiseSlider();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const buyInInput = document.getElementById('buyInInput');
+
+            if (buyInInput) {
+                // Input dəyişəndə validation et
+                buyInInput.addEventListener('input', (e) => {
+                    let value = parseFloat(e.target.value) || 0;
+
+                    // Min/Max limitləri uygula
+                    if (value < currentMinBuyIn) {
+                        value = currentMinBuyIn;
+                    }
+                    if (value > currentMaxBuyIn) {
+                        value = currentMaxBuyIn;
+                    }
+
+                    e.target.value = value;
+                    console.log(`💵 Buy-in input: ${value}₼`);
+                });
+            }
+        });
+        function setupRaiseSlider() {
+            const slider = document.getElementById('raiseSlider');
+            const display = document.getElementById('raiseAmountDisplay');
+            slider.addEventListener('input', (e) => {
+                display.textContent = ' + e.target.value';
+            });
+        }
+
+        function openRaisePanel() {
+            if (currentGameType === 1) {
+                playerAction('raise', null);
+                return;
+            }
+            const panel = document.getElementById('raiseSliderPanel');
+            const slider = document.getElementById('raiseSlider');
+            const display = document.getElementById('raiseAmountDisplay');
+
+            slider.min = raiseSliderMin;
+            slider.max = raiseSliderMax;
+            slider.value = raiseSliderMin;
+            display.textContent = ' + raiseSliderMin';
+
+            document.getElementById('raiseMinAmount').textContent = raiseSliderMin;
+            document.getElementById('raiseMaxAmount').textContent = raiseSliderMax;
+
+            panel.classList.add('active');
+        }
+
+        function closeRaisePanel() {
+            document.getElementById('raiseSliderPanel').classList.remove('active');
+        }
+
+        async function confirmRaise() {
+            const amount = parseFloat(document.getElementById('raiseSlider').value);
+            closeRaisePanel();
+            await playerAction('raise', amount);
+        }
+
+        function getToken() {
+            const raw = document.cookie.split("; ").find(row => row.startsWith("AuthToken="))?.split("=")[1];
+            return raw ? decodeURIComponent(raw).trim() : "";
+        }
+
+        async function initializeSignalR() {
+            try {
+                connection = new signalR.HubConnectionBuilder()
+                    .withUrl("https://nehemiah-paginal-alan.ngrok-free.dev/pokerhub", { accessTokenFactory: () => getToken() })
+                    .withAutomaticReconnect()
+                    .build();
+                setupSignalRHandlers();
+                await connection.start();
+                console.log("✅ Poker SignalR connected");
+                await loadRoomList();
+            } catch (error) {
+                console.error("❌ SignalR connection error:", error);
+                showMessage("Bağlantı xətası: " + error.message, "error");
+            }
+        }
+
+        function setupSignalRHandlers() {
+            connection.on("UserData", (data) => {
+                currentUserId = data.userId;
+                currentPlayerName = data.fullName;
+                // document.getElementById('userName').textContent = data.username;
+                document.getElementById('userBalance').textContent = data.balance.toFixed(2);
+            });
+
+            connection.on("BalanceUpdated", (balance) => {
+                document.getElementById('userBalance').textContent = balance.toFixed(2);
+                document.getElementById('gameBalance').textContent = balance.toFixed(2);
+            });
+
+            connection.on("JoinedRoom", (data) => {
+                currentRoomId = data.roomId;
+
+                window.currentRoomId = data.roomId;
+                window.currentRoomInfo = {
+                    roomId: data.roomId,
+                    roomName: data.roomName,
+                    entryFee: data.entryFee || data.minBuyIn || 10,
+                    minBuyIn: data.minBuyIn,
+                    maxBuyIn: data.maxBuyIn
+                };
+
+                document.getElementById('currentRoomName').textContent = data.roomName;
+                document.getElementById('gameBalance').textContent = data.balance.toFixed(2);
+                document.getElementById('playerChips').textContent = data.chips.toFixed(2);
+                if (data.gameType !== undefined) {
+                    currentGameType = data.gameType;
+                    updateGameTypeDisplay();
+                }
+
+                document.getElementById('roomListSection').style.display = 'none';
+                document.getElementById('gameSection').classList.add('active');
+                showMessage("Otağa qoşuldunuz!", "success");
+            });
+
+            connection.on("PlayerTimeout", (data) => {
+                console.log(`⏰ Timeout: ${data.playerName}`);
+                console.log(`📢 Message: ${data.message}`);
+
+                if (data.playerName === currentPlayerName) {
+                    // ✅ Özünüzün timeout-u
+                    showMessage(`⏰ Vaxtınız bitdi! Avtomatik FOLD olundu.`, "error");
+                } else {
+                    // ✅ Başqasının timeout-u
+                    showMessage(`⏰ ${data.playerName} vaxt bitdi (Auto-fold)`, "info");
+                }
+            });
+            connection.on("StreetAdvanced", (data) => {
+                clearTimeout(turnTimeoutTimer);
+                currentTurnTimeRemaining = 0;
+                console.log("🎴 New street - turn timer reset");
+            });
+            connection.on("JoinError", (message) => showMessage(message, "error"));
+            connection.on("PlayerJoined", (playerName) => showMessage(playerName + " otağa qoşuldu", "info"));
+            connection.on("PlayerLeft", (playerName) => showMessage(playerName + " otaqdan çıxdı", "info"));
+            connection.on("PlayerKicked", (playerName) => showMessage(playerName + " otaqdan çıxarıldı", "info"));
+
+            connection.on("GameStarted", () => {
+                const reBuyBtn = document.getElementById('reBuyBtn');
+                reBuyBtn.style.display = 'none';
+                reBuyBtn.disabled = true;
+                showMessage("🎮 Oyun başladı!", "success");
+            });
+
+            connection.on("ShowReBuyOption", (seconds) => {
+                const reBuyBtn = document.getElementById('reBuyBtn');
+                reBuyBtn.style.display = 'inline-block';
+                reBuyBtn.disabled = false;
+                showMessage("💰 Çiplər bitdi! Re-Buy edin", "info");
+            });
+            connection.on("ReBuyCountdown", (data) => {
+                startReBuyCountdown(data.duration, data.playersWaiting);
+            });
+            connection.on("ReBuySuccess", (data) => {
+                console.log("✅ Re-buy successful:", data);
+
+                const reBuyBtn = document.getElementById('reBuyBtn');
+                reBuyBtn.style.display = 'none';
+                reBuyBtn.disabled = true;
+
+                showMessage(`✅ ${data.amount}₼ əlavə edildi! Yeni çiplər: ${data.chips}₼`, "success");
+                updatePlayerChips(data.chips);
+                updateBalance(data.balance);
+            });
+
+            // 🔥 Re-buy Error event
+            connection.on("ReBuyError", (message) => {
+                console.error("❌ Re-buy error:", message);
+                showMessage(message, "error");
+            });
+
+            connection.on("PlayerReBought", (playerName) => showMessage(`💰 ${playerName} re-buy etdi`, "info"));
+            connection.on("WaitingForPlayers", (message) => showMessage(message, "info"));
+
+            connection.on("KickedFromRoom", (reason) => {
+                showMessage(reason, "error");
+                document.getElementById('gameSection').classList.remove('active');
+                document.getElementById('roomListSection').style.display = 'block';
+                currentRoomId = null;
+                currentGameType = 0;
+                resetGameUI();
+                loadRoomList();
+            });
+
+            connection.on("HoleCards", (cards) => {
+                let cardArray = Array.isArray(cards) ? cards : Object.values(cards || {});
+                if (cardArray && cardArray.length >= 2) {
+                    myHoleCards = cardArray;
+                    showMessage("🎴 Kartlarınız gəldi!", "success");
+                    // GameState yeniləməsini gözlə
+                }
+            });
+
+            // SignalR event handlers
+            connection.on("DisableActions", (data) => {
+                // Düymələri deaktiv et
+                document.querySelectorAll('.action-button').forEach(btn => {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                });
+
+                // Mesaj göstər
+                showMessage(data.message, data.duration);
+            });
+
+            connection.on("EnableActions", () => {
+                // Düymələri aktivləşdir
+                document.querySelectorAll('.action-button').forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                });
+            });
+            connection.on("DisableActionsFor", (seconds) => {
+                console.log(`🚫 Actions disabled for ${seconds} seconds`);
+
+                // Bütün action düymələrini disable et
+                document.querySelectorAll('.action-button').forEach(btn => {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                    btn.style.cursor = 'not-allowed';
+                });
+
+                // X saniyə sonra yenidən aktiv et
+                setTimeout(() => {
+                    document.querySelectorAll('.action-button').forEach(btn => {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.style.cursor = 'pointer';
+                    });
+                    console.log("✅ Actions enabled after card reveal");
+                }, seconds * 1000);
+            });
+
+
+            connection.on("GameState", (state) => {
+                updateGameState(state);
+
+                // ✅ Cari oyunçunun turn time-ı var mı?
+                if (state.players && state.players.length > 0) {
+                    const myPlayer = state.players.find(p => p.name === currentPlayerName);
+
+                    if (myPlayer && myPlayer.isActive && state.players[state.players.findIndex(p => p.name === currentPlayerName)].turnTimeRemaining > 0) {
+                        const timeRemaining = state.players[state.players.findIndex(p => p.name === currentPlayerName)].turnTimeRemaining;
+
+                        console.log(`⏱️ Turn time remaining: ${timeRemaining}s`);
+
+                        // ✅ Auto-fold timer-i başlat
+                        startAutoFoldTimer(timeRemaining);
+                    }
+                }
+            });
+
+            connection.on("StreetAdvanced", (data) => {
+                console.log(`🎴 New street: ${data.street}`);
+
+                // 🔥 KARTLAR AÇILIR - DƏRHAL DÜYMƏLƏR DEAKTİV OLSUN
+                disableAllActionButtons();
+                console.log("🚫 Buttons disabled - waiting for cards animation");
+
+                // Kartları göstər
+                displayCommunityCards(data.communityCards);
+
+                // Street məlumatını yenilə
+                currentStreet = data.street;
+                updateStreetDisplay(data.street);
+            });
+            connection.on("PlayerActioned", (data) => {
+                if (data.playerName === currentPlayerName && data.action.toLowerCase() === 'fold') {
+                    const reBuyBtn = document.getElementById('reBuyBtn');
+                    reBuyBtn.style.display = 'none';
+                    reBuyBtn.disabled = true;
+                }
+            });
+
+
+            connection.on("ShowdownCards", (allPlayerHands) => {
+                displayShowdownOnTable(allPlayerHands);
+            });
+
+            connection.on("HideShowdownCards", () => {
+                hideShowdownCards();
+            });
+
+            connection.on("GameOver", (data) => {
+                showMessage(`🏆 ${data.winner} qalib oldu!\n${data.handName}\n+${data.amount.toFixed(2)} AZN\nKomissiya: ${data.commission.toFixed(2)} AZN`, "success");
+                setTimeout(() => createConfetti(), 500);
+                disableActionButtons();
+            });
+
+            connection.on("HandReset", () => {
+                const reBuyBtn = document.getElementById('reBuyBtn');
+                reBuyBtn.style.display = 'none';
+                reBuyBtn.disabled = true;
+                resetGameUI();
+                showMessage("Yeni əl üçün hazırdır", "info");
+            });
+            connection.on("LeftRoom", () => {
+                document.getElementById('gameSection').classList.remove('active');
+                document.getElementById('roomListSection').style.display = 'block';
+                currentRoomId = null;
+                currentGameType = 0;
+                resetGameUI();
+                loadRoomList();
+            });
+
+            connection.on("ActionError", (msg) => showMessage(msg, "error"));
+            connection.on("Error", (msg) => showMessage(msg, "error"));
+            connection.on("GameError", (msg) => showMessage(msg, "error"));
+        }
+
+        function startAutoFoldTimer(timeInSeconds) {
+            // ✅ Köhnə timer-i dayandır
+            if (turnTimeoutTimer) {
+                clearTimeout(turnTimeoutTimer);
+            }
+
+            currentTurnTimeRemaining = timeInSeconds;
+
+            console.log(`⏰ Auto-fold timer başladı: ${timeInSeconds}s`);
+
+            // ✅ Timeout-dan 1 saniyə əvvəl fold et
+            const delayMs = (timeInSeconds - 1) * 1000; // 1s əvvəl
+
+            turnTimeoutTimer = setTimeout(() => {
+                executeAutoFold();
+            }, delayMs);
+        }
+        async function executeAutoFold() {
+            console.log("⏰ ⏰ ⏰ VAXT BİTDİ! AUTO-FOLD ICRA EDILIR!");
+
+            // ✅ FOLD DÜYMƏSINI BAS
+            const foldBtn = document.getElementById('foldBtn');
+
+            if (foldBtn && !foldBtn.disabled) {
+                console.log("✅ Fold düymə basılıyor...");
+
+                // Rəngi dəyiş (visual feedback)
+                foldBtn.style.background = '#ef4444';
+                foldBtn.style.boxShadow = '0 0 20px rgba(239, 68, 68, 1)';
+
+                // Düyməyi bas
+                foldBtn.click();
+
+                // ✅ Animasyon
+                showMessage("⏰ Vaxt bitdi! AUTO-FOLD edildini", "info");
+
+                console.log("✅ Auto-fold tamamlandı");
+            } else {
+                console.warn("❌ Fold düymə mövcud deyil və ya deaktivdir");
+            }
+        }
+        function updateTurnCountdown() {
+            const gameState = document.querySelector('[data-turn-time]');
+
+            if (currentTurnTimeRemaining > 0) {
+                currentTurnTimeRemaining--;
+
+                // ✅ Timer display-i yenilə (əgər var olarsa)
+                const timerDisplay = document.getElementById('turnTimerDisplay');
+                if (timerDisplay) {
+                    timerDisplay.textContent = `${currentTurnTimeRemaining}s`;
+
+                    // ⏰ Son 5 saniyədə qırmızı et
+                    if (currentTurnTimeRemaining <= 5) {
+                        timerDisplay.style.color = '#dc2626';
+                        timerDisplay.style.textShadow = '0 0 10px rgba(220, 38, 38, 1)';
+                    } else {
+                        timerDisplay.style.color = '#4ade80';
+                        timerDisplay.style.textShadow = '0 0 10px rgba(74, 222, 128, 1)';
+                    }
+                }
+            }
+        }
+
+        function updatePlayerChips(chips) {
+            const chipsElement = document.getElementById('playerChips');
+            if (chipsElement) {
+                chipsElement.textContent = chips.toFixed(2) + '₼';
+            }
+        }
+
+        function updateBalance(balance) {
+            const balanceElement = document.getElementById('userBalance');
+            if (balanceElement) {
+                balanceElement.textContent = balance.toFixed(2) + '₼';
+            }
+        }
+
+        function showMessage(message, type) {
+            // Mövcud showMessage funksiyası və ya sadə alert
+            console.log(`${type === 'error' ? '❌' : '✅'} ${message}`);
+            alert(message);
+        }
+
+        function startReBuyCountdown(duration, playersWaiting) {
+            if (rebuyCountdownInterval) {
+                clearInterval(rebuyCountdownInterval);
+            }
+
+            const banner = document.getElementById('rebuyCountdownBanner');
+            const timer = document.getElementById('rebuyCountdownTimer');
+            const waitingList = document.getElementById('rebuyWaitingPlayers');
+
+            waitingList.textContent = 'Gözləyən: ' + playersWaiting.join(', ');
+            banner.classList.add('active');
+
+            let remaining = duration;
+            timer.textContent = remaining;
+
+            rebuyCountdownInterval = setInterval(() => {
+                remaining--;
+                timer.textContent = remaining;
+                if (remaining <= 0) {
+                    clearInterval(rebuyCountdownInterval);
+                    banner.classList.remove('active');
+                }
+            }, 1000);
+        }
+
+        function displayShowdownOnTable(allPlayerHands) {
+            allPlayerHands.forEach(ph => {
+                const playerSpots = document.querySelectorAll('.player-spot');
+                playerSpots.forEach(spot => {
+                    const playerName = spot.querySelector('.player-name')?.textContent?.replace('🔵 ', '');
+                    if (playerName === ph.playerName) {
+                        const avatar = spot.querySelector('.player-avatar');
+                        if (ph.isWinner && avatar) {
+                            avatar.classList.add('winner');
+                        }
+
+                        let showdownContainer = spot.querySelector('.showdown-cards');
+                        if (!showdownContainer) {
+                            showdownContainer = document.createElement('div');
+                            showdownContainer.className = 'showdown-cards';
+                            spot.appendChild(showdownContainer);
+                        }
+
+                        const cardsHtml = ph.cards.map(card => {
+                            const isRed = card.includes('♥') || card.includes('♦');
+                            const rank = card.slice(0, -1);
+                            const suit = card.slice(-1);
+                            return `<div class="mini-card-showdown ${isRed ? 'red' : 'black'}">
+                                            <div style="font-size: 1rem;">${rank}</div>
+                                            <div style="font-size: 1.3rem;">${suit}</div>
+                                        </div>`;
+                        }).join('');
+
+                        showdownContainer.innerHTML = cardsHtml;
+                        setTimeout(() => showdownContainer.classList.add('visible'), 100);
+
+                        let handNameEl = spot.querySelector('.showdown-hand-name');
+                        if (!handNameEl) {
+                            handNameEl = document.createElement('div');
+                            handNameEl.className = 'showdown-hand-name';
+                            spot.appendChild(handNameEl);
+                        }
+                        handNameEl.textContent = ph.handName || '';
+                        setTimeout(() => handNameEl.classList.add('visible'), 100);
+                    }
+                });
+            });
+        }
+
+        function hideShowdownCards() {
+            document.querySelectorAll('.showdown-cards').forEach(el => {
+                el.classList.remove('visible');
+                setTimeout(() => el.remove(), 500);
+            });
+            document.querySelectorAll('.showdown-hand-name').forEach(el => {
+                el.classList.remove('visible');
+                setTimeout(() => el.remove(), 500);
+            });
+            document.querySelectorAll('.player-avatar.winner').forEach(el => {
+                el.classList.remove('winner');
+            });
+        }
+
+        function updateGameTypeDisplay() {
+            const icon = document.getElementById('gameTypeIcon');
+            const desc = document.getElementById('gameTypeDescription');
+            switch (currentGameType) {
+                case 0:
+                    icon.textContent = '🔴';
+                    desc.textContent = 'No-Limit Texas Hold\'em - Limitsiz mərc';
+                    break;
+                case 1:
+                    icon.textContent = '🟢';
+                    desc.textContent = 'Limit Texas Hold\'em - Sabit mərc limitləri';
+                    break;
+                case 2:
+                    icon.textContent = '🟡';
+                    desc.textContent = 'Pot-Limit - Maksimum mərc = Pot qədər';
+                    break;
+            }
+        }
+
+        async function loadRoomList() {
+            try {
+                const rooms = await connection.invoke("GetRoomList");
+                displayRoomList(rooms);
+            } catch (error) {
+                console.error("Room list error:", error);
+            }
+        }
+
+        function displayRoomList(rooms) {
+            const grid = document.getElementById('roomGrid');
+            if (!rooms || rooms.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; padding: 40px;">Hazırda aktiv otaq yoxdur</div>';
+                return;
+            }
+            const getGameTypeBadge = (type) => {
+                switch (type) {
+                    case 0: return '<span class="game-type-badge badge-no-limit">🔴 NO-LIMIT</span>';
+                    case 1: return '<span class="game-type-badge badge-limit">🟢 LIMIT</span>';
+                    case 2: return '<span class="game-type-badge badge-pot-limit">🟡 POT-LIMIT</span>';
+                    default: return '';
+                }
+            };
+            grid.innerHTML = rooms.map(room => `
+                    <div class="room-card" onclick="joinRoom('${room.roomId}')">
+                        ${getGameTypeBadge(room.gameType)}
+                        <h3>${room.roomName}</h3>
+                        <div class="room-info">
+                            <div>👥 Oyunçular: ${room.playerCount}/${room.maxPlayers}</div>
+                            <div>💰 Buy-in: ${room.buyIn} AZN</div>
+                            <div>🎲 Blinds: ${room.smallBlind}/${room.bigBlind}</div>
+                            <div>📍 ${room.isGameActive ? '🎮 Oyun davam edir' : '✅ Gözləyir'}</div>
+                        </div>
+                        <button class="join-btn" onclick="event.stopPropagation(); joinRoom('${room.roomId}')">🎯 QOŞUL</button>
+                    </div>
+                `).join('');
+        }
+
+
+
+        async function joinRoom(roomId) {
+            try {
+                currentRoomId = roomId;
+
+                console.log(`🔍 Getting room info for: ${roomId}`);
+
+                // Room məlumatlarını al
+                const roomInfo = await connection.invoke("GetRoomInfo", roomId);
+
+                console.log("📊 Room info received:", roomInfo);
+
+                if (roomInfo) {
+                    // ✅ DÜZƏLİŞ: Backend-dən gələn dəyərləri istifadə et
+                    currentMinBuyIn = roomInfo.minBuyIn || roomInfo.entryFee;
+                    currentMaxBuyIn = roomInfo.maxBuyIn || (roomInfo.entryFee * 100);
+
+                    console.log(`💰 Buy-in range: ${currentMinBuyIn}₼ - ${currentMaxBuyIn}₼`);
+
+                    document.getElementById('minBuyIn').textContent = currentMinBuyIn.toFixed(2);
+                    document.getElementById('maxBuyIn').textContent = currentMaxBuyIn.toFixed(2);
+                    document.getElementById('buyInInput').value = currentMinBuyIn; // Default minimum
+                    document.getElementById('buyInInput').min = currentMinBuyIn;
+                    document.getElementById('buyInInput').max = currentMaxBuyIn;
+                    document.getElementById('buyInInput').step = roomInfo.bigBlind || 1;
+
+                    // Modal-ı göstər
+                    document.getElementById('buyInModal').style.display = 'flex';
+                } else {
+                    showMessage("Room məlumatı tapılmadı", "error");
+                }
+            } catch (error) {
+                console.error("❌ joinRoom error:", error);
+                showMessage("Room məlumatı alına bilmədi: " + error.message, "error");
+            }
+        }
+
+        // Hazır məbləğlər
+        function setQuickBuyIn(type) {
+            const input = document.getElementById('buyInInput');
+
+            if (!input) {
+                console.error("❌ Input field tapılmadı");
+                return;
+            }
+
+            let value = 0;
+
+            if (type === 'min') {
+                value = currentMinBuyIn;
+            } else if (type === 'mid') {
+                value = Math.round((currentMinBuyIn + currentMaxBuyIn) / 2);
+            } else if (type === 'max') {
+                value = currentMaxBuyIn;
+            }
+
+            // ✅ DÜZƏLİŞ: Input-un value-sunu dəyiş
+            input.value = value;
+
+            console.log(`✅ Quick buy-in set: ${value}₼ (${type})`);
+
+            // Visual feedback
+            input.style.borderColor = '#10b981';
+            setTimeout(() => {
+                input.style.borderColor = '#334155';
+            }, 300);
+        }
+
+        // Buy-in təsdiqi
+        async function confirmBuyIn() {
+            const buyInAmount = parseFloat(document.getElementById('buyInInput').value);
+
+            console.log(`🎯 Confirming buy-in: ${buyInAmount}₼ for room: ${currentRoomId}`);
+
+            // ✅ Validasiyalar
+            if (isNaN(buyInAmount) || buyInAmount <= 0) {
+                showMessage("Düzgün məbləğ daxil edin!", "error");
+                return;
+            }
+
+            if (buyInAmount < currentMinBuyIn) {
+                showMessage(`Minimum buy-in: ${currentMinBuyIn}₼`, "error");
+                return;
+            }
+
+            if (buyInAmount > currentMaxBuyIn) {
+                showMessage(`Maksimum buy-in: ${currentMaxBuyIn}₼`, "error");
+                return;
+            }
+
+            // 🔥 roomId-ni saxla
+            const roomIdToJoin = currentRoomId;
+
+            if (!roomIdToJoin) {
+                showMessage("Room ID tapılmadı", "error");
+                return;
+            }
+
+            try {
+                console.log(`🚀 Joining room ${roomIdToJoin} with ${buyInAmount}₼`);
+
+                // Modal-ı bağla
+                closeBuyInModal();
+
+                // Otağa qoşul
+                await connection.invoke("JoinRoom", roomIdToJoin, buyInAmount);
+
+                console.log("✅ Successfully joined room");
+
+            } catch (error) {
+                console.error("❌ JoinRoom error:", error);
+                showMessage("Otağa qoşula bilmədiniz: " + error.message, "error");
+            }
+        }
+
+        // Modal-ı bağla
+        function closeBuyInModal() {
+            const modal = document.getElementById('buyInModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+
+            // Input-u təmizlə
+            const input = document.getElementById('buyInInput');
+            if (input) {
+                input.value = '';
+            }
+
+            // roomId-ni sıfırla
+            setTimeout(() => {
+                currentRoomId = null;
+            }, 100);
+
+            console.log("❌ Buy-in modal closed");
+        }
+
+
+
+        async function showReBuyModal() {
+            try {
+                // Əvvəlcə cari room ID-ni al
+                const roomId = getCurrentRoomId(); // Bu funksiya olmalıdır
+
+                if (!roomId) {
+                    showMessage("Otaq məlumatı tapılmadı", "error");
+                    return;
+                }
+
+                // 🔥 VARIANT 1: window.currentRoomInfo saxlanıbsa (tövsiyə)
+                if (window.currentRoomInfo) {
+                    currentReBuyMin = window.currentRoomInfo.entryFee;
+                    currentReBuyMax = window.currentRoomInfo.entryFee * 50;
+
+                    console.log(`✅ Using cached room info: ${currentReBuyMin}₼ - ${currentReBuyMax}₼`);
+                }
+                // 🔥 VARIANT 2: Room məlumatını backend-dən al
+                else {
+                    console.log("📡 Fetching room info from backend...");
+                    const roomInfo = await connection.invoke("GetRoomInfo", roomId);
+
+                    if (roomInfo) {
+                        currentReBuyMin = roomInfo.entryFee;
+                        currentReBuyMax = roomInfo.entryFee * 50;
+
+                        // Məlumatı saxla (növbəti dəfə üçün)
+                        window.currentRoomInfo = {
+                            roomId: roomInfo.roomId,
+                            roomName: roomInfo.roomName,
+                            entryFee: roomInfo.entryFee,
+                            minBuyIn: roomInfo.minBuyIn,
+                            maxBuyIn: roomInfo.maxBuyIn
+                        };
+
+                        console.log(`✅ Fetched room info: ${currentReBuyMin}₼ - ${currentReBuyMax}₼`);
+                    } else {
+                        // Əgər heç nə alınmadısa, default dəyərlər
+                        currentReBuyMin = 10;
+                        currentReBuyMax = 500;
+                        console.warn("⚠️ Using default re-buy values");
+                    }
+                }
+
+                // Modal-ı doldur
+                document.getElementById('reBuyMinAmount').textContent = currentReBuyMin;
+                document.getElementById('reBuyMaxAmount').textContent = currentReBuyMax;
+                document.getElementById('reBuyInput').value = currentReBuyMin;
+                document.getElementById('reBuyInput').min = currentReBuyMin;
+                document.getElementById('reBuyInput').max = currentReBuyMax;
+
+                // Modal-ı göstər
+                document.getElementById('reBuyModal').style.display = 'flex';
+
+                console.log(`🔄 Re-buy modal opened (${currentReBuyMin}₼ - ${currentReBuyMax}₼)`);
+
+            } catch (error) {
+                console.error("❌ showReBuyModal error:", error);
+                showMessage("Re-buy modal açıla bilmədi", "error");
+            }
+        }
+
+        // Hazır re-buy məbləğləri
+        function setQuickReBuy(type) {
+            const input = document.getElementById('reBuyInput');
+
+            if (type === 'min') {
+                input.value = currentReBuyMin;
+            } else if (type === 'mid') {
+                input.value = Math.round((currentReBuyMin + currentReBuyMax) / 2);
+            } else if (type === 'max') {
+                input.value = currentReBuyMax;
+            }
+
+            console.log(`💵 Quick re-buy selected: ${input.value}₼ (${type})`);
+        }
+
+        // Re-buy təsdiqi
+        async function confirmReBuy() {
+            const reBuyAmount = parseFloat(document.getElementById('reBuyInput').value);
+
+            console.log(`🎯 Confirming re-buy: ${reBuyAmount}₼`);
+
+            // Validasiyalar
+            if (isNaN(reBuyAmount)) {
+                showMessage("Düzgün məbləğ daxil edin", "error");
+                return;
+            }
+
+            if (reBuyAmount < currentReBuyMin) {
+                showMessage(`Minimum re-buy: ${currentReBuyMin}₼`, "error");
+                return;
+            }
+
+            if (reBuyAmount > currentReBuyMax) {
+                showMessage(`Maksimum re-buy: ${currentReBuyMax}₼`, "error");
+                return;
+            }
+
+            // Modal-ı bağla
+            closeReBuyModal();
+
+            try {
+                console.log(`🚀 Re-buying ${reBuyAmount}₼`);
+                await connection.invoke("ReBuy", reBuyAmount);
+                console.log("✅ Re-buy request sent");
+            } catch (error) {
+                console.error("❌ ReBuy error:", error);
+                showMessage("Re-buy alınmadı: " + error.message, "error");
+            }
+        }
+
+        // Re-buy modal-ını bağla
+        function closeReBuyModal() {
+            document.getElementById('reBuyModal').style.display = 'none';
+            console.log("❌ Re-buy modal closed");
+        }
+        function getCurrentRoomId() {
+            // Əgər global dəyişən varsa
+            if (window.currentRoomId) {
+                return window.currentRoomId;
+            }
+
+            // Əgər currentRoomInfo-da saxlanıbsa
+            if (window.currentRoomInfo && window.currentRoomInfo.roomId) {
+                return window.currentRoomInfo.roomId;
+            }
+
+            console.warn("⚠️ Room ID not found");
+            return null;
+        }
+
+        async function leaveRoom() {
+            if (!confirm("Otaqdan çıxmaq istədiyinizə əminsiniz?")) return;
+            try {
+                await connection.invoke("LeaveRoom");
+            } catch (error) {
+                showMessage("Xəta baş verdi", "error");
+            }
+        }
+
+        async function playerAction(action, amount = null) {
+            clearTimeout(turnTimeoutTimer);
+            currentTurnTimeRemaining = 0;
+            if (action === 'raise' && currentGameType !== 1 && !amount) {
+                openRaisePanel();
+                return;
+            }
+            try {
+                await connection.invoke("PlayerAction", action, amount);
+            } catch (error) {
+                showMessage("Xəta: " + error.message, "error");
+            }
+        }
+
+        async function reBuy() {
+            try {
+                // Birbaşa ReBuy çağırımı yerinə modal aç
+                await showReBuyModal();
+            } catch (error) {
+                showMessage("Re-buy xətası: " + error.message, "error");
+            }
+        }
+
+        const reBuyButtonStyle = `
+            .btn-rebuy {
+                background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+                color: #fff;
+                animation: rebuyPulse 2s infinite;
+                box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+            }
+
+            .btn-rebuy:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                animation: none;
+            }
+
+            @keyframes rebuyPulse {
+                0%, 100% {
+                    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+                }
+                50% {
+                    box-shadow: 0 0 40px rgba(245, 158, 11, 1);
+                }
+            }
+            `;
+
+        function displayHoleCards() {
+            // Kartlar indi player-spot-da göstərilir
+            // Bu funksiyanı yeniləyirik
+            if (myHoleCards && myHoleCards.length > 0) {
+                updatePlayersOnTable(
+                    document.querySelectorAll('.player-spot').length > 0 ?
+                        Array.from(document.querySelectorAll('.player-spot')).map(spot => ({
+                            name: spot.dataset.playerName
+                        })) : [],
+                    0
+                );
+            }
+        }
+
+        function displayCommunityCards(cards) {
+            const container = document.getElementById('communityCards');
+            if (!cards || cards.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            container.innerHTML = cards.map(card => {
+                const isRed = card.includes('♥') || card.includes('♦');
+                const rank = card.slice(0, -1);
+                const suit = card.slice(-1);
+                return `<div class="mini-card ${isRed ? 'red' : 'black'}">
+                        <div style="font-size: 1.2rem;">${rank}</div>
+                        <div style="font-size: 1.5rem;">${suit}</div>
+                    </div>`;
+            }).join('');
+        }
+
+        function updateGameState(state) {
+            if (!state || !state.players) return;
+
+            const myPlayer = state.players.find(p => p.name === currentPlayerName);
+            const currentPlayer = state.players[0]; // Fərz et ki, active oyunçu birinci
+
+            // ✅ Timer display-i göstər/gizlə
+            const timerDisplay = document.getElementById('turnTimerDisplay');
+            if (timerDisplay) {
+                if (currentPlayer && currentPlayer.isActive) {
+                    timerDisplay.style.display = 'block';
+                    timerDisplay.textContent = `${currentPlayer.turnTimeRemaining || 0}s`;
+
+                    // ⏰ Son 5 saniyədə qırmızı et
+                    if ((currentPlayer.turnTimeRemaining || 0) <= 5) {
+                        timerDisplay.style.color = '#dc2626';
+                        timerDisplay.style.textShadow = '0 0 10px rgba(220, 38, 38, 1)';
+                        timerDisplay.style.borderColor = '#dc2626';
+                    } else {
+                        timerDisplay.style.color = '#4ade80';
+                        timerDisplay.style.textShadow = '0 0 10px rgba(74, 222, 128, 1)';
+                        timerDisplay.style.borderColor = '#4ade80';
+                    }
+                } else {
+                    timerDisplay.style.display = 'none';
+                }
+            }
+
+            // ✅ Siz sırada olsunuz
+            if (myPlayer && myPlayer.isActive && myPlayer.turnTimeRemaining > 0) {
+                startAutoFoldTimer(myPlayer.turnTimeRemaining);
+            }
+            document.getElementById('potAmount').textContent = (state.pot || 0).toFixed(2);
+            document.getElementById('currentBet').textContent = (state.currentBet || 0).toFixed(2);
+            currentPot = state.pot || 0;
+            currentBigBlind = state.bigBlind || 0;
+
+            if (state.gameType !== undefined) {
+                currentGameType = state.gameType;
+            }
+
+            if (state.communityCards) displayCommunityCards(state.communityCards);
+            if (state.players) updatePlayersOnTable(state.players, state.dealerIndex || 0);
+
+            if (!myPlayer) return;
+
+            document.getElementById('playerChips').textContent = myPlayer.chips.toFixed(2);
+
+            // 🔴 RE-BUY DÜYMƏ KONTROL
+            const reBuyBtn = document.getElementById('reBuyBtn');
+            if (myPlayer.chips <= 0 && !myPlayer.hasFolded) {
+                // Çiplər bitdi VƏ fold etmədiyiniz
+                reBuyBtn.style.display = 'inline-block';
+                reBuyBtn.disabled = false;
+            } else {
+                // Oyun zamanı və ya fold-da - GİZLƏ ET
+                reBuyBtn.style.display = 'none';
+                reBuyBtn.disabled = true;
+            }
+            const activePlayers = state.players.filter(p => p.isInHand && !p.hasFolded);
+            const isLastPlayer = activePlayers.length === 1 && activePlayers[0].name === currentPlayerName;
+            const isMyTurn = myPlayer.isActive && myPlayer.isInHand && !myPlayer.hasFolded;
+            const needToCall = state.currentBet > myPlayer.currentBet;
+            const callAmount = state.currentBet - myPlayer.currentBet;
+
+            const callBtn = document.getElementById('callBtn');
+            const callAmountSpan = document.getElementById('callAmount');
+            if (needToCall && callAmount > 0) {
+                callAmountSpan.textContent = `(${callAmount.toFixed(2)})`;
+            } else {
+                callAmountSpan.textContent = '';
+            }
+
+            document.getElementById('foldBtn').disabled = !isMyTurn || isLastPlayer;
+            callBtn.disabled = !isMyTurn || !needToCall;
+            document.getElementById('checkBtn').disabled = !isMyTurn || needToCall;
+            document.getElementById('raiseBtn').disabled = !isMyTurn;
+
+            const minRaise = Math.max(state.currentBet * 2, currentBigBlind * 2);
+            const maxRaise = currentGameType === 2 ? currentPot + state.currentBet : myPlayer.chips;
+            raiseSliderMin = minRaise;
+            raiseSliderMax = maxRaise;
+
+            const allinBtn = document.getElementById('allinBtn');
+            if (currentGameType === 1) {
+                allinBtn.style.display = 'none';
+            } else {
+                allinBtn.style.display = 'inline-block';
+                allinBtn.disabled = !isMyTurn;
+            }
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (turnTimeoutTimer) {
+                clearTimeout(turnTimeoutTimer);
+            }
+        });
+        function updatePlayersOnTable(players, dealerIndex) {
+            const table = document.getElementById('pokerTable');
+            const existingSpots = table.querySelectorAll('.player-spot');
+            existingSpots.forEach(spot => spot.remove());
+
+            if (!players || players.length === 0) return;
+
+            // Cari oyunçunu tap
+            const myIndex = players.findIndex(p => p.name === currentPlayerName);
+            if (myIndex === -1) return;
+
+            // Pozisiyalar: cari oyunçu həmişə bottom-da
+            const positions = ['bottom', 'left', 'top-left', 'top', 'top-right', 'right', 'bottom-right', 'bottom-left'];
+
+            // Oyunçuları yenidən sırala ki, cari oyunçu 0-cı indeksdə olsun
+            const reorderedPlayers = [
+                ...players.slice(myIndex),
+                ...players.slice(0, myIndex)
+            ];
+
+            // Dealer indeksini yenidən hesabla
+            const newDealerIndex = (dealerIndex - myIndex + players.length) % players.length;
+
+            reorderedPlayers.forEach((player, index) => {
+                if (index >= positions.length) return;
+                const spot = document.createElement('div');
+                spot.className = `player-spot ${positions[index]}`;
+                spot.dataset.playerName = player.name;
+                const isDealer = index === newDealerIndex;
+                const activeClass = player.isActive && !player.hasFolded ? 'active' : '';
+                const foldedClass = player.hasFolded ? 'folded' : '';
+
+                // Kartları göstər (yalnız cari oyunçu üçün və ya showdown zamanı)
+                let cardsHtml = '';
+                if (index === 0 && myHoleCards && myHoleCards.length > 0) {
+                    // Cari oyunçunun kartları
+                    cardsHtml = '<div class="player-cards">';
+                    myHoleCards.forEach(card => {
+                        const isRed = card.includes('♥') || card.includes('♦');
+                        const rank = card.slice(0, -1);
+                        const suit = card.slice(-1);
+                        cardsHtml += `<div class="player-card ${isRed ? 'red' : 'black'}">
+                                <div style="font-size: 1rem;">${rank}</div>
+                                <div style="font-size: 1.3rem;">${suit}</div>
+                            </div>`;
+                    });
+                    cardsHtml += '</div>';
+                }
+
+                spot.innerHTML = `
+                        <div class="player-avatar ${foldedClass} ${activeClass}">
+                            ${player.name ? player.name.charAt(0).toUpperCase() : '?'}
+                        </div>
+                        <div class="player-name">${isDealer ? '🔵 ' : ''}${player.name || 'Boş'}</div>
+                        <div class="player-chips">${(player.chips || 0).toFixed(2)} chips</div>
+                        ${player.currentBet > 0 ? `<div class="player-bet">Mərc: ${player.currentBet.toFixed(2)}</div>` : ''}
+                        ${player.hasFolded ? '<div class="player-status">FOLD</div>' : ''}
+                        ${cardsHtml}
+                    `;
+                table.appendChild(spot);
+            });
+        }
+
+        function disableActionButtons() {
+            document.getElementById('foldBtn').disabled = true;
+            document.getElementById('callBtn').disabled = true;
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('raiseBtn').disabled = true;
+            document.getElementById('allinBtn').disabled = true;
+            const callAmountSpan = document.getElementById('callAmount');
+            if (callAmountSpan) callAmountSpan.textContent = '';
+            closeRaisePanel();
+        }
+
+        function resetGameUI() {
+            myHoleCards = [];
+            document.getElementById('communityCards').innerHTML = '';
+            document.getElementById('potAmount').textContent = '0';
+            document.getElementById('currentBet').textContent = '0';
+            disableActionButtons();
+            closeRaisePanel();
+            hideShowdownCards();
+            if (rebuyCountdownInterval) {
+                clearInterval(rebuyCountdownInterval);
+                document.getElementById('rebuyCountdownBanner').classList.remove('active');
+            }
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = ['#ffd700', '#4ade80', '#3b82f6', '#f59e0b'][Math.floor(Math.random() * 4)];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        function showMessage(text, type = 'info') {
+            const existing = document.querySelectorAll('.message');
+            existing.forEach(msg => msg.remove());
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            document.body.appendChild(message);
+            setTimeout(() => {
+                message.style.animation = 'slideInRight 0.3s ease-out reverse';
+                setTimeout(() => message.remove(), 300);
+            }, 4000);
+        }
+        function backToGames() {
+            window.parent.postMessage({ type: 'BACK_TO_GAMES', payload: {} }, '*');
+        }
+        window.addEventListener('beforeunload', async () => {
+            if (currentRoomId && connection) {
+                try {
+                    await connection.invoke("LeaveRoom");
+                } catch (error) {
+                    console.error("Error leaving room:", error);
+                }
+            }
+        });
+
+        setInterval(() => {
+            if (!currentRoomId && document.getElementById('roomListSection').style.display !== 'none') {
+                loadRoomList();
+            }
+        }, 10000);
+    </script>
 </body>
+
 </html>

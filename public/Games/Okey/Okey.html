@@ -16,7 +16,9 @@
         <div id="roomListScreen" class="screen active">
             <div class="room-list-container">
                 <div class="header">
-
+                    <button class="back-btn" onclick="backToGames()">
+                        ←
+                    </button>
                     <!-- <h1>OKEY 51</h1> -->
                     <div class="header-title">OKEY 51</div>
                     <!-- <span class="user-name" id="userName">Yüklənir...</span> -->
@@ -480,7 +482,7 @@
                     document.getElementById('userName').textContent = payload.username;
                 }
                 if (document.getElementById('userBalance')) {
-                    document.getElementById('userBalance').textContent = `💰 ${payload.balance}₼`;
+                    document.getElementById('userBalance').textContent = `${payload.balance}₼`;
                 }
                 if (document.getElementById('myPlayerName')) {
                     document.getElementById('myPlayerName').textContent = payload.username;
@@ -2166,6 +2168,9 @@
 
             initializeSignalR();
         });
+        function backToGames() {
+            window.parent.postMessage({ type: 'BACK_TO_GAMES', payload: {} }, '*');
+        }
         console.log(document.getElementById('myBoard')); // null deyilsə OK
         console.log(myHand); // daşlar varmı?
         window.joinRoom = joinRoom;

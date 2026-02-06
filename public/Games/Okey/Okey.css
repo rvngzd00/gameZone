@@ -995,15 +995,15 @@ body {
 }
 
 .user-balance {
-    background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-    color: #1a1a2e;
-    padding: 12px 24px;
-    border-radius: 12px;
+    /* background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%); */
+    color: #ffd700;
+    /* padding: 7px 11px; */
+    /* border-radius: 12px; */
     font-weight: 800;
     font-size: clamp(1rem, 2vw, 1.15rem);
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    /* box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); */
     transition: all 0.3s;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    /* border: 2px solid rgba(255, 255, 255, 0.3); */
 }
 
 .user-balance:hover {
@@ -1057,7 +1057,7 @@ body {
         justify-content: space-between;
     }
 
-  
+
 
     .room-card {
         padding: 20px;
@@ -1496,16 +1496,16 @@ body {
 
 /* Modal Content - Glassmorphism effekti */
 .modal-content {
-    background: linear-gradient(145deg, 
-        rgba(255, 255, 255, 0.1), 
-        rgba(255, 255, 255, 0.05));
+    background: linear-gradient(145deg,
+            rgba(255, 255, 255, 0.1),
+            rgba(255, 255, 255, 0.05));
     /* backdrop-filter: blur(20px); */
     border: 2px solid rgba(255, 215, 0, 0.3);
     border-radius: 30px;
     padding: 45px;
     max-width: 750px;
     width: 65%;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.4),
         0 0 80px rgba(255, 215, 0, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -1528,8 +1528,17 @@ body {
 }
 
 @keyframes glow {
-    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-    50% { transform: translate(10px, 10px) scale(1.1); opacity: 0.8; }
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translate(10px, 10px) scale(1.1);
+        opacity: 0.8;
+    }
 }
 
 @keyframes modalSlide {
@@ -1537,6 +1546,7 @@ body {
         opacity: 0;
         transform: translateY(60px) scale(0.85);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -1544,8 +1554,13 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* Modal Header */
@@ -1571,8 +1586,13 @@ body {
 }
 
 @keyframes shimmer {
-    0% { background-position: 0% center; }
-    100% { background-position: 200% center; }
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
 }
 
 /* Close Button - Daha interaktiv */
@@ -1644,7 +1664,8 @@ body {
 }
 
 /* Bet Cards Container */
-#betOptions,.bet-options {
+#betOptions,
+.bet-options {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 20px;
@@ -1685,7 +1706,7 @@ body {
 .lobby-bet-card:hover {
     transform: translateY(-8px) scale(1.05);
     border-color: rgba(255, 215, 0, 0.8);
-    box-shadow: 
+    box-shadow:
         0 12px 40px rgba(255, 215, 0, 0.3),
         0 0 60px rgba(255, 215, 0, 0.15);
 }
@@ -1752,8 +1773,17 @@ body {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(0.98); }
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: scale(0.98);
+    }
 }
 
 /* Responsive */
@@ -1762,20 +1792,22 @@ body {
         width: 90%;
         padding: 30px 25px;
     }
-    
+
     .modal-header h2 {
         font-size: 26px;
     }
-    
-    #betOptions,.bet-options {
+
+    #betOptions,
+    .bet-options {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 15px;
     }
-    
+
     .bet-amount {
         font-size: 20px;
     }
 }
+
 .header {
     background: linear-gradient(135deg, rgba(20, 40, 30, 0.95), rgba(17, 50, 34, 0.95));
     backdrop-filter: blur(15px);
@@ -1810,13 +1842,52 @@ body {
 }
 
 @media (max-width: 500px) {
-    .player-options{
+    .player-options {
         display: flex;
     }
-    .player-count-large{
-        font-size: 47px;
+
+    .player-count-large {
+        font-size: 27px;
     }
-    .player-label{
+
+    .player-label {
+        font-size: 13px;
+    }
+}
+
+.back-btn {
+    width: 42px;
+    height: 42px;
+    padding: 20px 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 480px) {
+    .back-btn {
+        width: 17px;
+        height: 17px;
         font-size: 17px;
+        padding: 15px 15px;
     }
 }

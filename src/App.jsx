@@ -32,7 +32,7 @@ import SnowEffect from './components/mainLayout/SnowEffect'
 
 import AdminDashboard from './components/admin/AdminDashboard'
 
-import BackgammonGame from './components/games/BACKGAMMMONN/BackgammonREACT.jsx'
+// import BackgammonGame from './components/games/BACKGAMMMONN/BackgammonREACT.jsx'
 
 // import { Howler } from "howler";
 // import { SoundProvider } from './context/SoundContext.jsx'
@@ -88,14 +88,6 @@ function App() {
                   element={
                     <ProtectedRouteWrapper>
                       <Backgammon />
-                    </ProtectedRouteWrapper>
-                  }
-                />
-                <Route
-                  path="/games/backgammonT"
-                  element={
-                    <ProtectedRouteWrapper>
-                      <BackgammonGame />
                     </ProtectedRouteWrapper>
                   }
                 />

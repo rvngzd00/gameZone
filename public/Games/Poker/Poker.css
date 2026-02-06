@@ -969,3 +969,40 @@ body::before {
         opacity: 0;
     }
 }
+
+.back-btn {
+    width: 42px;
+    height: 42px;
+    padding: 20px 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 480px) {
+    .back-btn {
+        width: 17px;
+        height: 17px;
+        font-size: 17px;
+        padding: 15px 15px;
+    }
+}
