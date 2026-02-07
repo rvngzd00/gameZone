@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import './LotoReact.css';
 
 function LotoGame() {
-  const { user, balance, isAuthenticated, refreshBalance, token } = useAppContext();
+  const { user, balance, isAuthenticated, refreshBalance, token,language } = useAppContext();
   const iframeRef = useRef(null);
   const navigate = useNavigate();
   const { roomId } = useParams(); // URL-dən roomId götür
@@ -59,6 +59,7 @@ function LotoGame() {
             userId: user.id,
             username: user.username,
             fullName: user.fullName,
+            language: language,
             balance: balance,
             token: token,
             roomId: roomId // ← roomId də göndər

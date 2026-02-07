@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,7 @@
             <button class="back-btn" onclick="backToGames()">
                 ←
             </button>
-            <h1 class="header-title">POKER</h1>
+            <h1 class="header-title" data-i18n="header_title">POKER</h1>
             <!-- <div class="subtitle">🔴 No-Limit | 🟢 Limit | 🟡 Pot-Limit</div> -->
             <div class="user-info">
                 <!-- <div id="userName">Yüklənir...</div> -->
@@ -30,13 +30,13 @@
             style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
             <div
                 style="background: #1e293b; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; box-shadow: 0 10px 50px rgba(0,0,0,0.7);">
-                <h3 style="color: #10b981; margin-bottom: 20px; text-align: center; font-size: 1.5rem;">💰 Buy-in
-                    Məbləği Seçin</h3>
+                <h3 style="color: #10b981; margin-bottom: 20px; text-align: center; font-size: 1.5rem;"
+                    data-i18n="buyin_title">💰 Buy-in Amount</h3>
 
                 <div style="margin-bottom: 20px;">
-                    <label
+                    <label id="buyInLabel"
                         style="color: #94a3b8; font-size: 14px; display: block; margin-bottom: 8px; font-weight: 600;">
-                        Məbləğ (Min: <span id="minBuyIn">0</span>₼ - Max: <span id="maxBuyIn">0</span>₼)
+                        Amount (Min: <span id="minBuyIn">0</span>₼ - Max: <span id="maxBuyIn">0</span>₼)
                     </label>
                     <input type="number" id="buyInInput" style="
                     width: 100%;
@@ -48,7 +48,7 @@
                     font-size: 16px;
                     font-weight: bold;
                     box-sizing: border-box;
-                " placeholder="Məbləğ daxil edin" inputmode="numeric" />
+                " placeholder="Enter amount" inputmode="numeric" data-i18n-placeholder="buyin_placeholder" />
                 </div>
 
                 <!-- Hazır məbləğlər -->
@@ -63,7 +63,7 @@
                     font-weight: 600;
                     transition: all 0.3s;
                 " onmouseover="this.style.borderColor='#60a5fa'" onmouseout="this.style.borderColor='transparent'">
-                        🔽 Min
+                        🔽 <span data-i18n="min">Min</span>
                     </button>
                     <button onclick="setQuickBuyIn('mid')" style="
                     padding: 10px;
@@ -75,7 +75,7 @@
                     font-weight: 600;
                     transition: all 0.3s;
                 " onmouseover="this.style.borderColor='#fbbf24'" onmouseout="this.style.borderColor='transparent'">
-                        ⚖️ Orta
+                        ⚖️ <span data-i18n="mid">Mid</span>
                     </button>
                     <button onclick="setQuickBuyIn('max')" style="
                     padding: 10px;
@@ -87,7 +87,7 @@
                     font-weight: 600;
                     transition: all 0.3s;
                 " onmouseover="this.style.borderColor='#6ee7b7'" onmouseout="this.style.borderColor='transparent'">
-                        🔼 Max
+                        🔼 <span data-i18n="max">Max</span>
                     </button>
                 </div>
 
@@ -103,7 +103,7 @@
                     cursor: pointer;
                     transition: all 0.3s;
                 " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                        ❌ Ləğv et
+                        ❌ <span data-i18n="cancel">Cancel</span>
                     </button>
                     <button onclick="confirmBuyIn()" style="
                     flex: 1;
@@ -117,7 +117,7 @@
                     transition: all 0.3s;
                 " onmouseover="this.style.transform='scale(1.05); box-shadow=0 10px 25px rgba(16, 185, 129, 0.6);'"
                         onmouseout="this.style.transform='scale(1)'">
-                        ✅ Təsdiq et
+                        ✅ <span data-i18n="confirm">Confirm</span>
                     </button>
                 </div>
             </div>
@@ -129,42 +129,44 @@
                 style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
                 <div
                     style="background: #1e293b; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; box-shadow: 0 10px 50px rgba(0,0,0,0.5);">
-                    <h3 style="color: #fbbf24; margin-bottom: 20px; text-align: center; font-size: 24px;">🔄 Re-buy
-                        Məbləği Seçin</h3>
+                    <h3 style="color: #fbbf24; margin-bottom: 20px; text-align: center; font-size: 24px;"
+                        data-i18n="rebuy_title">🔄 Re-buy Amount</h3>
 
                     <div style="margin-bottom: 20px;">
-                        <label style="color: #94a3b8; font-size: 14px; display: block; margin-bottom: 8px;">
-                            Məbləğ (Min: <span id="reBuyMinAmount">0</span>₼ - Max: <span id="reBuyMaxAmount">0</span>₼)
+                        <label id="reBuyLabel"
+                            style="color: #94a3b8; font-size: 14px; display: block; margin-bottom: 8px;">
+                            Amount (Min: <span id="reBuyMinAmount">0</span>₼ - Max: <span
+                                id="reBuyMaxAmount">0</span>₼)
                         </label>
                         <input type="number" id="reBuyInput"
                             style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #334155; background: #0f172a; color: white; font-size: 16px; box-sizing: border-box;"
-                            placeholder="Məbləğ daxil edin">
+                            placeholder="Enter amount" data-i18n-placeholder="rebuy_placeholder">
                     </div>
 
                     <!-- Hazır məbləğlər -->
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
                         <button onclick="setQuickReBuy('min')"
                             style="padding: 10px; background: #f59e0b; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">
-                            Min
+                            <span data-i18n="min">Min</span>
                         </button>
                         <button onclick="setQuickReBuy('mid')"
                             style="padding: 10px; background: #f59e0b; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">
-                            Orta
+                            <span data-i18n="mid">Mid</span>
                         </button>
                         <button onclick="setQuickReBuy('max')"
                             style="padding: 10px; background: #f59e0b; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">
-                            Max
+                            <span data-i18n="max">Max</span>
                         </button>
                     </div>
 
                     <div style="display: flex; gap: 12px;">
                         <button onclick="closeReBuyModal()"
                             style="flex: 1; padding: 12px; background: #ef4444; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">
-                            Ləğv et
+                            <span data-i18n="cancel">Cancel</span>
                         </button>
                         <button onclick="confirmReBuy()"
                             style="flex: 1; padding: 12px; background: #10b981; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">
-                            Təsdiq et
+                            <span data-i18n="confirm">Confirm</span>
                         </button>
                     </div>
                 </div>
@@ -173,7 +175,7 @@
 
 
         <div class="rebuy-countdown-banner" id="rebuyCountdownBanner">
-            <div style="font-size: 1.2rem; margin-bottom: 10px;">⏳ RE-BUY VAXT</div>
+            <div style="font-size: 1.2rem; margin-bottom: 10px;" data-i18n="rebuy_time">⏳ RE-BUY TIME</div>
             <div class="rebuy-countdown-timer" id="rebuyCountdownTimer">20</div>
             <div style="font-size: 0.9rem;" id="rebuyWaitingPlayers"></div>
         </div>
@@ -181,7 +183,7 @@
         <div id="roomListSection">
             <!-- <h2 style="margin-bottom: 15px;">Poker Otaqları</h2> -->
             <div class="room-grid" id="roomGrid">
-                <div style="text-align: center; padding: 40px;">Yüklənir...</div>
+                <div style="text-align: center; padding: 40px;" data-i18n="loading">Loading...</div>
             </div>
         </div>
 
@@ -193,33 +195,39 @@
                 </h2>
                 <div class="game-type-description" id="gameTypeDescription">No-Limit Texas Hold'em</div>
                 <div class="game-balance-info">
-                    Balans: <span id="gameBalance">0</span> AZN |
-                    Çiplər: <span id="playerChips" style="color: #4ade80;">0</span>
+                    <span data-i18n="balance_label">Balance</span>: <span id="gameBalance">0</span> AZN |
+                    <span data-i18n="chips_label">Chips</span>: <span id="playerChips" style="color: #4ade80;">0</span>
                 </div>
             </div>
 
             <div class="poker-table" id="pokerTable">
                 <div class="table-center">
-                    <div class="pot-amount">POT: <span id="potAmount">0</span></div>
-                    <div class="current-bet-display">Mərc: <span id="currentBet">0</span></div>
+                    <div class="pot-amount"><span data-i18n="pot_label">POT</span>: <span id="potAmount">0</span></div>
+                    <div class="current-bet-display"><span data-i18n="bet_label">Bet</span>: <span id="currentBet">0</span>
+                    </div>
                     <div class="community-cards-area" id="communityCards"></div>
                 </div>
             </div>
 
             <div class="hand-cards" id="handCards">
-                <div style="color: #ffd700; text-align: center;">Kartlarınızı gözləyin...</div>
+                <div style="color: #ffd700; text-align: center;" data-i18n="wait_cards">Waiting for your cards...</div>
             </div>
 
             <div class="actions">
-                <button class="btn btn-fold" id="foldBtn" onclick="playerAction('fold')" disabled>FOLD</button>
-                <button class="btn btn-check" id="checkBtn" onclick="playerAction('check')" disabled>CHECK</button>
+                <button class="btn btn-fold" id="foldBtn" onclick="playerAction('fold')" disabled
+                    data-i18n="fold">FOLD</button>
+                <button class="btn btn-check" id="checkBtn" onclick="playerAction('check')" disabled
+                    data-i18n="check">CHECK</button>
                 <button class="btn btn-call" id="callBtn" onclick="playerAction('call')" disabled>
-                    CALL <span id="callAmount" style="font-weight: bold; color: #ffd700;"></span>
+                    <span data-i18n="call">CALL</span> <span id="callAmount" style="font-weight: bold; color: #ffd700;"></span>
                 </button>
-                <button class="btn btn-raise" id="raiseBtn" onclick="openRaisePanel()" disabled>RAISE</button>
-                <button class="btn btn-rebuy" id="reBuyBtn" onclick="reBuy()" style="display: none;">💰 RE-BUY</button>
-                <button class="btn btn-allin" id="allinBtn" onclick="playerAction('allin')" disabled>ALL-IN</button>
-                <button class="btn btn-leave" onclick="leaveRoom()">❌ ÇIX</button>
+                <button class="btn btn-raise" id="raiseBtn" onclick="openRaisePanel()" disabled
+                    data-i18n="raise">RAISE</button>
+                <button class="btn btn-rebuy" id="reBuyBtn" onclick="reBuy()" style="display: none;"
+                    data-i18n="rebuy_btn">💰 RE-BUY</button>
+                <button class="btn btn-allin" id="allinBtn" onclick="playerAction('allin')" disabled
+                    data-i18n="allin">ALL-IN</button>
+                <button class="btn btn-leave" onclick="leaveRoom()" data-i18n="leave">❌ EXIT</button>
             </div>
         </div>
     </div>
@@ -228,12 +236,13 @@
         <div class="raise-slider-content">
             <div class="raise-amount-display" id="raiseAmountDisplay">$100</div>
             <div class="raise-slider-info">
-                <div>Min: <span id="raiseMinAmount">20</span> | Max: <span id="raiseMaxAmount">1000</span></div>
+                <div id="raiseInfoText">Min: <span id="raiseMinAmount">20</span> | Max: <span
+                        id="raiseMaxAmount">1000</span></div>
             </div>
             <input type="range" id="raiseSlider" class="raise-slider" min="20" max="1000" step="10" value="100">
             <div class="raise-slider-buttons">
-                <button class="btn-slider-ok" onclick="confirmRaise()">✓ OK</button>
-                <button class="btn-slider-cancel" onclick="closeRaisePanel()">✗ CANCEL</button>
+                <button class="btn-slider-ok" onclick="confirmRaise()" data-i18n="ok">✓ OK</button>
+                <button class="btn-slider-cancel" onclick="closeRaisePanel()" data-i18n="cancel_text">✗ CANCEL</button>
             </div>
         </div>
     </div>
@@ -245,8 +254,582 @@
 
         console.log('♠ [POKER] Script yükləndi');
 
+        let currentLanguage = 'en';
+
+        const translations = {
+            en: {
+                title: '🎰 Poker Casino',
+                header_title: 'POKER',
+                buyin_title: '💰 Buy-in Amount',
+                buyin_label: 'Amount (Min: {min}₼ - Max: {max}₼)',
+                buyin_placeholder: 'Enter amount',
+                rebuy_title: '🔄 Re-buy Amount',
+                rebuy_label: 'Amount (Min: {min}₼ - Max: {max}₼)',
+                rebuy_placeholder: 'Enter amount',
+                min: 'Min',
+                mid: 'Mid',
+                max: 'Max',
+                cancel: 'Cancel',
+                confirm: 'Confirm',
+                rebuy_time: '⏳ RE-BUY TIME',
+                loading: 'Loading...',
+                balance_label: 'Balance',
+                chips_label: 'Chips',
+                pot_label: 'POT',
+                bet_label: 'Bet',
+                wait_cards: 'Waiting for your cards...',
+                fold: 'FOLD',
+                check: 'CHECK',
+                call: 'CALL',
+                raise: 'RAISE',
+                rebuy_btn: '💰 RE-BUY',
+                allin: 'ALL-IN',
+                leave: '❌ EXIT',
+                ok: '✓ OK',
+                cancel_text: '✗ CANCEL',
+                raise_info: 'Min: {min} | Max: {max}',
+                room_empty: 'No active rooms right now',
+                players_label: 'Players',
+                buyin_label_short: 'Buy-in',
+                blinds_label: 'Blinds',
+                game_active: '🎮 Game in progress',
+                game_waiting: '✅ Waiting',
+                badge_nolimit: '🔴 NO-LIMIT',
+                badge_limit: '🟢 LIMIT',
+                badge_potlimit: '🟡 POT-LIMIT',
+                join: '🎯 JOIN',
+                join_success: 'You joined the room!',
+                timeout_self: '⏰ Time is up! Auto FOLD.',
+                timeout_other: '⏰ {player} timed out (Auto-fold)',
+                game_started: '🎮 Game started!',
+                rebuy_prompt: '💰 Chips are finished! Re-buy now',
+                rebuy_success: '✅ {amount}₼ added! New chips: {chips}₼',
+                rebuy_player: '💰 {player} re-bought',
+                waiting_players: 'Waiting: {players}',
+                game_over: '🏆 {winner} won!\n{hand}\n+{amount} AZN\nCommission: {commission} AZN',
+                hand_reset: 'Ready for a new hand',
+                cards_arrived: '🎴 Your cards arrived!',
+                connection_error: 'Connection error: {message}',
+                room_info_not_found: 'Room info not found',
+                room_info_fail: 'Room info could not be retrieved: {message}',
+                invalid_amount: 'Enter a valid amount!',
+                min_buyin: 'Minimum buy-in: {min}₼',
+                max_buyin: 'Maximum buy-in: {max}₼',
+                room_id_missing: 'Room ID not found',
+                join_fail: 'Could not join the room: {message}',
+                rebuy_modal_fail: 'Re-buy modal could not be opened',
+                rebuy_invalid_amount: 'Enter a valid amount',
+                min_rebuy: 'Minimum re-buy: {min}₼',
+                max_rebuy: 'Maximum re-buy: {max}₼',
+                rebuy_fail: 'Re-buy failed: {message}',
+                leave_confirm: 'Are you sure you want to leave the room?',
+                action_error: 'Error: {message}',
+                rebuy_error: 'Re-buy error: {message}',
+                auto_fold: '⏰ Time is up! AUTO-FOLD executed',
+                fold_missing: 'Fold button is not available or disabled',
+                room_joined: '{player} joined the room',
+                room_left: '{player} left the room',
+                room_kicked: '{player} was removed from the room',
+                game_type_nolimit: 'No-Limit Texas Hold\'em - Unlimited betting',
+                game_type_limit: 'Limit Texas Hold\'em - Fixed betting limits',
+                game_type_potlimit: 'Pot-Limit - Max bet = Pot size',
+                player_empty: 'Empty',
+                chips_text: '{chips} chips',
+                bet_text: 'Bet: {bet}',
+                fold_status: 'FOLD'
+            },
+            tr: {
+                title: '🎰 Poker Casino',
+                header_title: 'POKER',
+                buyin_title: '💰 Buy-in Tutarı',
+                buyin_label: 'Tutar (Min: {min}₼ - Max: {max}₼)',
+                buyin_placeholder: 'Tutar girin',
+                rebuy_title: '🔄 Re-buy Tutarı',
+                rebuy_label: 'Tutar (Min: {min}₼ - Max: {max}₼)',
+                rebuy_placeholder: 'Tutar girin',
+                min: 'Min',
+                mid: 'Orta',
+                max: 'Max',
+                cancel: 'İptal',
+                confirm: 'Onayla',
+                rebuy_time: '⏳ RE-BUY SÜRESİ',
+                loading: 'Yükleniyor...',
+                balance_label: 'Bakiye',
+                chips_label: 'Fiş',
+                pot_label: 'POT',
+                bet_label: 'Bahis',
+                wait_cards: 'Kartlarınız bekleniyor...',
+                fold: 'FOLD',
+                check: 'CHECK',
+                call: 'CALL',
+                raise: 'RAISE',
+                rebuy_btn: '💰 RE-BUY',
+                allin: 'ALL-IN',
+                leave: '❌ ÇIK',
+                ok: '✓ TAMAM',
+                cancel_text: '✗ İPTAL',
+                raise_info: 'Min: {min} | Max: {max}',
+                room_empty: 'Şu anda aktif oda yok',
+                players_label: 'Oyuncular',
+                buyin_label_short: 'Buy-in',
+                blinds_label: 'Blinds',
+                game_active: '🎮 Oyun devam ediyor',
+                game_waiting: '✅ Bekleniyor',
+                badge_nolimit: '🔴 Limitsiz',
+                badge_limit: '🟢 Limit',
+                badge_potlimit: '🟡 Pot-Limit',
+                join: '🎯 KATIL',
+                join_success: 'Odaya katıldınız!',
+                timeout_self: '⏰ Süre bitti! Otomatik FOLD.',
+                timeout_other: '⏰ {player} süresi doldu (Auto-fold)',
+                game_started: '🎮 Oyun başladı!',
+                rebuy_prompt: '💰 Fişler bitti! Re-buy yapın',
+                rebuy_success: '✅ {amount}₼ eklendi! Yeni fişler: {chips}₼',
+                rebuy_player: '💰 {player} re-buy yaptı',
+                waiting_players: 'Bekleyen: {players}',
+                game_over: '🏆 {winner} kazandı!\n{hand}\n+{amount} AZN\nKomisyon: {commission} AZN',
+                hand_reset: 'Yeni el için hazır',
+                cards_arrived: '🎴 Kartlarınız geldi!',
+                connection_error: 'Bağlantı hatası: {message}',
+                room_info_not_found: 'Oda bilgisi bulunamadı',
+                room_info_fail: 'Oda bilgisi alınamadı: {message}',
+                invalid_amount: 'Geçerli bir tutar girin!',
+                min_buyin: 'Minimum buy-in: {min}₼',
+                max_buyin: 'Maksimum buy-in: {max}₼',
+                room_id_missing: 'Oda ID bulunamadı',
+                join_fail: 'Odaya katılamadınız: {message}',
+                rebuy_modal_fail: 'Re-buy penceresi açılamadı',
+                rebuy_invalid_amount: 'Geçerli bir tutar girin',
+                min_rebuy: 'Minimum re-buy: {min}₼',
+                max_rebuy: 'Maksimum re-buy: {max}₼',
+                rebuy_fail: 'Re-buy alınamadı: {message}',
+                leave_confirm: 'Odayı terk etmek istediğinize emin misiniz?',
+                action_error: 'Hata: {message}',
+                rebuy_error: 'Re-buy hatası: {message}',
+                auto_fold: '⏰ Süre bitti! AUTO-FOLD yapıldı',
+                fold_missing: 'Fold düğmesi yok veya devre dışı',
+                room_joined: '{player} odaya katıldı',
+                room_left: '{player} odadan çıktı',
+                room_kicked: '{player} odadan çıkarıldı',
+                game_type_nolimit: 'No-Limit Texas Hold\'em - Limitsiz bahis',
+                game_type_limit: 'Limit Texas Hold\'em - Sabit bahis limitleri',
+                game_type_potlimit: 'Pot-Limit - Maksimum bahis = Pot',
+                player_empty: 'Boş',
+                chips_text: '{chips} chips',
+                bet_text: 'Bahis: {bet}',
+                fold_status: 'FOLD'
+            },
+            hi: {
+                title: '🎰 पोकर कैसीनो',
+                header_title: 'POKER',
+                buyin_title: '💰 बाय-इन राशि',
+                buyin_label: 'राशि (न्यूनतम: {min}₼ - अधिकतम: {max}₼)',
+                buyin_placeholder: 'राशि दर्ज करें',
+                rebuy_title: '🔄 री-बाय राशि',
+                rebuy_label: 'राशि (न्यूनतम: {min}₼ - अधिकतम: {max}₼)',
+                rebuy_placeholder: 'राशि दर्ज करें',
+                min: 'न्यूनतम',
+                mid: 'मध्य',
+                max: 'अधिकतम',
+                cancel: 'रद्द करें',
+                confirm: 'पुष्टि करें',
+                rebuy_time: '⏳ री-बाय समय',
+                loading: 'लोड हो रहा है...',
+                balance_label: 'बैलेंस',
+                chips_label: 'चिप्स',
+                pot_label: 'पॉट',
+                bet_label: 'शर्त',
+                wait_cards: 'आपके कार्ड का इंतजार...',
+                fold: 'FOLD',
+                check: 'CHECK',
+                call: 'CALL',
+                raise: 'RAISE',
+                rebuy_btn: '💰 RE-BUY',
+                allin: 'ALL-IN',
+                leave: '❌ बाहर जाएं',
+                ok: '✓ ठीक',
+                cancel_text: '✗ रद्द',
+                raise_info: 'न्यूनतम: {min} | अधिकतम: {max}',
+                room_empty: 'अभी कोई सक्रिय रूम नहीं है',
+                players_label: 'खिलाड़ी',
+                buyin_label_short: 'बाय-इन',
+                blinds_label: 'ब्लाइंड्स',
+                game_active: '🎮 गेम चल रहा है',
+                game_waiting: '✅ प्रतीक्षा में',
+                badge_nolimit: '🔴 नो-लिमिट',
+                badge_limit: '🟢 लिमिट',
+                badge_potlimit: '🟡 पॉट-लिमिट',
+                join: '🎯 शामिल हों',
+                join_success: 'आप रूम में शामिल हो गए!',
+                timeout_self: '⏰ समय समाप्त! ऑटो FOLD.',
+                timeout_other: '⏰ {player} का समय समाप्त (Auto-fold)',
+                game_started: '🎮 गेम शुरू हुआ!',
+                rebuy_prompt: '💰 चिप्स खत्म! री-बाय करें',
+                rebuy_success: '✅ {amount}₼ जोड़ा गया! नए चिप्स: {chips}₼',
+                rebuy_player: '💰 {player} ने री-बाय किया',
+                waiting_players: 'प्रतीक्षा में: {players}',
+                game_over: '🏆 {winner} विजेता!\n{hand}\n+{amount} AZN\nकमीशन: {commission} AZN',
+                hand_reset: 'नई हैंड के लिए तैयार',
+                cards_arrived: '🎴 आपके कार्ड आ गए!',
+                connection_error: 'कनेक्शन त्रुटि: {message}',
+                room_info_not_found: 'रूम जानकारी नहीं मिली',
+                room_info_fail: 'रूम जानकारी नहीं मिली: {message}',
+                invalid_amount: 'मान्य राशि दर्ज करें!',
+                min_buyin: 'न्यूनतम बाय-इन: {min}₼',
+                max_buyin: 'अधिकतम बाय-इन: {max}₼',
+                room_id_missing: 'रूम ID नहीं मिला',
+                join_fail: 'रूम में शामिल नहीं हो सके: {message}',
+                rebuy_modal_fail: 'री-बाय विंडो नहीं खुल सकी',
+                rebuy_invalid_amount: 'मान्य राशि दर्ज करें',
+                min_rebuy: 'न्यूनतम री-बाय: {min}₼',
+                max_rebuy: 'अधिकतम री-बाय: {max}₼',
+                rebuy_fail: 'री-बाय विफल: {message}',
+                leave_confirm: 'क्या आप वाकई रूम छोड़ना चाहते हैं?',
+                action_error: 'त्रुटि: {message}',
+                rebuy_error: 'री-बाय त्रुटि: {message}',
+                auto_fold: '⏰ समय समाप्त! AUTO-FOLD हुआ',
+                fold_missing: 'Fold बटन उपलब्ध नहीं है या निष्क्रिय है',
+                room_joined: '{player} रूम में शामिल हुए',
+                room_left: '{player} रूम छोड़ गए',
+                room_kicked: '{player} को रूम से हटाया गया',
+                game_type_nolimit: 'No-Limit Texas Hold\'em - असीमित शर्त',
+                game_type_limit: 'Limit Texas Hold\'em - निश्चित शर्त सीमाएं',
+                game_type_potlimit: 'Pot-Limit - अधिकतम शर्त = पॉट',
+                player_empty: 'खाली',
+                chips_text: '{chips} chips',
+                bet_text: 'शर्त: {bet}',
+                fold_status: 'FOLD'
+            },
+            ru: {
+                title: '🎰 Покер Казино',
+                header_title: 'POKER',
+                buyin_title: '💰 Сумма buy-in',
+                buyin_label: 'Сумма (Мин: {min}₼ - Макс: {max}₼)',
+                buyin_placeholder: 'Введите сумму',
+                rebuy_title: '🔄 Сумма re-buy',
+                rebuy_label: 'Сумма (Мин: {min}₼ - Макс: {max}₼)',
+                rebuy_placeholder: 'Введите сумму',
+                min: 'Мин',
+                mid: 'Средняя',
+                max: 'Макс',
+                cancel: 'Отмена',
+                confirm: 'Подтвердить',
+                rebuy_time: '⏳ ВРЕМЯ RE-BUY',
+                loading: 'Загрузка...',
+                balance_label: 'Баланс',
+                chips_label: 'Фишки',
+                pot_label: 'БАНК',
+                bet_label: 'Ставка',
+                wait_cards: 'Ожидание ваших карт...',
+                fold: 'FOLD',
+                check: 'CHECK',
+                call: 'CALL',
+                raise: 'RAISE',
+                rebuy_btn: '💰 RE-BUY',
+                allin: 'ALL-IN',
+                leave: '❌ ВЫХОД',
+                ok: '✓ OK',
+                cancel_text: '✗ ОТМЕНА',
+                raise_info: 'Мин: {min} | Макс: {max}',
+                room_empty: 'Сейчас нет активных комнат',
+                players_label: 'Игроки',
+                buyin_label_short: 'Buy-in',
+                blinds_label: 'Блайнды',
+                game_active: '🎮 Игра идет',
+                game_waiting: '✅ Ожидание',
+                badge_nolimit: '🔴 БЕЗЛИМИТ',
+                badge_limit: '🟢 ЛИМИТ',
+                badge_potlimit: '🟡 ПОТ-ЛИМИТ',
+                join: '🎯 ВОЙТИ',
+                join_success: 'Вы вошли в комнату!',
+                timeout_self: '⏰ Время вышло! Авто FOLD.',
+                timeout_other: '⏰ У {player} вышло время (Auto-fold)',
+                game_started: '🎮 Игра началась!',
+                rebuy_prompt: '💰 Фишки закончились! Сделайте re-buy',
+                rebuy_success: '✅ Добавлено {amount}₼! Новые фишки: {chips}₼',
+                rebuy_player: '💰 {player} сделал re-buy',
+                waiting_players: 'Ожидают: {players}',
+                game_over: '🏆 {winner} победил!\n{hand}\n+{amount} AZN\nКомиссия: {commission} AZN',
+                hand_reset: 'Готово к новой раздаче',
+                cards_arrived: '🎴 Ваши карты пришли!',
+                connection_error: 'Ошибка соединения: {message}',
+                room_info_not_found: 'Информация о комнате не найдена',
+                room_info_fail: 'Не удалось получить комнату: {message}',
+                invalid_amount: 'Введите корректную сумму!',
+                min_buyin: 'Минимальный buy-in: {min}₼',
+                max_buyin: 'Максимальный buy-in: {max}₼',
+                room_id_missing: 'ID комнаты не найден',
+                join_fail: 'Не удалось войти: {message}',
+                rebuy_modal_fail: 'Окно re-buy не открылось',
+                rebuy_invalid_amount: 'Введите корректную сумму',
+                min_rebuy: 'Минимальный re-buy: {min}₼',
+                max_rebuy: 'Максимальный re-buy: {max}₼',
+                rebuy_fail: 'Re-buy не выполнен: {message}',
+                leave_confirm: 'Вы уверены, что хотите выйти из комнаты?',
+                action_error: 'Ошибка: {message}',
+                rebuy_error: 'Ошибка re-buy: {message}',
+                auto_fold: '⏰ Время вышло! AUTO-FOLD выполнен',
+                fold_missing: 'Кнопка Fold недоступна или отключена',
+                room_joined: '{player} вошел в комнату',
+                room_left: '{player} вышел из комнаты',
+                room_kicked: '{player} был удален из комнаты',
+                game_type_nolimit: 'No-Limit Texas Hold\'em - Безлимитные ставки',
+                game_type_limit: 'Limit Texas Hold\'em - Фиксированные лимиты',
+                game_type_potlimit: 'Pot-Limit - Макс ставка = банк',
+                player_empty: 'Пусто',
+                chips_text: '{chips} chips',
+                bet_text: 'Ставка: {bet}',
+                fold_status: 'FOLD'
+            },
+            ar: {
+                title: '🎰 كازينو بوكر',
+                header_title: 'POKER',
+                buyin_title: '💰 مبلغ الشراء',
+                buyin_label: 'المبلغ (الحد الأدنى: {min}₼ - الحد الأقصى: {max}₼)',
+                buyin_placeholder: 'أدخل المبلغ',
+                rebuy_title: '🔄 مبلغ إعادة الشراء',
+                rebuy_label: 'المبلغ (الحد الأدنى: {min}₼ - الحد الأقصى: {max}₼)',
+                rebuy_placeholder: 'أدخل المبلغ',
+                min: 'أدنى',
+                mid: 'متوسط',
+                max: 'أقصى',
+                cancel: 'إلغاء',
+                confirm: 'تأكيد',
+                rebuy_time: '⏳ وقت إعادة الشراء',
+                loading: 'جار التحميل...',
+                balance_label: 'الرصيد',
+                chips_label: 'الشرائح',
+                pot_label: 'POT',
+                bet_label: 'الرهان',
+                wait_cards: 'بانتظار أوراقك...',
+                fold: 'FOLD',
+                check: 'CHECK',
+                call: 'CALL',
+                raise: 'RAISE',
+                rebuy_btn: '💰 RE-BUY',
+                allin: 'ALL-IN',
+                leave: '❌ خروج',
+                ok: '✓ موافق',
+                cancel_text: '✗ إلغاء',
+                raise_info: 'الحد الأدنى: {min} | الحد الأقصى: {max}',
+                room_empty: 'لا توجد غرف نشطة حالياً',
+                players_label: 'اللاعبون',
+                buyin_label_short: 'شراء',
+                blinds_label: 'الرهانات',
+                game_active: '🎮 اللعبة جارية',
+                game_waiting: '✅ انتظار',
+                badge_nolimit: '🔴 بلا حد',
+                badge_limit: '🟢 حد',
+                badge_potlimit: '🟡 حد البوت',
+                join: '🎯 انضم',
+                join_success: 'تم الانضمام للغرفة!',
+                timeout_self: '⏰ انتهى الوقت! تم FOLD تلقائياً.',
+                timeout_other: '⏰ انتهى وقت {player} (Auto-fold)',
+                game_started: '🎮 بدأت اللعبة!',
+                rebuy_prompt: '💰 انتهت الشرائح! قم بإعادة الشراء',
+                rebuy_success: '✅ تمت إضافة {amount}₼! الشرائح الجديدة: {chips}₼',
+                rebuy_player: '💰 قام {player} بإعادة الشراء',
+                waiting_players: 'بانتظار: {players}',
+                game_over: '🏆 فاز {winner}!\n{hand}\n+{amount} AZN\nالعمولة: {commission} AZN',
+                hand_reset: 'جاهز ليد جديدة',
+                cards_arrived: '🎴 وصلت أوراقك!',
+                connection_error: 'خطأ اتصال: {message}',
+                room_info_not_found: 'لم يتم العثور على معلومات الغرفة',
+                room_info_fail: 'تعذر جلب معلومات الغرفة: {message}',
+                invalid_amount: 'أدخل مبلغاً صحيحاً!',
+                min_buyin: 'الحد الأدنى للشراء: {min}₼',
+                max_buyin: 'الحد الأقصى للشراء: {max}₼',
+                room_id_missing: 'لم يتم العثور على معرف الغرفة',
+                join_fail: 'تعذر الانضمام: {message}',
+                rebuy_modal_fail: 'تعذر فتح نافذة إعادة الشراء',
+                rebuy_invalid_amount: 'أدخل مبلغاً صحيحاً',
+                min_rebuy: 'الحد الأدنى لإعادة الشراء: {min}₼',
+                max_rebuy: 'الحد الأقصى لإعادة الشراء: {max}₼',
+                rebuy_fail: 'فشل إعادة الشراء: {message}',
+                leave_confirm: 'هل أنت متأكد من مغادرة الغرفة؟',
+                action_error: 'خطأ: {message}',
+                rebuy_error: 'خطأ إعادة الشراء: {message}',
+                auto_fold: '⏰ انتهى الوقت! تم AUTO-FOLD',
+                fold_missing: 'زر Fold غير متاح أو معطل',
+                room_joined: 'انضم {player} إلى الغرفة',
+                room_left: 'غادر {player} الغرفة',
+                room_kicked: 'تمت إزالة {player} من الغرفة',
+                game_type_nolimit: 'No-Limit Texas Hold\'em - رهانات غير محدودة',
+                game_type_limit: 'Limit Texas Hold\'em - حدود رهانات ثابتة',
+                game_type_potlimit: 'Pot-Limit - الحد الأقصى للرهان = البوت',
+                player_empty: 'فارغ',
+                chips_text: '{chips} chips',
+                bet_text: 'الرهان: {bet}',
+                fold_status: 'FOLD'
+            },
+            uz: {
+                title: '🎰 Poker Kazino',
+                header_title: 'POKER',
+                buyin_title: '💰 Buy-in miqdori',
+                buyin_label: 'Miqdor (Min: {min}₼ - Max: {max}₼)',
+                buyin_placeholder: 'Miqdor kiriting',
+                rebuy_title: '🔄 Re-buy miqdori',
+                rebuy_label: 'Miqdor (Min: {min}₼ - Max: {max}₼)',
+                rebuy_placeholder: 'Miqdor kiriting',
+                min: 'Min',
+                mid: 'O\'rtacha',
+                max: 'Max',
+                cancel: 'Bekor qilish',
+                confirm: 'Tasdiqlash',
+                rebuy_time: '⏳ RE-BUY VAQTI',
+                loading: 'Yuklanmoqda...',
+                balance_label: 'Balans',
+                chips_label: 'Chiplar',
+                pot_label: 'POT',
+                bet_label: 'Tikish',
+                wait_cards: 'Kartalaringiz kutilmoqda...',
+                fold: 'FOLD',
+                check: 'CHECK',
+                call: 'CALL',
+                raise: 'RAISE',
+                rebuy_btn: '💰 RE-BUY',
+                allin: 'ALL-IN',
+                leave: '❌ CHIQ',
+                ok: '✓ OK',
+                cancel_text: '✗ BEKOR',
+                raise_info: 'Min: {min} | Max: {max}',
+                room_empty: 'Hozirda faol xona yo\'q',
+                players_label: 'O\'yinchilar',
+                buyin_label_short: 'Buy-in',
+                blinds_label: 'Blinds',
+                game_active: '🎮 O\'yin davom etyapti',
+                game_waiting: '✅ Kutmoqda',
+                badge_nolimit: '🔴 Cheksiz',
+                badge_limit: '🟢 Limit',
+                badge_potlimit: '🟡 Pot-Limit',
+                join: '🎯 QO\'SHIL',
+                join_success: 'Xonaga qo\'shildingiz!',
+                timeout_self: '⏰ Vaqt tugadi! Avto FOLD.',
+                timeout_other: '⏰ {player} vaqti tugadi (Auto-fold)',
+                game_started: '🎮 O\'yin boshlandi!',
+                rebuy_prompt: '💰 Chiplar tugadi! Re-buy qiling',
+                rebuy_success: '✅ {amount}₼ qo\'shildi! Yangi chiplar: {chips}₼',
+                rebuy_player: '💰 {player} re-buy qildi',
+                waiting_players: 'Kutilmoqda: {players}',
+                game_over: '🏆 {winner} g\'olib bo\'ldi!\n{hand}\n+{amount} AZN\nKomissiya: {commission} AZN',
+                hand_reset: 'Yangi qo\'lga tayyor',
+                cards_arrived: '🎴 Kartalaringiz keldi!',
+                connection_error: 'Ulanish xatosi: {message}',
+                room_info_not_found: 'Xona ma\'lumoti topilmadi',
+                room_info_fail: 'Xona ma\'lumoti olinmadi: {message}',
+                invalid_amount: 'To\'g\'ri miqdor kiriting!',
+                min_buyin: 'Minimal buy-in: {min}₼',
+                max_buyin: 'Maksimal buy-in: {max}₼',
+                room_id_missing: 'Xona ID topilmadi',
+                join_fail: 'Xonaga qo\'shib bo\'lmadi: {message}',
+                rebuy_modal_fail: 'Re-buy oynasi ochilmadi',
+                rebuy_invalid_amount: 'To\'g\'ri miqdor kiriting',
+                min_rebuy: 'Minimal re-buy: {min}₼',
+                max_rebuy: 'Maksimal re-buy: {max}₼',
+                rebuy_fail: 'Re-buy amalga oshmadi: {message}',
+                leave_confirm: 'Xonadan chiqmoqchimisiz?',
+                action_error: 'Xato: {message}',
+                rebuy_error: 'Re-buy xatosi: {message}',
+                auto_fold: '⏰ Vaqt tugadi! AUTO-FOLD bajarildi',
+                fold_missing: 'Fold tugmasi yo\'q yoki o\'chirilgan',
+                room_joined: '{player} xonaga qo\'shildi',
+                room_left: '{player} xonadan chiqdi',
+                room_kicked: '{player} xonadan chiqarildi',
+                game_type_nolimit: 'No-Limit Texas Hold\'em - Cheksiz tikish',
+                game_type_limit: 'Limit Texas Hold\'em - Doimiy limitlar',
+                game_type_potlimit: 'Pot-Limit - Maks tikish = Pot',
+                player_empty: 'Bo\'sh',
+                chips_text: '{chips} chips',
+                bet_text: 'Tikish: {bet}',
+                fold_status: 'FOLD'
+            }
+        };
+
+        function t(key, vars = {}) {
+            const langPack = translations[currentLanguage] || translations.en;
+            let text = langPack[key] || translations.en[key] || key;
+            return text.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : `{${k}}`));
+        }
+
+        function setLanguage(lang) {
+            if (!lang) return;
+            const normalized = String(lang).toLowerCase();
+            const map = {
+                en: 'en',
+                english: 'en',
+                tr: 'tr',
+                turkish: 'tr',
+                türkçe: 'tr',
+                hi: 'hi',
+                hindi: 'hi',
+                in: 'hi',
+                indian: 'hi',
+                ru: 'ru',
+                russian: 'ru',
+                ar: 'ar',
+                arabic: 'ar',
+                uz: 'uz',
+                uzbek: 'uz'
+            };
+            currentLanguage = map[normalized] || 'en';
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            applyLanguage();
+        }
+
+        function updateBuyInLabel() {
+            const label = document.getElementById('buyInLabel');
+            if (!label) return;
+            const min = (currentMinBuyIn || 0).toFixed(2);
+            const max = (currentMaxBuyIn || 0).toFixed(2);
+            label.innerHTML = t('buyin_label', { min, max })
+                .replace(min + '₼', `<span id="minBuyIn">${min}</span>₼`)
+                .replace(max + '₼', `<span id="maxBuyIn">${max}</span>₼`);
+        }
+
+        function updateReBuyLabel() {
+            const label = document.getElementById('reBuyLabel');
+            if (!label) return;
+            const min = (currentReBuyMin || 0).toFixed(2);
+            const max = (currentReBuyMax || 0).toFixed(2);
+            label.innerHTML = t('rebuy_label', { min, max })
+                .replace(min + '₼', `<span id="reBuyMinAmount">${min}</span>₼`)
+                .replace(max + '₼', `<span id="reBuyMaxAmount">${max}</span>₼`);
+        }
+
+        function updateRaiseInfoText() {
+            const el = document.getElementById('raiseInfoText');
+            if (!el) return;
+            el.innerHTML = t('raise_info', {
+                min: '<span id="raiseMinAmount">' + raiseSliderMin + '</span>',
+                max: '<span id="raiseMaxAmount">' + raiseSliderMax + '</span>'
+            });
+        }
+
+        function applyLanguage() {
+            if (translations[currentLanguage]?.title || translations.en.title) {
+                document.title = t('title');
+            }
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                el.setAttribute('placeholder', t(key));
+            });
+            updateBuyInLabel();
+            updateReBuyLabel();
+            updateRaiseInfoText();
+            updateGameTypeDisplay();
+        }
+
         window.addEventListener('message', (event) => {
             console.log('📨 [POKER] Message alındı:', event.data);
+
+            if (event.data && event.data.payload.language) {
+                setLanguage(event.data.payload.language);
+            }
 
             if (event.data && event.data.type === 'INIT_USER') {
                 console.log('✅ [POKER] INIT_USER qəbul edildi');
@@ -303,6 +886,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // await initializeSignalR();
             setupRaiseSlider();
+            applyLanguage();
         });
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -350,6 +934,7 @@
 
             document.getElementById('raiseMinAmount').textContent = raiseSliderMin;
             document.getElementById('raiseMaxAmount').textContent = raiseSliderMax;
+            updateRaiseInfoText();
 
             panel.classList.add('active');
         }
@@ -381,7 +966,7 @@
                 await loadRoomList();
             } catch (error) {
                 console.error("❌ SignalR connection error:", error);
-                showMessage("Bağlantı xətası: " + error.message, "error");
+                showMessage(t('connection_error', { message: error.message }), "error");
             }
         }
 
@@ -420,7 +1005,7 @@
 
                 document.getElementById('roomListSection').style.display = 'none';
                 document.getElementById('gameSection').classList.add('active');
-                showMessage("Otağa qoşuldunuz!", "success");
+                showMessage(t('join_success'), "success");
             });
 
             connection.on("PlayerTimeout", (data) => {
@@ -429,10 +1014,10 @@
 
                 if (data.playerName === currentPlayerName) {
                     // ✅ Özünüzün timeout-u
-                    showMessage(`⏰ Vaxtınız bitdi! Avtomatik FOLD olundu.`, "error");
+                    showMessage(t('timeout_self'), "error");
                 } else {
                     // ✅ Başqasının timeout-u
-                    showMessage(`⏰ ${data.playerName} vaxt bitdi (Auto-fold)`, "info");
+                    showMessage(t('timeout_other', { player: data.playerName }), "info");
                 }
             });
             connection.on("StreetAdvanced", (data) => {
@@ -441,22 +1026,22 @@
                 console.log("🎴 New street - turn timer reset");
             });
             connection.on("JoinError", (message) => showMessage(message, "error"));
-            connection.on("PlayerJoined", (playerName) => showMessage(playerName + " otağa qoşuldu", "info"));
-            connection.on("PlayerLeft", (playerName) => showMessage(playerName + " otaqdan çıxdı", "info"));
-            connection.on("PlayerKicked", (playerName) => showMessage(playerName + " otaqdan çıxarıldı", "info"));
+            connection.on("PlayerJoined", (playerName) => showMessage(t('room_joined', { player: playerName }), "info"));
+            connection.on("PlayerLeft", (playerName) => showMessage(t('room_left', { player: playerName }), "info"));
+            connection.on("PlayerKicked", (playerName) => showMessage(t('room_kicked', { player: playerName }), "info"));
 
             connection.on("GameStarted", () => {
                 const reBuyBtn = document.getElementById('reBuyBtn');
                 reBuyBtn.style.display = 'none';
                 reBuyBtn.disabled = true;
-                showMessage("🎮 Oyun başladı!", "success");
+                showMessage(t('game_started'), "success");
             });
 
             connection.on("ShowReBuyOption", (seconds) => {
                 const reBuyBtn = document.getElementById('reBuyBtn');
                 reBuyBtn.style.display = 'inline-block';
                 reBuyBtn.disabled = false;
-                showMessage("💰 Çiplər bitdi! Re-Buy edin", "info");
+                showMessage(t('rebuy_prompt'), "info");
             });
             connection.on("ReBuyCountdown", (data) => {
                 startReBuyCountdown(data.duration, data.playersWaiting);
@@ -468,7 +1053,7 @@
                 reBuyBtn.style.display = 'none';
                 reBuyBtn.disabled = true;
 
-                showMessage(`✅ ${data.amount}₼ əlavə edildi! Yeni çiplər: ${data.chips}₼`, "success");
+                showMessage(t('rebuy_success', { amount: data.amount, chips: data.chips }), "success");
                 updatePlayerChips(data.chips);
                 updateBalance(data.balance);
             });
@@ -479,7 +1064,7 @@
                 showMessage(message, "error");
             });
 
-            connection.on("PlayerReBought", (playerName) => showMessage(`💰 ${playerName} re-buy etdi`, "info"));
+            connection.on("PlayerReBought", (playerName) => showMessage(t('rebuy_player', { player: playerName }), "info"));
             connection.on("WaitingForPlayers", (message) => showMessage(message, "info"));
 
             connection.on("KickedFromRoom", (reason) => {
@@ -496,7 +1081,7 @@
                 let cardArray = Array.isArray(cards) ? cards : Object.values(cards || {});
                 if (cardArray && cardArray.length >= 2) {
                     myHoleCards = cardArray;
-                    showMessage("🎴 Kartlarınız gəldi!", "success");
+                    showMessage(t('cards_arrived'), "success");
                     // GameState yeniləməsini gözlə
                 }
             });
@@ -592,7 +1177,12 @@
             });
 
             connection.on("GameOver", (data) => {
-                showMessage(`🏆 ${data.winner} qalib oldu!\n${data.handName}\n+${data.amount.toFixed(2)} AZN\nKomissiya: ${data.commission.toFixed(2)} AZN`, "success");
+                showMessage(t('game_over', {
+                    winner: data.winner,
+                    hand: data.handName,
+                    amount: data.amount.toFixed(2),
+                    commission: data.commission.toFixed(2)
+                }), "success");
                 setTimeout(() => createConfetti(), 500);
                 disableActionButtons();
             });
@@ -602,7 +1192,7 @@
                 reBuyBtn.style.display = 'none';
                 reBuyBtn.disabled = true;
                 resetGameUI();
-                showMessage("Yeni əl üçün hazırdır", "info");
+                showMessage(t('hand_reset'), "info");
             });
             connection.on("LeftRoom", () => {
                 document.getElementById('gameSection').classList.remove('active');
@@ -652,11 +1242,11 @@
                 foldBtn.click();
 
                 // ✅ Animasyon
-                showMessage("⏰ Vaxt bitdi! AUTO-FOLD edildini", "info");
+                showMessage(t('auto_fold'), "info");
 
                 console.log("✅ Auto-fold tamamlandı");
             } else {
-                console.warn("❌ Fold düymə mövcud deyil və ya deaktivdir");
+                console.warn(t('fold_missing'));
             }
         }
         function updateTurnCountdown() {
@@ -711,7 +1301,7 @@
             const timer = document.getElementById('rebuyCountdownTimer');
             const waitingList = document.getElementById('rebuyWaitingPlayers');
 
-            waitingList.textContent = 'Gözləyən: ' + playersWaiting.join(', ');
+            waitingList.textContent = t('waiting_players', { players: playersWaiting.join(', ') });
             banner.classList.add('active');
 
             let remaining = duration;
@@ -791,15 +1381,15 @@
             switch (currentGameType) {
                 case 0:
                     icon.textContent = '🔴';
-                    desc.textContent = 'No-Limit Texas Hold\'em - Limitsiz mərc';
+                    desc.textContent = t('game_type_nolimit');
                     break;
                 case 1:
                     icon.textContent = '🟢';
-                    desc.textContent = 'Limit Texas Hold\'em - Sabit mərc limitləri';
+                    desc.textContent = t('game_type_limit');
                     break;
                 case 2:
                     icon.textContent = '🟡';
-                    desc.textContent = 'Pot-Limit - Maksimum mərc = Pot qədər';
+                    desc.textContent = t('game_type_potlimit');
                     break;
             }
         }
@@ -816,14 +1406,14 @@
         function displayRoomList(rooms) {
             const grid = document.getElementById('roomGrid');
             if (!rooms || rooms.length === 0) {
-                grid.innerHTML = '<div style="text-align: center; padding: 40px;">Hazırda aktiv otaq yoxdur</div>';
+                grid.innerHTML = `<div style="text-align: center; padding: 40px;">${t('room_empty')}</div>`;
                 return;
             }
             const getGameTypeBadge = (type) => {
                 switch (type) {
-                    case 0: return '<span class="game-type-badge badge-no-limit">🔴 NO-LIMIT</span>';
-                    case 1: return '<span class="game-type-badge badge-limit">🟢 LIMIT</span>';
-                    case 2: return '<span class="game-type-badge badge-pot-limit">🟡 POT-LIMIT</span>';
+                    case 0: return `<span class="game-type-badge badge-no-limit">${t('badge_nolimit')}</span>`;
+                    case 1: return `<span class="game-type-badge badge-limit">${t('badge_limit')}</span>`;
+                    case 2: return `<span class="game-type-badge badge-pot-limit">${t('badge_potlimit')}</span>`;
                     default: return '';
                 }
             };
@@ -832,12 +1422,12 @@
                         ${getGameTypeBadge(room.gameType)}
                         <h3>${room.roomName}</h3>
                         <div class="room-info">
-                            <div>👥 Oyunçular: ${room.playerCount}/${room.maxPlayers}</div>
-                            <div>💰 Buy-in: ${room.buyIn} AZN</div>
-                            <div>🎲 Blinds: ${room.smallBlind}/${room.bigBlind}</div>
-                            <div>📍 ${room.isGameActive ? '🎮 Oyun davam edir' : '✅ Gözləyir'}</div>
+                            <div>👥 ${t('players_label')}: ${room.playerCount}/${room.maxPlayers}</div>
+                            <div>💰 ${t('buyin_label_short')}: ${room.buyIn} AZN</div>
+                            <div>🎲 ${t('blinds_label')}: ${room.smallBlind}/${room.bigBlind}</div>
+                            <div>📍 ${room.isGameActive ? t('game_active') : t('game_waiting')}</div>
                         </div>
-                        <button class="join-btn" onclick="event.stopPropagation(); joinRoom('${room.roomId}')">🎯 QOŞUL</button>
+                        <button class="join-btn" onclick="event.stopPropagation(); joinRoom('${room.roomId}')">${t('join')}</button>
                     </div>
                 `).join('');
         }
@@ -868,15 +1458,16 @@
                     document.getElementById('buyInInput').min = currentMinBuyIn;
                     document.getElementById('buyInInput').max = currentMaxBuyIn;
                     document.getElementById('buyInInput').step = roomInfo.bigBlind || 1;
+                    updateBuyInLabel();
 
                     // Modal-ı göstər
                     document.getElementById('buyInModal').style.display = 'flex';
                 } else {
-                    showMessage("Room məlumatı tapılmadı", "error");
+                    showMessage(t('room_info_not_found'), "error");
                 }
             } catch (error) {
                 console.error("❌ joinRoom error:", error);
-                showMessage("Room məlumatı alına bilmədi: " + error.message, "error");
+                showMessage(t('room_info_fail', { message: error.message }), "error");
             }
         }
 
@@ -919,17 +1510,17 @@
 
             // ✅ Validasiyalar
             if (isNaN(buyInAmount) || buyInAmount <= 0) {
-                showMessage("Düzgün məbləğ daxil edin!", "error");
+                showMessage(t('invalid_amount'), "error");
                 return;
             }
 
             if (buyInAmount < currentMinBuyIn) {
-                showMessage(`Minimum buy-in: ${currentMinBuyIn}₼`, "error");
+                showMessage(t('min_buyin', { min: currentMinBuyIn }), "error");
                 return;
             }
 
             if (buyInAmount > currentMaxBuyIn) {
-                showMessage(`Maksimum buy-in: ${currentMaxBuyIn}₼`, "error");
+                showMessage(t('max_buyin', { max: currentMaxBuyIn }), "error");
                 return;
             }
 
@@ -937,7 +1528,7 @@
             const roomIdToJoin = currentRoomId;
 
             if (!roomIdToJoin) {
-                showMessage("Room ID tapılmadı", "error");
+                showMessage(t('room_id_missing'), "error");
                 return;
             }
 
@@ -954,7 +1545,7 @@
 
             } catch (error) {
                 console.error("❌ JoinRoom error:", error);
-                showMessage("Otağa qoşula bilmədiniz: " + error.message, "error");
+                showMessage(t('join_fail', { message: error.message }), "error");
             }
         }
 
@@ -987,7 +1578,7 @@
                 const roomId = getCurrentRoomId(); // Bu funksiya olmalıdır
 
                 if (!roomId) {
-                    showMessage("Otaq məlumatı tapılmadı", "error");
+                    showMessage(t('room_info_not_found'), "error");
                     return;
                 }
 
@@ -1031,6 +1622,7 @@
                 document.getElementById('reBuyInput').value = currentReBuyMin;
                 document.getElementById('reBuyInput').min = currentReBuyMin;
                 document.getElementById('reBuyInput').max = currentReBuyMax;
+                updateReBuyLabel();
 
                 // Modal-ı göstər
                 document.getElementById('reBuyModal').style.display = 'flex';
@@ -1039,7 +1631,7 @@
 
             } catch (error) {
                 console.error("❌ showReBuyModal error:", error);
-                showMessage("Re-buy modal açıla bilmədi", "error");
+                showMessage(t('rebuy_modal_fail'), "error");
             }
         }
 
@@ -1066,17 +1658,17 @@
 
             // Validasiyalar
             if (isNaN(reBuyAmount)) {
-                showMessage("Düzgün məbləğ daxil edin", "error");
+                showMessage(t('rebuy_invalid_amount'), "error");
                 return;
             }
 
             if (reBuyAmount < currentReBuyMin) {
-                showMessage(`Minimum re-buy: ${currentReBuyMin}₼`, "error");
+                showMessage(t('min_rebuy', { min: currentReBuyMin }), "error");
                 return;
             }
 
             if (reBuyAmount > currentReBuyMax) {
-                showMessage(`Maksimum re-buy: ${currentReBuyMax}₼`, "error");
+                showMessage(t('max_rebuy', { max: currentReBuyMax }), "error");
                 return;
             }
 
@@ -1089,7 +1681,7 @@
                 console.log("✅ Re-buy request sent");
             } catch (error) {
                 console.error("❌ ReBuy error:", error);
-                showMessage("Re-buy alınmadı: " + error.message, "error");
+                showMessage(t('rebuy_fail', { message: error.message }), "error");
             }
         }
 
@@ -1114,11 +1706,11 @@
         }
 
         async function leaveRoom() {
-            if (!confirm("Otaqdan çıxmaq istədiyinizə əminsiniz?")) return;
+            if (!confirm(t('leave_confirm'))) return;
             try {
                 await connection.invoke("LeaveRoom");
             } catch (error) {
-                showMessage("Xəta baş verdi", "error");
+                showMessage(t('action_error', { message: error.message || '' }), "error");
             }
         }
 
@@ -1132,7 +1724,7 @@
             try {
                 await connection.invoke("PlayerAction", action, amount);
             } catch (error) {
-                showMessage("Xəta: " + error.message, "error");
+                showMessage(t('action_error', { message: error.message }), "error");
             }
         }
 
@@ -1141,7 +1733,7 @@
                 // Birbaşa ReBuy çağırımı yerinə modal aç
                 await showReBuyModal();
             } catch (error) {
-                showMessage("Re-buy xətası: " + error.message, "error");
+                showMessage(t('rebuy_error', { message: error.message }), "error");
             }
         }
 
@@ -1282,6 +1874,7 @@
             const maxRaise = currentGameType === 2 ? currentPot + state.currentBet : myPlayer.chips;
             raiseSliderMin = minRaise;
             raiseSliderMax = maxRaise;
+            updateRaiseInfoText();
 
             const allinBtn = document.getElementById('allinBtn');
             if (currentGameType === 1) {
@@ -1350,10 +1943,10 @@
                         <div class="player-avatar ${foldedClass} ${activeClass}">
                             ${player.name ? player.name.charAt(0).toUpperCase() : '?'}
                         </div>
-                        <div class="player-name">${isDealer ? '🔵 ' : ''}${player.name || 'Boş'}</div>
-                        <div class="player-chips">${(player.chips || 0).toFixed(2)} chips</div>
-                        ${player.currentBet > 0 ? `<div class="player-bet">Mərc: ${player.currentBet.toFixed(2)}</div>` : ''}
-                        ${player.hasFolded ? '<div class="player-status">FOLD</div>' : ''}
+                        <div class="player-name">${isDealer ? '🔵 ' : ''}${player.name || t('player_empty')}</div>
+                        <div class="player-chips">${t('chips_text', { chips: (player.chips || 0).toFixed(2) })}</div>
+                        ${player.currentBet > 0 ? `<div class="player-bet">${t('bet_text', { bet: player.currentBet.toFixed(2) })}</div>` : ''}
+                        ${player.hasFolded ? `<div class="player-status">${t('fold_status')}</div>` : ''}
                         ${cardsHtml}
                     `;
                 table.appendChild(spot);

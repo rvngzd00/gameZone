@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<html lang="az">
+<html lang="en" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Türk Tavlası - Düzəldilmiş</title>
+    <title>Backgammon</title>
     <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@7.0.0/dist/browser/signalr.min.js"></script>
     <link rel="stylesheet" href="./Backgammon.css">
 
@@ -15,39 +15,73 @@
         <div id="notificationMessage"></div>
     </div>
 
+    <div class="loading-container" id="loadingContainer" aria-live="polite">
+        <div class="loading-backdrop"></div>
+        <div class="loading-content">
+            <h2 class="loading-title" data-i18n="backgammon">Backgammon</h2>
+            <div class="loading-dice-row" role="presentation">
+                <div class="section-icon dice-icon loading-dice">
+                    <div class="diceWrap">
+                        <div class="dice rolling">
+                            <div class="diceFace front"></div>
+                            <div class="diceFace up"></div>
+                            <div class="diceFace left"></div>
+                            <div class="diceFace right"></div>
+                            <div class="diceFace bottom"></div>
+                            <div class="diceFace back"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-icon dice-icon loading-dice mid">
+                    <div class="diceWrap">
+                        <div class="dice rolling">
+                            <div class="diceFace front"></div>
+                            <div class="diceFace up"></div>
+                            <div class="diceFace left"></div>
+                            <div class="diceFace right"></div>
+                            <div class="diceFace bottom"></div>
+                            <div class="diceFace back"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-icon dice-icon loading-dice">
+                    <div class="diceWrap">
+                        <div class="dice rolling">
+                            <div class="diceFace front"></div>
+                            <div class="diceFace up"></div>
+                            <div class="diceFace left"></div>
+                            <div class="diceFace right"></div>
+                            <div class="diceFace bottom"></div>
+                            <div class="diceFace back"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mini-board" role="presentation">
+                <div class="board-track top"></div>
+                <div class="bar-chip"></div>
+                <div class="board-track bottom"></div>
+            </div>
+
+            <div class="loading-progress">
+                <div class="chip"></div>
+                <p id="loadingStatus" data-i18n="loading_status">Connecting to the Backgammon tables…</p>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
-        <!-- <div class="header">
-            <div class="header-title">
-                <span style="font-size: 32px;">🎲</span>
-                <div>
-                    <h1>Türk Tavlası</h1>
-                    <p style="color: #666; font-size: 12px;">Emoji Sistemli Versiya</p>
-                </div>
-            </div>
-            <div class="user-info">
-                <div class="user-avatar" id="userAvatar">?</div>
-                <div>
-                    <div id="userName" style="font-weight: bold; color: #333;">Yüklənir...</div>
-                </div>
-            </div>
-        </div> -->
 
-        <!-- Chat Toggle Button -->
-        <!-- <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
-            💬
-            <span class="chat-badge" id="chatBadge">0</span>
-        </button> -->
-
-        <!-- Chat Panel -->
         <div class="chat-panel" id="chatPanel">
             <div class="chat-header">
-                <h3>💬 Söhbət</h3>
+                <h3 data-i18n="chat_title">💬 Chat</h3>
                 <button class="chat-close" onclick="toggleChat()">×</button>
             </div>
 
             <div class="chat-messages" id="chatMessages">
-                <div style="text-align: center; color: #999; padding: 20px; font-size: 13px;">
-                    Söhbət başlamayıb
+                <div style="text-align: center; color: #999; padding: 20px; font-size: 13px;" data-i18n="chat_not_started">
+                    Chat is not started yet...
                 </div>
             </div>
 
@@ -72,34 +106,31 @@
             <!-- Quick Messages Panel -->
             <div class="quick-actions" id="quickMessages">
                 <div class="quick-messages">
-                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Salam! 👋')">Salam! 👋</button>
-                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Uğurlar! 🍀')">Uğurlar! 🍀</button>
-                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Yaxşı oyun! 🎯')">Yaxşı oyun!
-                        🎯</button>
-                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Təşəkkürlər 🙏')">Təşəkkürlər
-                        🙏</button>
-                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Gözəl hərəkət! 👏')">Gözəl! 👏</button>
-                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Ups... 😅')">Ups... 😅</button>
-                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('Daha diqqətli! 🤔')">Diqqətli!
-                        🤔</button>
-                    <button class="quick-msg-btn" onclick="sendQuickMessageChat('GG! 🎊')">GG! 🎊</button>
+                    <button class="quick-msg-btn" data-quick-key="quick_hi" onclick="sendQuickMessageChat(getQuickMessage('quick_hi'))">Hi! 👋</button>
+                    <button class="quick-msg-btn" data-quick-key="quick_good_luck" onclick="sendQuickMessageChat(getQuickMessage('quick_good_luck'))">Good Luck! 🍀</button>
+                    <button class="quick-msg-btn" data-quick-key="quick_good_game" onclick="sendQuickMessageChat(getQuickMessage('quick_good_game'))">Good Game! 🎯</button>
+                    <button class="quick-msg-btn" data-quick-key="quick_thanks" onclick="sendQuickMessageChat(getQuickMessage('quick_thanks'))">Thanks! 🙏</button>
+                    <button class="quick-msg-btn" data-quick-key="quick_great_move" onclick="sendQuickMessageChat(getQuickMessage('quick_great_move'))">Great move! 👏</button>
+                    <button class="quick-msg-btn" data-quick-key="quick_ups" onclick="sendQuickMessageChat(getQuickMessage('quick_ups'))">Ups... 😅</button>
+                    <button class="quick-msg-btn" data-quick-key="quick_be_careful" onclick="sendQuickMessageChat(getQuickMessage('quick_be_careful'))">Be Careful! 🤔</button>
+                    <button class="quick-msg-btn" data-quick-key="quick_gg" onclick="sendQuickMessageChat(getQuickMessage('quick_gg'))">GG! 🎊</button>
                 </div>
             </div>
 
             <!-- Chat Input -->
             <div class="chat-input-area">
                 <div class="chat-input-tools">
-                    <button class="tool-btn" id="emojiTool" onclick="toggleQuickPanel('emoji')" title="Emoji">
+                    <button class="tool-btn" id="emojiTool" onclick="toggleQuickPanel('emoji')" title="Emoji" data-i18n-title="tool_emoji">
                         😊
                     </button>
                     <button class="tool-btn" id="messageTool" onclick="toggleQuickPanel('messages')"
-                        title="Sürətli mesajlar">
+                        title="Quick messages" data-i18n-title="tool_quick_messages">
                         💬
                     </button>
                 </div>
 
                 <div class="chat-input-box">
-                    <input type="text" id="chatInput" placeholder="Mesajınızı yazın..." maxlength="200"
+                    <input type="text" id="chatInput" placeholder="Type your message..." maxlength="200" data-i18n-placeholder="chat_placeholder"
                         onkeypress="handleChatKeyPress(event)">
                     <button class="send-btn" onclick="sendChatMessage()">
                         ➤
@@ -128,7 +159,7 @@
                             </div>
                         </div>
                         <div>
-                            <h2>Backgammon</h2>
+                            <h2 data-i18n="backgammon">Backgammon</h2>
                             <!-- <p>Select your bet and find an opponent instantly</p> -->
                         </div>
                         <div class="balance"><span id="userBalance">0</span></div>
@@ -187,11 +218,11 @@
                     <div class="player-card" id="player1Card">
                         <div class="player-left-side">
                             <div class="player-avatar-large" id="p1Avatar">?</div>
-                            <div class="player-color">⚪ Ağ</div>
+                            <div class="player-color" data-i18n="white_color">⚪ White</div>
                         </div>
                         <div class="player-details">
-                            <h3 id="p1Name">Oyunçu 1</h3>
-                            <div style="font-size: 12px; margin-top: 5px;">🏠 HOME: <span id="whiteHome">0</span>/15
+                            <h3 id="p1Name">Player 1</h3>
+                            <div style="font-size: 12px; margin-top: 5px;">🏠 <span data-i18n="home_label">HOME</span>: <span id="whiteHome">0</span>/15
                             </div>
                         </div>
                         <!-- <div style="position: relative;">
@@ -230,15 +261,15 @@
                             </div>
                         </div> -->
                     </div>
-                    <div class="score-value">🏆 <span id="betValue">0</span> Coin</div>
+                    <div class="score-value">🏆 <span id="betValue">0</span> <span data-i18n="coin">Coin</span></div>
                     <div class="player-card" id="player2Card">
                         <div class="player-left-side">
                             <div class="player-avatar-large" id="p2Avatar">?</div>
-                            <div class="player-color">⚫ Qara</div>
+                            <div class="player-color" data-i18n="black_color">⚫ Black</div>
                         </div>
                         <div class="player-details">
-                            <h3 id="p2Name">Oyunçu 2</h3>
-                            <div style="font-size: 12px; margin-top: 5px;">🏠 HOME: <span id="blackHome">0</span>/15
+                            <h3 id="p2Name">Player 2</h3>
+                            <div style="font-size: 12px; margin-top: 5px;">🏠 <span data-i18n="home_label">HOME</span>: <span id="blackHome">0</span>/15
                             </div>
                         </div>
                         <!-- <div style="position: relative;">
@@ -291,18 +322,18 @@
                 </div>
 
                 <div class="game-controls">
-                    <button class="btn btn-success" id="rollBtn" onclick="rollDice()" disabled>
-                        🎲 Zər At
+                    <button class="btn btn-success" id="rollBtn" onclick="rollDice()" disabled data-i18n="roll_dice">
+                        🎲 Roll Dice
                     </button>
                     <button class="btn" id="bearOffBtn" onclick="bearOff()" disabled
-                        style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
-                        🏠 HOME-a Çıxart
+                        style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;" data-i18n="bear_off">
+                        🏠 Bear Off
                     </button>
-                    <button class="btn btn-primary" id="endTurnBtn" onclick="endTurn()" disabled>
-                        ⏭️ Növbəni Bitir
+                    <button class="btn btn-primary" id="endTurnBtn" onclick="endTurn()" disabled data-i18n="end_turn">
+                        ⏭️ End Turn
                     </button>
-                    <button class="btn btn-danger" onclick="leaveGame()">
-                        🚪 Çıx
+                    <button class="btn btn-danger" onclick="leaveGame()" data-i18n="exit">
+                        Exit
                     </button>
                 </div>
             </div>
@@ -317,12 +348,563 @@
         let currentUserData = null;
         let isSignalRInitialized = false;
 
+        const i18n = {
+            en: {
+                title: "Backgammon",
+                loading_status: "The Game is Loading...",
+                chat_title: "💬 Chat",
+                chat_not_started: "Chat is not started yet...",
+                quick_hi: "Hi! 👋",
+                quick_good_luck: "Good Luck! 🍀",
+                quick_good_game: "Good Game! 🎯",
+                quick_thanks: "Thanks! 🙏",
+                quick_great_move: "Great move! 👏",
+                quick_ups: "Oops... 😅",
+                quick_be_careful: "Be Careful! 🤔",
+                quick_gg: "GG! 🎊",
+                tool_emoji: "Emoji",
+                tool_quick_messages: "Quick messages",
+                chat_placeholder: "Type your message...",
+                backgammon: "Backgammon",
+                white_color: "⚪ White",
+                black_color: "⚫ Black",
+                player_1: "Player 1",
+                player_2: "Player 2",
+                home_label: "HOME",
+                coin: "Coin",
+                roll_dice: "🎲 Roll Dice",
+                bear_off: "🏠 Bear Off",
+                end_turn: "⏭️ End Turn",
+                exit: "Exit",
+                connection_lost_reconnecting: "Connection lost, reconnecting...",
+                connection_restored: "Connection restored!",
+                connection_lost: "Connection lost!",
+                connected_short: "Connected! ✅",
+                token_not_found: "Token not found!",
+                error_connecting: "Error connecting to server!",
+                token_invalid: "Token is invalid! Please log in again.",
+                negotiate_missing: "Server negotiate response is missing (CORS/URL/SSL issue).",
+                timeout: "Connection timed out. Please try again.",
+                waiting_color: "⏳ Waiting ({color})",
+                connected_you_are_color: "Connected! You are {color}",
+                player_joined: "{name} joined! Game is starting...",
+                game_starting: "{p1} rolled {d1} 🎲\n{p2} rolled {d2} 🎲\n\n🏁 {starter} starts!",
+                game_started: "Game started!",
+                dice_label: "🎲 Dice: {dice}",
+                can_bear_off: "🎲 Dice: {dice} | 🏠 You can bear off!",
+                move_remaining: "♟️ {move} | Remaining: {remaining}",
+                move_all_used: "♟️ {move} | ✅ All points used",
+                turn_yours: "🎯 It is your turn! Roll the dice.",
+                turn_other: "⏳ {player} is rolling the dice...",
+                not_your_turn: "It is not your turn!",
+                not_your_checker: "This is not your checker!",
+                no_checkers_on_bar: "You don't have any checkers on the bar!",
+                bar_selected: "✅ BAR selected ({range})",
+                first_move_from_bar: "❌ First, move from the bar!",
+                selected_point_can_bear_off: "✅ Selected: Point {point} (can bear off)",
+                selected_point: "✅ Selected: Point {point}",
+                point_no_checker: "This point does not contain your checker!",
+                quick_match_search: "⏳ {amount} {coin} bet for room search...",
+                error_occurred: "Error occurred!",
+                roll_error: "An error occurred!",
+                move_failed: "Movement failed!",
+                select_checker_first: "❌ First, select a checker!",
+                cannot_bear_off: "❌ You cannot bear off yet! All your checkers must be in the home quadrant.",
+                bear_off_failed: "Could not be removed to HOME! You must roll the suitable dice.",
+                leave_confirm: "Are you sure you want to leave the game?",
+                not_in_room: "You are not in a room!",
+                send_failed: "Failed to send message!",
+                message_empty: "Message is empty!",
+                emoji_send_failed: "Could not be sent!",
+                bar_label: "BAR",
+                home_label_word: "HOME",
+                move_from_bar: "{bar} → {to}",
+                move_to_home: "{from} → {home} 🏠",
+                move_between: "{from} → {to}"
+            },
+            tr: {
+                title: "Tavla",
+                loading_status: "Oyun Yükleniyor...",
+                chat_title: "💬 Sohbet",
+                chat_not_started: "Sohbet henüz başlamadı...",
+                quick_hi: "Merhaba! 👋",
+                quick_good_luck: "Bol şans! 🍀",
+                quick_good_game: "İyi oyun! 🎯",
+                quick_thanks: "Teşekkürler! 🙏",
+                quick_great_move: "Harika hamle! 👏",
+                quick_ups: "Hoppala... 😅",
+                quick_be_careful: "Dikkatli ol! 🤔",
+                quick_gg: "GG! 🎊",
+                tool_emoji: "Emoji",
+                tool_quick_messages: "Hızlı mesajlar",
+                chat_placeholder: "Mesajınızı yazın...",
+                backgammon: "Tavla",
+                white_color: "⚪ Beyaz",
+                black_color: "⚫ Siyah",
+                player_1: "Oyuncu 1",
+                player_2: "Oyuncu 2",
+                home_label: "EV",
+                coin: "Jeton",
+                roll_dice: "🎲 Zar At",
+                bear_off: "🏠 Topla",
+                end_turn: "⏭️ Hamleyi Bitir",
+                exit: "Çıkış",
+                connection_lost_reconnecting: "Bağlantı koptu, yeniden bağlanılıyor...",
+                connection_restored: "Bağlantı geri geldi!",
+                connection_lost: "Bağlantı koptu!",
+                connected_short: "Bağlandı! ✅",
+                token_not_found: "Token bulunamadı!",
+                error_connecting: "Sunucuya bağlanırken hata!",
+                token_invalid: "Token geçersiz! Lütfen tekrar giriş yapın.",
+                negotiate_missing: "Sunucu negotiate yanıtı eksik (CORS/URL/SSL sorunu).",
+                timeout: "Bağlantı zaman aşımına uğradı. Lütfen tekrar deneyin.",
+                waiting_color: "⏳ Bekleniyor ({color})",
+                connected_you_are_color: "Bağlandı! Sen {color}",
+                player_joined: "{name} katıldı! Oyun başlıyor...",
+                game_starting: "{p1} {d1} attı 🎲\n{p2} {d2} attı 🎲\n\n🏁 {starter} başlıyor!",
+                game_started: "Oyun başladı!",
+                dice_label: "🎲 Zar: {dice}",
+                can_bear_off: "🎲 Zar: {dice} | 🏠 Toplayabilirsin!",
+                move_remaining: "♟️ {move} | Kalan: {remaining}",
+                move_all_used: "♟️ {move} | ✅ Tüm haklar kullanıldı",
+                turn_yours: "🎯 Sıra sende! Zar at.",
+                turn_other: "⏳ {player} zar atıyor...",
+                not_your_turn: "Sıra sende değil!",
+                not_your_checker: "Bu senin pulun değil!",
+                no_checkers_on_bar: "Barda pulun yok!",
+                bar_selected: "✅ BAR seçildi ({range})",
+                first_move_from_bar: "❌ Önce bardan çık!",
+                selected_point_can_bear_off: "✅ Seçildi: {point}. nokta (toplayabilirsin)",
+                selected_point: "✅ Seçildi: {point}. nokta",
+                point_no_checker: "Bu noktada pulun yok!",
+                quick_match_search: "⏳ {amount} {coin} bahisli oda aranıyor...",
+                error_occurred: "Bir hata oluştu!",
+                roll_error: "Bir hata oluştu!",
+                move_failed: "Hareket başarısız!",
+                select_checker_first: "❌ Önce bir pul seç!",
+                cannot_bear_off: "❌ Henüz toplayamazsın! Tüm pulların ev bölgesinde olmalı.",
+                bear_off_failed: "HOME'a alınamadı! Uygun zarı atmalısın.",
+                leave_confirm: "Oyundan çıkmak istediğine emin misin?",
+                not_in_room: "Bir odada değilsin!",
+                send_failed: "Mesaj gönderilemedi!",
+                message_empty: "Mesaj boş!",
+                emoji_send_failed: "Gönderilemedi!",
+                bar_label: "BAR",
+                home_label_word: "EV",
+                move_from_bar: "{bar} → {to}",
+                move_to_home: "{from} → {home} 🏠",
+                move_between: "{from} → {to}"
+            },
+            hi: {
+                title: "बैकगैमोन",
+                loading_status: "खेल लोड हो रहा है...",
+                chat_title: "💬 चैट",
+                chat_not_started: "चैट अभी शुरू नहीं हुई है...",
+                quick_hi: "नमस्ते! 👋",
+                quick_good_luck: "शुभकामनाएँ! 🍀",
+                quick_good_game: "अच्छा खेल! 🎯",
+                quick_thanks: "धन्यवाद! 🙏",
+                quick_great_move: "शानदार चाल! 👏",
+                quick_ups: "ओह... 😅",
+                quick_be_careful: "सावधान रहें! 🤔",
+                quick_gg: "GG! 🎊",
+                tool_emoji: "इमोजी",
+                tool_quick_messages: "त्वरित संदेश",
+                chat_placeholder: "अपना संदेश लिखें...",
+                backgammon: "बैकगैमोन",
+                white_color: "⚪ सफेद",
+                black_color: "⚫ काला",
+                player_1: "खिलाड़ी 1",
+                player_2: "खिलाड़ी 2",
+                home_label: "होम",
+                coin: "सिक्का",
+                roll_dice: "🎲 पासा फेंकें",
+                bear_off: "🏠 निकालें",
+                end_turn: "⏭️ बारी खत्म करें",
+                exit: "बाहर निकलें",
+                connection_lost_reconnecting: "कनेक्शन टूट गया, फिर से जुड़ रहे हैं...",
+                connection_restored: "कनेक्शन बहाल हुआ!",
+                connection_lost: "कनेक्शन टूट गया!",
+                connected_short: "कनेक्टेड! ✅",
+                token_not_found: "टोकन नहीं मिला!",
+                error_connecting: "सर्वर से जुड़ने में त्रुटि!",
+                token_invalid: "टोकन अमान्य है! कृपया फिर से लॉगिन करें।",
+                negotiate_missing: "सर्वर negotiate जवाब गायब है (CORS/URL/SSL समस्या)।",
+                timeout: "कनेक्शन टाइमआउट हो गया। कृपया फिर से प्रयास करें।",
+                waiting_color: "⏳ प्रतीक्षा कर रहा है ({color})",
+                connected_you_are_color: "कनेक्टेड! आप {color} हैं",
+                player_joined: "{name} जुड़ गया! खेल शुरू हो रहा है...",
+                game_starting: "{p1} ने {d1} फेंका 🎲\n{p2} ने {d2} फेंका 🎲\n\n🏁 {starter} शुरू करता है!",
+                game_started: "खेल शुरू हुआ!",
+                dice_label: "🎲 पासा: {dice}",
+                can_bear_off: "🎲 पासा: {dice} | 🏠 आप निकाल सकते हैं!",
+                move_remaining: "♟️ {move} | शेष: {remaining}",
+                move_all_used: "♟️ {move} | ✅ सभी चालें उपयोग हो गईं",
+                turn_yours: "🎯 आपकी बारी है! पासा फेंकें।",
+                turn_other: "⏳ {player} पासा फेंक रहा है...",
+                not_your_turn: "यह आपकी बारी नहीं है!",
+                not_your_checker: "यह आपका गोटी नहीं है!",
+                no_checkers_on_bar: "बार पर आपकी कोई गोटी नहीं है!",
+                bar_selected: "✅ BAR चुना गया ({range})",
+                first_move_from_bar: "❌ पहले बार से चलें!",
+                selected_point_can_bear_off: "✅ चुना गया: बिंदु {point} (निकाल सकते हैं)",
+                selected_point: "✅ चुना गया: बिंदु {point}",
+                point_no_checker: "इस बिंदु पर आपकी गोटी नहीं है!",
+                quick_match_search: "⏳ {amount} {coin} की बाजी के लिए कमरा खोजा जा रहा है...",
+                error_occurred: "एक त्रुटि हुई!",
+                roll_error: "एक त्रुटि हुई!",
+                move_failed: "चाल असफल!",
+                select_checker_first: "❌ पहले एक गोटी चुनें!",
+                cannot_bear_off: "❌ अभी निकाल नहीं सकते! आपकी सभी गोटियां होम क्वाड्रेंट में होनी चाहिए।",
+                bear_off_failed: "HOME में नहीं निकाला जा सका! उचित पासा फेंकें।",
+                leave_confirm: "क्या आप वाकई खेल छोड़ना चाहते हैं?",
+                not_in_room: "आप किसी कमरे में नहीं हैं!",
+                send_failed: "संदेश भेजने में विफल!",
+                message_empty: "संदेश खाली है!",
+                emoji_send_failed: "भेजा नहीं जा सका!",
+                bar_label: "BAR",
+                home_label_word: "HOME",
+                move_from_bar: "{bar} → {to}",
+                move_to_home: "{from} → {home} 🏠",
+                move_between: "{from} → {to}"
+            },
+            ru: {
+                title: "Нарды",
+                loading_status: "Игра загружается...",
+                chat_title: "💬 Чат",
+                chat_not_started: "Чат еще не начался...",
+                quick_hi: "Привет! 👋",
+                quick_good_luck: "Удачи! 🍀",
+                quick_good_game: "Хорошей игры! 🎯",
+                quick_thanks: "Спасибо! 🙏",
+                quick_great_move: "Отличный ход! 👏",
+                quick_ups: "Упс... 😅",
+                quick_be_careful: "Будь осторожен! 🤔",
+                quick_gg: "GG! 🎊",
+                tool_emoji: "Эмодзи",
+                tool_quick_messages: "Быстрые сообщения",
+                chat_placeholder: "Введите сообщение...",
+                backgammon: "Нарды",
+                white_color: "⚪ Белые",
+                black_color: "⚫ Черные",
+                player_1: "Игрок 1",
+                player_2: "Игрок 2",
+                home_label: "ДОМ",
+                coin: "Монета",
+                roll_dice: "🎲 Бросить кости",
+                bear_off: "🏠 Снять",
+                end_turn: "⏭️ Завершить ход",
+                exit: "Выйти",
+                connection_lost_reconnecting: "Соединение потеряно, переподключение...",
+                connection_restored: "Соединение восстановлено!",
+                connection_lost: "Соединение потеряно!",
+                connected_short: "Подключено! ✅",
+                token_not_found: "Токен не найден!",
+                error_connecting: "Ошибка подключения к серверу!",
+                token_invalid: "Токен недействителен! Пожалуйста, войдите снова.",
+                negotiate_missing: "Отсутствует ответ negotiate сервера (CORS/URL/SSL).",
+                timeout: "Время ожидания истекло. Попробуйте снова.",
+                waiting_color: "⏳ Ожидание ({color})",
+                connected_you_are_color: "Подключено! Вы {color}",
+                player_joined: "{name} присоединился! Игра начинается...",
+                game_starting: "{p1} выбросил {d1} 🎲\n{p2} выбросил {d2} 🎲\n\n🏁 {starter} начинает!",
+                game_started: "Игра началась!",
+                dice_label: "🎲 Кости: {dice}",
+                can_bear_off: "🎲 Кости: {dice} | 🏠 Можно снять!",
+                move_remaining: "♟️ {move} | Осталось: {remaining}",
+                move_all_used: "♟️ {move} | ✅ Все ходы использованы",
+                turn_yours: "🎯 Ваш ход! Бросайте кости.",
+                turn_other: "⏳ {player} бросает кости...",
+                not_your_turn: "Сейчас не ваш ход!",
+                not_your_checker: "Это не ваша фишка!",
+                no_checkers_on_bar: "У вас нет фишек на баре!",
+                bar_selected: "✅ BAR выбран ({range})",
+                first_move_from_bar: "❌ Сначала ход с бара!",
+                selected_point_can_bear_off: "✅ Выбрано: пункт {point} (можно снять)",
+                selected_point: "✅ Выбрано: пункт {point}",
+                point_no_checker: "На этом пункте нет вашей фишки!",
+                quick_match_search: "⏳ Поиск комнаты на ставку {amount} {coin}...",
+                error_occurred: "Произошла ошибка!",
+                roll_error: "Произошла ошибка!",
+                move_failed: "Ход не выполнен!",
+                select_checker_first: "❌ Сначала выберите фишку!",
+                cannot_bear_off: "❌ Пока нельзя снять! Все фишки должны быть в домашнем квадранте.",
+                bear_off_failed: "Не удалось снять в HOME! Нужно выбросить подходящие кости.",
+                leave_confirm: "Вы уверены, что хотите выйти из игры?",
+                not_in_room: "Вы не в комнате!",
+                send_failed: "Не удалось отправить сообщение!",
+                message_empty: "Сообщение пустое!",
+                emoji_send_failed: "Не удалось отправить!",
+                bar_label: "BAR",
+                home_label_word: "ДОМ",
+                move_from_bar: "{bar} → {to}",
+                move_to_home: "{from} → {home} 🏠",
+                move_between: "{from} → {to}"
+            },
+            ar: {
+                title: "طاولة الزهر",
+                loading_status: "جارٍ تحميل اللعبة...",
+                chat_title: "💬 الدردشة",
+                chat_not_started: "الدردشة لم تبدأ بعد...",
+                quick_hi: "مرحباً! 👋",
+                quick_good_luck: "حظاً موفقاً! 🍀",
+                quick_good_game: "لعبة جيدة! 🎯",
+                quick_thanks: "شكراً! 🙏",
+                quick_great_move: "حركة رائعة! 👏",
+                quick_ups: "أوبس... 😅",
+                quick_be_careful: "كن حذراً! 🤔",
+                quick_gg: "GG! 🎊",
+                tool_emoji: "رموز تعبيرية",
+                tool_quick_messages: "رسائل سريعة",
+                chat_placeholder: "اكتب رسالتك...",
+                backgammon: "طاولة الزهر",
+                white_color: "⚪ أبيض",
+                black_color: "⚫ أسود",
+                player_1: "اللاعب 1",
+                player_2: "اللاعب 2",
+                home_label: "البيت",
+                coin: "عملة",
+                roll_dice: "🎲 ارمِ النرد",
+                bear_off: "🏠 إخراج",
+                end_turn: "⏭️ إنهاء الدور",
+                exit: "خروج",
+                connection_lost_reconnecting: "انقطع الاتصال، جاري إعادة الاتصال...",
+                connection_restored: "تمت استعادة الاتصال!",
+                connection_lost: "انقطع الاتصال!",
+                connected_short: "تم الاتصال! ✅",
+                token_not_found: "لم يتم العثور على التوكن!",
+                error_connecting: "خطأ في الاتصال بالخادم!",
+                token_invalid: "التوكن غير صالح! الرجاء تسجيل الدخول مرة أخرى.",
+                negotiate_missing: "استجابة negotiate من الخادم مفقودة (CORS/URL/SSL).",
+                timeout: "انتهت مهلة الاتصال. حاول مرة أخرى.",
+                waiting_color: "⏳ في انتظار ({color})",
+                connected_you_are_color: "تم الاتصال! أنت {color}",
+                player_joined: "انضم {name}! اللعبة تبدأ...",
+                game_starting: "{p1} رمى {d1} 🎲\n{p2} رمى {d2} 🎲\n\n🏁 {starter} يبدأ!",
+                game_started: "بدأت اللعبة!",
+                dice_label: "🎲 النرد: {dice}",
+                can_bear_off: "🎲 النرد: {dice} | 🏠 يمكنك الإخراج!",
+                move_remaining: "♟️ {move} | المتبقي: {remaining}",
+                move_all_used: "♟️ {move} | ✅ تم استخدام كل النقاط",
+                turn_yours: "🎯 دورك الآن! ارمِ النرد.",
+                turn_other: "⏳ {player} يرمي النرد...",
+                not_your_turn: "ليس دورك!",
+                not_your_checker: "هذه ليست قطعتك!",
+                no_checkers_on_bar: "لا توجد لديك قطع على البار!",
+                bar_selected: "✅ تم تحديد BAR ({range})",
+                first_move_from_bar: "❌ أولاً تحرك من البار!",
+                selected_point_can_bear_off: "✅ تم تحديد: النقطة {point} (يمكن الإخراج)",
+                selected_point: "✅ تم تحديد: النقطة {point}",
+                point_no_checker: "هذه النقطة لا تحتوي على قطعتك!",
+                quick_match_search: "⏳ جارٍ البحث عن غرفة لرهان {amount} {coin}...",
+                error_occurred: "حدث خطأ!",
+                roll_error: "حدث خطأ!",
+                move_failed: "فشلت الحركة!",
+                select_checker_first: "❌ أولاً اختر قطعة!",
+                cannot_bear_off: "❌ لا يمكنك الإخراج الآن! يجب أن تكون جميع قطعك في البيت.",
+                bear_off_failed: "تعذر الإخراج إلى HOME! يجب رمي النرد المناسب.",
+                leave_confirm: "هل أنت متأكد أنك تريد مغادرة اللعبة؟",
+                not_in_room: "لست في غرفة!",
+                send_failed: "فشل إرسال الرسالة!",
+                message_empty: "الرسالة فارغة!",
+                emoji_send_failed: "تعذر الإرسال!",
+                bar_label: "BAR",
+                home_label_word: "البيت",
+                move_from_bar: "{bar} → {to}",
+                move_to_home: "{from} → {home} 🏠",
+                move_between: "{from} → {to}"
+            },
+            uz: {
+                title: "Narda",
+                loading_status: "O'yin yuklanmoqda...",
+                chat_title: "💬 Chat",
+                chat_not_started: "Chat hali boshlanmadi...",
+                quick_hi: "Salom! 👋",
+                quick_good_luck: "Omad! 🍀",
+                quick_good_game: "Yaxshi o'yin! 🎯",
+                quick_thanks: "Rahmat! 🙏",
+                quick_great_move: "Ajoyib yurish! 👏",
+                quick_ups: "Ups... 😅",
+                quick_be_careful: "Ehtiyot bo'l! 🤔",
+                quick_gg: "GG! 🎊",
+                tool_emoji: "Emoji",
+                tool_quick_messages: "Tezkor xabarlar",
+                chat_placeholder: "Xabaringizni yozing...",
+                backgammon: "Narda",
+                white_color: "⚪ Oq",
+                black_color: "⚫ Qora",
+                player_1: "O'yinchi 1",
+                player_2: "O'yinchi 2",
+                home_label: "UY",
+                coin: "Tanga",
+                roll_dice: "🎲 Zarni tashla",
+                bear_off: "🏠 Chiqarish",
+                end_turn: "⏭️ Navbatni tugatish",
+                exit: "Chiqish",
+                connection_lost_reconnecting: "Aloqa uzildi, qayta ulanmoqda...",
+                connection_restored: "Aloqa tiklandi!",
+                connection_lost: "Aloqa uzildi!",
+                connected_short: "Ulandi! ✅",
+                token_not_found: "Token topilmadi!",
+                error_connecting: "Serverga ulanishda xatolik!",
+                token_invalid: "Token noto‘g‘ri! Qayta kirish qiling.",
+                negotiate_missing: "Server negotiate javobi yo‘q (CORS/URL/SSL muammo).",
+                timeout: "Ulanish vaqti tugadi. Qayta urinib ko‘ring.",
+                waiting_color: "⏳ Kutilmoqda ({color})",
+                connected_you_are_color: "Ulandi! Siz {color}",
+                player_joined: "{name} qo‘shildi! O‘yin boshlanmoqda...",
+                game_starting: "{p1} {d1} tashladi 🎲\n{p2} {d2} tashladi 🎲\n\n🏁 {starter} boshlaydi!",
+                game_started: "O‘yin boshlandi!",
+                dice_label: "🎲 Zar: {dice}",
+                can_bear_off: "🎲 Zar: {dice} | 🏠 Chiqarishingiz mumkin!",
+                move_remaining: "♟️ {move} | Qolgan: {remaining}",
+                move_all_used: "♟️ {move} | ✅ Barcha yurishlar ishlatildi",
+                turn_yours: "🎯 Sizning navbatingiz! Zarni tashlang.",
+                turn_other: "⏳ {player} zar tashlayapti...",
+                not_your_turn: "Bu sizning navbatingiz emas!",
+                not_your_checker: "Bu sizning donangiz emas!",
+                no_checkers_on_bar: "Barda sizning donalaringiz yo‘q!",
+                bar_selected: "✅ BAR tanlandi ({range})",
+                first_move_from_bar: "❌ Avval bardan yuring!",
+                selected_point_can_bear_off: "✅ Tanlandi: {point}-nuqta (chiqarish mumkin)",
+                selected_point: "✅ Tanlandi: {point}-nuqta",
+                point_no_checker: "Bu nuqtada sizning donangiz yo‘q!",
+                quick_match_search: "⏳ {amount} {coin} garovli xona qidirilmoqda...",
+                error_occurred: "Xatolik yuz berdi!",
+                roll_error: "Xatolik yuz berdi!",
+                move_failed: "Yurish muvaffaqiyatsiz!",
+                select_checker_first: "❌ Avval dona tanlang!",
+                cannot_bear_off: "❌ Hozir chiqarib bo‘lmaydi! Barcha donalaringiz uy hududida bo‘lishi kerak.",
+                bear_off_failed: "HOME ga chiqarib bo‘lmadi! Mos zarni tashlashingiz kerak.",
+                leave_confirm: "O‘yindan chiqmoqchimisiz?",
+                not_in_room: "Siz xonada emassiz!",
+                send_failed: "Xabar yuborilmadi!",
+                message_empty: "Xabar bo‘sh!",
+                emoji_send_failed: "Yuborib bo‘lmadi!",
+                bar_label: "BAR",
+                home_label_word: "UY",
+                move_from_bar: "{bar} → {to}",
+                move_to_home: "{from} → {home} 🏠",
+                move_between: "{from} → {to}"
+            }
+        };
+
+        const localeMap = {
+            en: "en-US",
+            tr: "tr-TR",
+            hi: "hi-IN",
+            ru: "ru-RU",
+            ar: "ar-SA",
+            uz: "uz-UZ"
+        };
+
+        const languageAliases = {
+            en: "en",
+            "en-us": "en",
+            "en-gb": "en",
+            english: "en",
+            tr: "tr",
+            "tr-tr": "tr",
+            turkish: "tr",
+            hi: "hi",
+            "hi-in": "hi",
+            indian: "hi",
+            ru: "ru",
+            "ru-ru": "ru",
+            russian: "ru",
+            ar: "ar",
+            "ar-sa": "ar",
+            arabic: "ar",
+            uz: "uz",
+            "uz-uz": "uz",
+            uzbek: "uz"
+        };
+
+        let currentLanguage = "en";
+
+        function normalizeLanguage(lang) {
+            if (!lang) return "en";
+            const key = String(lang).trim().toLowerCase();
+            return languageAliases[key] || "en";
+        }
+
+        function formatText(text, vars = {}) {
+            return text.replace(/\{(\w+)\}/g, (match, key) => {
+                return Object.prototype.hasOwnProperty.call(vars, key) ? vars[key] : match;
+            });
+        }
+
+        function t(key, vars = {}) {
+            const dict = i18n[currentLanguage] || i18n.en;
+            const fallback = i18n.en[key] || key;
+            const template = dict[key] || fallback;
+            return formatText(template, vars);
+        }
+
+        function getLocale() {
+            return localeMap[currentLanguage] || "en-US";
+        }
+
+        function getQuickMessage(key) {
+            return t(key);
+        }
+
+        function getColorLabel(color) {
+            if (color === "white") return t("white_color");
+            if (color === "black") return t("black_color");
+            return color;
+        }
+
+        function applyTranslations() {
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = currentLanguage === "ar" ? "rtl" : "ltr";
+            document.title = t("title");
+
+            document.querySelectorAll("[data-i18n]").forEach((el) => {
+                el.textContent = t(el.dataset.i18n);
+            });
+
+            document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+                el.setAttribute("placeholder", t(el.dataset.i18nPlaceholder));
+            });
+
+            document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+                el.setAttribute("title", t(el.dataset.i18nTitle));
+            });
+
+            document.querySelectorAll("[data-quick-key]").forEach((el) => {
+                const key = el.dataset.quickKey;
+                if (key) el.textContent = t(key);
+            });
+
+            const p1NameEl = document.getElementById("p1Name");
+            if (p1NameEl && !p1NameEl.dataset.isPlayerName) {
+                p1NameEl.textContent = t("player_1");
+            }
+
+            const p2NameEl = document.getElementById("p2Name");
+            if (p2NameEl && !p2NameEl.dataset.isPlayerName) {
+                p2NameEl.textContent = t("player_2");
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = normalizeLanguage(lang);
+            applyTranslations();
+        }
+
+        applyTranslations();
+
         console.log('🎮 Game script loaded, waiting for postMessage...');
 
         // ✅ React-dən user datasını gözlə
         // ✅ React-dən user datasını gözlə
         window.addEventListener('message', (event) => {
             console.log('📨 [BACKGAMMON] Message alındı:', event.data);
+
+            if (event?.data?.payload?.language) {
+                setLanguage(event.data.payload.language);
+            }
 
             if (event.data && event.data.type === 'INIT_USER') {
                 console.log('✅ [BACKGAMMON] INIT_USER qəbul edildi');
@@ -380,10 +962,10 @@
                 const token = getToken();
                 if (!token) {
                     console.error("❌ [BACKGAMMON] Token yoxdur!");
-                    showNotification("Token tapılmadı!", "error");
+                    showNotification(t("token_not_found"), "error");
                     window.parent.postMessage({
                         type: "ERROR",
-                        payload: { message: "Token tapılmadı!" }
+                        payload: { message: t("token_not_found") }
                     }, "*");
                     return;
                 }
@@ -399,20 +981,22 @@
 
                 connection = createBackgammonConnection();
 
+                showLoadingScreen();
+
                 // State event-lər
                 connection.onreconnecting((error) => {
                     console.warn("⚠️ Reconnecting...", error);
-                    showNotification("Bağlantı bərpa olunur...", "info");
+                    showNotification(t("connection_lost_reconnecting"), "info");
                 });
 
                 connection.onreconnected((connectionId) => {
                     console.log("✅ Reconnected:", connectionId);
-                    showNotification("Bağlantı bərpa olundu!", "success");
+                    showNotification(t("connection_restored"), "success");
                 });
 
                 connection.onclose((error) => {
                     console.error("❌ Connection closed:", error);
-                    showNotification("Bağlantı kəsildi!", "error");
+                    showNotification(t("connection_lost"), "error");
                 });
 
                 // Handler-lər start-dan ƏVVƏL qurulmalıdır
@@ -425,7 +1009,8 @@
                 console.log("🔗 Connection ID:", connection.connectionId);
                 console.log("🔗 State:", connection.state);
 
-                showNotification("Serverə qoşuldu! ✅", "success");
+                // showNotification(t("connected_short"), "success");
+                hideLoadingScreen();
 
                 // ✅ init() kimi: roomId varsa reconnect et, yoxdursa rooms/lobby göstər
                 if (typeof roomIdFromUrl !== "undefined" && roomIdFromUrl) {
@@ -449,18 +1034,22 @@
             } catch (err) {
                 console.error("❌ [BACKGAMMON] Connection error:", err);
 
-                let errorMsg = "Serverə qoşulmaq alınmadı";
+                let errorMsg = t("error_connecting");
                 const msg = (err && err.message) ? err.message : "";
 
                 if (msg.includes("401") || msg.includes("Unauthorized")) {
-                    errorMsg = "Token yanlışdır! Yenidən daxil olun.";
+                    errorMsg = t("token_invalid");
                 } else if (msg.toLowerCase().includes("negotiate")) {
-                    errorMsg = "Server negotiate cavabı vermir (CORS/URL/SSL ola bilər).";
+                    errorMsg = t("negotiate_missing");
                 } else if (msg.toLowerCase().includes("timeout")) {
-                    errorMsg = "Bağlantı vaxtı keçdi. Yenidən cəhd edin.";
+                    errorMsg = t("timeout");
                 }
 
-                showNotification(errorMsg, "error");
+                // showNotification(errorMsg, "error");
+
+                if (loadingStatusEl) {
+                    loadingStatusEl.textContent = errorMsg;
+                }
 
                 window.parent.postMessage({
                     type: "ERROR",
@@ -480,6 +1069,30 @@
         let gameBoard = { points: {}, bar: { white: 0, black: 0 }, home: { white: 0, black: 0 } };
         let isWaitingForOpponent = false;
         let activePopup = null;
+
+        const loadingContainer = document.getElementById("loadingContainer");
+        const loadingStatusEl = document.getElementById("loadingStatus");
+
+        function showLoadingScreen(message = t("loading_status")) {
+            if (loadingStatusEl && message) {
+                loadingStatusEl.textContent = message;
+            }
+            if (loadingContainer) {
+                loadingContainer.style.display = "flex";
+                loadingContainer.classList.remove("hidden");
+            }
+            document.body?.classList.add("is-loading");
+        }
+
+        function hideLoadingScreen() {
+            if (loadingContainer) {
+                loadingContainer.classList.add("hidden");
+                setTimeout(() => {
+                    loadingContainer.style.display = "none";
+                }, 700);
+            }
+            document.body?.classList.remove("is-loading");
+        }
 
         // function getToken() {
         //     const raw = document.cookie
@@ -530,24 +1143,26 @@
                 if (myColor === 'white') {
                     document.getElementById('p1Name').textContent = myName;
                     document.getElementById('p1Avatar').textContent = myName.charAt(0).toUpperCase();
+                    document.getElementById('p1Name').dataset.isPlayerName = "true";
                 } else {
                     document.getElementById('p2Name').textContent = myName;
                     document.getElementById('p2Avatar').textContent = myName.charAt(0).toUpperCase();
+                    document.getElementById('p2Name').dataset.isPlayerName = "true";
                 }
 
                 renderBoard(gameBoard);
 
                 if (isWaitingForOpponent) {
-                    showNotification(`⏳ Rəqib gözlənilir... (${data.color === 'white' ? '⚪ Ağ' : '⚫ Qara'})`, 'info');
+                    showNotification(t("waiting_color", { color: getColorLabel(data.color) }), "info");
                 } else {
-                    showNotification(`Otağa qoşuldunuz! Siz ${data.color === 'white' ? '⚪ Ağ' : '⚫ Qara'}`, 'success');
+                    showNotification(t("connected_you_are_color", { color: getColorLabel(data.color) }), "success");
                 }
             });
 
             connection.on("PlayerJoined", (data) => {
                 console.log("👥 Player joined:", data);
                 isWaitingForOpponent = false;
-                showNotification(`${data.name} qoşuldu! Oyun başlayır...`, 'info');
+                showNotification(t("player_joined", { name: data.name }), "info");
                 updatePlayerInfo(data.name, data.color);
             });
 
@@ -558,8 +1173,14 @@
 
             connection.on("GameStarting", (data) => {
                 console.log("🎲 Game starting:", data);
-                const message = `${data.player1.name} atdı ${data.player1.dice} 🎲\n${data.player2.name} atdı ${data.player2.dice} 🎲\n\n🏁 ${data.starter} başlayır!`;
-                showNotification(message, 'success');
+                const message = t("game_starting", {
+                    p1: data.player1.name,
+                    d1: data.player1.dice,
+                    p2: data.player2.name,
+                    d2: data.player2.dice,
+                    starter: data.starter
+                });
+                showNotification(message, "success");
                 showDice([data.player1.dice, data.player2.dice]);
             });
 
@@ -577,7 +1198,7 @@
 
                 renderBoard(gameBoard);
                 updateTurnIndicator();
-                showNotification(data.message || 'Oyun başladı!', 'success');
+                showNotification(data.message || t("game_started"), "success");
 
                 if (isMyTurn) {
                     document.getElementById('rollBtn').disabled = false;
@@ -589,13 +1210,13 @@
 
             connection.on("DiceRolled", (data) => {
                 showDice(data.dice);
-                showNotification(`🎲 Zər: ${data.dice.join('-')}`, 'info');
+                showNotification(t("dice_label", { dice: data.dice.join("-") }), "info");
                 document.getElementById('endTurnBtn').disabled = false;
                 document.getElementById('rollBtn').disabled = true;
 
                 if (checkCanBearOff()) {
                     document.getElementById('bearOffBtn').disabled = false;
-                    showNotification(`🎲 Zər: ${data.dice.join('-')} | 🏠 HOME-a çıxara bilərsiniz!`, 'info');
+                    showNotification(t("can_bear_off", { dice: data.dice.join("-") }), "info");
                 }
             });
 
@@ -606,17 +1227,17 @@
 
                 let moveText = '';
                 if (data.fromPoint === 0) {
-                    moveText = `BAR → ${data.toPoint}`;
+                    moveText = t("move_from_bar", { bar: t("bar_label"), to: data.toPoint });
                 } else if (data.toPoint < 1 || data.toPoint > 24) {
-                    moveText = `${data.fromPoint} → HOME 🏠`;
+                    moveText = t("move_to_home", { from: data.fromPoint, home: t("home_label_word") });
                 } else {
-                    moveText = `${data.fromPoint} → ${data.toPoint}`;
+                    moveText = t("move_between", { from: data.fromPoint, to: data.toPoint });
                 }
 
                 if (data.remainingMoves && data.remainingMoves.length > 0) {
-                    showNotification(`♟️ ${moveText} | Qalan: ${data.remainingMoves.join(', ')}`, 'success');
+                    showNotification(t("move_remaining", { move: moveText, remaining: data.remainingMoves.join(", ") }), "success");
                 } else {
-                    showNotification(`♟️ ${moveText} | ✅ Bütün zərlər istifadə edildi`, 'success');
+                    showNotification(t("move_all_used", { move: moveText }), "success");
                 }
 
                 selectedPoint = null;
@@ -647,10 +1268,10 @@
 
                 if (isMyTurn) {
                     document.getElementById('rollBtn').disabled = false;
-                    showNotification('🎯 Sizin növbənizdir! Zər atın.', 'info');
+                    showNotification(t("turn_yours"), "info");
                 } else {
                     document.getElementById('rollBtn').disabled = true;
-                    showNotification(`⏳ ${data.currentPlayer} zər atır...`, 'info');
+                    showNotification(t("turn_other", { player: data.currentPlayer }), "info");
                 }
 
                 selectedPoint = null;
@@ -676,9 +1297,11 @@
             if (color === 'white') {
                 document.getElementById('p1Name').textContent = name;
                 document.getElementById('p1Avatar').textContent = name.charAt(0).toUpperCase();
+                document.getElementById('p1Name').dataset.isPlayerName = "true";
             } else if (color === 'black') {
                 document.getElementById('p2Name').textContent = name;
                 document.getElementById('p2Avatar').textContent = name.charAt(0).toUpperCase();
+                document.getElementById('p2Name').dataset.isPlayerName = "true";
             }
 
             console.log(`✅ Player info updated: P1=${document.getElementById('p1Name').textContent}, P2=${document.getElementById('p2Name').textContent}`);
@@ -695,14 +1318,14 @@
 
         async function quickMatch(betAmount) {
             try {
-                showNotification(`⏳ ${betAmount} coin mərc üçün otaq axtarılır...`, 'info');
+                showNotification(t("quick_match_search", { amount: betAmount, coin: t("coin") }), "info");
                 const result = await connection.invoke("QuickMatch", betAmount);
                 if (!result.success) {
                     showNotification(result.message, 'error');
                 }
             } catch (err) {
                 console.error("❌ QuickMatch error:", err);
-                showNotification('Xəta baş verdi!', 'error');
+                showNotification(t("error_occurred"), "error");
             }
         }
 
@@ -907,29 +1530,29 @@
 
         function handleBarClick(color) {
             if (!isMyTurn) {
-                showNotification('Sizin növbəniz deyil!', 'error');
+                showNotification(t("not_your_turn"), "error");
                 return;
             }
 
             if (color !== myColor) {
-                showNotification('Bu sizin daşınız deyil!', 'error');
+                showNotification(t("not_your_checker"), "error");
                 return;
             }
 
             const bar = gameBoard.bar || {};
             if (!bar[color] || bar[color] === 0) {
-                showNotification('BAR-da daşınız yoxdur!', 'error');
+                showNotification(t("no_checkers_on_bar"), "error");
                 return;
             }
 
             selectedPoint = 0;
             renderBoard(gameBoard);
-            showNotification(`✅ BAR seçildi (${color === 'white' ? '19-24-ə' : '1-6-ya'} daxil olmalı)`, 'info');
+            showNotification(t("bar_selected", { range: color === "white" ? "19-24" : "1-6" }), "info");
         }
 
         function handlePointClick(pointNum) {
             if (!isMyTurn) {
-                showNotification('Sizin növbəniz deyil!', 'error');
+                showNotification(t("not_your_turn"), "error");
                 return;
             }
 
@@ -939,7 +1562,7 @@
             if (selectedPoint === null || selectedPoint === pointNum) {
                 const bar = gameBoard.bar || {};
                 if (bar[myColor] && bar[myColor] > 0) {
-                    showNotification('❌ Əvvəlcə BAR-dan hərəkət etməlisiniz!', 'error');
+                    showNotification(t("first_move_from_bar"), "error");
                     return;
                 }
 
@@ -949,12 +1572,12 @@
 
                     const canBearOff = checkCanBearOff();
                     if (canBearOff) {
-                        showNotification(`✅ Seçildi: Nöqtə ${pointNum} (HOME-a çıxara bilərsiniz)`, 'info');
+                        showNotification(t("selected_point_can_bear_off", { point: pointNum }), "info");
                     } else {
-                        showNotification(`✅ Seçildi: Nöqtə ${pointNum}`, 'info');
+                        showNotification(t("selected_point", { point: pointNum }), "info");
                     }
                 } else {
-                    showNotification('Bu nöqtədə sizin daşınız yoxdur!', 'error');
+                    showNotification(t("point_no_checker"), "error");
                 }
             } else {
                 movePiece(selectedPoint, pointNum);
@@ -979,7 +1602,7 @@
 
         function handleCheckerClick(pointNum) {
             if (!isMyTurn) {
-                showNotification('Sizin növbəniz deyil!', 'error');
+                showNotification(t("not_your_turn"), "error");
                 return;
             }
 
@@ -988,7 +1611,7 @@
 
             const bar = gameBoard.bar || {};
             if (bar[myColor] && bar[myColor] > 0) {
-                showNotification('❌ Əvvəlcə BAR-dan hərəkət etməlisiniz!', 'error');
+                showNotification(t("first_move_from_bar"), "error");
                 return;
             }
 
@@ -998,17 +1621,17 @@
 
                 if (checkCanBearOff()) {
                     document.getElementById('bearOffBtn').disabled = false;
-                    showNotification(`✅ Daş seçildi: Nöqtə ${pointNum} (HOME-a çıxara bilərsiniz)`, 'info');
+                    showNotification(t("selected_point_can_bear_off", { point: pointNum }), "info");
                 } else {
                     document.getElementById('bearOffBtn').disabled = true;
-                    showNotification(`✅ Daş seçildi: Nöqtə ${pointNum}`, 'info');
+                    showNotification(t("selected_point", { point: pointNum }), "info");
                 }
             }
         }
 
         async function rollDice() {
             if (!isMyTurn) {
-                showNotification('Sizin növbəniz deyil!', 'error');
+                showNotification(t("not_your_turn"), "error");
                 return;
             }
 
@@ -1017,7 +1640,7 @@
                 document.getElementById('rollBtn').disabled = true;
             } catch (err) {
                 console.error("❌ RollDice error:", err);
-                showNotification('Xəta baş verdi!', 'error');
+                showNotification(t("roll_error"), "error");
             }
         }
 
@@ -1026,7 +1649,7 @@
                 await connection.invoke("MovePiece", from, to);
             } catch (err) {
                 console.error("❌ MovePiece error:", err);
-                showNotification('Hərəkət edilə bilmədi!', 'error');
+                showNotification(t("move_failed"), "error");
                 selectedPoint = null;
                 renderBoard(gameBoard);
             }
@@ -1034,17 +1657,17 @@
 
         async function bearOff() {
             if (!isMyTurn) {
-                showNotification('Sizin növbəniz deyil!', 'error');
+                showNotification(t("not_your_turn"), "error");
                 return;
             }
 
             if (selectedPoint === null) {
-                showNotification('❌ Əvvəlcə daş seçin!', 'error');
+                showNotification(t("select_checker_first"), "error");
                 return;
             }
 
             if (!checkCanBearOff()) {
-                showNotification('❌ Hələ HOME-a çıxara bilməzsiniz! Bütün daşlar home quadrant-da olmalıdır.', 'error');
+                showNotification(t("cannot_bear_off"), "error");
                 return;
             }
 
@@ -1058,7 +1681,7 @@
                 selectedPoint = null;
             } catch (err) {
                 console.error("❌ Bear off error:", err);
-                showNotification('HOME-a çıxarıla bilmədi! Uyğun zər atmalısınız.', 'error');
+                showNotification(t("bear_off_failed"), "error");
                 selectedPoint = null;
                 renderBoard(gameBoard);
             }
@@ -1075,7 +1698,7 @@
         }
 
         async function leaveGame() {
-            if (!confirm('Oyundan çıxmaq istədiyinizə əminsiniz?')) return;
+            if (!confirm(t("leave_confirm"))) return;
 
             try {
                 await connection.invoke("LeaveRoom");
@@ -1173,13 +1796,13 @@
             } else {
                 content.innerHTML = `
                         <div class="quick-msg-list">
-                            <button class="quick-msg-item" onclick="sendQuickMessage('Salam! 👋')">Salam! 👋</button>
-                            <button class="quick-msg-item" onclick="sendQuickMessage('Uğurlar! 🍀')">Uğurlar! 🍀</button>
-                            <button class="quick-msg-item" onclick="sendQuickMessage('Yaxşı oyun! 🎯')">Yaxşı oyun! 🎯</button>
-                            <button class="quick-msg-item" onclick="sendQuickMessage('Təşəkkürlər 🙏')">Təşəkkürlər 🙏</button>
-                            <button class="quick-msg-item" onclick="sendQuickMessage('Gözəl hərəkət! 👏')">Gözəl! 👏</button>
-                            <button class="quick-msg-item" onclick="sendQuickMessage('Ups... 😅')">Ups... 😅</button>
-                            <button class="quick-msg-item" onclick="sendQuickMessage('GG! 🎊')">GG! 🎊</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage(getQuickMessage('quick_hi'))">${t("quick_hi")}</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage(getQuickMessage('quick_good_luck'))">${t("quick_good_luck")}</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage(getQuickMessage('quick_good_game'))">${t("quick_good_game")}</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage(getQuickMessage('quick_thanks'))">${t("quick_thanks")}</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage(getQuickMessage('quick_great_move'))">${t("quick_great_move")}</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage(getQuickMessage('quick_ups'))">${t("quick_ups")}</button>
+                            <button class="quick-msg-item" onclick="sendQuickMessage(getQuickMessage('quick_gg'))">${t("quick_gg")}</button>
                         </div>
                     `;
             }
@@ -1187,7 +1810,7 @@
 
         async function sendQuickEmoji(emoji) {
             if (!currentRoom) {
-                showNotification('Oyunda deyilsiniz!', 'error');
+                showNotification(t("not_in_room"), "error");
                 return;
             }
 
@@ -1201,13 +1824,13 @@
                 }
             } catch (err) {
                 console.error("❌ SendQuickEmoji error:", err);
-                showNotification('Göndərilə bilmədi!', 'error');
+                showNotification(t("emoji_send_failed"), "error");
             }
         }
 
         async function sendQuickMessage(message) {
             if (!currentRoom) {
-                showNotification('Oyunda deyilsiniz!', 'error');
+                showNotification(t("not_in_room"), "error");
                 return;
             }
 
@@ -1224,7 +1847,7 @@
                 console.log(`✅ Quick message sent successfully`);
             } catch (err) {
                 console.error("❌ SendQuickMessage error:", err);
-                showNotification('Mesaj göndərilə bilmədi!', 'error');
+                showNotification(t("send_failed"), "error");
             }
         }
         function displayPlayerEmoji(senderName, emoji) {
@@ -1332,7 +1955,7 @@
             messageDiv.className = `chat-message ${isOwn ? 'own' : ''}`;
 
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('az-AZ', { hour: '2-digit', minute: '2-digit' });
+            const timeStr = now.toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' });
 
             messageDiv.innerHTML = `
                     <div class="message-sender">${sender}</div>
@@ -1363,7 +1986,7 @@
             }
 
             if (!currentRoom) {
-                showNotification('Oyunda deyilsiniz!', 'error');
+                showNotification(t("not_in_room"), "error");
                 return;
             }
 
@@ -1373,7 +1996,7 @@
                 input.value = '';
             } catch (err) {
                 console.error("❌ SendChatMessage error:", err);
-                showNotification('Mesaj göndərilə bilmədi!', 'error');
+                showNotification(t("send_failed"), "error");
             }
         }
 
@@ -1385,12 +2008,12 @@
 
         async function sendQuickMessageChat(message) {
             if (!currentRoom) {
-                showNotification('Oyunda deyilsiniz!', 'error');
+                showNotification(t("not_in_room"), "error");
                 return;
             }
 
             if (!message || message.trim() === '') {
-                showNotification('Mesaj boşdur!', 'error');
+                showNotification(t("message_empty"), "error");
                 return;
             }
 
@@ -1400,7 +2023,7 @@
                 console.log(`✅ Quick chat message sent successfully`);
             } catch (err) {
                 console.error("❌ SendQuickMessageChat error:", err);
-                showNotification('Mesaj göndərilə bilmədi!', 'error');
+                showNotification(t("send_failed"), "error");
             }
         }
 

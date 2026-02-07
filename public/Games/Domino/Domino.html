@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Domino Oyunu</title>
+    <title>Domino Game</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="./Domino.css" />
@@ -15,61 +15,58 @@
         <!-- ====== Loading Screen ====== -->
 
         <div id="loadingContainer" class="loading-container">
-            <div>
-                <!-- Floating elements -->
-                <div class="floating-cards-l">
-                    <div class="card-l"></div>
-                    <div class="card-l"></div>
-                    <div class="card-l"></div>
-                    <div class="card-l"></div>
-                    <div class="coin-l"></div>
-                    <div class="coin-l"></div>
-                    <div class="coin-l"></div>
-                    <div class="coin-l"></div>
-                    <div class="sparkle-l"></div>
-                    <div class="sparkle-l"></div>
-                    <div class="sparkle-l"></div>
-                    <div class="sparkle-l"></div>
-                    <div class="sparkle-l"></div>
-                    <div class="sparkle-l"></div>
-                </div>
+            <div class="loading-stage">
+                <div class="ring-wrap">
+                    <div class="domino-ring">
+                        <div class="domino-piece" style="--angle: 0deg; --delay: 0s;">
+                            <img src="images/headerTiles/domino66.svg" alt="Domino 6:6" />
+                        </div>
+                        <div class="domino-piece" style="--angle: 60deg; --delay: 0.3s;">
+                            <img src="images/headerTiles/domino55.svg" alt="Domino 5:5" />
+                        </div>
+                        <div class="domino-piece" style="--angle: 120deg; --delay: 0.6s;">
+                            <img src="images/headerTiles/domino11.svg" alt="Domino 1:1" />
+                        </div>
+                        <div class="domino-piece" style="--angle: 180deg; --delay: 0.9s;">
+                            <img src="images/headerTiles/domino66.svg" alt="Domino 6:6" />
+                        </div>
+                        <div class="domino-piece" style="--angle: 240deg; --delay: 1.2s;">
+                            <img src="images/headerTiles/domino55.svg" alt="Domino 5:5" />
+                        </div>
+                        <div class="domino-piece" style="--angle: 300deg; --delay: 1.5s;">
+                            <img src="images/headerTiles/domino11.svg" alt="Domino 1:1" />
+                        </div>
+                    </div>
 
-                <!-- Dice -->
-                <div class="dice-container">
-                    <div class="dice-l">⚅</div>
-                </div>
-                <div class="dice-container-right">
-                    <div class="dice-l">⚄</div>
-                </div>
+                    <div class="domino-core">
+                        <div class="pip-orbit">
+                            <span class="pip-dot"></span>
+                            <span class="pip-dot"></span>
+                            <span class="pip-dot"></span>
+                            <span class="pip-dot"></span>
+                            <span class="pip-dot"></span>
+                        </div>
 
-                <!-- Main roulette wheel -->
-                <div class="roulette-wheel">
-                    <div class="wheel-outer">
-                        <div class="wheel-inner">
-                            <div class="wheel-segment-l"></div>
-                            <div class="wheel-segment-l"></div>
-                            <div class="wheel-segment-l"></div>
-                            <div class="wheel-segment-l"></div>
-                            <div class="wheel-segment-l"></div>
-                            <div class="wheel-segment-l"></div>
-                            <div class="wheel-segment-l"></div>
-                            <div class="wheel-segment-l"></div>
-                            <div class="wheel-center-l"></div>
+                        <div class="domino-stack">
+                            <div class="stack-tile tilt-left">
+                                <img src="images/headerTiles/domino55.svg" alt="Domino 5:5" />
+                            </div>
+                            <div class="stack-tile tilt-right">
+                                <img src="images/headerTiles/domino11.svg" alt="Domino 1:1" />
+                            </div>
+                            <div class="stack-tile top">
+                                <img src="images/headerTiles/domino66.svg" alt="Domino 6:6" />
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Text -->
-                <div class="loading-text">LOADING</div>
-                <div class="loading-subtext">PREPARING YOUR GAME</div>
-
-                <!-- Progress dots -->
-                <div class="dots-l">
-                    <div class="dot-l"></div>
-                    <div class="dot-l"></div>
-                    <div class="dot-l"></div>
-                    <div class="dot-l"></div>
-                    <div class="dot-l"></div>
+                <div class="loading-copy">
+                    <div class="loading-text" data-i18n="loading">LOADING</div>
+                    <div class="loading-subtext" data-i18n="preparing">PREPARING YOUR GAME</div>
+                    <div class="progress-rail" aria-hidden="true">
+                        <div class="progress-fill"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,9 +80,9 @@
                 <div class="header-title">
                     <img class="header-tile" src="images/headerTiles/domino66.svg" alt="Domino 6:6" />
                     <img class="h-tile-r" src="images/headerTiles/domino11.svg" alt="Domino 6:6" />
-                    <span class="header-text">DOMINO</span>
+                    <span class="header-text" data-i18n="header_domino">DOMINO</span>
                 </div>
-                <div class="balance"><span id="userBalance">0</span> coin</div>
+                <div class="balance"><span id="userBalance">0</span> <span data-i18n="coin">coin</span></div>
             </div>
             <div class="game-sections">
                 <div class="top-game">
@@ -95,20 +92,20 @@
                             <div class="section-icon">
                                 <img class="domino-icon domino-1-1" src="images/headerTiles/domino11.svg" alt="Domino 1:1" />
                             </div>
-                            <div class="section-title">CLASSIC 101</div>
+                            <div class="section-title" data-i18n="classic_101">CLASSIC 101</div>
                         </div>
                         <div class="player-count-selector">
                             <button class="count-btn" onclick="showBetModal('Classic101', 2)">
                                 <div class="count-number">2</div>
-                                <div class="count-label">Players</div>
+                                <div class="count-label" data-i18n="players">Players</div>
                             </button>
                             <button class="count-btn" onclick="showBetModal('Classic101', 3)">
                                 <div class="count-number">3</div>
-                                <div class="count-label">Players</div>
+                                <div class="count-label" data-i18n="players">Players</div>
                             </button>
                             <button class="count-btn" onclick="showBetModal('Classic101', 4)">
                                 <div class="count-number">4</div>
-                                <div class="count-label">Players</div>
+                                <div class="count-label" data-i18n="players">Players</div>
                             </button>
                         </div>
                     </div>
@@ -119,20 +116,20 @@
                             <div class="section-icon">
                                 <img class="domino-icon domino-6-6" src="images/headerTiles/domino66.svg" alt="Domino 6:6" />
                             </div>
-                            <div class="section-title">QUICK 5</div>
+                            <div class="section-title" data-i18n="quick_5">QUICK 5</div>
                         </div>
                         <div class="player-count-selector">
                             <button class="count-btn" onclick="showBetModal('Quick5', 2)">
                                 <div class="count-number">2</div>
-                                <div class="count-label">Players</div>
+                                <div class="count-label" data-i18n="players">Players</div>
                             </button>
                             <button class="count-btn" onclick="showBetModal('Quick5', 3)">
                                 <div class="count-number">3</div>
-                                <div class="count-label">Players</div>
+                                <div class="count-label" data-i18n="players">Players</div>
                             </button>
                             <button class="count-btn" onclick="showBetModal('Quick5', 4)">
                                 <div class="count-number">4</div>
-                                <div class="count-label">Players</div>
+                                <div class="count-label" data-i18n="players">Players</div>
                             </button>
                         </div>
                     </div>
@@ -144,20 +141,20 @@
                         <div class="section-icon">
                             <img class="domino-icon domino-5-5" src="images/headerTiles/domino55.svg" alt="Domino 5:5" />
                         </div>
-                        <div class="section-title">ALL FIVES</div>
+                        <div class="section-title" data-i18n="all_fives">ALL FIVES</div>
                     </div>
                     <div class="player-count-selector selector-all-five">
                         <button class="count-btn" onclick="showBetModal('AllFives', 2)">
                             <div class="count-number">2</div>
-                            <div class="count-label">Players</div>
+                            <div class="count-label" data-i18n="players">Players</div>
                         </button>
                         <button class="count-btn" onclick="showBetModal('AllFives', 3)">
                             <div class="count-number">3</div>
-                            <div class="count-label">Players</div>
+                            <div class="count-label" data-i18n="players">Players</div>
                         </button>
                         <button class="count-btn" onclick="showBetModal('AllFives', 4)">
                             <div class="count-number">4</div>
-                            <div class="count-label">Players</div>
+                            <div class="count-label" data-i18n="players">Players</div>
                         </button>
                     </div>
                 </div>
@@ -166,7 +163,7 @@
             <div id="betModal" class="modal-overlay" style="display: none;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2>💰 Select Your Bet</h2>
+                        <h2 data-i18n="select_bet">💰 Select Your Bet</h2>
                         <button class="modal-close" onclick="closeBetModal()">✕</button>
                     </div>
                     <div class="modal-body">
@@ -178,7 +175,7 @@
 
         <div id="rotateModal" style="display: none;">
             <div class="modalContent">
-                <p>🎮 Oyuna başlamaq üçün telefonu çevirin</p>
+                <p data-i18n="rotate_phone">🎮 Rotate your phone to start the game</p>
                 <div class="phoneIcon">📱↩️</div>
             </div>
         </div>
@@ -190,10 +187,10 @@
                 <div style="font-size: 16px; font-weight: 700; color: #10b981;">
                     <span class="room-icon">🎯</span> <span id="roomName">Domino</span>
                 </div>
-                <div class="status-bar" id="statusBar">Waiting for players...</div>
+                <div class="status-bar" id="statusBar" data-i18n="waiting_players">Waiting for players...</div>
 
                 <div class="middle-header">
-                    <span class="badge">Round: <span id="roundNumber">1</span></span>
+                    <span class="badge"><span data-i18n="round_label">Round:</span> <span id="roundNumber">1</span></span>
                     <span class="badge" id="scoreDisplay">0/101</span>
                 </div>
                 <!-- <div class="balance">💰 <span id="balance">0</span> coin</div> -->
@@ -204,11 +201,11 @@
             <div id="stockModal" class="stock-modal-overlay">
                 <div class="stock-modal-content">
                     <div class="stock-modal-header">
-                        <h2 class="stock-modal-title">🎲 Bazardan Daş Seç</h2>
+                        <h2 class="stock-modal-title" data-i18n="pick_from_market">🎲 Pick a tile from the stock</h2>
                         <button class="stock-modal-close" onclick="closeStockModal()">✕</button>
                     </div>
                     <div class="stock-info">
-                        Bazarda <strong id="stockModalCount">0</strong> daş var. Birini seçin:
+                        <span data-i18n="stock_info_prefix">There are</span> <strong id="stockModalCount">0</strong> <span data-i18n="stock_info_suffix">tiles in the stock. Choose one:</span>
                     </div>
                     <div id="stockTilesGrid" class="stock-tiles-grid">
                         <!-- Daşlar buraya gələcək -->
@@ -225,7 +222,7 @@
                     <div class="player-info" id="playerInfoTop">
                         <div class="player-avatar">👤</div>
                         <div class="player-details">
-                            <div class="player-name">Waiting...</div>
+                            <div class="player-name" data-i18n="waiting">Waiting...</div>
                             <div class="player-stats">
                                 <span class="player-tile-count">🎯 0</span>
                                 <span class="player-score">0</span>
@@ -246,7 +243,7 @@
                     <div class="player-info" id="playerInfoLeft">
                         <div class="player-avatar">👤</div>
                         <div class="player-details">
-                            <div class="player-name">Gözləyir...</div>
+                            <div class="player-name" data-i18n="waiting">Waiting...</div>
                             <div class="player-stats">
                                 <span class="player-tile-count">🎯 0</span>
                                 <span class="player-score">0</span>
@@ -260,7 +257,7 @@
                     <div class="player-info" id="playerInfoRight">
                         <div class="player-avatar">👤</div>
                         <div class="player-details">
-                            <div class="player-name">Gözləyir...</div>
+                            <div class="player-name" data-i18n="waiting">Waiting...</div>
                             <div class="player-stats">
                                 <span class="player-tile-count">🎯 0</span>
                                 <span class="player-score">0</span>
@@ -277,7 +274,7 @@
 
                     <div class="table-center" id="dropZone">
                         <div id="chain" class="chain">
-                            <div style="color: #64748b; text-align: center;">🎯 Place first tile</div>
+                            <div style="color: #64748b; text-align: center;" data-i18n="place_first_tile">🎯 Place first tile</div>
                         </div>
                     </div>
 
@@ -290,7 +287,7 @@
                             <div class="player-info" id="myPlayerInfo">
                                 <div class="player-avatar">😊</div>
                                 <div class="player-details">
-                                    <div class="player-name" id="myPlayerName">You</div>
+                                    <div class="player-name" id="myPlayerName" data-i18n="you">You</div>
                                     <span class="player-score" id="myScore">0</span>
                                     <!-- <div class="player-stats">
                                         <span class="player-tile-count">🎯 <span id="myTileCount">0</span></span>
@@ -303,7 +300,7 @@
                             <!-- <div class="sidebar-title">Your Tiles</div> -->
                             <div id="myHand" class="hand-tiles">
                                 <div style="color: #64748b; text-align: center; width: 100%;">
-                                    Your tiles will appear here
+                                    <span data-i18n="your_tiles_here">Your tiles will appear here</span>
                                 </div>
                             </div>
                         </div>
@@ -327,6 +324,565 @@
         const modal = document.getElementById("rotateModal");
         const lobbyView = document.getElementById("lobbyView");
         const gameView = document.getElementById("gameView");
+        let currentLanguage = 'tr';
+
+        const translations = {
+            en: {
+                title_domino: "Domino Game",
+                loading: "LOADING",
+                preparing: "PREPARING YOUR GAME",
+                header_domino: "DOMINO",
+                coin: "coin",
+                classic_101: "CLASSIC 101",
+                quick_5: "QUICK 5",
+                all_fives: "ALL FIVES",
+                players: "Players",
+                select_bet: "💰 Select Your Bet",
+                rotate_phone: "🎮 Rotate your phone to start the game",
+                waiting_players: "Waiting for players...",
+                round_label: "Round:",
+                pick_from_market: "🎲 Pick a tile from the stock",
+                stock_info_prefix: "There are",
+                stock_info_suffix: "tiles in the stock. Choose one:",
+                waiting: "Waiting...",
+                place_first_tile: "🎯 Place first tile",
+                you: "You",
+                your_tiles_here: "Your tiles will appear here",
+                your_turn: "🎯 Your turn!",
+                waiting_turn: "⏳ {name} is playing...",
+                waiting_generic: "⏳ Please wait...",
+                game_in_progress: "🎮 Game in progress...",
+                lobby_not_available: "No lobby available for this game type!",
+                balance_not_enough: "Insufficient balance! Required: {amount} {coin}",
+                lobby_joined: "Joined the lobby!",
+                lobby_join_failed: "Failed to join the lobby",
+                room_joined: "Joined the room!",
+                player_joined: "{name} joined ({current}/{max})",
+                player_left: "{name} left",
+                server_connect_failed: "Could not connect to server",
+                not_placeable: "This tile cannot be placed!",
+                place_tile_failed: "Failed to place tile",
+                select_side_title: "🎯 Choose a side",
+                side_left: "⬅️ Left",
+                side_right: "➡️ Right",
+                side_center_top: "⬆️ Up (Center)",
+                side_center_bottom: "⬇️ Down (Center)",
+                no_tiles: "You have no tiles",
+                first_tile: "🎯 Place first tile",
+                leave_confirm: "Are you sure you want to leave the game?",
+                stock_take_failed: "Failed to draw a tile",
+                not_in_game: "You are not in a game!",
+                emoji_send_failed: "Could not send!",
+                message_send_failed: "Message could not be sent!",
+                round_over_title: "🎯 Round {round} finished!",
+                close: "Close",
+                player_data_missing: "Player data not found",
+                empty_hand_winner: "✅ Hand is empty (Winner!)",
+                score_points: "{score} points",
+                waiting_next_round: "⏳ Waiting...",
+                ready_next_round: "✅ Next Round",
+                error_occurred: "An error occurred",
+                no_lobbies: "No lobby available",
+                lobby_title_classic: "🎯 Classic 101",
+                lobby_title_quick: "⚡ Quick 5",
+                lobby_title_allfives: "🔥 All Fives",
+                lobby_players_count: "{count}-Player",
+                lobby_waiting_count: "⏳ {count} waiting",
+                entry_fee: "Entry:",
+                join: "Join",
+                passed_turn: "{name} passed",
+                drew_can_play: "{name} drew {count} tiles and can play!",
+                drew_cannot_play: "{name} drew {count} tiles but couldn't play",
+                win_round: "🏆 {name} won round {round}! (+{points} points)",
+                reward: "Reward",
+                platform_fee: "Platform fee",
+                final: "Final",
+                points_suffix: "points",
+                pass: "Pass",
+                emoji_tab: "😊 Emoji",
+                message_tab: "💬 Message",
+                quick_msg_1: "Hi! 👋",
+                quick_msg_2: "Good luck! 🍀",
+                quick_msg_3: "Nice game! 🎯",
+                quick_msg_4: "Thanks 🙏",
+                quick_msg_5: "Great move! 👏",
+                quick_msg_6: "Oops... 😅",
+                quick_msg_7: "Be careful! 🤔",
+                quick_msg_8: "GG! 🎊"
+            },
+            tr: {
+                title_domino: "Domino Oyunu",
+                loading: "YÜKLENİYOR",
+                preparing: "OYUN HAZIRLANIYOR",
+                header_domino: "DOMİNO",
+                coin: "jeton",
+                classic_101: "KLASİK 101",
+                quick_5: "HIZLI 5",
+                all_fives: "TÜM BEŞLİLER",
+                players: "Oyuncu",
+                select_bet: "💰 Bahsini Seç",
+                rotate_phone: "🎮 Oyuna başlamak için telefonu çevirin",
+                waiting_players: "Oyuncular bekleniyor...",
+                round_label: "Tur:",
+                pick_from_market: "🎲 Havuzdan taş seç",
+                stock_info_prefix: "Havuzda",
+                stock_info_suffix: "taş var. Birini seçin:",
+                waiting: "Bekleniyor...",
+                place_first_tile: "🎯 İlk taşı koy",
+                you: "Sen",
+                your_tiles_here: "Taşların burada görünecek",
+                your_turn: "🎯 Sıra sende!",
+                waiting_turn: "⏳ {name} oynuyor...",
+                waiting_generic: "⏳ Lütfen bekleyin...",
+                game_in_progress: "🎮 Oyun devam ediyor...",
+                lobby_not_available: "Bu oyun türü için lobby yok!",
+                balance_not_enough: "Yetersiz bakiye! Gerekli: {amount} {coin}",
+                lobby_joined: "Lobby'ye katıldınız!",
+                lobby_join_failed: "Lobby'ye katılma başarısız",
+                room_joined: "Odaya katıldınız!",
+                player_joined: "{name} katıldı ({current}/{max})",
+                player_left: "{name} ayrıldı",
+                server_connect_failed: "Sunucuya bağlanılamadı",
+                not_placeable: "Bu taş konamaz!",
+                place_tile_failed: "Taş yerleştirilemedi",
+                select_side_title: "🎯 Taraf seçin",
+                side_left: "⬅️ Sol",
+                side_right: "➡️ Sağ",
+                side_center_top: "⬆️ Yukarı (Merkez)",
+                side_center_bottom: "⬇️ Aşağı (Merkez)",
+                no_tiles: "Taşınız yok",
+                first_tile: "🎯 İlk taşı koy",
+                leave_confirm: "Oyundan çıkmak istediğinize emin misiniz?",
+                stock_take_failed: "Taş çekilemedi",
+                not_in_game: "Oyunda değilsiniz!",
+                emoji_send_failed: "Gönderilemedi!",
+                message_send_failed: "Mesaj gönderilemedi!",
+                round_over_title: "🎯 {round}. tur bitti!",
+                close: "Kapat",
+                player_data_missing: "Oyuncu bilgisi bulunamadı",
+                empty_hand_winner: "✅ El boş (Kazanan!)",
+                score_points: "{score} puan",
+                waiting_next_round: "⏳ Bekleniyor...",
+                ready_next_round: "✅ Sonraki Tur",
+                error_occurred: "Bir hata oluştu",
+                no_lobbies: "Lobby yok",
+                lobby_title_classic: "🎯 Klasik 101",
+                lobby_title_quick: "⚡ Hızlı 5",
+                lobby_title_allfives: "🔥 All Fives",
+                lobby_players_count: "{count} Kişilik",
+                lobby_waiting_count: "⏳ {count} kişi bekliyor",
+                entry_fee: "Giriş:",
+                join: "Katıl",
+                passed_turn: "{name} pas geçti",
+                drew_can_play: "{name} {count} taş aldı ve oynayabilir!",
+                drew_cannot_play: "{name} {count} taş aldı ama oynayamadı",
+                win_round: "🏆 {name} {round}. turu kazandı! (+{points} puan)",
+                reward: "Ödül",
+                platform_fee: "Platform ücreti",
+                final: "Final",
+                points_suffix: "puan",
+                pass: "Pas",
+                emoji_tab: "😊 Emoji",
+                message_tab: "💬 Mesaj",
+                quick_msg_1: "Selam! 👋",
+                quick_msg_2: "Bol şans! 🍀",
+                quick_msg_3: "Güzel oyun! 🎯",
+                quick_msg_4: "Teşekkürler 🙏",
+                quick_msg_5: "Harika hamle! 👏",
+                quick_msg_6: "Ups... 😅",
+                quick_msg_7: "Dikkatli ol! 🤔",
+                quick_msg_8: "GG! 🎊"
+            },
+            hi: {
+                title_domino: "डोमिनो गेम",
+                loading: "लोड हो रहा है",
+                preparing: "आपका गेम तैयार किया जा रहा है",
+                header_domino: "डोमिनो",
+                coin: "कॉइन",
+                classic_101: "क्लासिक 101",
+                quick_5: "क्विक 5",
+                all_fives: "ऑल फाइव्स",
+                players: "खिलाड़ी",
+                select_bet: "💰 अपनी बेट चुनें",
+                rotate_phone: "🎮 गेम शुरू करने के लिए फोन घुमाएं",
+                waiting_players: "खिलाड़ियों का इंतजार...",
+                round_label: "राउंड:",
+                pick_from_market: "🎲 स्टॉक से टाइल चुनें",
+                stock_info_prefix: "स्टॉक में",
+                stock_info_suffix: "टाइलें हैं। एक चुनें:",
+                waiting: "इंतजार...",
+                place_first_tile: "🎯 पहली टाइल रखें",
+                you: "आप",
+                your_tiles_here: "आपकी टाइलें यहां दिखेंगी",
+                your_turn: "🎯 आपकी बारी!",
+                waiting_turn: "⏳ {name} खेल रहा है...",
+                waiting_generic: "⏳ कृपया प्रतीक्षा करें...",
+                game_in_progress: "🎮 गेम चल रहा है...",
+                lobby_not_available: "इस गेम प्रकार के लिए लॉबी उपलब्ध नहीं!",
+                balance_not_enough: "पर्याप्त बैलेंस नहीं! चाहिए: {amount} {coin}",
+                lobby_joined: "लॉबी में जुड़ गए!",
+                lobby_join_failed: "लॉबी में जुड़ना विफल",
+                room_joined: "रूम में जुड़ गए!",
+                player_joined: "{name} जुड़ा ({current}/{max})",
+                player_left: "{name} चला गया",
+                server_connect_failed: "सर्वर से कनेक्ट नहीं हो सका",
+                not_placeable: "यह टाइल नहीं रखी जा सकती!",
+                place_tile_failed: "टाइल रखना विफल",
+                select_side_title: "🎯 साइड चुनें",
+                side_left: "⬅️ बाएँ",
+                side_right: "➡️ दाएँ",
+                side_center_top: "⬆️ ऊपर (केंद्र)",
+                side_center_bottom: "⬇️ नीचे (केंद्र)",
+                no_tiles: "आपके पास टाइलें नहीं हैं",
+                first_tile: "🎯 पहली टाइल रखें",
+                leave_confirm: "क्या आप वाकई गेम छोड़ना चाहते हैं?",
+                stock_take_failed: "टाइल नहीं निकाली जा सकी",
+                not_in_game: "आप गेम में नहीं हैं!",
+                emoji_send_failed: "भेजा नहीं जा सका!",
+                message_send_failed: "मैसेज नहीं भेजा जा सका!",
+                round_over_title: "🎯 राउंड {round} समाप्त!",
+                close: "बंद करें",
+                player_data_missing: "खिलाड़ी डेटा नहीं मिला",
+                empty_hand_winner: "✅ हाथ खाली (विजेता!)",
+                score_points: "{score} अंक",
+                waiting_next_round: "⏳ प्रतीक्षा...",
+                ready_next_round: "✅ अगला राउंड",
+                error_occurred: "एक त्रुटि हुई",
+                no_lobbies: "कोई लॉबी नहीं",
+                lobby_title_classic: "🎯 क्लासिक 101",
+                lobby_title_quick: "⚡ क्विक 5",
+                lobby_title_allfives: "🔥 ऑल फाइव्स",
+                lobby_players_count: "{count}-खिलाड़ी",
+                lobby_waiting_count: "⏳ {count} प्रतीक्षा में",
+                entry_fee: "प्रवेश:",
+                join: "जुड़ें",
+                passed_turn: "{name} ने पास किया",
+                drew_can_play: "{name} ने {count} टाइलें लीं और खेल सकता है!",
+                drew_cannot_play: "{name} ने {count} टाइलें लीं लेकिन खेल नहीं सका",
+                win_round: "🏆 {name} ने राउंड {round} जीता! (+{points} अंक)",
+                reward: "इनाम",
+                platform_fee: "प्लेटफॉर्म शुल्क",
+                final: "अंतिम",
+                points_suffix: "अंक",
+                pass: "पास",
+                emoji_tab: "😊 इमोजी",
+                message_tab: "💬 संदेश",
+                quick_msg_1: "नमस्ते! 👋",
+                quick_msg_2: "शुभकामनाएं! 🍀",
+                quick_msg_3: "अच्छा खेल! 🎯",
+                quick_msg_4: "धन्यवाद 🙏",
+                quick_msg_5: "शानदार चाल! 👏",
+                quick_msg_6: "ओह... 😅",
+                quick_msg_7: "ध्यान से! 🤔",
+                quick_msg_8: "GG! 🎊"
+            },
+            ru: {
+                title_domino: "Игра Домино",
+                loading: "ЗАГРУЗКА",
+                preparing: "ПОДГОТОВКА ИГРЫ",
+                header_domino: "ДОМИНО",
+                coin: "монет",
+                classic_101: "КЛАССИК 101",
+                quick_5: "БЫСТРЫЕ 5",
+                all_fives: "ВСЕ ПЯТЕРКИ",
+                players: "Игроки",
+                select_bet: "💰 Выберите ставку",
+                rotate_phone: "🎮 Поверните телефон, чтобы начать игру",
+                waiting_players: "Ожидание игроков...",
+                round_label: "Раунд:",
+                pick_from_market: "🎲 Возьмите фишку из запаса",
+                stock_info_prefix: "В запасе",
+                stock_info_suffix: "фишек. Выберите одну:",
+                waiting: "Ожидание...",
+                place_first_tile: "🎯 Положите первую фишку",
+                you: "Вы",
+                your_tiles_here: "Ваши фишки появятся здесь",
+                your_turn: "🎯 Ваш ход!",
+                waiting_turn: "⏳ {name} ходит...",
+                waiting_generic: "⏳ Пожалуйста, подождите...",
+                game_in_progress: "🎮 Игра продолжается...",
+                lobby_not_available: "Для этого режима нет лобби!",
+                balance_not_enough: "Недостаточно средств! Нужно: {amount} {coin}",
+                lobby_joined: "Вы вошли в лобби!",
+                lobby_join_failed: "Не удалось войти в лобби",
+                room_joined: "Вы вошли в комнату!",
+                player_joined: "{name} присоединился ({current}/{max})",
+                player_left: "{name} вышел",
+                server_connect_failed: "Не удалось подключиться к серверу",
+                not_placeable: "Эту фишку нельзя положить!",
+                place_tile_failed: "Не удалось положить фишку",
+                select_side_title: "🎯 Выберите сторону",
+                side_left: "⬅️ Влево",
+                side_right: "➡️ Вправо",
+                side_center_top: "⬆️ Вверх (центр)",
+                side_center_bottom: "⬇️ Вниз (центр)",
+                no_tiles: "У вас нет фишек",
+                first_tile: "🎯 Положите первую фишку",
+                leave_confirm: "Вы уверены, что хотите выйти из игры?",
+                stock_take_failed: "Не удалось взять фишку",
+                not_in_game: "Вы не в игре!",
+                emoji_send_failed: "Не удалось отправить!",
+                message_send_failed: "Не удалось отправить сообщение!",
+                round_over_title: "🎯 Раунд {round} завершен!",
+                close: "Закрыть",
+                player_data_missing: "Данные игрока не найдены",
+                empty_hand_winner: "✅ Рука пуста (Победитель!)",
+                score_points: "{score} очков",
+                waiting_next_round: "⏳ Ожидание...",
+                ready_next_round: "✅ Следующий раунд",
+                error_occurred: "Произошла ошибка",
+                no_lobbies: "Лобби нет",
+                lobby_title_classic: "🎯 Классик 101",
+                lobby_title_quick: "⚡ Быстрые 5",
+                lobby_title_allfives: "🔥 All Fives",
+                lobby_players_count: "{count}-игрока",
+                lobby_waiting_count: "⏳ {count} ждут",
+                entry_fee: "Вход:",
+                join: "Войти",
+                passed_turn: "{name} пропустил ход",
+                drew_can_play: "{name} взял {count} фишек и может ходить!",
+                drew_cannot_play: "{name} взял {count} фишек, но не смог ходить",
+                win_round: "🏆 {name} выиграл раунд {round}! (+{points} очков)",
+                reward: "Награда",
+                platform_fee: "Комиссия платформы",
+                final: "Итог",
+                points_suffix: "очков",
+                pass: "Пас",
+                emoji_tab: "😊 Эмодзи",
+                message_tab: "💬 Сообщение",
+                quick_msg_1: "Привет! 👋",
+                quick_msg_2: "Удачи! 🍀",
+                quick_msg_3: "Хорошая игра! 🎯",
+                quick_msg_4: "Спасибо 🙏",
+                quick_msg_5: "Отличный ход! 👏",
+                quick_msg_6: "Ой... 😅",
+                quick_msg_7: "Будь внимателен! 🤔",
+                quick_msg_8: "GG! 🎊"
+            },
+            ar: {
+                title_domino: "لعبة الدومينو",
+                loading: "جارٍ التحميل",
+                preparing: "يتم تجهيز لعبتك",
+                header_domino: "دومينو",
+                coin: "عملة",
+                classic_101: "كلاسيك 101",
+                quick_5: "سريع 5",
+                all_fives: "كل الخمسات",
+                players: "لاعبون",
+                select_bet: "💰 اختر الرهان",
+                rotate_phone: "🎮 أدر الهاتف لبدء اللعبة",
+                waiting_players: "بانتظار اللاعبين...",
+                round_label: "الجولة:",
+                pick_from_market: "🎲 اختر قطعة من المخزون",
+                stock_info_prefix: "يوجد",
+                stock_info_suffix: "قطع في المخزون. اختر واحدة:",
+                waiting: "بانتظار...",
+                place_first_tile: "🎯 ضع أول قطعة",
+                you: "أنت",
+                your_tiles_here: "ستظهر قطعك هنا",
+                your_turn: "🎯 دورك!",
+                waiting_turn: "⏳ {name} يلعب...",
+                waiting_generic: "⏳ الرجاء الانتظار...",
+                game_in_progress: "🎮 اللعبة مستمرة...",
+                lobby_not_available: "لا توجد ردهة لهذا النوع!",
+                balance_not_enough: "الرصيد غير كافٍ! المطلوب: {amount} {coin}",
+                lobby_joined: "تم الانضمام إلى الردهة!",
+                lobby_join_failed: "فشل الانضمام إلى الردهة",
+                room_joined: "تم الانضمام إلى الغرفة!",
+                player_joined: "انضم {name} ({current}/{max})",
+                player_left: "غادر {name}",
+                server_connect_failed: "تعذر الاتصال بالخادم",
+                not_placeable: "لا يمكن وضع هذه القطعة!",
+                place_tile_failed: "تعذر وضع القطعة",
+                select_side_title: "🎯 اختر الجانب",
+                side_left: "⬅️ يسار",
+                side_right: "➡️ يمين",
+                side_center_top: "⬆️ أعلى (الوسط)",
+                side_center_bottom: "⬇️ أسفل (الوسط)",
+                no_tiles: "لا توجد لديك قطع",
+                first_tile: "🎯 ضع أول قطعة",
+                leave_confirm: "هل أنت متأكد أنك تريد مغادرة اللعبة؟",
+                stock_take_failed: "تعذر سحب قطعة",
+                not_in_game: "أنت لست في لعبة!",
+                emoji_send_failed: "تعذر الإرسال!",
+                message_send_failed: "تعذر إرسال الرسالة!",
+                round_over_title: "🎯 انتهت الجولة {round}!",
+                close: "إغلاق",
+                player_data_missing: "لم يتم العثور على بيانات اللاعب",
+                empty_hand_winner: "✅ اليد فارغة (الفائز!)",
+                score_points: "{score} نقاط",
+                waiting_next_round: "⏳ جاري الانتظار...",
+                ready_next_round: "✅ الجولة التالية",
+                error_occurred: "حدث خطأ",
+                no_lobbies: "لا توجد ردهة",
+                lobby_title_classic: "🎯 كلاسيك 101",
+                lobby_title_quick: "⚡ سريع 5",
+                lobby_title_allfives: "🔥 All Fives",
+                lobby_players_count: "{count}-لاعب",
+                lobby_waiting_count: "⏳ {count} في الانتظار",
+                entry_fee: "الدخول:",
+                join: "انضم",
+                passed_turn: "مرر {name}",
+                drew_can_play: "سحب {name} {count} قطع ويمكنه اللعب!",
+                drew_cannot_play: "سحب {name} {count} قطع لكنه لم يستطع اللعب",
+                win_round: "🏆 فاز {name} بالجولة {round}! (+{points} نقاط)",
+                reward: "المكافأة",
+                platform_fee: "رسوم المنصة",
+                final: "النتيجة",
+                points_suffix: "نقاط",
+                pass: "تمرير",
+                emoji_tab: "😊 رموز",
+                message_tab: "💬 رسالة",
+                quick_msg_1: "مرحبًا! 👋",
+                quick_msg_2: "حظًا موفقًا! 🍀",
+                quick_msg_3: "لعبة جميلة! 🎯",
+                quick_msg_4: "شكرًا 🙏",
+                quick_msg_5: "حركة رائعة! 👏",
+                quick_msg_6: "أوف... 😅",
+                quick_msg_7: "كن حذرًا! 🤔",
+                quick_msg_8: "GG! 🎊"
+            },
+            uz: {
+                title_domino: "Domino O'yini",
+                loading: "YUKLANMOQDA",
+                preparing: "O'YIN TAYYORLANMOQDA",
+                header_domino: "DOMINO",
+                coin: "tanga",
+                classic_101: "KLASSIK 101",
+                quick_5: "TEZKOR 5",
+                all_fives: "BARCHA BESHLAR",
+                players: "O'yinchilar",
+                select_bet: "💰 Tikishni tanlang",
+                rotate_phone: "🎮 O'yinni boshlash uchun telefonni aylantiring",
+                waiting_players: "O'yinchilar kutilmoqda...",
+                round_label: "Raund:",
+                pick_from_market: "🎲 Zaxiradan tosh tanlang",
+                stock_info_prefix: "Zaxirada",
+                stock_info_suffix: "ta tosh bor. Bittasini tanlang:",
+                waiting: "Kutilmoqda...",
+                place_first_tile: "🎯 Birinchi toshni qo'ying",
+                you: "Siz",
+                your_tiles_here: "Toshlaringiz shu yerda ko'rinadi",
+                your_turn: "🎯 Sizning navbatingiz!",
+                waiting_turn: "⏳ {name} o'ynamoqda...",
+                waiting_generic: "⏳ Iltimos kuting...",
+                game_in_progress: "🎮 O'yin davom etmoqda...",
+                lobby_not_available: "Bu tur uchun lobby yo'q!",
+                balance_not_enough: "Balans yetarli emas! Kerak: {amount} {coin}",
+                lobby_joined: "Lobbyga qo'shildingiz!",
+                lobby_join_failed: "Lobbyga qo'shilish muvaffaqiyatsiz",
+                room_joined: "Xonaga qo'shildingiz!",
+                player_joined: "{name} qo'shildi ({current}/{max})",
+                player_left: "{name} chiqdi",
+                server_connect_failed: "Serverga ulanib bo'lmadi",
+                not_placeable: "Bu toshni qo'yib bo'lmaydi!",
+                place_tile_failed: "Tosh qo'yib bo'lmadi",
+                select_side_title: "🎯 Tomonni tanlang",
+                side_left: "⬅️ Chap",
+                side_right: "➡️ O'ng",
+                side_center_top: "⬆️ Yuqori (Markaz)",
+                side_center_bottom: "⬇️ Past (Markaz)",
+                no_tiles: "Sizda tosh yo'q",
+                first_tile: "🎯 Birinchi toshni qo'ying",
+                leave_confirm: "O'yindan chiqmoqchimisiz?",
+                stock_take_failed: "Tosh olish muvaffaqiyatsiz",
+                not_in_game: "Siz o'yinda emassiz!",
+                emoji_send_failed: "Jo'natib bo'lmadi!",
+                message_send_failed: "Xabar jo'natib bo'lmadi!",
+                round_over_title: "🎯 {round}-raund tugadi!",
+                close: "Yopish",
+                player_data_missing: "O'yinchi ma'lumoti topilmadi",
+                empty_hand_winner: "✅ Qo'l bo'sh (G'olib!)",
+                score_points: "{score} ochko",
+                waiting_next_round: "⏳ Kutilmoqda...",
+                ready_next_round: "✅ Keyingi raund",
+                error_occurred: "Xatolik yuz berdi",
+                no_lobbies: "Lobby yo'q",
+                lobby_title_classic: "🎯 Klassik 101",
+                lobby_title_quick: "⚡ Tezkor 5",
+                lobby_title_allfives: "🔥 All Fives",
+                lobby_players_count: "{count} kishilik",
+                lobby_waiting_count: "⏳ {count} kishi kutmoqda",
+                entry_fee: "Kirish:",
+                join: "Qo'shilish",
+                passed_turn: "{name} o'tkazib yubordi",
+                drew_can_play: "{name} {count} tosh oldi va o'ynay oladi!",
+                drew_cannot_play: "{name} {count} tosh oldi, lekin o'ynay olmadi",
+                win_round: "🏆 {name} {round}-raundni yutdi! (+{points} ochko)",
+                reward: "Mukofot",
+                platform_fee: "Platforma haqqi",
+                final: "Yakuniy",
+                points_suffix: "ochko",
+                pass: "Pass",
+                emoji_tab: "😊 Emoji",
+                message_tab: "💬 Xabar",
+                quick_msg_1: "Salom! 👋",
+                quick_msg_2: "Omad! 🍀",
+                quick_msg_3: "Yaxshi o'yin! 🎯",
+                quick_msg_4: "Rahmat 🙏",
+                quick_msg_5: "Ajoyib yurish! 👏",
+                quick_msg_6: "Voy... 😅",
+                quick_msg_7: "Ehtiyot bo'l! 🤔",
+                quick_msg_8: "GG! 🎊"
+            }
+        };
+
+        const languageAliases = {
+            en: "en",
+            english: "en",
+            tr: "tr",
+            turkish: "tr",
+            hi: "hi",
+            hindi: "hi",
+            in: "hi",
+            indian: "hi",
+            ru: "ru",
+            russian: "ru",
+            ar: "ar",
+            arabic: "ar",
+            uz: "uz",
+            uzbek: "uz"
+        };
+
+        function normalizeLanguage(lang) {
+            if (!lang) return "en";
+            const key = String(lang).toLowerCase().trim();
+            return languageAliases[key] || "tr";
+        }
+
+        function t(key, vars = {}) {
+            const dict = translations[currentLanguage] || translations.en;
+            let text = dict[key] || translations.en[key] || key;
+            Object.keys(vars).forEach((k) => {
+                text = text.replace(new RegExp(`\\{${k}\\}`, "g"), vars[k]);
+            });
+            return text;
+        }
+
+        function applyLanguage(lang) {
+            currentLanguage = normalizeLanguage(lang);
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = currentLanguage === "ar" ? "rtl" : "ltr";
+            document.title = t("title_domino");
+            document.querySelectorAll("[data-i18n]").forEach((el) => {
+                const key = el.getAttribute("data-i18n");
+                el.textContent = t(key);
+            });
+            refreshLanguageDependentUI();
+        }
+
+        function refreshLanguageDependentUI() {
+            const statusBar = document.getElementById("statusBar");
+            if (statusBar) {
+                if (isMyTurn) {
+                    statusBar.textContent = t("your_turn");
+                    statusBar.className = "status-bar your-turn";
+                } else if (currentUserData && currentUserData.username && statusBar.dataset.playerName) {
+                    statusBar.textContent = t("waiting_turn", { name: statusBar.dataset.playerName });
+                    statusBar.className = "status-bar";
+                }
+            }
+        }
 
         function removeLoading() {
             loading.style.display = "none";
@@ -362,7 +918,7 @@
 
 
             if (matchingLobbies.length === 0) {
-                showToast('Bu oyun növü üçün lobby mövcud deyil!');
+                showToast(t('lobby_not_available'));
                 return;
             }
 
@@ -481,7 +1037,14 @@
         window.addEventListener('message', (event) => {
             console.log('📨 [DOMINO] Message alındı:', event.data);
 
+            if (event.data && event.data.payload.language) {
+                applyLanguage(event.data.payload.language);
+                // console.log('🌐 [DOMINO] Dil ayarlandı:', event.data.payload.language);
+            }
+
             if (event.data && event.data.type === 'INIT_USER') {
+                // console.log('🌐 [DOMINO] Dil ayarlandı:', event.data.payload.language);
+
                 console.log('✅ [DOMINO] INIT_USER qəbul edildi');
 
                 currentUserData = event.data.payload;
@@ -535,6 +1098,7 @@
         let draggedTile = null;
 
         let maxPlayer = 4;
+        applyLanguage('en');
 
 
         // 🔥 YENİ: All Fives mərkəz double
@@ -563,7 +1127,7 @@
         async function joinWithBet(entryFee) {
             const balance = parseInt(document.getElementById('userBalance').textContent);
             if (balance < entryFee) {
-                showToast(`Kifayət qədər balans yoxdur! Lazım: ${entryFee} coin`);
+                showToast(t('balance_not_enough', { amount: entryFee, coin: t('coin') }));
                 return;
             }
 
@@ -577,13 +1141,13 @@
 
                 if (result.success) {
                     closeBetModal();
-                    showToast("Lobby-yə qoşuldunuz!", true);
+                    showToast(t("lobby_joined"), true);
                 } else {
                     showToast(result.message);
                 }
             } catch (err) {
                 console.error("❌ Join lobby error:", err);
-                showToast("Lobby-yə qoşulmaq alınmadı");
+                showToast(t("lobby_join_failed"));
             }
         }
 
@@ -775,7 +1339,7 @@
 
             if (!data.allPlayerHands || data.allPlayerHands.length === 0) {
                 console.error("❌ allPlayerHands is empty!");
-                playersHtml = '<div style="color: #ef4444;">Oyunçu məlumatları tapılmadı</div>';
+                playersHtml = `<div style="color: #ef4444;">${t("player_data_missing")}</div>`;
             } else {
                 data.allPlayerHands.forEach(player => {
                     console.log(`👤 ${player.name}: ${player.tiles.length} daş`, player.tiles);
@@ -798,14 +1362,14 @@
                             return tempDiv.innerHTML;
                         }).join('');
                     } else {
-                        tilesHtml = '<div style="color: #64748b; font-size: 14px;">✅ Əl boşdur (Qalib!)</div>';
+                        tilesHtml = `<div style="color: #64748b; font-size: 14px;">${t("empty_hand_winner")}</div>`;
                     }
 
                     playersHtml += `
             <div class="player-result-card ${winnerClass}">
                 <div class="player-result-header">
                     <div class="player-result-name">${winnerIcon}${player.name}</div>
-                    <div class="player-result-score">${player.handValue} xal</div>
+                    <div class="player-result-score">${t("score_points", { score: player.handValue })}</div>
                 </div>
                 <div class="player-result-hand">
                     ${tilesHtml}
@@ -820,14 +1384,14 @@
                 scoresHtml = data.allScores.map(score => `
         <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.1);">
             <span style="font-weight: 600;">${score.isWinner ? '🏆 ' : ''}${score.name}</span>
-            <span style="font-weight: 700; color: #fbbf24;">${score.score} xal</span>
+            <span style="font-weight: 700; color: #fbbf24;">${score.score} ${t("points_suffix")}</span>
         </div>
     `).join('');
             } else {
                 scoresHtml = data.allPlayerHands.map(ph => `
         <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.1);">
             <span style="font-weight: 600;">${ph.isWinner ? '🏆 ' : ''}${ph.name}</span>
-            <span style="font-weight: 700; color: #fbbf24;">${ph.handValue} xal</span>
+            <span style="font-weight: 700; color: #fbbf24;">${ph.handValue} ${t("points_suffix")}</span>
         </div>
     `).join('');
             }
@@ -846,7 +1410,7 @@
             overlay.innerHTML = `
         <div class="round-result-modal">
             <div class="round-result-header">
-                <div class="round-result-title">🎯 Raund ${data.round} Bitdi!</div>
+                <div class="round-result-title">${t("round_over_title", { round: data.round })}</div>
             </div>
 
             <div class="players-hands">
@@ -855,7 +1419,7 @@
 
 
             <button class="round-continue-btn" onclick="closeRoundModal()">
-                Bagla
+                ${t("close")}
             </button>
         </div>
     `;
@@ -905,7 +1469,7 @@
 
             // Name
             const nameEl = infoCard.querySelector('.player-name');
-            if (nameEl) nameEl.textContent = playerData.name || 'Waiting...';
+            if (nameEl) nameEl.textContent = playerData.name || t('waiting');
 
             // Tile count
             const tileCountEl = infoCard.querySelector('.player-tile-count');
@@ -925,7 +1489,7 @@
             // infoCard.classList.remove('active');
 
             const nameEl = infoCard.querySelector('.player-name');
-            if (nameEl) nameEl.textContent = 'Gözləyir...';
+            if (nameEl) nameEl.textContent = t('waiting');
 
             const tileCountEl = infoCard.querySelector('.player-tile-count');
             if (tileCountEl) tileCountEl.textContent = '🎯 0';
@@ -965,7 +1529,7 @@
             let currentPlayer = null;
 
             if (positions.bottom && positions.bottom.isCurrentTurn) {
-                currentPlayer = { name: 'Siz', isMe: true };
+                currentPlayer = { name: t('you'), isMe: true };
             } else if (positions.top && positions.top.isCurrentTurn) {
                 currentPlayer = { name: positions.top.name, isMe: false };
             } else if (positions.left && positions.left.isCurrentTurn) {
@@ -976,14 +1540,15 @@
 
             if (currentPlayer) {
                 if (currentPlayer.isMe) {
-                    statusBar.textContent = "🎯 Sizin növbənizdir!";
+                    statusBar.textContent = t("your_turn");
                     statusBar.className = "status-bar your-turn";
                 } else {
-                    statusBar.textContent = `⏳ ${currentPlayer.name} oynayır...`;
+                    statusBar.textContent = t("waiting_turn", { name: currentPlayer.name });
+                    statusBar.dataset.playerName = currentPlayer.name;
                     statusBar.className = "status-bar";
                 }
             } else {
-                statusBar.textContent = "⏳ Gözləyin...";
+                statusBar.textContent = t("waiting_generic");
                 statusBar.className = "status-bar";
             }
         }
@@ -1073,19 +1638,19 @@
                 showGame();
 
                 if (data.isGameStarted) {
-                    document.getElementById('statusBar').textContent = "🎮 Oyun davam edir...";
+                    document.getElementById('statusBar').textContent = t("game_in_progress");
                 } else {
-                    showToast("Room-a qoşuldunuz!", true);
+                    showToast(t("room_joined"), true);
                 }
             });
 
             connection.on("PlayerJoined", (data) => {
                 console.log("✅ PlayerJoined:", data);
-                showToast(`${data.playerName} qoşuldu (${data.currentCount}/${data.maxCount})`, true);
+                showToast(t("player_joined", { name: data.playerName, current: data.currentCount, max: data.maxCount }), true);
             });
 
             connection.on("PlayerLeft", (data) => {
-                showToast(`${data.playerName} ayrıldı`);
+                showToast(t("player_left", { name: data.playerName }));
             });
 
             connection.on("PlayersList", (players) => {
@@ -1178,13 +1743,14 @@
                 const statusBar = document.getElementById('statusBar');
                 if (statusBar) {
                     if (isMyTurn) {
-                        statusBar.textContent = "🎯 Sizin növbənizdir!";
-                        statusBar.className = "status-bar your-turn";
-                    } else {
-                        statusBar.textContent = `⏳ ${state.currentPlayerName} oynayır...`;
-                        statusBar.className = "status-bar";
-                    }
+                    statusBar.textContent = t("your_turn");
+                    statusBar.className = "status-bar your-turn";
+                } else {
+                    statusBar.textContent = t("waiting_turn", { name: state.currentPlayerName });
+                    statusBar.dataset.playerName = state.currentPlayerName;
+                    statusBar.className = "status-bar";
                 }
+            }
 
                 // 🔥 ACTIVE CLASS-I DÜZGÜN ƏLAVƏ ET
                 // Əvvəlcə hamısından sil
@@ -1226,7 +1792,7 @@
                 }
 
                 if (data.earnedPoints > 0) {
-                    showToast(`🔥 ${data.playerName}: +${data.earnedPoints} xal`, true);
+                    showToast(`🔥 ${data.playerName}: +${data.earnedPoints} ${t("points_suffix")}`, true);
                 }
 
                 setTimeout(renderChain, 100);
@@ -1237,11 +1803,11 @@
                 console.log("🎲 TileDrawn:", data);
 
                 if (data.passed) {
-                    showToast(`⏭️ ${data.playerName} pas keçdi`);
+                    showToast(`⏭️ ${t("passed_turn", { name: data.playerName })}`);
                 } else if (data.foundPlayable) {
-                    showToast(`🎲 ${data.playerName} ${data.drawnCount} daş götürdü və oynaya bilər!`, true);
+                    showToast(`🎲 ${t("drew_can_play", { name: data.playerName, count: data.drawnCount })}`, true);
                 } else {
-                    showToast(`🎲 ${data.playerName} ${data.drawnCount} daş götürdü amma oynaya bilmədi`);
+                    showToast(`🎲 ${t("drew_cannot_play", { name: data.playerName, count: data.drawnCount })}`);
                 }
             });
 
@@ -1255,7 +1821,7 @@
 
                 const statusBar = document.getElementById('statusBar');
                 statusBar.className = "status-bar";
-                statusBar.textContent = `🏆 ${data.winnerName} raund ${data.round}-u qazandı! (+${data.pointsEarned} xal)`;
+                statusBar.textContent = t("win_round", { name: data.winnerName, round: data.round, points: data.pointsEarned });
                 // console.log("MIK");
                 showResultModal(data);
                 // console.log("MOIK");
@@ -1281,13 +1847,13 @@
                 confetti({ particleCount: 300, spread: 100, origin: { y: 0.6 } });
                 setTimeout(() => confetti({ particleCount: 200, spread: 80 }), 300);
 
-                let finalMsg = `${data.message}\n\nMükafat: ${data.reward} coin\n`;
+                let finalMsg = `${data.message}\n\n${t("reward")}: ${data.reward} ${t("coin")}\n`;
                 if (data.platformFee) {
-                    finalMsg += `Platform haqqı: ${data.platformFee} coin\n`;
+                    finalMsg += `${t("platform_fee")}: ${data.platformFee} ${t("coin")}\n`;
                 }
-                finalMsg += `\nFinal:\n`;
+                finalMsg += `\n${t("final")}:\n`;
                 data.allScores.forEach(s => {
-                    finalMsg += `${s.name || s.team}: ${s.score} xal\n`;
+                    finalMsg += `${s.name || s.team}: ${s.score} ${t("points_suffix")}\n`;
                 });
 
                 setTimeout(() => {
@@ -1323,17 +1889,17 @@
             const btn = document.querySelector('.round-continue-btn');
             if (btn) {
                 btn.disabled = true;
-                btn.textContent = '⏳ Gözləyir...';
+                btn.textContent = t('waiting_next_round');
             }
 
             try {
                 await connection.invoke("ReadyForNextRound");
             } catch (err) {
                 console.error("❌ ReadyForNextRound error:", err);
-                showToast("Xəta baş verdi");
+                showToast(t("error_occurred"));
                 if (btn) {
                     btn.disabled = false;
-                    btn.textContent = '✅ Növbəti Raunda Keç';
+                    btn.textContent = t('ready_next_round');
                 }
             }
         }
@@ -1352,7 +1918,7 @@
             const container = document.getElementById('categoriesContainer');
 
             if (!lobbies || lobbies.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #64748b; padding: 40px;">Heç bir lobby yoxdur</div>';
+                container.innerHTML = `<div style="text-align: center; color: #64748b; padding: 40px;">${t("no_lobbies")}</div>`;
                 return;
             }
 
@@ -1366,7 +1932,7 @@
                 container.innerHTML += `
             <div style="margin-bottom: 40px;">
                 <div style="font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #10b981;">
-                    🎯 Klassik 101
+                    ${t("lobby_title_classic")}
                 </div>
                 <div class="lobby-grid">${renderLobbies(classic101)}</div>
             </div>
@@ -1377,7 +1943,7 @@
                 container.innerHTML += `
             <div style="margin-bottom: 40px;">
                 <div style="font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #10b981;">
-                    ⚡ Sürətli 5 Daş
+                    ${t("lobby_title_quick")}
                 </div>
                 <div class="lobby-grid">${renderLobbies(quick5)}</div>
             </div>
@@ -1388,7 +1954,7 @@
                 container.innerHTML += `
             <div style="margin-bottom: 40px;">
                 <div style="font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #10b981;">
-                    🔥 All Fives
+                    ${t("lobby_title_allfives")}
                 </div>
                 <div class="lobby-grid">${renderLobbies(allFives)}</div>
             </div>
@@ -1405,21 +1971,21 @@
 
                 return `
             <div class="lobby-card" onclick='joinLobby(${JSON.stringify(lobby)})'>
-                <div class="lobby-header">${icon} ${lobby.playerCount} Nəfərlik</div>
+                <div class="lobby-header">${icon} ${t("lobby_players_count", { count: lobby.playerCount })}</div>
                 ${lobby.waitingPlayers > 0
                         ? `<div style="background: rgba(251, 191, 36, 0.2); color: #fbbf24; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; margin-bottom: 10px;">
-                        ⏳ ${lobby.waitingPlayers} nəfər gözləyir
+                        ${t("lobby_waiting_count", { count: lobby.waitingPlayers })}
                        </div>`
                         : ''}
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
                     <div class="info-row">
                     </div>
                     <div class="info-row">
-                        <span style="font-weight: 600;">Giriş:</span>
-                        <span style="font-weight: 700;">${lobby.entryFee} coin</span>
+                        <span style="font-weight: 600;">${t("entry_fee")}</span>
+                        <span style="font-weight: 700;">${lobby.entryFee} ${t("coin")}</span>
                     </div>
                 </div>
-                <button class="btn">Qoşul</button>
+                <button class="btn">${t("join")}</button>
             </div>
         `;
             }).join('');
@@ -1428,7 +1994,7 @@
         async function joinLobby(lobby) {
             const balance = parseInt(document.getElementById('userBalance').textContent);
             if (balance < lobby.entryFee) {
-                showToast(`Kifayət qədər balans yoxdur! Lazım: ${lobby.entryFee} coin`);
+                showToast(t('balance_not_enough', { amount: lobby.entryFee, coin: t('coin') }));
                 return;
             }
 
@@ -1445,13 +2011,13 @@
                 console.log("✅ JoinLobby result:", result);
 
                 if (result.success) {
-                    showToast("Lobby-yə qoşuldunuz!", true);
+                    showToast(t("lobby_joined"), true);
                 } else {
                     showToast(result.message);
                 }
             } catch (err) {
                 console.error("❌ Join lobby error:", err);
-                showToast("Lobby-yə qoşulmaq alınmadı");
+                showToast(t("lobby_join_failed"));
             }
         }
 
@@ -1507,8 +2073,8 @@
             popup.innerHTML = `
         <div class="emoji-popup-content" onclick="event.stopPropagation()">
             <div class="emoji-popup-header">
-                <button class="emoji-tab active" onclick="switchEmojiTab('emoji')">😊 Emoji</button>
-                <button class="emoji-tab" onclick="switchEmojiTab('message')">💬 Mesaj</button>
+                <button class="emoji-tab active" onclick="switchEmojiTab('emoji')">${t("emoji_tab")}</button>
+                <button class="emoji-tab" onclick="switchEmojiTab('message')">${t("message_tab")}</button>
             </div>
             <div class="emoji-popup-body" id="emojiPopupBody">
                 ${renderEmojiGrid()}
@@ -1553,14 +2119,14 @@
 
         function renderQuickMessages() {
             const messages = [
-                'Salam! 👋',
-                'Uğurlar! 🍀',
-                'Yaxşı oyun! 🎯',
-                'Təşəkkürlər 🙏',
-                'Gözəl hərəkət! 👏',
-                'Ups... 😅',
-                'Diqqətli ol! 🤔',
-                'GG! 🎊'
+                t("quick_msg_1"),
+                t("quick_msg_2"),
+                t("quick_msg_3"),
+                t("quick_msg_4"),
+                t("quick_msg_5"),
+                t("quick_msg_6"),
+                t("quick_msg_7"),
+                t("quick_msg_8")
             ];
             return `
         <div class="quick-msg-list">
@@ -1575,7 +2141,7 @@
 
         async function sendQuickEmoji(emoji) {
             if (!currentRoomId) {
-                showToast('Oyunda deyilsiniz!');
+                showToast(t('not_in_game'));
                 return;
             }
 
@@ -1588,13 +2154,13 @@
                 }
             } catch (err) {
                 console.error("❌ SendQuickEmoji error:", err);
-                showToast('Göndərilə bilmədi!');
+                showToast(t('emoji_send_failed'));
             }
         }
 
         async function sendQuickMessage(message) {
             if (!currentRoomId) {
-                showToast('Oyunda deyilsiniz!');
+                showToast(t('not_in_game'));
                 return;
             }
 
@@ -1607,7 +2173,7 @@
                 }
             } catch (err) {
                 console.error("❌ SendQuickMessage error:", err);
-                showToast('Mesaj göndərilə bilmədi!');
+                showToast(t('message_send_failed'));
             }
         }
 
@@ -1842,7 +2408,7 @@
 
         async function handleTilePlacement(tile) {
             if (!canPlaceTile(tile)) {
-                showToast("Bu daş qoyula bilməz!");
+                showToast(t("not_placeable"));
                 return;
             }
 
@@ -1872,7 +2438,7 @@
                 }
 
                 if (availableSides.length === 0) {
-                    showToast("Bu daş qoyula bilməz!");
+                    showToast(t("not_placeable"));
                     return;
                 }
 
@@ -1883,7 +2449,7 @@
                 }
             } catch (err) {
                 console.error("❌ PlaceTile error:", err);
-                showToast("Daş qoymaq alınmadı");
+                showToast(t("place_tile_failed"));
             }
         }
 
@@ -1892,17 +2458,17 @@
             overlay.className = 'side-selector-overlay';
 
             const sideLabels = {
-                'left': '⬅️ Sol',
-                'right': '➡️ Sağ',
-                'center-top': '⬆️ Yuxarı (Mərkəz)',
-                'center-bottom': '⬇️ Aşağı (Mərkəz)'
+                'left': t('side_left'),
+                'right': t('side_right'),
+                'center-top': t('side_center_top'),
+                'center-bottom': t('side_center_bottom')
             };
 
             const buttonsClass = sides.length === 4 ? 'four-way' : '';
 
             overlay.innerHTML = `
-        <div class="side-selector-content">
-            <div class="side-selector-title">🎯 Tərəfi seçin</div>
+            <div class="side-selector-content">
+            <div class="side-selector-title">${t("select_side_title")}</div>
             <div class="side-selector-buttons ${buttonsClass}">
                 ${sides.map(side => `
                     <button class="side-btn" onclick="selectSide('${tileId}', '${side}')">
@@ -1929,7 +2495,7 @@
                 await connection.invoke("PlaceTile", tileId, side);
             } catch (err) {
                 console.error("❌ PlaceTile error:", err);
-                showToast("Daş qoymaq alınmadı");
+                showToast(t("place_tile_failed"));
             }
         }
 
@@ -2002,17 +2568,17 @@
             overlay.className = 'side-selector-overlay';
 
             const sideLabels = {
-                'left': '⬅️ Sol',
-                'right': '➡️ Sağ',
-                'center-top': '⬆️ Yuxarı (Mərkəz)',
-                'center-bottom': '⬇️ Aşağı (Mərkəz)'
+                'left': t('side_left'),
+                'right': t('side_right'),
+                'center-top': t('side_center_top'),
+                'center-bottom': t('side_center_bottom')
             };
 
             const buttonsClass = sides.length === 4 ? 'four-way' : '';
 
             overlay.innerHTML = `
                 <div class="side-selector-content">
-                    <div class="side-selector-title">🎯 Tərəfi seçin</div>
+                    <div class="side-selector-title">${t("select_side_title")}</div>
                     <div class="side-selector-buttons ${buttonsClass}">
                         ${sides.map(side => `
                             <button class="side-btn" onclick="selectSide('${tileId}', '${side}')">
@@ -2053,7 +2619,7 @@
             container.innerHTML = '';
 
             if (myHand.length === 0) {
-                container.innerHTML = '<div style="color: #64748b;">Daşlarınız yoxdur</div>';
+                container.innerHTML = `<div style="color: #64748b;">${t("no_tiles")}</div>`;
                 return;
             }
 
@@ -2104,7 +2670,7 @@
             container.style.gridTemplateRows = '';
 
             if (chainTiles.length === 0) {
-                container.innerHTML = '<div style="color: #64748b;">🎯 İlk daşı qoyun</div>';
+                container.innerHTML = `<div style="color: #64748b;">${t("first_tile")}</div>`;
                 return;
             }
 
@@ -2288,7 +2854,7 @@
         // });
 
         document.getElementById('leaveBtn').addEventListener('click', async () => {
-            if (confirm("Oyunu tərk etmək istədiyinizdən əminsiniz?")) {
+            if (confirm(t("leave_confirm"))) {
                 if (connection && currentRoomId) {
                     await connection.invoke("LeaveRoom").catch(() => { });
                 }
@@ -2327,7 +2893,7 @@
 
                 modal.classList.add('active');
             } else {
-                domcument.getElementById('drawStack').textContent = "Pass";
+                domcument.getElementById('drawStack').textContent = t("pass");
                 connection.invoke("TakeFromStock");
 
             }
@@ -2351,7 +2917,7 @@
 
             } catch (err) {
                 console.error("❌ Stock-dan daş götürmək xətası:", err);
-                showToast("Daş götürülə bilmədi");
+                showToast(t("stock_take_failed"));
             }
         }
 
@@ -2389,7 +2955,7 @@
 
             } catch (err) {
                 console.error("❌ Connection error:", err);
-                showToast("Serverə qoşulmaq alınmadı");
+                showToast(t("server_connect_failed"));
             }
         }
         function backToGames() {

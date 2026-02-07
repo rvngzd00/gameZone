@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -20,16 +20,56 @@
                         ←
                     </button>
                     <!-- <h1>OKEY 51</h1> -->
-                    <div class="header-title">OKEY 51</div>
+                        <div class="header-title" data-i18n="header_title">OKEY 51</div>
                     <!-- <span class="user-name" id="userName">Yüklənir...</span> -->
                     <span class="user-balance" id="userBalance">0</span>
 
                 </div>
 
                 <div class="rooms-grid" id="roomsGrid">
-                    <div class="loading-container">
-                        <div class="loading"></div>
-                        <p class="loading-text">Otaqlar yüklənir...</p>
+                    <div class="loading-container" aria-live="polite">
+                        <div class="sparkles" aria-hidden="true">
+                            <span class="sparkle s1"></span>
+                            <span class="sparkle s2"></span>
+                            <span class="sparkle s3"></span>
+                            <span class="sparkle s4"></span>
+                            <span class="sparkle s5"></span>
+                        </div>
+
+                        <div class="okey-loading-stage">
+                            <div class="rack-shadow" aria-hidden="true"></div>
+                            <div class="rack-base" aria-hidden="true"></div>
+
+                            <div class="tile-stack tile-a">
+                                <div class="okey-tile red">
+                                    <span class="tile-number">7</span>
+                                    <span class="tile-dot"></span>
+                                </div>
+                            </div>
+
+                            <div class="tile-stack tile-b">
+                                <div class="okey-tile blue">
+                                    <span class="tile-number">11</span>
+                                    <span class="tile-dot"></span>
+                                </div>
+                            </div>
+
+                            <div class="tile-stack tile-c">
+                                <div class="okey-tile black">
+                                    <span class="tile-number">3</span>
+                                    <span class="tile-dot"></span>
+                                </div>
+                            </div>
+
+                            <div class="tile-stack tile-joker">
+                                <div class="okey-tile joker">
+                                    <span class="tile-star">★</span>
+                                    <span class="tile-tag">OK</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="loading-text" data-i18n="loading_rooms">Dealing your tiles...</p>
                     </div>
                 </div>
                 <!-- Lobby Bet Modal -->
@@ -37,7 +77,7 @@
                     onclick="if(event.target === this) closeLobbyBetModal()">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h2>Bet Seç</h2>
+                            <h2 data-i18n="bet_select">Select Bet</h2>
                             <button class="modal-close" onclick="closeLobbyBetModal()">×</button>
                         </div>
                         <div class="modal-body" id="lobbyBetOptions"></div>
@@ -50,15 +90,15 @@
             <div class="game-container">
                 <div class="game-header">
                     <div class="game-info">
-                        <span id="roomNameDisplay">Otaq</span>
+                        <span id="roomNameDisplay" data-i18n-placeholder="room_label">Room</span>
                         <!-- <span id="gameModeDisplay" style="color: #f39c12;">Mod: 51</span> -->
                         <span id="potAmountDisplay" style="color: #27ae60;">Pot: 0</span>
                     </div>
                     <div class="current-user-info">
-                        <div class="player-name" id="myPlayerName">You</div>
+                        <div class="player-name" id="myPlayerName" data-i18n-placeholder="you">You</div>
                         <!-- <div class="player-score" id="myScore">101</div> -->
                     </div>
-                    <button id="leaveRoomBtn" class="btn btn-danger">Çıx</button>
+                    <button id="leaveRoomBtn" class="btn btn-danger" data-i18n="leave">Leave</button>
                     <!-- <button onclick="goFullscreen()" class="btn btn-danger">Tam Ekran</button> -->
                 </div>
 
@@ -69,7 +109,7 @@
                             <div class="player-deck-top" id="playerInfoTop">
                                 <div class="player-avatar">👤</div>
                                 <div class="player-details detail-sides">
-                                    <div id="topPlayerName" class="player-name">Gözləyir</div>
+                                    <div id="topPlayerName" class="player-name" data-i18n-placeholder="waiting">Waiting</div>
                                     <!-- <div class="player-score">101</div> -->
                                 </div>
                             </div>
@@ -88,7 +128,7 @@
                             <div class="player-deck-right" id="playerInfoRight">
                                 <div class="player-avatar avatar-right">👤</div>
                                 <div class="player-details detail-sides">
-                                    <div id="rightPlayerName" class="player-name">Gözləyir</div>
+                                    <div id="rightPlayerName" class="player-name" data-i18n-placeholder="waiting">Waiting</div>
                                     <!-- <div class="player-score">101</div> -->
                                 </div>
                             </div>
@@ -128,7 +168,7 @@
                             <div class="player-deck-left" id="playerInfoLeft">
                                 <div class="player-avatar avatar-left">👤</div>
                                 <div class="player-details detail-sides">
-                                    <div id="leftPlayerName" class="player-name">Gözləyir</div>
+                                    <div id="leftPlayerName" class="player-name" data-i18n-placeholder="waiting">Waiting</div>
                                     <!-- <div class="player-score">101</div> -->
                                 </div>
                             </div>
@@ -152,7 +192,7 @@
 
                         <!-- ✅ Qazanan kombinasiya modalı -->
                         <div id="winModal" class="win-modal">
-                            <h2>🏆 QAZANAN KOMBİNASİYA</h2>
+                            <h2 data-i18n="win_combo_title">🏆 WINNING COMBINATION</h2>
                             <div id="winMeldsContainer" class="win-melds"></div>
                         </div>
                         <div class="indicator-wrapper">
@@ -436,6 +476,439 @@
         let IFRAME_TOKEN = null;
         let IFRAME_USER = null;
 
+        const translations = {
+                en: {
+                    app_title: 'Okey',
+                    header_title: 'OKEY 51',
+                loading_rooms: 'Dealing your tiles...',
+                bet_select: 'Select Bet',
+                room_label: 'Room',
+                pot_label: 'Pot: {amount}₼',
+                you: 'You',
+                leave: 'Leave',
+                waiting: 'Waiting',
+                win_combo_title: '🏆 WINNING COMBINATION',
+                token_not_found: 'Token not found!',
+                connection_success: 'Connected successfully!',
+                connection_error: 'Connection error',
+                connection_error_with: 'Connection error: {message}',
+                joined_room: 'You joined the room',
+                your_turn_draw: 'Your turn! DRAW A TILE!',
+                tile_drawn_discard: 'You drew a tile, now DISCARD!',
+                player_timeout_auto_discard: '{player} timed out - tile auto discarded',
+                player_joined: '{player} joined',
+                player_left: '{player} left',
+                player_drew: '{player} drew a tile',
+                auto_action: 'Auto action',
+                draw_turn_wait: 'Wait for your turn',
+                discard_now: 'DISCARD NOW!',
+                discard_first: 'Discard first!',
+                already_drew: 'You already drew a tile!',
+                not_your_turn: 'Not your turn!',
+                opponent_not_discarded: 'Opponent has not discarded yet',
+                draw_failed: 'Could not draw the tile',
+                draw_first: 'Draw a tile first!',
+                error_occurred: 'An error occurred',
+                room_list_empty: 'No rooms found',
+                players_label: 'Players',
+                no_rooms: 'No rooms',
+                player_count_game: '{count} Player Game',
+                no_rooms_for_count: 'No rooms for this player count',
+                joining: 'Joining...',
+                join_failed: 'Unable to join',
+                sort_done: 'Sorted',
+                you_start: 'You start the game! DISCARD! 🎮',
+                game_started: 'Game started! 🎮',
+                winner_announcement: '🎉 {winner} won!',
+                group_label: 'Group {index}:',
+                finish_type: '🎖️ Finish type: <strong>{type}</strong>',
+                final_winner: '🏆 Final winner: {winner}',
+                rank_updated: '🎖️ {rank} - Level {level}',
+                ten_seconds_left: '⏰ 10 seconds left!',
+                five_seconds_left: '⚠️ 5 seconds left! Hurry!',
+                auto_discarding: '🚨 AUTO DISCARDING!',
+                new_round_preparing: 'New round is being prepared...',
+                leave_confirm: 'Do you want to leave?',
+                deck_count: '📚 {count}',
+                deck_empty: '❌ EMPTY',
+                last_tile_discarded_checking: 'Last tile discarded! Checking...',
+                last_tile_discarded: 'Last tile discarded!'
+            },
+            tr: {
+                app_title: 'Okey',
+                header_title: 'OKEY 51',
+                loading_rooms: 'Taşlar dağıtılıyor...',
+                bet_select: 'Bahis Seç',
+                room_label: 'Oda',
+                pot_label: 'Pot: {amount}₼',
+                you: 'Sen',
+                leave: 'Çık',
+                waiting: 'Bekliyor',
+                win_combo_title: '🏆 KAZANAN KOMBİNASYON',
+                token_not_found: 'Token bulunamadı!',
+                connection_success: 'Bağlantı başarılı!',
+                connection_error: 'Bağlantı hatası',
+                connection_error_with: 'Bağlantı hatası: {message}',
+                joined_room: 'Odaya girdiniz',
+                your_turn_draw: 'Sıra sende! TAŞ ÇEK!',
+                tile_drawn_discard: 'Taş çektin, şimdi TAŞ AT!',
+                player_timeout_auto_discard: '{player} süresi doldu - taş otomatik atıldı',
+                player_joined: '{player} katıldı',
+                player_left: '{player} çıktı',
+                player_drew: '{player} taş çekti',
+                auto_action: 'Otomatik işlem',
+                draw_turn_wait: 'Sıranı bekle',
+                discard_now: 'HEMEN TAŞ AT!',
+                discard_first: 'Önce taş at!',
+                already_drew: 'Zaten taş çektin!',
+                not_your_turn: 'Sıran değil!',
+                opponent_not_discarded: 'Rakip henüz taş atmadı',
+                draw_failed: 'Taş alınamadı',
+                draw_first: 'Önce taş çek!',
+                error_occurred: 'Bir hata oluştu',
+                room_list_empty: 'Oda bulunamadı',
+                players_label: 'Kişilik',
+                no_rooms: 'Oda yok',
+                player_count_game: '{count} Kişilik Oyun',
+                no_rooms_for_count: 'Bu oyuncu sayısı için oda yok',
+                joining: 'Katılıyor...',
+                join_failed: 'Katılım başarısız',
+                sort_done: 'Sıralandı',
+                you_start: 'Oyunu sen başlıyorsun! TAŞ AT! 🎮',
+                game_started: 'Oyun başladı! 🎮',
+                winner_announcement: '🎉 {winner} kazandı!',
+                group_label: 'Grup {index}:',
+                finish_type: '🎖️ Bitiriş türü: <strong>{type}</strong>',
+                final_winner: '🏆 Final kazanan: {winner}',
+                rank_updated: '🎖️ {rank} - Seviye {level}',
+                ten_seconds_left: '⏰ 10 saniye kaldı!',
+                five_seconds_left: '⚠️ 5 saniye kaldı! Hadi!',
+                auto_discarding: '🚨 OTOMATİK TAŞ ATILIYOR!',
+                new_round_preparing: 'Yeni tur hazırlanıyor...',
+                leave_confirm: 'Çıkmak istiyor musunuz?',
+                deck_count: '📚 {count}',
+                deck_empty: '❌ BOŞ',
+                last_tile_discarded_checking: 'Son taş atıldı! Kontrol ediliyor...',
+                last_tile_discarded: 'Son taş atıldı!'
+            },
+            hi: {
+                app_title: 'ओके',
+                header_title: 'OKEY 51',
+                loading_rooms: 'टाइलें बाँटी जा रही हैं...',
+                bet_select: 'बेट चुनें',
+                room_label: 'कमरा',
+                pot_label: 'पॉट: {amount}₼',
+                you: 'आप',
+                leave: 'बाहर जाएं',
+                waiting: 'प्रतीक्षा',
+                win_combo_title: '🏆 विजेता संयोजन',
+                token_not_found: 'टोकन नहीं मिला!',
+                connection_success: 'कनेक्शन सफल!',
+                connection_error: 'कनेक्शन त्रुटि',
+                connection_error_with: 'कनेक्शन त्रुटि: {message}',
+                joined_room: 'आप कमरे में शामिल हुए',
+                your_turn_draw: 'आपकी बारी है! टाइल लें!',
+                tile_drawn_discard: 'आपने टाइल ली, अब फेंकें!',
+                player_timeout_auto_discard: '{player} का समय समाप्त - टाइल अपने आप फेंकी गई',
+                player_joined: '{player} शामिल हुआ',
+                player_left: '{player} बाहर गया',
+                player_drew: '{player} ने टाइल ली',
+                auto_action: 'स्वचालित क्रिया',
+                draw_turn_wait: 'अपनी बारी का इंतजार करें',
+                discard_now: 'अभी फेंकें!',
+                discard_first: 'पहले टाइल फेंकें!',
+                already_drew: 'आप पहले ही टाइल ले चुके हैं!',
+                not_your_turn: 'आपकी बारी नहीं है!',
+                opponent_not_discarded: 'प्रतिद्वंद्वी ने अभी तक टाइल नहीं फेंकी',
+                draw_failed: 'टाइल नहीं ली जा सकी',
+                draw_first: 'पहले टाइल लें!',
+                error_occurred: 'एक त्रुटि हुई',
+                room_list_empty: 'कोई कमरा नहीं मिला',
+                players_label: 'खिलाड़ी',
+                no_rooms: 'कोई कमरा नहीं',
+                player_count_game: '{count} खिलाड़ी खेल',
+                no_rooms_for_count: 'इस खिलाड़ी संख्या के लिए कोई कमरा नहीं',
+                joining: 'जुड़ रहे हैं...',
+                join_failed: 'शामिल होना असफल',
+                sort_done: 'क्रमबद्ध',
+                you_start: 'आप खेल शुरू करते हैं! टाइल फेंकें! 🎮',
+                game_started: 'खेल शुरू हुआ! 🎮',
+                winner_announcement: '🎉 {winner} जीता!',
+                group_label: 'समूह {index}:',
+                finish_type: '🎖️ समाप्ति प्रकार: <strong>{type}</strong>',
+                final_winner: '🏆 अंतिम विजेता: {winner}',
+                rank_updated: '🎖️ {rank} - स्तर {level}',
+                ten_seconds_left: '⏰ 10 सेकंड बचे!',
+                five_seconds_left: '⚠️ 5 सेकंड बचे! जल्दी!',
+                auto_discarding: '🚨 स्वचालित टाइल फेंकी जा रही है!',
+                new_round_preparing: 'नया राउंड तैयार हो रहा है...',
+                leave_confirm: 'क्या आप बाहर जाना चाहते हैं?',
+                deck_count: '📚 {count}',
+                deck_empty: '❌ खाली',
+                last_tile_discarded_checking: 'आखिरी टाइल फेंकी गई! जांच हो रही है...',
+                last_tile_discarded: 'आखिरी टाइल फेंकी गई!'
+            },
+            ru: {
+                app_title: 'Окей',
+                header_title: 'OKEY 51',
+                loading_rooms: 'Раздаем кости...',
+                bet_select: 'Выберите ставку',
+                room_label: 'Комната',
+                pot_label: 'Банк: {amount}₼',
+                you: 'Вы',
+                leave: 'Выйти',
+                waiting: 'Ожидание',
+                win_combo_title: '🏆 ПОБЕДНАЯ КОМБИНАЦИЯ',
+                token_not_found: 'Токен не найден!',
+                connection_success: 'Подключение успешно!',
+                connection_error: 'Ошибка подключения',
+                connection_error_with: 'Ошибка подключения: {message}',
+                joined_room: 'Вы вошли в комнату',
+                your_turn_draw: 'Ваш ход! ВОЗЬМИТЕ ФИШКУ!',
+                tile_drawn_discard: 'Вы взяли фишку, теперь СБРОСЬТЕ!',
+                player_timeout_auto_discard: '{player} не успел - фишка сброшена автоматически',
+                player_joined: '{player} вошел',
+                player_left: '{player} вышел',
+                player_drew: '{player} взял фишку',
+                auto_action: 'Автодействие',
+                draw_turn_wait: 'Ждите свой ход',
+                discard_now: 'СБРОСЬТЕ СЕЙЧАС!',
+                discard_first: 'Сначала сбросьте!',
+                already_drew: 'Вы уже взяли фишку!',
+                not_your_turn: 'Сейчас не ваш ход!',
+                opponent_not_discarded: 'Соперник еще не сбросил',
+                draw_failed: 'Не удалось взять фишку',
+                draw_first: 'Сначала возьмите фишку!',
+                error_occurred: 'Произошла ошибка',
+                room_list_empty: 'Комнаты не найдены',
+                players_label: 'Игроков',
+                no_rooms: 'Комнат нет',
+                player_count_game: 'Игра на {count} игроков',
+                no_rooms_for_count: 'Нет комнат для этого количества игроков',
+                joining: 'Входим...',
+                join_failed: 'Не удалось войти',
+                sort_done: 'Отсортировано',
+                you_start: 'Вы начинаете! СБРОСЬТЕ! 🎮',
+                game_started: 'Игра началась! 🎮',
+                winner_announcement: '🎉 {winner} победил!',
+                group_label: 'Группа {index}:',
+                finish_type: '🎖️ Тип завершения: <strong>{type}</strong>',
+                final_winner: '🏆 Финальный победитель: {winner}',
+                rank_updated: '🎖️ {rank} - Уровень {level}',
+                ten_seconds_left: '⏰ Осталось 10 секунд!',
+                five_seconds_left: '⚠️ Осталось 5 секунд! Быстрее!',
+                auto_discarding: '🚨 АВТОСБРОС!',
+                new_round_preparing: 'Готовится новый раунд...',
+                leave_confirm: 'Выйти из игры?',
+                deck_count: '📚 {count}',
+                deck_empty: '❌ ПУСТО',
+                last_tile_discarded_checking: 'Последняя фишка сброшена! Проверка...',
+                last_tile_discarded: 'Последняя фишка сброшена!'
+            },
+            ar: {
+                app_title: 'أوكي',
+                header_title: 'OKEY 51',
+                loading_rooms: 'يتم توزيع القطع...',
+                bet_select: 'اختر الرهان',
+                room_label: 'غرفة',
+                pot_label: 'المجموع: {amount}₼',
+                you: 'أنت',
+                leave: 'خروج',
+                waiting: 'بانتظار',
+                win_combo_title: '🏆 التركيبة الفائزة',
+                token_not_found: 'لم يتم العثور على الرمز!',
+                connection_success: 'تم الاتصال بنجاح!',
+                connection_error: 'خطأ في الاتصال',
+                connection_error_with: 'خطأ في الاتصال: {message}',
+                joined_room: 'انضممت إلى الغرفة',
+                your_turn_draw: 'دورك! اسحب حجرًا!',
+                tile_drawn_discard: 'سحبت حجرًا، الآن ارمِ!',
+                player_timeout_auto_discard: 'انتهى وقت {player} - تم الرمي تلقائيًا',
+                player_joined: 'انضم {player}',
+                player_left: 'غادر {player}',
+                player_drew: 'سحب {player} حجرًا',
+                auto_action: 'إجراء تلقائي',
+                draw_turn_wait: 'انتظر دورك',
+                discard_now: 'ارمِ الآن!',
+                discard_first: 'ارمِ أولًا!',
+                already_drew: 'لقد سحبت حجرًا بالفعل!',
+                not_your_turn: 'ليس دورك!',
+                opponent_not_discarded: 'الخصم لم يرمِ بعد',
+                draw_failed: 'تعذر سحب الحجر',
+                draw_first: 'اسحب حجرًا أولًا!',
+                error_occurred: 'حدث خطأ',
+                room_list_empty: 'لا توجد غرف',
+                players_label: 'لاعبين',
+                no_rooms: 'لا توجد غرف',
+                player_count_game: 'لعبة {count} لاعبين',
+                no_rooms_for_count: 'لا توجد غرف لعدد اللاعبين هذا',
+                joining: 'جارٍ الانضمام...',
+                join_failed: 'فشل الانضمام',
+                sort_done: 'تم الفرز',
+                you_start: 'أنت تبدأ! ارمِ! 🎮',
+                game_started: 'بدأت اللعبة! 🎮',
+                winner_announcement: '🎉 {winner} فاز!',
+                group_label: 'المجموعة {index}:',
+                finish_type: '🎖️ نوع الإنهاء: <strong>{type}</strong>',
+                final_winner: '🏆 الفائز النهائي: {winner}',
+                rank_updated: '🎖️ {rank} - المستوى {level}',
+                ten_seconds_left: '⏰ تبقى 10 ثوانٍ!',
+                five_seconds_left: '⚠️ تبقى 5 ثوانٍ! أسرع!',
+                auto_discarding: '🚨 رمي تلقائي!',
+                new_round_preparing: 'يتم تجهيز جولة جديدة...',
+                leave_confirm: 'هل تريد الخروج؟',
+                deck_count: '📚 {count}',
+                deck_empty: '❌ فارغ',
+                last_tile_discarded_checking: 'تم رمي آخر حجر! جارٍ التحقق...',
+                last_tile_discarded: 'تم رمي آخر حجر!'
+            },
+            uz: {
+                app_title: 'Okey',
+                header_title: 'OKEY 51',
+                loading_rooms: 'Toshlar tarqatilmoqda...',
+                bet_select: 'Tikishni tanlang',
+                room_label: 'Xona',
+                pot_label: 'Pot: {amount}₼',
+                you: 'Siz',
+                leave: 'Chiqish',
+                waiting: 'Kutilmoqda',
+                win_combo_title: '🏆 G‘OLIB KOMBINATSIYA',
+                token_not_found: 'Token topilmadi!',
+                connection_success: 'Ulanish muvaffaqiyatli!',
+                connection_error: 'Ulanish xatosi',
+                connection_error_with: 'Ulanish xatosi: {message}',
+                joined_room: 'Xonaga kirdingiz',
+                your_turn_draw: 'Sizning navbatingiz! TOSH OLING!',
+                tile_drawn_discard: 'Tosh oldingiz, endi TASHLANG!',
+                player_timeout_auto_discard: '{player} vaqti tugadi - tosh avtomatik tashlandi',
+                player_joined: '{player} qo‘shildi',
+                player_left: '{player} chiqdi',
+                player_drew: '{player} tosh oldi',
+                auto_action: 'Avto harakat',
+                draw_turn_wait: 'Navbatingizni kuting',
+                discard_now: 'HOZIR TASHLANG!',
+                discard_first: 'Avval tashlang!',
+                already_drew: 'Siz allaqachon tosh oldingiz!',
+                not_your_turn: 'Navbat sizniki emas!',
+                opponent_not_discarded: 'Raqib hali tosh tashlamadi',
+                draw_failed: 'Toshni olishning iloji bo‘lmadi',
+                draw_first: 'Avval tosh oling!',
+                error_occurred: 'Xatolik yuz berdi',
+                room_list_empty: 'Xonalar topilmadi',
+                players_label: 'Kishilik',
+                no_rooms: 'Xona yo‘q',
+                player_count_game: '{count} kishilik o‘yin',
+                no_rooms_for_count: 'Bu o‘yinchi soni uchun xona yo‘q',
+                joining: 'Kirilmoqda...',
+                join_failed: 'Kirish amalga oshmadi',
+                sort_done: 'Saralandi',
+                you_start: 'O‘yinni siz boshlaysiz! TASHLANG! 🎮',
+                game_started: 'O‘yin boshlandi! 🎮',
+                winner_announcement: '🎉 {winner} yutdi!',
+                group_label: 'Guruh {index}:',
+                finish_type: '🎖️ Yakun turi: <strong>{type}</strong>',
+                final_winner: '🏆 Yakuniy g‘olib: {winner}',
+                rank_updated: '🎖️ {rank} - Daraja {level}',
+                ten_seconds_left: '⏰ 10 soniya qoldi!',
+                five_seconds_left: '⚠️ 5 soniya qoldi! Tezroq!',
+                auto_discarding: '🚨 AVTO TASHLASH!',
+                new_round_preparing: 'Yangi raund tayyorlanmoqda...',
+                leave_confirm: 'Chiqishni xohlaysizmi?',
+                deck_count: '📚 {count}',
+                deck_empty: '❌ BO‘SH',
+                last_tile_discarded_checking: 'Oxirgi tosh tashlandi! Tekshirilmoqda...',
+                last_tile_discarded: 'Oxirgi tosh tashlandi!'
+            }
+        };
+
+        const languageAliases = {
+            en: 'en',
+            eng: 'en',
+            english: 'en',
+            tr: 'tr',
+            turkish: 'tr',
+            türkçe: 'tr',
+            turkce: 'tr',
+            hi: 'hi',
+            hindi: 'hi',
+            indian: 'hi',
+            ru: 'ru',
+            russian: 'ru',
+            ar: 'ar',
+            arabic: 'ar',
+            uz: 'uz',
+            uzbek: 'uz'
+        };
+
+        let currentLanguage = 'en';
+        let currentPotAmount = 0;
+        let currentStockCount = null;
+        let pendingApply = false;
+
+        function normalizeLanguage(lang) {
+            if (!lang) return 'en';
+            const key = String(lang).trim().toLowerCase();
+            return languageAliases[key] || key;
+        }
+
+        function t(key, vars = {}) {
+            const base = translations[currentLanguage] || translations.en;
+            const fallback = translations.en;
+            let text = base[key] || fallback[key] || key;
+            Object.keys(vars).forEach((k) => {
+                text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), vars[k]);
+            });
+            return text;
+        }
+
+        function applyTranslations() {
+            if (document.readyState === 'loading') {
+                if (!pendingApply) {
+                    pendingApply = true;
+                    document.addEventListener('DOMContentLoaded', () => {
+                        pendingApply = false;
+                        applyTranslations();
+                    }, { once: true });
+                }
+                return;
+            }
+
+            document.title = t('app_title');
+            document.querySelectorAll('[data-i18n]').forEach((el) => {
+                const key = el.getAttribute('data-i18n');
+                if (!key) return;
+                el.textContent = t(key);
+            });
+
+            const placeholderValues = {
+                waiting: new Set(Object.values(translations).map((l) => l.waiting)),
+                you: new Set(Object.values(translations).map((l) => l.you)),
+                room_label: new Set(Object.values(translations).map((l) => l.room_label))
+            };
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (!key) return;
+                const current = (el.textContent || '').trim();
+                if (!current || placeholderValues[key]?.has(current)) {
+                    el.textContent = t(key);
+                }
+            });
+
+            updatePotAmount(currentPotAmount);
+            if (currentStockCount !== null && currentStockCount !== undefined) {
+                updateStockCount(currentStockCount);
+            }
+        }
+
+        function setLanguage(lang) {
+            const normalized = normalizeLanguage(lang);
+            currentLanguage = translations[normalized] ? normalized : 'en';
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            applyTranslations();
+        }
+
         // ✅ Bu yeni funksiyanı ƏLAVƏ ET (getToken yerinə):
         function waitForUserData() {
             return new Promise((resolve, reject) => {
@@ -464,7 +937,11 @@
                 return;
             }
 
-            const { type, payload } = event.data;
+            const { type, payload, language } = event.data || {};
+
+            if (language || payload?.language) {
+                setLanguage(language || payload.language);
+            }
 
             if (type === 'INIT_USER') {
                 log('📥 React-dan user data alındı:', payload);
@@ -506,6 +983,32 @@
 
 
         function log(...args) { if (CONFIG.DEBUG) console.log('🎮', ...args); }
+
+        function updatePotAmount(amount) {
+            currentPotAmount = amount ?? 0;
+            const el = document.getElementById('potAmountDisplay');
+            if (el) el.textContent = t('pot_label', { amount: currentPotAmount });
+        }
+
+        function updateStockCount(count) {
+            currentStockCount = count;
+            const label = document.getElementById('deckCountLabel');
+            if (!label) return;
+
+            if (count <= 10 && count > 0) {
+                label.style.color = '#f39c12';
+            } else if (count === 0) {
+                label.style.color = '#e74c3c';
+            } else {
+                label.style.color = 'white';
+            }
+
+            if (count === 0) {
+                label.textContent = t('deck_empty');
+            } else {
+                label.textContent = t('deck_count', { count });
+            }
+        }
 
 
         function showNotification(message, type = 'info') {
@@ -565,7 +1068,7 @@
                 const token = IFRAME_TOKEN;
 
                 if (!token) {
-                    showNotification('Token tapılmadı!', 'error');
+                    showNotification(t('token_not_found'), 'error');
                     return;
                 }
 
@@ -583,11 +1086,11 @@
                 setupSignalREvents();
                 await connection.start();
                 log('✅ Connected');
-                showNotification('Bağlantı uğurlu!', 'success');
+                showNotification(t('connection_success'), 'success');
                 setTimeout(() => loadRooms(), 500);
             } catch (err) {
                 log('❌ Error:', err);
-                showNotification('Bağlantı xətası: ' + err.message, 'error');
+                showNotification(t('connection_error_with', { message: err.message }), 'error');
             }
         }
 
@@ -626,7 +1129,7 @@
 
                 const { playerName, discardedTile, message } = data;
 
-                showNotification(`${playerName} vaxtı bitdi - avtomatik daş atıldı`, 'success');
+                showNotification(t('player_timeout_auto_discard', { player: playerName }), 'success');
 
                 // 🎯 2. Avtomatik daş atma animasiyası
                 if (discardedTile) {
@@ -661,7 +1164,7 @@
                     autoArrangeTiles();
                 }
                 showScreen('gameScreen');
-                showNotification('Otağa daxil oldunuz', 'success');
+                showNotification(t('joined_room'), 'success');
             });
             connection.on("TurnTimerUpdate", (data) => {
                 console.log('⏱️ Timer update:', data);
@@ -688,7 +1191,7 @@
                 mustDiscard = false;
                 clearAllTimers();
                 updateTurnUI();
-                showNotification('Sizin növbənizdir! DAŞ ÇƏKİN!', 'info');
+                showNotification(t('your_turn_draw'), 'info');
             });
 
             connection.on("TileDrawn", (d) => {
@@ -707,7 +1210,7 @@
                     }, 200);
                 }
 
-                showNotification('Daş çəkdiniz, indi DAŞ ATIN!', 'success');
+                showNotification(t('tile_drawn_discard'), 'success');
             });
 
             // ✅ TileDiscarded event-də timer təmizlə
@@ -781,17 +1284,13 @@
                 if (jokerEl) jokerEl.innerHTML = '';
 
                 // ✅ Dəstə sayını sıfırla
-                const deckLabel = document.getElementById('deckCountLabel');
-                if (deckLabel) {
-                    deckLabel.textContent = '106';
-                    deckLabel.style.color = 'white';
-                }
+                updateStockCount(106);
 
                 // ✅ Modal-ı bağla
                 document.getElementById('winModal')?.classList.remove('show');
 
                 // ✅ Bildiriş
-                showNotification('Yeni raund hazırlanır...', 'info');
+                showNotification(t('new_round_preparing'), 'info');
 
                 console.log('✅ Təmizləmə tamamlandı');
             });
@@ -799,22 +1298,11 @@
             // ✅ Dəstə vizual yeniləmə
             connection.on("GameStateUpdated", (state) => {
                 if (state.stockCount !== undefined) {
-                    const label = document.getElementById('deckCountLabel');
-                    if (label) {
-                        label.textContent = `📚 ${state.stockCount}`;
-
-                        // ✅ Az daş qalıbsa xəbərdarlıq
-                        if (state.stockCount <= 10 && state.stockCount > 0) {
-                            label.style.color = '#f39c12';
-                        } else if (state.stockCount === 0) {
-                            label.style.color = '#e74c3c';
-                            label.textContent = '❌ BOŞ';
-                        }
-                    }
+                    updateStockCount(state.stockCount);
                 }
 
                 if (state.potAmount !== undefined) {
-                    document.getElementById('potAmountDisplay').textContent = `Pot: ${state.potAmount}₼`;
+                    updatePotAmount(state.potAmount);
                 }
 
                 if (state.players) {
@@ -823,8 +1311,8 @@
             });
 
             connection.on("JoinError", (msg) => showNotification(msg, 'error'));
-            connection.on("PlayerJoined", (d) => showNotification(`${d.playerName} qoşuldu`, 'info'));
-            connection.on("PlayerLeft", (d) => showNotification(`${d.playerName} çıxdı`, 'info'));
+            connection.on("PlayerJoined", (d) => showNotification(t('player_joined', { player: d.playerName }), 'info'));
+            connection.on("PlayerLeft", (d) => showNotification(t('player_left', { player: d.playerName }), 'info'));
             connection.on("PlayersList", (players) => updatePlayersDisplay(players));
 
             connection.on("GameStarted", (d) => {
@@ -843,7 +1331,7 @@
                     hasDrawn = true;
                     mustDiscard = true;
                     isMyTurn = true;
-                    showNotification('Oyunu SİZ başlayırsınız! DAŞ ATIN! 🎮', 'success');
+                    showNotification(t('you_start'), 'success');
                 } else {
                     hasDrawn = false;
                     mustDiscard = false;
@@ -861,14 +1349,14 @@
                 const playerPositions = getPlayerNames();
                 console.log(playerPositions);
 
-                if (!mustDiscard) showNotification('Oyun başladı! 🎮', 'success');
+                if (!mustDiscard) showNotification(t('game_started'), 'success');
             });
 
             connection.on("GameStateUpdated", (state) => {
                 if (state.stockCount !== undefined)
-                    document.getElementById('deckCountLabel').textContent = `${state.stockCount}`;
+                    updateStockCount(state.stockCount);
                 if (state.potAmount !== undefined)
-                    document.getElementById('potAmountDisplay').textContent = `Pot: ${state.potAmount}₼`;
+                    updatePotAmount(state.potAmount);
                 if (state.players) updatePlayersDisplay(state.players);
             });
 
@@ -879,10 +1367,10 @@
                 mustDiscard = true;
                 renderMyTiles();
                 updateTurnUI();
-                showNotification('Daş çəkdiniz, indi DAŞ ATIN!', 'success');
+                showNotification(t('tile_drawn_discard'), 'success');
             });
 
-            connection.on("PlayerDrew", (d) => showNotification(`${d.playerName} daş çəkdi`, 'info'));
+            connection.on("PlayerDrew", (d) => showNotification(t('player_drew', { player: d.playerName }), 'info'));
 
 
 
@@ -897,7 +1385,7 @@
             connection.on("RoundOver", (d) => {
                 console.log('🎉 RoundOver:', d);
 
-                showNotification(`🎉 ${d.winner} qazandı!`, 'success');
+                showNotification(t('winner_announcement', { winner: d.winner }), 'success');
 
                 // ✅ Kombinasiyaları masanın ortasında modal ilə göstər
                 const modal = document.getElementById('winModal');
@@ -909,7 +1397,7 @@
                     d.melds.forEach((meld, idx) => {
                         const meldDiv = document.createElement('div');
                         meldDiv.className = 'win-meld-group';
-                        meldDiv.innerHTML = `<strong style="color: #f39c12; min-width: 80px;">Qrup ${idx + 1}:</strong>`;
+                        meldDiv.innerHTML = `<strong style="color: #f39c12; min-width: 80px;">${t('group_label', { index: idx + 1 })}</strong>`;
 
                         meld.forEach(tile => {
                             meldDiv.innerHTML += createTileHTML(tile, 0);
@@ -920,7 +1408,7 @@
 
                     const winTypeEl = document.createElement('p');
                     winTypeEl.style.cssText = 'margin-top: 25px; font-size: 20px; text-align: center; color: #f39c12; font-weight: 800;';
-                    winTypeEl.innerHTML = `🎖️ Bitirmə növü: <strong>${d.winType}</strong>`;
+                    winTypeEl.innerHTML = t('finish_type', { type: d.winType });
                     container.appendChild(winTypeEl);
 
                     modal.classList.add('show');
@@ -933,7 +1421,7 @@
                 if (d.reason) {
                     showNotification(d.reason, 'error');
                 } else {
-                    showNotification(`🏆 Final Qalibi: ${d.finalWinner}`, 'success');
+                    showNotification(t('final_winner', { winner: d.finalWinner }), 'success');
                 }
 
                 // ✅ Final xalları göstər
@@ -962,7 +1450,7 @@
             connection.on("WinDeclared", (d) => showNotification(d.message, d.isValid ? 'success' : 'error'));
             connection.on("RankUpdated", (d) => {
                 document.getElementById('userRank').textContent = d.rank;
-                showNotification(`🎖️ ${d.rank} - Lvl ${d.level}`, 'success');
+                showNotification(t('rank_updated', { rank: d.rank, level: d.level }), 'success');
             });
 
             connection.on("LeftRoom", () => {
@@ -1211,11 +1699,11 @@
             // ✅ Mənim növbəmdədirsə - bildiriş
             if (relativePos === 'bottom') {
                 if (seconds === 10) {
-                    showNotification(`⏰ 10 saniyə qaldı!`, 'info');
+                    showNotification(t('ten_seconds_left'), 'info');
                 } else if (seconds === 5) {
-                    showNotification(`⚠️ 5 saniyə qaldı! Tələsin!`, 'error');
+                    showNotification(t('five_seconds_left'), 'error');
                 } else if (seconds === 1) {
-                    showNotification(`🚨 AVTOMATIK DAŞ ATILIR!`, 'error');
+                    showNotification(t('auto_discarding'), 'error');
                 }
             }
         }
@@ -1241,7 +1729,7 @@
                 const grid = document.getElementById('roomsGrid');
 
                 if (!rooms || rooms.length === 0) {
-                    grid.innerHTML = '<div style="text-align: center; padding: 50px; color: white;">Otaq tapılmadı</div>';
+                    grid.innerHTML = `<div style="text-align: center; padding: 50px; color: white;">${t('room_list_empty')}</div>`;
                     return;
                 }
 
@@ -1261,9 +1749,9 @@
                     return `
                             <div class="player-option-card" onclick="openBetModal(${playerCount})">
                                 <div class="player-count-large">${playerCount}</div>
-                                <div class="player-label">Nəfərlik</div>
+                                <div class="player-label">${t('players_label')}</div>
                                 ${playerRooms.length > 0 ? `
-                                ` : '<div class="no-rooms">Otaq yoxdur</div>'}
+                                ` : `<div class="no-rooms">${t('no_rooms')}</div>`}
                             </div>
                         `;
                 }).join('')}
@@ -1281,7 +1769,7 @@
             const rooms = window.availableRooms.filter(r => r.maxPlayers === playerCount);
 
             if (!rooms || rooms.length === 0) {
-                showNotification('Bu oyunçu sayı üçün otaq yoxdur', 'error');
+                showNotification(t('no_rooms_for_count'), 'error');
                 return;
             }
 
@@ -1308,7 +1796,7 @@
             modal.innerHTML = `
         <div class="modal-content">
             <div class="modal-header">
-                <h2>${playerCount} Nəfərlik Oyun</h2>
+                <h2>${t('player_count_game', { count: playerCount })}</h2>
                 <button class="modal-close" onclick="closeLobbyBetModal()">×</button>
             </div>
             <div class="modal-body">
@@ -1341,12 +1829,12 @@
         async function joinRoom(roomId) {
             try {
                 closeLobbyBetModal();
-                showNotification('Qoşulma...', 'info');
+                showNotification(t('joining'), 'info');
                 await connection.invoke("JoinRoom", roomId, null);
                 sortTiles();
             } catch (err) {
                 console.error('❌ Join error:', err);
-                showNotification('Qoşulmaq alınmadı', 'error');
+                showNotification(t('join_failed'), 'error');
             }
         }
 
@@ -1404,14 +1892,14 @@
                         await connection.invoke("DiscardOnIndicator", tileId);
                     } catch (err) {
                         log('❌ DiscardOnIndicator error:', err);
-                        showNotification('Xəta baş verdi', 'error');
+                        showNotification(t('error_occurred'), 'error');
                     }
                 }
             });
         }
 
         async function leaveRoom() {
-            if (!confirm('Çıxmaq istəyirsiniz?')) return;
+            if (!confirm(t('leave_confirm'))) return;
             try {
                 await connection.invoke("LeaveRoom");
             } catch (err) {
@@ -1423,7 +1911,7 @@
 
         async function drawFromStock() {
             if (!isMyTurn || hasDrawn || mustDiscard) {
-                showNotification(mustDiscard ? 'DAŞ ATIN!' : 'Növbənizi gözləyin', 'error');
+                showNotification(mustDiscard ? t('discard_now') : t('draw_turn_wait'), 'error');
                 return;
             }
 
@@ -1448,15 +1936,15 @@
 
         async function tryDrawFromLeftPlayer() {
             if (!isMyTurn || hasDrawn || mustDiscard) {
-                if (mustDiscard) showNotification('Əvvəlcə daş atın!', 'error');
-                else if (hasDrawn) showNotification('Artıq daş çəkmisiniz!', 'error');
-                else showNotification('Növbəniz deyil!', 'error');
+                if (mustDiscard) showNotification(t('discard_first'), 'error');
+                else if (hasDrawn) showNotification(t('already_drew'), 'error');
+                else showNotification(t('not_your_turn'), 'error');
                 return;
             }
 
             const zone = document.getElementById('discardZoneTop');
             if (!zone || !zone.querySelector('.okey-tile')) {
-                showNotification('Rəqib hələ daş atmayıb', 'error');
+                showNotification(t('opponent_not_discarded'), 'error');
                 return;
             }
 
@@ -1469,13 +1957,13 @@
                 }, 150);
             } catch (err) {
                 log('❌ Draw from discard error:', err);
-                showNotification('Daşı götürmək mümkün olmadı', 'error');
+                showNotification(t('draw_failed'), 'error');
             }
         }
 
         async function discardTile(tileId) {
             if (!hasDrawn || !mustDiscard) {
-                showNotification('Əvvəlcə daş çəkin!', 'error');
+                showNotification(t('draw_first'), 'error');
                 return;
             }
 
@@ -1520,7 +2008,7 @@
             autoArrangeTiles();
             renderMyTiles();
 
-            showNotification('Sıralandı', 'success');
+            showNotification(t('sort_done'), 'success');
         }
 
         function getRelativePosition(myPos, targetPos) {
@@ -1744,7 +2232,7 @@
 
                         if (myHand.length === 1) {
                             log('🏆 Son daş ikiqat klik - oyun bitir!');
-                            showNotification('Son daş atıldı! Yoxlanılır...', 'success');
+                            showNotification(t('last_tile_discarded_checking'), 'success');
                             setTimeout(() => declareWin(), 300);
                         } else {
                             discardTile(tileId);
@@ -1840,7 +2328,7 @@
 
                         if (myHand.length === 1) {
                             log('🏆 Son daş atılır - oyun bitir!');
-                            showNotification('Son daş atıldı! Yoxlanılır...', 'success');
+                            showNotification(t('last_tile_discarded_checking'), 'success');
                             setTimeout(() => declareWin(), 300);
                         } else {
                             discardTile(tileId);
@@ -1962,7 +2450,7 @@
                         activeTile.remove();
 
                         if (myHand.length === 1) {
-                            showNotification('Son daş atıldı!', 'success');
+                            showNotification(t('last_tile_discarded'), 'success');
                             setTimeout(() => declareWin(), 300);
                         } else {
                             discardTile(tileId);
@@ -2122,15 +2610,15 @@
 
         async function tryDrawFromTopPlayer() {
             if (!isMyTurn || hasDrawn || mustDiscard) {
-                if (mustDiscard) showNotification('Əvvəlcə daş atın!', 'error');
-                else if (hasDrawn) showNotification('Artıq daş çəkmisiniz!', 'error');
-                else showNotification('Növbəniz deyil!', 'error');
+                if (mustDiscard) showNotification(t('discard_first'), 'error');
+                else if (hasDrawn) showNotification(t('already_drew'), 'error');
+                else showNotification(t('not_your_turn'), 'error');
                 return;
             }
 
             const zone = document.getElementById('discardZoneTop');
             if (!zone || !zone.querySelector('.okey-tile')) {
-                showNotification('Rəqib hələ daş atmayıb', 'error');
+                showNotification(t('opponent_not_discarded'), 'error');
                 return;
             }
 
@@ -2143,7 +2631,7 @@
                 }, 150);
             } catch (err) {
                 log('❌ Draw from discard error:', err);
-                showNotification('Daşı götürmək mümkün olmadı', 'error');
+                showNotification(t('draw_failed'), 'error');
             }
         }
 
@@ -2162,6 +2650,8 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             log('🎮 Okey Premium Loaded');
+            setLanguage(currentLanguage);
+            updatePotAmount(currentPotAmount);
             document.getElementById('leaveRoomBtn')?.addEventListener('click', leaveRoom);
             document.getElementById('sortBtn')?.addEventListener('click', sortTiles);
             document.getElementById('deckStack')?.addEventListener('click', drawFromStock);

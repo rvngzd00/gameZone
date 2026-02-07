@@ -4,9 +4,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover" />
-    <title>10 Line Loto - Otaqlar</title>
+    <title>10 Line Loto - Rooms</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <link rel="stylesheet" href="./LotoLobby.css" />
+
+
 
 </head>
 
@@ -25,32 +27,30 @@
         </div>
     </div>
 
-    <div id="loadingContainer" class="loading-container">
-        <div>
-            <!-- Floating elements -->
-            <div class="floating-cards">
-                <div class="card"></div>
-                <div class="card"></div>
-                <div class="card"></div>
-                <div class="card"></div>
-                <div class="coin"></div>
-                <div class="coin"></div>
-                <div class="coin"></div>
-                <div class="coin"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
+     <div id="loadingContainer" class="loading-container">
+        <div class="loading-stage">
+            <div class="loto-aurora"></div>
+
+            <div class="ticket-stack">
+                <div class="ticket ticket-shadow"></div>
+                <div class="ticket ticket-front">
+                    <div class="ticket-heading">LOTO</div>
+                    <div class="ticket-grid">
+                        <span>7</span><span>17</span><span>27</span><span>37</span><span>77</span>
+                        <span>8</span><span>57</span><span>47</span><span>67</span><span>88</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Dice -->
-            <div class="dice-container">
-                <div class="dice">⚅</div>
-            </div>
-            <div class="dice-container-right">
-                <div class="dice">⚄</div>
+            <div class="ball-orbit">
+                <div class="orbit">
+                    <div class="loto-ball">7</div>
+                    <div class="loto-ball">14</div>
+                    <div class="loto-ball">22</div>
+                    <div class="loto-ball">36</div>
+                    <div class="loto-ball">45</div>
+                    <div class="loto-ball">60</div>
+                </div>
             </div>
 
             <!-- Main roulette wheel -->
@@ -71,8 +71,8 @@
             </div>
 
             <!-- Text -->
-            <div class="loading-text">LOADING ROOMS</div>
-            <div class="loading-subtext">PREPARING YOUR GAME</div>
+            <div class="loading-text" id="loadingText" data-i18n="loading">LOADING</div>
+            <div class="loading-subtext" id="loadingSubtext" data-i18n="preparing">PREPARING YOUR GAME</div>
 
             <!-- Progress dots -->
             <div class="dots">
@@ -91,11 +91,127 @@
 
         let currentUserToken = null;
         let currentUserData = null;
+        let currentLanguage = "en";
+
+        const translations = {
+            en: {
+                title: "Loto",
+                loading: "LOADING ROOMS",
+                preparing: "PREPARING YOUR GAME",
+                roomsLoading: "Rooms are loading...",
+                playing: "▶ Playing",
+                waiting: "Waiting",
+                jackpot: "JACKPOT",
+                cards: "CARDS",
+                time: "TIME",
+                started: "STARTED",
+                secondsSuffix: "s",
+                connectionError: "❌ Connection error"
+            },
+            tr: {
+                title: "Loto",
+                loading: "ODALAR YÜKLENİYOR",
+                preparing: "OYUNUNUZ HAZIRLANIYOR",
+                roomsLoading: "Odalar yükleniyor...",
+                playing: "▶ Oynanıyor",
+                waiting: "Bekleniyor",
+                jackpot: "JACKPOT",
+                cards: "KARTLAR",
+                time: "SÜRE",
+                started: "BAŞLADI",
+                secondsSuffix: "s",
+                connectionError: "❌ Bağlantı hatası"
+            },
+            hi: {
+                title: "Loto",
+                loading: "कमरे लोड हो रहे हैं",
+                preparing: "आपका गेम तैयार हो रहा है",
+                roomsLoading: "कमरे लोड हो रहे हैं...",
+                playing: "▶ चल रहा है",
+                waiting: "प्रतीक्षा",
+                jackpot: "जैकपॉट",
+                cards: "कार्ड",
+                time: "समय",
+                started: "शुरू",
+                secondsSuffix: "सेक",
+                connectionError: "❌ कनेक्शन त्रुटि"
+            },
+            ru: {
+                title: "Loto",
+                loading: "КОМНАТЫ ЗАГРУЖАЮТСЯ",
+                preparing: "ПОДГОТОВКА ИГРЫ",
+                roomsLoading: "Комнаты загружаются...",
+                playing: "▶ Игра идет",
+                waiting: "Ожидание",
+                jackpot: "ДЖЕКПОТ",
+                cards: "КАРТЫ",
+                time: "ВРЕМЯ",
+                started: "НАЧАЛОСЬ",
+                secondsSuffix: "с",
+                connectionError: "❌ Ошибка соединения"
+            },
+            ar: {
+                title: "Loto",
+                loading: "جارٍ تحميل الغرف",
+                preparing: "يتم تجهيز لعبتك",
+                roomsLoading: "جارٍ تحميل الغرف...",
+                playing: "▶ جارٍ اللعب",
+                waiting: "في الانتظار",
+                jackpot: "الجائزة الكبرى",
+                cards: "البطاقات",
+                time: "الوقت",
+                started: "بدأت",
+                secondsSuffix: "ث",
+                connectionError: "❌ خطأ في الاتصال"
+            },
+            uz: {
+                title: "Loto",
+                loading: "XONALAR YUKLANMOQDA",
+                preparing: "O'YININGIZ TAYYORLANMOQDA",
+                roomsLoading: "Xonalar yuklanmoqda...",
+                playing: "▶ O‘ynalmoqda",
+                waiting: "Kutilmoqda",
+                jackpot: "JACKPOT",
+                cards: "KARTALAR",
+                time: "VAQT",
+                started: "BOSHLANDI",
+                secondsSuffix: "s",
+                connectionError: "❌ Ulanish xatosi"
+            }
+        };
+
+        function normalizeLanguage(lang) {
+            if (!lang) return "en";
+            const value = String(lang).trim().toLowerCase();
+            if (["en", "english"].includes(value)) return "en";
+            if (["tr", "turkish", "türkçe"].includes(value)) return "tr";
+            if (["hi", "hindi", "in", "indian"].includes(value)) return "hi";
+            if (["ru", "russian"].includes(value)) return "ru";
+            if (["ar", "arabic"].includes(value)) return "ar";
+            if (["uz", "uzbek", "o'zbek", "uzbekistan"].includes(value)) return "uz";
+            return "en";
+        }
+
+        function applyLanguage(lang) {
+            currentLanguage = normalizeLanguage(lang);
+            const dict = translations[currentLanguage] || translations.en;
+            document.title = dict.title;
+            const loadingText = document.getElementById("loadingText");
+            if (loadingText) loadingText.textContent = dict.loading;
+            const loadingSubtext = document.getElementById("loadingSubtext");
+            if (loadingSubtext) loadingSubtext.textContent = dict.preparing;
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = currentLanguage === "ar" ? "rtl" : "ltr";
+        }
 
         console.log('🎰 [LOTO LOBBY] Script yükləndi');
 
         window.addEventListener('message', (event) => {
             console.log('📨 [LOTO LOBBY] Message alındı:', event.data);
+
+            if (event.data && event.data.payload.language) {
+                applyLanguage(event.data.payload.language);
+            }
 
             if (event.data && event.data.type === 'INIT_USER') {
                 console.log('✅ [LOTO LOBBY] INIT_USER qəbul edildi');
@@ -186,9 +302,10 @@
         function renderRooms(rooms) {
             const container = document.getElementById("roomsContainer");
             container.innerHTML = "";
+            const dict = translations[currentLanguage] || translations.en;
 
             if (!rooms || rooms.length === 0) {
-                container.innerHTML = '<div class="loading">Rooms Are loading...</div>';
+                container.innerHTML = `<div class="loading">${dict.roomsLoading}</div>`;
                 return;
             }
 
@@ -197,8 +314,8 @@
                 card.className = `room-card ${room.isGameStarted ? 'playing' : ''}`;
 
                 const statusBadge = room.isGameStarted
-                    ? '<span class="status-badge badge-playing">▶ Playing</span>'
-                    : '<span class="status-badge badge-waiting">Waiting</span>';
+                    ? `<span class="status-badge badge-playing">${dict.playing}</span>`
+                    : `<span class="status-badge badge-waiting">${dict.waiting}</span>`;
 
                 const timePercent = room.isGameStarted ? 0 : (room.timeRemaining / room.timerSeconds) * 100;
 
@@ -209,18 +326,18 @@
                         </div>
 
                         <div class="jackpot-display">
-                            <div class="jackpot-label">JACKPOT</div>
+                            <div class="jackpot-label">${dict.jackpot}</div>
                             <div class="jackpot-amount">${room.jackpotPool.toFixed(2)}</div>
                         </div>
 
                         <div class="room-info">
                             <div class="info-item">
-                                <div class="info-label">CARDS</div>
+                                <div class="info-label">${dict.cards}</div>
                                 <div class="info-value">${room.playerCount}</div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label">TIME</div>
-                                <div class="info-value">${room.isGameStarted ? 'STARTED' : room.timeRemaining + 's'}</div>
+                                <div class="info-label">${dict.time}</div>
+                                <div class="info-value">${room.isGameStarted ? dict.started : room.timeRemaining + dict.secondsSuffix}</div>
                             </div>
                         </div>
 
@@ -268,10 +385,11 @@
             } catch (err) {
                 console.error("❌ [LOTO LOBBY] Connection error:", err);
                 document.getElementById("roomsContainer").innerHTML =
-                    '<div class="loading">❌ Bağlantı xətası</div>';
+                    `<div class="loading">${(translations[currentLanguage] || translations.en).connectionError}</div>`;
             }
         }
 
+        applyLanguage(currentLanguage);
         console.log('✅ [LOTO LOBBY] Script tam yükləndi, postMessage gözlənilir...');
 
     </script>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
@@ -12,31 +12,29 @@
 
 <body>
     <div id="loadingContainer" class="loading-container">
-        <div>
-            <!-- Floating elements -->
-            <div class="floating-cards">
-                <div class="card"></div>
-                <div class="card"></div>
-                <div class="card"></div>
-                <div class="card"></div>
-                <div class="coin"></div>
-                <div class="coin"></div>
-                <div class="coin"></div>
-                <div class="coin"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
+        <div class="loading-stage">
+            <div class="loto-aurora"></div>
+
+            <div class="ticket-stack">
+                <div class="ticket ticket-shadow"></div>
+                <div class="ticket ticket-front">
+                    <div class="ticket-heading">LOTO</div>
+                    <div class="ticket-grid">
+                        <span>7</span><span>17</span><span>27</span><span>37</span><span>77</span>
+                        <span>8</span><span>57</span><span>47</span><span>67</span><span>88</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Dice -->
-            <div class="dice-container">
-                <div class="dice">⚅</div>
-            </div>
-            <div class="dice-container-right">
-                <div class="dice">⚄</div>
+            <div class="ball-orbit">
+                <div class="orbit">
+                    <div class="loto-ball">7</div>
+                    <div class="loto-ball">14</div>
+                    <div class="loto-ball">22</div>
+                    <div class="loto-ball">36</div>
+                    <div class="loto-ball">45</div>
+                    <div class="loto-ball">60</div>
+                </div>
             </div>
 
             <!-- Main roulette wheel -->
@@ -57,8 +55,8 @@
             </div>
 
             <!-- Text -->
-            <div class="loading-text">LOADING</div>
-            <div class="loading-subtext">PREPARING YOUR GAME</div>
+            <div class="loading-text" data-i18n="loading">LOADING</div>
+            <div class="loading-subtext" data-i18n="preparing">PREPARING YOUR GAME</div>
 
             <!-- Progress dots -->
             <div class="dots">
@@ -75,14 +73,16 @@
             <div class="top-bar-side">
                 <div class="top-bar-section">
                     <div class="side-display">
-                        <div class="win-rule-badge" id="winRuleBadge">Entire Card</div>
-                        <button id="backBtn" class="exit-button">← Exit</button>
+                        <div class="win-rule-badge" id="winRuleBadge" data-i18n="win_rule_entire_card">Entire Card
+                        </div>
+                        <button id="backBtn" class="exit-button" data-i18n="exit">← Exit</button>
                     </div>
                     <div class="middle-display">
                         <div class="jackpot-display">
-                            🏆 <span id="jackpotAmount">0.00</span> Coin
+                            🏆 <span id="jackpotAmount">0.00</span> <span data-i18n="coin">Coin</span>
                         </div>
-                        <div id="balanceDisplay" class="balance-display">💰 <span id="userBalance">0.00</span> Coin
+                        <div id="balanceDisplay" class="balance-display">💰 <span id="userBalance">0.00</span> <span
+                                data-i18n="coin">Coin</span>
                         </div>
                     </div>
                     <div class="side-display">
@@ -92,8 +92,8 @@
                                 <span class="icon">🔊</span>
                             </button>
                         </div>
-                        <button id="buyTicketBtn" onclick="checkTicketAvailability()" class="buy-ticket-button">+ Buy
-                            ticket</button>
+                        <button id="buyTicketBtn" onclick="checkTicketAvailability()" class="buy-ticket-button"
+                            data-i18n="buy_ticket">+ Buy ticket</button>
                     </div>
                 </div>
             </div>
@@ -110,17 +110,17 @@
         <div id="gameOverModal" class="modal">
             <div class="modal-content">
                 <div class="countdown-timer" id="countdownTimer">10</div>
-                <h2>🏆 WINNER 🏆</h2>
+                <h2 data-i18n="winner_title">🏆 WINNER 🏆</h2>
                 <!-- <div class="winner-name" id="winnerName"></div> -->
                 <div class="win-type-badge" id="winTypeBadge"></div>
                 <div class="prize-amount" id="prizeAmount"></div>
                 <div class="winner-card-display">
-                    <h3>🎫 Winner Ticket</h3>
+                    <h3 data-i18n="winner_ticket">🎫 Winner Ticket</h3>
                     <div class="winner-card-grid" id="winnerCardGrid"></div>
                 </div>
                 <button class="btn" onclick="goToLobby()"
                     style="margin-top: 20px; font-size: 18px; padding: 15px 40px;">
-                    Return to Lobby
+                    <span data-i18n="return_to_lobby">Return to Lobby</span>
                 </button>
             </div>
         </div>
@@ -196,11 +196,240 @@
         let currentRoomId = null;
 
         let isInitialized = false;
+        let currentLanguage = 'en';
+
+        const translations = {
+            en: {
+                loading: 'LOADING',
+                preparing: 'PREPARING YOUR GAME',
+                exit: '← Exit',
+                coin: 'Coin',
+                buy_ticket: '+ Buy ticket',
+                winner_title: '🏆 WINNER 🏆',
+                winner_ticket: '🎫 Winner Ticket',
+                return_to_lobby: 'Return to Lobby',
+                win_rule_entire_card: 'Entire Card',
+                win_rule_full_card: 'Full Card',
+                win_rule_single_line: 'Single Line',
+                notification_ticket_purchased: '✅ Ticket {current}/{max} purchased',
+                notification_ticket_refreshed: '✅ Ticket refreshed!',
+                notification_ticket_deleted: '✅ Ticket deleted and balance refunded!',
+                notification_game_started: '🎮 Game started!',
+                notification_connection_lost: 'Connection lost, retrying...',
+                notification_connection_restored: 'Connection restored!',
+                notification_token_problem: 'Token problem! Refresh the page.',
+                notification_missing_login: 'Login data not found. Refresh the page.',
+                notification_connection_error: '❌ Connection error: {message}',
+                ticket_number: '🎫 Ticket #{number}',
+                refresh: '🔄 Refresh',
+                delete: '🗑️ Delete',
+                bingo: '🎯 BINGO',
+                confirm_exit: 'Your tickets will be deleted and balance refunded. Continue?',
+                invalid_card: 'Card data failed to load'
+            },
+            tr: {
+                loading: 'YÜKLENİYOR',
+                preparing: 'OYUN HAZIRLANIYOR',
+                exit: '← Çıkış',
+                coin: 'Jeton',
+                buy_ticket: '+ Bilet al',
+                winner_title: '🏆 KAZANAN 🏆',
+                winner_ticket: '🎫 Kazanan Bilet',
+                return_to_lobby: 'Lobiye dön',
+                win_rule_entire_card: 'Tüm Kart',
+                win_rule_full_card: 'Tam Kart',
+                win_rule_single_line: 'Tek Çizgi',
+                notification_ticket_purchased: '✅ Bilet {current}/{max} alındı',
+                notification_ticket_refreshed: '✅ Bilet yenilendi!',
+                notification_ticket_deleted: '✅ Bilet silindi ve bakiye iade edildi!',
+                notification_game_started: '🎮 Oyun başladı!',
+                notification_connection_lost: 'Bağlantı kesildi, tekrar deneniyor...',
+                notification_connection_restored: 'Bağlantı geri geldi!',
+                notification_token_problem: 'Token problemi! Sayfayı yenileyin.',
+                notification_missing_login: 'Giriş bilgileri bulunamadı. Sayfayı yenileyin.',
+                notification_connection_error: '❌ Bağlantı hatası: {message}',
+                ticket_number: '🎫 Bilet #{number}',
+                refresh: '🔄 Yenile',
+                delete: '🗑️ Sil',
+                bingo: '🎯 BINGO',
+                confirm_exit: 'Biletleriniz silinecek ve bakiye iade edilecek. Devam edilsin mi?',
+                invalid_card: 'Kart verisi yüklenemedi'
+            },
+            hi: {
+                loading: 'लोड हो रहा है',
+                preparing: 'आपका गेम तैयार हो रहा है',
+                exit: '← बाहर जाएं',
+                coin: 'सिक्का',
+                buy_ticket: '+ टिकट खरीदें',
+                winner_title: '🏆 विजेता 🏆',
+                winner_ticket: '🎫 विजेता टिकट',
+                return_to_lobby: 'लॉबी में वापस जाएं',
+                win_rule_entire_card: 'पूरा कार्ड',
+                win_rule_full_card: 'पूरा कार्ड',
+                win_rule_single_line: 'एक पंक्ति',
+                notification_ticket_purchased: '✅ टिकट {current}/{max} खरीदा गया',
+                notification_ticket_refreshed: '✅ टिकट रीफ्रेश किया गया!',
+                notification_ticket_deleted: '✅ टिकट हटाया गया और बैलेंस वापस किया गया!',
+                notification_game_started: '🎮 गेम शुरू हो गया!',
+                notification_connection_lost: 'कनेक्शन टूट गया, फिर से प्रयास किया जा रहा है...',
+                notification_connection_restored: 'कनेक्शन बहाल हो गया!',
+                notification_token_problem: 'टोकन समस्या! पेज रिफ्रेश करें।',
+                notification_missing_login: 'लॉगिन जानकारी नहीं मिली। पेज रिफ्रेश करें।',
+                notification_connection_error: '❌ कनेक्शन त्रुटि: {message}',
+                ticket_number: '🎫 टिकट #{number}',
+                refresh: '🔄 रीफ्रेश',
+                delete: '🗑️ हटाएं',
+                bingo: '🎯 बिंगो',
+                confirm_exit: 'आपके टिकट हट जाएंगे और बैलेंस वापस होगा। जारी रखें?',
+                invalid_card: 'कार्ड डेटा लोड नहीं हुआ'
+            },
+            ru: {
+                loading: 'ЗАГРУЗКА',
+                preparing: 'ПОДГОТОВКА ИГРЫ',
+                exit: '← Выход',
+                coin: 'Монета',
+                buy_ticket: '+ Купить билет',
+                winner_title: '🏆 ПОБЕДИТЕЛЬ 🏆',
+                winner_ticket: '🎫 Билет победителя',
+                return_to_lobby: 'Вернуться в лобби',
+                win_rule_entire_card: 'Вся карта',
+                win_rule_full_card: 'Полная карта',
+                win_rule_single_line: 'Одна линия',
+                notification_ticket_purchased: '✅ Билет {current}/{max} куплен',
+                notification_ticket_refreshed: '✅ Билет обновлен!',
+                notification_ticket_deleted: '✅ Билет удален, баланс возвращен!',
+                notification_game_started: '🎮 Игра началась!',
+                notification_connection_lost: 'Соединение потеряно, повторная попытка...',
+                notification_connection_restored: 'Соединение восстановлено!',
+                notification_token_problem: 'Проблема с токеном! Обновите страницу.',
+                notification_missing_login: 'Данные входа не найдены. Обновите страницу.',
+                notification_connection_error: '❌ Ошибка соединения: {message}',
+                ticket_number: '🎫 Билет #{number}',
+                refresh: '🔄 Обновить',
+                delete: '🗑️ Удалить',
+                bingo: '🎯 БИНГО',
+                confirm_exit: 'Ваши билеты будут удалены, баланс вернется. Продолжить?',
+                invalid_card: 'Данные карты не загружены'
+            },
+            ar: {
+                loading: 'جارٍ التحميل',
+                preparing: 'جارٍ تجهيز لعبتك',
+                exit: '← خروج',
+                coin: 'عملة',
+                buy_ticket: '+ شراء تذكرة',
+                winner_title: '🏆 الفائز 🏆',
+                winner_ticket: '🎫 تذكرة الفائز',
+                return_to_lobby: 'العودة إلى الردهة',
+                win_rule_entire_card: 'البطاقة كاملة',
+                win_rule_full_card: 'البطاقة كاملة',
+                win_rule_single_line: 'سطر واحد',
+                notification_ticket_purchased: '✅ تم شراء تذكرة {current}/{max}',
+                notification_ticket_refreshed: '✅ تم تحديث التذكرة!',
+                notification_ticket_deleted: '✅ تم حذف التذكرة وإرجاع الرصيد!',
+                notification_game_started: '🎮 بدأت اللعبة!',
+                notification_connection_lost: 'انقطع الاتصال، جارٍ إعادة المحاولة...',
+                notification_connection_restored: 'تم استعادة الاتصال!',
+                notification_token_problem: 'مشكلة في الرمز! حدّث الصفحة.',
+                notification_missing_login: 'لم يتم العثور على بيانات الدخول. حدّث الصفحة.',
+                notification_connection_error: '❌ خطأ في الاتصال: {message}',
+                ticket_number: '🎫 تذكرة رقم {number}',
+                refresh: '🔄 تحديث',
+                delete: '🗑️ حذف',
+                bingo: '🎯 بينغو',
+                confirm_exit: 'سيتم حذف تذاكرك وإرجاع الرصيد. هل تريد المتابعة؟',
+                invalid_card: 'فشل تحميل بيانات البطاقة'
+            },
+            uz: {
+                loading: 'YUKLANMOQDA',
+                preparing: 'O‘YIN TAYYORLANMOQDA',
+                exit: '← Chiqish',
+                coin: 'Tanga',
+                buy_ticket: '+ Bilet sotib olish',
+                winner_title: '🏆 G‘OLIB 🏆',
+                winner_ticket: '🎫 G‘olib bileti',
+                return_to_lobby: 'Lobbiga qaytish',
+                win_rule_entire_card: 'Butun karta',
+                win_rule_full_card: 'To‘liq karta',
+                win_rule_single_line: 'Bitta qator',
+                notification_ticket_purchased: '✅ Bilet {current}/{max} sotib olindi',
+                notification_ticket_refreshed: '✅ Bilet yangilandi!',
+                notification_ticket_deleted: '✅ Bilet o‘chirildi va balans qaytarildi!',
+                notification_game_started: '🎮 O‘yin boshlandi!',
+                notification_connection_lost: 'Ulanish uzildi, qayta urinilmoqda...',
+                notification_connection_restored: 'Ulanish tiklandi!',
+                notification_token_problem: 'Token muammosi! Sahifani yangilang.',
+                notification_missing_login: 'Kirish ma’lumotlari topilmadi. Sahifani yangilang.',
+                notification_connection_error: '❌ Ulanish xatosi: {message}',
+                ticket_number: '🎫 Bilet #{number}',
+                refresh: '🔄 Yangilash',
+                delete: '🗑️ O‘chirish',
+                bingo: '🎯 BINGO',
+                confirm_exit: 'Biletlar o‘chirilib, balans qaytariladi. Davom etilsinmi?',
+                invalid_card: 'Karta ma’lumoti yuklanmadi'
+            }
+        };
+
+        function normalizeLanguage(lang) {
+            if (!lang || typeof lang !== 'string') return 'en';
+            const key = lang.trim().toLowerCase();
+            if (['en', 'eng', 'english'].includes(key)) return 'en';
+            if (['tr', 'tur', 'turkish', 'tr-tr'].includes(key)) return 'tr';
+            if (['hi', 'hin', 'hindi', 'indian', 'india'].includes(key)) return 'hi';
+            if (['ru', 'rus', 'russian', 'ru-ru'].includes(key)) return 'ru';
+            if (['ar', 'ara', 'arabic', 'ar-sa', 'ar-ae'].includes(key)) return 'ar';
+            if (['uz', 'uzb', 'uzbek', 'uz-uz'].includes(key)) return 'uz';
+            return 'en';
+        }
+
+        function t(key, vars = {}) {
+            const dict = translations[currentLanguage] || translations.en;
+            let text = dict[key] || translations.en[key] || key;
+            Object.keys(vars).forEach(k => {
+                text = text.replace(`{${k}}`, vars[k]);
+            });
+            return text;
+        }
+
+        function applyLanguage(lang) {
+            currentLanguage = normalizeLanguage(lang);
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
+            });
+
+            // const winRuleEl = document.getElementById("winRuleBadge");
+            // if (winRuleEl) {
+            //     winRuleEl.textContent = translateWinRule(winRule);
+            // }
+
+            // renderTickets();
+        }
+
+        function translateWinRule(rule) {
+            if (!rule) return t('win_rule_entire_card');
+            const r = rule.toString().toUpperCase();
+            if (r.includes('TAM KART') || r.includes('FULL CARD') || r.includes('ENTIRE CARD')) {
+                return t('win_rule_full_card');
+            }
+            if (r.includes('BİR XƏTT') || r.includes('SINGLE LINE')) {
+                return t('win_rule_single_line');
+            }
+            return rule;
+        }
+
+        applyLanguage(currentLanguage);
 
         console.log('🎮 [LOTO GAME] Script yükləndi');
 
         window.addEventListener('message', (event) => {
             console.log('📨 [LOTO GAME] Message alındı:', event.data);
+
+            if (event.data && event.data.payload.language) {
+                applyLanguage(event.data.payload.language);
+            }
 
             if (event.data && event.data.type === 'INIT_USER') {
                 console.log('✅ [LOTO GAME] INIT_USER qəbul edildi');
@@ -313,18 +542,18 @@
             connection.onclose((error) => {
                 console.error('❌ [LOTO] Connection closed:', error);
                 if (!getToken()) {
-                    showNotification('Token problemi! Səhifəni yeniləyin.');
+                    showNotification(t('notification_token_problem'));
                 }
             });
 
             connection.onreconnecting((error) => {
                 console.log('🔄 [LOTO] Reconnecting...', error);
-                showNotification('Bağlantı kəsildi, yenidən cəhd edilir...');
+                showNotification(t('notification_connection_lost'));
             });
 
             connection.onreconnected((connectionId) => {
                 console.log('✅ [LOTO] Reconnected:', connectionId);
-                showNotification('Bağlantı bərpa olundu!');
+                showNotification(t('notification_connection_restored'));
             });
 
             setupHandlers();
@@ -355,7 +584,7 @@
 
                 const winRuleEl = document.getElementById("winRuleBadge");
                 if (winRuleEl) {
-                    winRuleEl.textContent = winRule;
+                    winRuleEl.textContent = translateWinRule(winRule);
                 }
 
                 renderTickets();
@@ -381,7 +610,7 @@
                     balanceEl.textContent = data.balance.toFixed(2);
                 }
 
-                showNotification(`✅ Bilet ${data.ticketNumber}/${data.maxTickets} alındı`);
+                showNotification(t('notification_ticket_purchased', { current: data.ticketNumber, max: data.maxTickets }));
                 playSound('ticketPurchased');
                 renderTickets();
                 checkTicketAvailability();
@@ -394,7 +623,7 @@
                 if (ticketIndex !== -1) {
                     myTickets[ticketIndex].card = data.card;
                     renderTickets();
-                    showNotification("✅ Bilet yeniləndi!");
+                    showNotification(t('notification_ticket_refreshed'));
                 }
             });
 
@@ -404,7 +633,7 @@
                 // sendToReact('BALANCE_UPDATED', { balance: data.balance });
                 renderTickets();
                 checkTicketAvailability();
-                showNotification("✅ Bilet silindi və balans qaytarıldı!");
+                showNotification(t('notification_ticket_deleted'));
             });
 
             connection.on("RoomUpdated", (data) => {
@@ -453,7 +682,7 @@
                     // `;
                 }
 
-                showNotification("🎮 Oyun başladı!");
+                showNotification(t('notification_game_started'));
 
                 if (typeof confetti !== 'undefined') {
                     confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
@@ -608,7 +837,7 @@
 
             if (!card || !Array.isArray(card) || card.length !== 3) {
                 console.error("❌ Invalid card format:", card);
-                grid.innerHTML = "<p style='color: red; grid-column: 1/-1;'>Kart məlumatı yüklənmədi</p>";
+                grid.innerHTML = `<p style='color: red; grid-column: 1/-1;'>${t('invalid_card')}</p>`;
                 return;
             }
 
@@ -690,19 +919,19 @@
 
                 ticketDiv.innerHTML = `
                 <div class="ticket-header">
-                    <div class="ticket-number">🎫 Ticket #${index + 1}</div>
+                    <div class="ticket-number">${t('ticket_number', { number: index + 1 })}</div>
                     <div style="display: flex; gap: 10px;">
                         <button class="btn-refresh" onclick="refreshTicket('${ticket.ticketId}')"
                                 ${isGameStarted ? 'disabled' : ''}>
-                            🔄 Refresh
+                            ${t('refresh')}
                         </button>
                         <button class="btn-delete" onclick="deleteTicket('${ticket.ticketId}')"
                                 ${isGameStarted ? 'disabled' : ''}>
-                            🗑️ Delete
+                            ${t('delete')}
                         </button>
                         <button class="btn" style="display: none;" onclick="callBingo('${ticket.ticketId}')"
                                 ${!isGameStarted ? 'disabled' : ''}>
-                            🎯 BINGO
+                            ${t('bingo')}
                         </button>
                     </div>
                 </div>
@@ -823,7 +1052,7 @@
             if (backBtn) {
                 backBtn.addEventListener("click", async () => {
                     if (myTickets.length > 0 && !isGameStarted) {
-                        if (confirm("Biletləriniz silinəcək və balans qaytarılacaq. Davam edək?")) {
+                        if (confirm(t('confirm_exit'))) {
                             if (connection && connection.state === signalR.HubConnectionState.Connected) {
                                 try {
                                     for (const ticket of myTickets) {
@@ -918,7 +1147,7 @@
             const token = getToken();
             if (!token) {
                 console.error('❌ [LOTO GAME] Token yoxdur!');
-                showNotification('Giriş məlumatları tapılmadı. Səhifəni yeniləyin.');
+                showNotification(t('notification_missing_login'));
                 return;
             }
 
@@ -967,7 +1196,7 @@
                 console.error("❌ [LOTO GAME] Connection error:", err);
                 console.error("❌ Error details:", err.message);
                 console.error("❌ Stack:", err.stack);
-                showNotification("❌ Bağlantı xətası: " + err.message);
+                showNotification(t('notification_connection_error', { message: err.message }));
                 sendToReact('CONNECTION_ERROR', { error: err.message });
 
                 // Retry (optional - şərtli)

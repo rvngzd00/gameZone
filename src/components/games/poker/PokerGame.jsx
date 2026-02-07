@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './PokerReact.css';
 
 function PokerGame() {
-  const { user, balance, isAuthenticated, token } = useAppContext();
+  const { user, balance, isAuthenticated, token,language } = useAppContext();
   const iframeRef = useRef(null);
   const navigate = useNavigate();
 
@@ -43,6 +43,7 @@ function PokerGame() {
             userId: user.id,
             username: user.username,
             fullName: user.fullName,
+            language: language,
             balance: balance,
             token: token
           }

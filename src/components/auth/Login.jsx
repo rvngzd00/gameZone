@@ -12,6 +12,10 @@ const Login = () => {
         password: "",
     });
     const [error, setError] = useState("");
+    const [isForgotOpen, setIsForgotOpen] = useState(false);
+    const [forgotEmail, setForgotEmail] = useState("");
+    const [forgotFeedback, setForgotFeedback] = useState({ error: "", success: "" });
+    const [sendingReset, setSendingReset] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,6 +32,44 @@ const Login = () => {
             ...formData,
             [e.target.name]: e.target.value,
         });
+    };
+
+    const handleForgotSubmit = async (e) => {
+        e.preventDefault();
+        const trimmedEmail = forgotEmail.trim().toLowerCase();
+        setForgotFeedback({ error: "", success: "" });
+
+        if (!/^[^@\s]+@gmail\.com$/i.test(trimmedEmail)) {
+            setForgotFeedback({ error: t('forgot_password_gmail_only'), success: "" });
+            return;
+        }
+
+        setSendingReset(true);
+        try {
+            const response = await fetch("https://nehemiah-paginal-alan.ngrok-free.dev/api/Auths/ForgetPassword/forget-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: trimmedEmail }),
+            });
+
+            if (!response.ok) {
+                const message = await response.text();
+                throw new Error(message || t('reset_link_failed'));
+            }
+
+            setForgotFeedback({ error: "", success: t('reset_link_sent') });
+        } catch (err) {
+            setForgotFeedback({ error: err.message || t('reset_link_failed'), success: "" });
+        } finally {
+            setSendingReset(false);
+        }
+    };
+
+    const closeForgotModal = () => {
+        setIsForgotOpen(false);
+        setForgotEmail("");
+        setForgotFeedback({ error: "", success: "" });
+        setSendingReset(false);
     };
 
     return (
@@ -87,7 +129,53 @@ const Login = () => {
                 <p className="auth-switch">
                     {t('no_account')} <Link to="/register">{t('register_here')}</Link>
                 </p>
+                <p className="auth-switch">
+                    {t('forgot_password_question')} <button type="button" className="forgot-password" onClick={() => setIsForgotOpen(true)}>{t('reset_here')}</button>
+                </p>
             </div>
+
+            {isForgotOpen && (
+                <div className="modal-backdrop" onClick={closeForgotModal}>
+                    <div className="modal-content" style={{ maxWidth: '480px', padding: '20px' }} onClick={(e) => e.stopPropagation()}>
+                        <div className="auth-header" style={{ marginBottom: '16px' }}>
+                            <h2 style={{ fontSize: '1.5rem' }}>{t('forgot_password_title')}</h2>
+                            <p>{t('forgot_password_subtitle')}</p>
+                        </div>
+
+                        <form className="auth-form" onSubmit={handleForgotSubmit}>
+                            <div className="form-group">
+                                <label htmlFor="forgotEmail">{t('email_label')}</label>
+                                <div className="input-wrapper">
+                                    <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6ZM20 6L12 11L4 6H20ZM20 18H4V8L12 13L20 8V18Z" fill="currentColor" />
+                                    </svg>
+                                    <input
+                                        type="email"
+                                        id="forgotEmail"
+                                        name="forgotEmail"
+                                        value={forgotEmail}
+                                        onChange={(e) => setForgotEmail(e.target.value)}
+                                        placeholder={t('forgot_email_placeholder')}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            {forgotFeedback.error && <p className="error-message">{forgotFeedback.error}</p>}
+                            {forgotFeedback.success && <p className="auth-switch" style={{ color: 'var(--accent)' }}>{forgotFeedback.success}</p>}
+
+                            <div className="form-footer">
+                                <button type="button" className="auth-submit" style={{ background: 'rgba(255,255,255,0.08)', color: 'var(--white)' }} onClick={closeForgotModal}>
+                                    {t('close')}
+                                </button>
+                                <button type="submit" className="auth-submit" disabled={sendingReset}>
+                                    {sendingReset ? t('sending') : t('send_reset_link')}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

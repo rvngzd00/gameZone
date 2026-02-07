@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seka Oyunu</title>
+    <title data-i18n="title">Seka Game</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     <link rel="stylesheet" href="./Seka.css">
 
@@ -18,12 +18,12 @@
                 ←
             </button>
             <h1 class="game-header-text">
-                <img class="header-cards" src="./images/3tuzHeader.png" alt="Three aces cards">
+                <img class="header-cards" src="./images/3tuzHeader.png" alt="Three aces cards" data-i18n-attr="alt:headerAlt">
                 <span class="header-title">SEKA</span>
             </h1>
             <!-- <div class="header-subtitle">PROFESSIONAL CARD GAME</div> -->
             <div class="user-info">
-                <div><strong id="userName">Loading...</strong></div>
+                <!-- <div><strong id="userName">Loading...</strong></div> -->
                 <div class="balance"><span id="userBalance">0</span></div>
             </div>
         </div>
@@ -31,10 +31,67 @@
 
         <!-- ROOM LIST SECTION -->
         <div id="roomListSection" class="room-list-section">
-            <h2 style="color: #ffd700; margin: 10px 0 15px 10px">All Rooms</h2>
-            <div class="room-grid" id="roomGrid">
-                <div class="loading">
-                    <div class="spinner"></div>Rooms Loading...
+            <h2 style="color: #ffd700; margin: 10px 0 15px 10px" data-i18n="allRooms">All Rooms</h2>
+            <div class="room-grid" id="roomGrids">
+                <div class="loading loading--seka">
+                    <div class="seka-loader">
+                        <div class="table-surface" aria-hidden="true">
+                            <div class="felt-sheen"></div>
+                            <div class="felt-noise"></div>
+                            <div class="table-light"></div>
+                        </div>
+
+                        <div class="card-fan" aria-hidden="true">
+                            <div class="ace-card heart">
+                                <span class="corner">A</span>
+                                <span class="pip">♥</span>
+                                <span class="corner corner--br">A</span>
+                            </div>
+                            <div class="ace-card spade">
+                                <span class="corner">A</span>
+                                <span class="pip">♠</span>
+                                <span class="corner corner--br">A</span>
+                            </div>
+                            <div class="ace-card club">
+                                <span class="corner">A</span>
+                                <span class="pip">♣</span>
+                                <span class="corner corner--br">A</span>
+                            </div>
+                        </div>
+
+                        <div class="chip-tower chip-tower--left" aria-hidden="true">
+                            <span class="chip chip--ruby"></span>
+                            <span class="chip chip--gold"></span>
+                            <span class="chip chip--emerald"></span>
+                        </div>
+
+                        <div class="chip-tower chip-tower--right" aria-hidden="true">
+                            <span class="chip chip--platinum"></span>
+                            <span class="chip chip--ruby"></span>
+                        </div>
+
+                        <div class="cash-fan" aria-hidden="true">
+                            <div class="bill bill-1"></div>
+                            <div class="bill bill-2"></div>
+                            <div class="bill bill-3"></div>
+                        </div>
+
+                        <div class="coin-orbit" aria-hidden="true">
+                            <span class="coin coin--near"></span>
+                            <span class="coin coin--far"></span>
+                        </div>
+
+                        <div class="loader-brand">
+                            <span class="brand-label" data-i18n="sekaBrand">Seka</span>
+                        </div>
+
+                        <div class="loader-progress">
+                            <div class="progress-track" aria-hidden="true">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="loader-status" data-i18n="roomsLoading">Rooms loading...</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,7 +102,7 @@
                 <!-- <div>
                     <h2 class="room-name">Room: <span id="currentRoomName">-</span></h2>
                 </div> -->
-                <button class="btn btn-leave btn-top" id="leaveBtn">Exit</button>
+                <button class="btn btn-leave btn-top" id="leaveBtn" data-i18n="exit">Exit</button>
 
                 <!-- <div class="room-limit-info" id="roomLimitInfo">
                     POT LIMIT
@@ -55,8 +112,8 @@
             <!-- POKER TABLE -->
             <div class="poker-table" id="pokerTable">
                 <div class="table-center">
-                    <div class="pot-amount">POT: <span id="potAmount">0</span></div>
-                    <div class="current-bet" style="display: none;">Cari mərc: <span id="currentBetAmount">0</span>
+                    <div class="pot-amount"><span data-i18n="pot">POT:</span> <span id="potAmount">0</span></div>
+                    <div class="current-bet" style="display: none;"><span data-i18n="currentBet">Current bet:</span> <span id="currentBetAmount">0</span>
                     </div>
                 </div>
             </div>
@@ -108,7 +165,7 @@
                         font-weight: bold;
                         text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
                     ">
-                                Xal: 0
+                                <span data-i18n="score">Score:</span> 0
                             </div>
                             <!-- <div class="hand-cards" id="handCards"></div> -->
                         </div>
@@ -117,19 +174,19 @@
                 <div class="actions-overlay-inner">
                     <div class="overlay-top-row">
                         <button class="overlay-btn overlay-raise-display" id="raiseBtn" disabled>
-                            <div class="small-up">Raise </div>
+                            <div class="small-up" data-i18n="raise">Raise</div>
                             <div class="big-amount" id="raiseValue">0 </div>
                         </button>
 
                         <button class="overlay-btn overlay-confirm" id="callBtn" disabled>
                             <div class="check">✔</div>
-                            <div class="label">Call </div>
+                            <div class="label" data-i18n="call">Call</div>
                             <div class="small-amount" id="callAmount">0</div>
                         </button>
 
                         <button class="overlay-btn overlay-fold" id="foldBtn" disabled>
                             <div class="cross">✖ </div>
-                            <div class="label">Fold</div>
+                            <div class="label" data-i18n="fold">Fold</div>
                         </button>
                     </div>
 
@@ -139,8 +196,8 @@
                         <!-- <button class="overlay-sm-btn" id="overlayRaiseBtn">Raise</button> -->
 
                         <!-- </div> -->
-                        <button class="overlay-sm-btn" id="allInBtn" disabled>All-In 🔥</button>
-                        <button class="overlay-sm-btn" id="showdownCallBtn" disabled>Showdown</button>
+                        <button class="overlay-sm-btn" id="allInBtn" disabled data-i18n="allIn">All-In 🔥</button>
+                        <button class="overlay-sm-btn" id="showdownCallBtn" disabled data-i18n="showdown">Showdown</button>
                     </div>
 
                     <div class="overlay-slider-row">
@@ -159,7 +216,7 @@
             </div>
             <!-- PLAYERS LIST -->
             <div class="players-list" style="display: none;">
-                <h3>Oyunçular</h3>
+                <h3 data-i18n="players">Players</h3>
                 <div id="playersList"></div>
             </div>
         </div>
@@ -167,13 +224,13 @@
 
     <!-- ROOM TIMER BADGE -->
     <div class="room-timer-badge hidden" id="roomTimerBadge">
-        🕐 <span id="roomTimerValue">120</span>s
+        🕐 <span id="roomTimerValue">120</span><span data-i18n="secondsSuffix">s</span>
     </div>
 
     <!-- REDIRECT OVERLAY -->
     <div class="redirect-overlay" id="redirectOverlay">
         <div class="redirect-content">
-            <h2>🔄 Yönləndirmə</h2>
+            <h2 data-i18n="redirecting">🔄 Redirecting</h2>
             <p id="redirectMessage" style="color: #fff; font-size: 1.2rem;"></p>
             <div class="spinner"></div>
         </div>
@@ -184,6 +241,585 @@
 
 
     <script>
+        const I18N = {
+            en: {
+                title: "Seka Game",
+                headerAlt: "Three aces cards",
+                sekaBrand: "Seka",
+                loading: "Loading...",
+                allRooms: "All Rooms",
+                roomsLoading: "Rooms Loading...",
+                exit: "Exit",
+                pot: "POT:",
+                currentBet: "Current bet:",
+                score: "Score:",
+                raise: "Raise",
+                call: "Call",
+                fold: "Fold",
+                allIn: "All-In 🔥",
+                showdown: "Showdown",
+                players: "Players",
+                secondsSuffix: "s",
+                redirecting: "🔄 Redirecting",
+                sekaRoom: "Seka Room",
+                playersShort: "players",
+                roomPlayersLabel: "Players:",
+                betLabel: "Bet:",
+                betRangeLabel: "Bet Range:",
+                join: "Join",
+                full: "❌ Full",
+                noRooms: "No suitable rooms found",
+                maxPlayersLabel: "Max: {count} players",
+                limitPot: "POT LIMIT",
+                limitNo: "NO LIMIT",
+                maxBetLabel: "Max bet: {amount}",
+                roomSmall: "Small Room",
+                roomStandard: "Standard Room",
+                roomMedium: "Medium Room",
+                roomHigh: "High Room",
+                roomPremium: "Premium Room",
+                roomElite: "Elite Room",
+                roomVip: "VIP Room",
+                roomMaster: "Master Room",
+                roomChampion: "Champion Room",
+                gameStarted: "Game started",
+                waitingStart: "Waiting",
+                joinedRoom: "You joined the room!",
+                connectionError: "Connection error: {error}",
+                joinError: "Join error: {error}",
+                leaveError: "Leave error: {error}",
+                connectionNotReady: "Connection not ready",
+                leftRoom: "You left the room",
+                playerJoined: "{name} joined",
+                playerLeft: "{name} left",
+                gameStartedMsg: "Game started! 🎮",
+                cardsDealt: "Cards dealt!",
+                playerBet: "{name} {action}: {amount}₼",
+                betAction: "made a bet",
+                showdownCallAction: "made a showdown call",
+                playerRaised: "{name} raised: {amount}",
+                playerFolded: "{name} folded",
+                playerAllIn: "{name} ALL-IN! {amount}",
+                showdownStarting: "Showdown starting...",
+                showdownCallError: "Showdown Call error: {error}",
+                showdownError: "Showdown error: {error}",
+                timeUpAutoFold: "Your time is up! Auto-fold...",
+                enterValidAmount: "Enter a valid amount",
+                raiseRange: "Raise range: {min} - {max}",
+                leaveConfirm: "Are you sure you want to leave the room?",
+                allInConfirm: "Are you sure you want to go ALL-IN?",
+                foldError: "Fold error: {error}",
+                callError: "Call error: {error}",
+                raiseError: "Raise error: {error}",
+                allInError: "All-in error: {error}",
+                betError: "Bet error: {error}",
+                minBet: "Minimum bet: {amount}",
+                maxBet: "Maximum bet: {amount}",
+                waiting: "Waiting...",
+                youLabel: " (You)",
+                foldTag: "[FOLD]",
+                betShortLabel: "Bet",
+                handWaiting: "Waiting...",
+                winnerBannerTitle: "{name} WON!",
+                commissionLabel: "Commission: {amount}",
+                winnersLabel: "🎊 Winners: {names} 🎊",
+                eachWon: "Each won: {amount}",
+                winnerLabel: "🎊 Winner: {name} 🎊",
+                earningsLabel: "Winnings: {amount}",
+                commission20: "Commission (20%): {amount}",
+                callWithAmount: "CALL({amount}₼)",
+                callWithEntry: "Call({amount}₼)"
+            },
+            tr: {
+                title: "Seka Oyunu",
+                headerAlt: "Üç as kartı",
+                sekaBrand: "Seka",
+                loading: "Yükleniyor...",
+                allRooms: "Tüm Odalar",
+                roomsLoading: "Odalar yükleniyor...",
+                exit: "Çıkış",
+                pot: "POT:",
+                currentBet: "Güncel bahis:",
+                score: "Puan:",
+                raise: "Artır",
+                call: "Gör",
+                fold: "Pas",
+                allIn: "All-In 🔥",
+                showdown: "Showdown",
+                players: "Oyuncular",
+                secondsSuffix: "sn",
+                redirecting: "🔄 Yönlendiriliyor",
+                sekaRoom: "Seka Odası",
+                playersShort: "oyuncu",
+                roomPlayersLabel: "Oyuncular:",
+                betLabel: "Bahis:",
+                betRangeLabel: "Bahis Aralığı:",
+                join: "Katıl",
+                full: "❌ Dolu",
+                noRooms: "Uygun oda bulunamadı",
+                maxPlayersLabel: "Maks: {count} oyuncu",
+                limitPot: "POT LIMIT",
+                limitNo: "NO LIMIT",
+                maxBetLabel: "Maks bahis: {amount}",
+                roomSmall: "Küçük Oda",
+                roomStandard: "Standart Oda",
+                roomMedium: "Orta Oda",
+                roomHigh: "Yüksek Oda",
+                roomPremium: "Premium Oda",
+                roomElite: "Elit Oda",
+                roomVip: "VIP Oda",
+                roomMaster: "Master Oda",
+                roomChampion: "Şampiyon Oda",
+                gameStarted: "Oyun başladı",
+                waitingStart: "Bekliyor",
+                joinedRoom: "Odaya katıldınız!",
+                connectionError: "Bağlantı hatası: {error}",
+                joinError: "Katılma hatası: {error}",
+                leaveError: "Çıkış hatası: {error}",
+                connectionNotReady: "Bağlantı hazır değil",
+                leftRoom: "Odadan çıktınız",
+                playerJoined: "{name} katıldı",
+                playerLeft: "{name} çıktı",
+                gameStartedMsg: "Oyun başladı! 🎮",
+                cardsDealt: "Kartlar dağıtıldı!",
+                playerBet: "{name} {action}: {amount}₼",
+                betAction: "bahis yaptı",
+                showdownCallAction: "showdown çağrısı yaptı",
+                playerRaised: "{name} artırdı: {amount}",
+                playerFolded: "{name} pas geçti",
+                playerAllIn: "{name} ALL-IN! {amount}",
+                showdownStarting: "Showdown başlıyor...",
+                showdownCallError: "Showdown Call hatası: {error}",
+                showdownError: "Showdown hatası: {error}",
+                timeUpAutoFold: "Süreniz bitti! Otomatik pas...",
+                enterValidAmount: "Geçerli bir miktar girin",
+                raiseRange: "Artırma aralığı: {min} - {max}",
+                leaveConfirm: "Odadan çıkmak istediğinize emin misiniz?",
+                allInConfirm: "ALL-IN yapmak istediğinize emin misiniz?",
+                foldError: "Pas hatası: {error}",
+                callError: "Görme hatası: {error}",
+                raiseError: "Artırma hatası: {error}",
+                allInError: "All-in hatası: {error}",
+                betError: "Bahis hatası: {error}",
+                minBet: "Minimum bahis: {amount}",
+                maxBet: "Maksimum bahis: {amount}",
+                waiting: "Bekleniyor...",
+                youLabel: " (Siz)",
+                foldTag: "[PAS]",
+                betShortLabel: "Bahis",
+                handWaiting: "Bekleyin...",
+                winnerBannerTitle: "{name} KAZANDI!",
+                commissionLabel: "Komisyon: {amount}",
+                winnersLabel: "🎊 Kazananlar: {names} 🎊",
+                eachWon: "Kişi başı kazanç: {amount}",
+                winnerLabel: "🎊 Kazanan: {name} 🎊",
+                earningsLabel: "Kazanç: {amount}",
+                commission20: "Komisyon (20%): {amount}",
+                callWithAmount: "GÖR({amount}₼)",
+                callWithEntry: "Gör({amount}₼)"
+            },
+            hi: {
+                title: "सेका खेल",
+                headerAlt: "तीन इक्कों के पत्ते",
+                sekaBrand: "सेका",
+                loading: "लोड हो रहा है...",
+                allRooms: "सभी कमरे",
+                roomsLoading: "कमरे लोड हो रहे हैं...",
+                exit: "बाहर जाएं",
+                pot: "पॉट:",
+                currentBet: "वर्तमान दांव:",
+                score: "स्कोर:",
+                raise: "राइज़",
+                call: "कॉल",
+                fold: "फोल्ड",
+                allIn: "ऑल-इन 🔥",
+                showdown: "शोडाउन",
+                players: "खिलाड़ी",
+                secondsSuffix: "s",
+                redirecting: "🔄 रीडायरेक्ट हो रहा है",
+                sekaRoom: "सेका रूम",
+                playersShort: "खिलाड़ी",
+                roomPlayersLabel: "खिलाड़ी:",
+                betLabel: "दांव:",
+                betRangeLabel: "दांव सीमा:",
+                join: "जॉइन",
+                full: "❌ फुल",
+                noRooms: "उपयुक्त कमरे नहीं मिले",
+                maxPlayersLabel: "अधिकतम: {count} खिलाड़ी",
+                limitPot: "POT LIMIT",
+                limitNo: "NO LIMIT",
+                maxBetLabel: "अधिकतम दांव: {amount}",
+                roomSmall: "छोटा कमरा",
+                roomStandard: "मानक कमरा",
+                roomMedium: "मध्यम कमरा",
+                roomHigh: "उच्च कमरा",
+                roomPremium: "प्रीमियम कमरा",
+                roomElite: "एलीट कमरा",
+                roomVip: "वीआईपी कमरा",
+                roomMaster: "मास्टर कमरा",
+                roomChampion: "चैंपियन कमरा",
+                gameStarted: "खेल शुरू",
+                waitingStart: "प्रतीक्षा",
+                joinedRoom: "आप कमरे में शामिल हो गए!",
+                connectionError: "कनेक्शन त्रुटि: {error}",
+                joinError: "जॉइन त्रुटि: {error}",
+                leaveError: "निकास त्रुटि: {error}",
+                connectionNotReady: "कनेक्शन तैयार नहीं है",
+                leftRoom: "आप कमरे से निकल गए",
+                playerJoined: "{name} शामिल हुआ",
+                playerLeft: "{name} निकल गया",
+                gameStartedMsg: "खेल शुरू हुआ! 🎮",
+                cardsDealt: "कार्ड बांटे गए!",
+                playerBet: "{name} {action}: {amount}₼",
+                betAction: "ने दांव लगाया",
+                showdownCallAction: "ने शोडाउन कॉल किया",
+                playerRaised: "{name} ने राइज़ किया: {amount}",
+                playerFolded: "{name} ने फोल्ड किया",
+                playerAllIn: "{name} ऑल-इन! {amount}",
+                showdownStarting: "शोडाउन शुरू हो रहा है...",
+                showdownCallError: "शोडाउन कॉल त्रुटि: {error}",
+                showdownError: "शोडाउन त्रुटि: {error}",
+                timeUpAutoFold: "आपका समय समाप्त! ऑटो-फोल्ड...",
+                enterValidAmount: "मान्य राशि दर्ज करें",
+                raiseRange: "राइज़ सीमा: {min} - {max}",
+                leaveConfirm: "क्या आप वाकई कमरे से निकलना चाहते हैं?",
+                allInConfirm: "क्या आप वाकई ऑल-इन जाना चाहते हैं?",
+                foldError: "फोल्ड त्रुटि: {error}",
+                callError: "कॉल त्रुटि: {error}",
+                raiseError: "राइज़ त्रुटि: {error}",
+                allInError: "ऑल-इन त्रुटि: {error}",
+                betError: "दांव त्रुटि: {error}",
+                minBet: "न्यूनतम दांव: {amount}",
+                maxBet: "अधिकतम दांव: {amount}",
+                waiting: "प्रतीक्षा...",
+                youLabel: " (आप)",
+                foldTag: "[फोल्ड]",
+                betShortLabel: "दांव",
+                handWaiting: "कृपया प्रतीक्षा करें...",
+                winnerBannerTitle: "{name} जीत गया!",
+                commissionLabel: "कमीशन: {amount}",
+                winnersLabel: "🎊 विजेता: {names} 🎊",
+                eachWon: "प्रत्येक ने जीता: {amount}",
+                winnerLabel: "🎊 विजेता: {name} 🎊",
+                earningsLabel: "जीत: {amount}",
+                commission20: "कमीशन (20%): {amount}",
+                callWithAmount: "कॉल({amount}₼)",
+                callWithEntry: "कॉल({amount}₼)"
+            },
+            ru: {
+                title: "Игра Сека",
+                headerAlt: "Три туза",
+                sekaBrand: "Сека",
+                loading: "Загрузка...",
+                allRooms: "Все комнаты",
+                roomsLoading: "Комнаты загружаются...",
+                exit: "Выйти",
+                pot: "Пот:",
+                currentBet: "Текущая ставка:",
+                score: "Очки:",
+                raise: "Рейз",
+                call: "Колл",
+                fold: "Фолд",
+                allIn: "Олл-ин 🔥",
+                showdown: "Шоудаун",
+                players: "Игроки",
+                secondsSuffix: "с",
+                redirecting: "🔄 Перенаправление",
+                sekaRoom: "Комната Сека",
+                playersShort: "игроков",
+                roomPlayersLabel: "Игроки:",
+                betLabel: "Ставка:",
+                betRangeLabel: "Диапазон ставок:",
+                join: "Войти",
+                full: "❌ Полная",
+                noRooms: "Подходящих комнат не найдено",
+                maxPlayersLabel: "Макс: {count} игроков",
+                limitPot: "POT LIMIT",
+                limitNo: "NO LIMIT",
+                maxBetLabel: "Макс ставка: {amount}",
+                roomSmall: "Маленькая комната",
+                roomStandard: "Стандартная комната",
+                roomMedium: "Средняя комната",
+                roomHigh: "Высокая комната",
+                roomPremium: "Премиум комната",
+                roomElite: "Элитная комната",
+                roomVip: "VIP комната",
+                roomMaster: "Мастер комната",
+                roomChampion: "Чемпионская комната",
+                gameStarted: "Игра началась",
+                waitingStart: "Ожидание",
+                joinedRoom: "Вы вошли в комнату!",
+                connectionError: "Ошибка соединения: {error}",
+                joinError: "Ошибка входа: {error}",
+                leaveError: "Ошибка выхода: {error}",
+                connectionNotReady: "Соединение не готово",
+                leftRoom: "Вы вышли из комнаты",
+                playerJoined: "{name} присоединился",
+                playerLeft: "{name} вышел",
+                gameStartedMsg: "Игра началась! 🎮",
+                cardsDealt: "Карты розданы!",
+                playerBet: "{name} {action}: {amount}₼",
+                betAction: "сделал ставку",
+                showdownCallAction: "сделал шоудаун-колл",
+                playerRaised: "{name} поднял: {amount}",
+                playerFolded: "{name} сбросил",
+                playerAllIn: "{name} ОЛЛ-ИН! {amount}",
+                showdownStarting: "Шоудаун начинается...",
+                showdownCallError: "Ошибка Showdown Call: {error}",
+                showdownError: "Ошибка шоудауна: {error}",
+                timeUpAutoFold: "Время вышло! Авто-фолд...",
+                enterValidAmount: "Введите корректную сумму",
+                raiseRange: "Диапазон рейза: {min} - {max}",
+                leaveConfirm: "Вы уверены, что хотите выйти из комнаты?",
+                allInConfirm: "Вы уверены, что хотите пойти олл-ин?",
+                foldError: "Ошибка фолда: {error}",
+                callError: "Ошибка колла: {error}",
+                raiseError: "Ошибка рейза: {error}",
+                allInError: "Ошибка олл-ин: {error}",
+                betError: "Ошибка ставки: {error}",
+                minBet: "Минимальная ставка: {amount}",
+                maxBet: "Максимальная ставка: {amount}",
+                waiting: "Ожидание...",
+                youLabel: " (Вы)",
+                foldTag: "[ФОЛД]",
+                betShortLabel: "Ставка",
+                handWaiting: "Подождите...",
+                winnerBannerTitle: "{name} ПОБЕДИЛ!",
+                commissionLabel: "Комиссия: {amount}",
+                winnersLabel: "🎊 Победители: {names} 🎊",
+                eachWon: "Каждый выиграл: {amount}",
+                winnerLabel: "🎊 Победитель: {name} 🎊",
+                earningsLabel: "Выигрыш: {amount}",
+                commission20: "Комиссия (20%): {amount}",
+                callWithAmount: "КОЛЛ({amount}₼)",
+                callWithEntry: "Колл({amount}₼)"
+            },
+            ar: {
+                title: "لعبة سيكا",
+                headerAlt: "ثلاثة آسات",
+                sekaBrand: "سيكا",
+                loading: "جارٍ التحميل...",
+                allRooms: "كل الغرف",
+                roomsLoading: "يتم تحميل الغرف...",
+                exit: "خروج",
+                pot: "الوعاء:",
+                currentBet: "الرهان الحالي:",
+                score: "النقاط:",
+                raise: "رفع",
+                call: "مجاراة",
+                fold: "انسحاب",
+                allIn: "الكل في 🔥",
+                showdown: "المواجهة",
+                players: "اللاعبون",
+                secondsSuffix: "ث",
+                redirecting: "🔄 جارٍ إعادة التوجيه",
+                sekaRoom: "غرفة سيكا",
+                playersShort: "لاعب",
+                roomPlayersLabel: "اللاعبون:",
+                betLabel: "الرهان:",
+                betRangeLabel: "نطاق الرهان:",
+                join: "انضم",
+                full: "❌ ممتلئة",
+                noRooms: "لا توجد غرف مناسبة",
+                maxPlayersLabel: "الحد الأقصى: {count} لاعب",
+                limitPot: "حد الوعاء",
+                limitNo: "بدون حد",
+                maxBetLabel: "أقصى رهان: {amount}",
+                roomSmall: "غرفة صغيرة",
+                roomStandard: "غرفة قياسية",
+                roomMedium: "غرفة متوسطة",
+                roomHigh: "غرفة عالية",
+                roomPremium: "غرفة بريميوم",
+                roomElite: "غرفة نخبة",
+                roomVip: "غرفة كبار الشخصيات",
+                roomMaster: "غرفة ماستر",
+                roomChampion: "غرفة بطل",
+                gameStarted: "بدأت اللعبة",
+                waitingStart: "بانتظار",
+                joinedRoom: "لقد انضممت إلى الغرفة!",
+                connectionError: "خطأ اتصال: {error}",
+                joinError: "خطأ الانضمام: {error}",
+                leaveError: "خطأ الخروج: {error}",
+                connectionNotReady: "الاتصال غير جاهز",
+                leftRoom: "لقد غادرت الغرفة",
+                playerJoined: "{name} انضم",
+                playerLeft: "{name} غادر",
+                gameStartedMsg: "بدأت اللعبة! 🎮",
+                cardsDealt: "تم توزيع البطاقات!",
+                playerBet: "{name} {action}: {amount}₼",
+                betAction: "قام بالرهان",
+                showdownCallAction: "قام بنداء المواجهة",
+                playerRaised: "{name} رفع: {amount}",
+                playerFolded: "{name} انسحب",
+                playerAllIn: "{name} الكل في! {amount}",
+                showdownStarting: "تبدأ المواجهة...",
+                showdownCallError: "خطأ نداء المواجهة: {error}",
+                showdownError: "خطأ المواجهة: {error}",
+                timeUpAutoFold: "انتهى وقتك! انسحاب تلقائي...",
+                enterValidAmount: "أدخل مبلغًا صحيحًا",
+                raiseRange: "نطاق الرفع: {min} - {max}",
+                leaveConfirm: "هل أنت متأكد أنك تريد مغادرة الغرفة؟",
+                allInConfirm: "هل أنت متأكد أنك تريد الذهاب بكل الرصيد؟",
+                foldError: "خطأ الانسحاب: {error}",
+                callError: "خطأ المجاراة: {error}",
+                raiseError: "خطأ الرفع: {error}",
+                allInError: "خطأ الكل في: {error}",
+                betError: "خطأ الرهان: {error}",
+                minBet: "الحد الأدنى للرهان: {amount}",
+                maxBet: "الحد الأقصى للرهان: {amount}",
+                waiting: "بانتظار...",
+                youLabel: " (أنت)",
+                foldTag: "[انسحاب]",
+                betShortLabel: "رهان",
+                handWaiting: "يرجى الانتظار...",
+                winnerBannerTitle: "{name} فاز!",
+                commissionLabel: "العمولة: {amount}",
+                winnersLabel: "🎊 الفائزون: {names} 🎊",
+                eachWon: "ربح كل واحد: {amount}",
+                winnerLabel: "🎊 الفائز: {name} 🎊",
+                earningsLabel: "المكسب: {amount}",
+                commission20: "العمولة (20%): {amount}",
+                callWithAmount: "مجاراة({amount}₼)",
+                callWithEntry: "مجاراة({amount}₼)"
+            },
+            uz: {
+                title: "Seka o'yini",
+                headerAlt: "Uchta tuz",
+                sekaBrand: "Seka",
+                loading: "Yuklanmoqda...",
+                allRooms: "Barcha xonalar",
+                roomsLoading: "Xonalar yuklanmoqda...",
+                exit: "Chiqish",
+                pot: "POT:",
+                currentBet: "Joriy garov:",
+                score: "Ochko:",
+                raise: "Ko'tarish",
+                call: "Call",
+                fold: "Fold",
+                allIn: "All-In 🔥",
+                showdown: "Showdown",
+                players: "O'yinchilar",
+                secondsSuffix: "s",
+                redirecting: "🔄 Yo'naltirilmoqda",
+                sekaRoom: "Seka xonasi",
+                playersShort: "o'yinchi",
+                roomPlayersLabel: "O'yinchilar:",
+                betLabel: "Garov:",
+                betRangeLabel: "Garov oralig'i:",
+                join: "Qo'shilish",
+                full: "❌ To'la",
+                noRooms: "Mos xona topilmadi",
+                maxPlayersLabel: "Maks: {count} o'yinchi",
+                limitPot: "POT LIMIT",
+                limitNo: "NO LIMIT",
+                maxBetLabel: "Maks garov: {amount}",
+                roomSmall: "Kichik xona",
+                roomStandard: "Standart xona",
+                roomMedium: "O'rta xona",
+                roomHigh: "Yuqori xona",
+                roomPremium: "Premium xona",
+                roomElite: "Elit xona",
+                roomVip: "VIP xona",
+                roomMaster: "Master xona",
+                roomChampion: "Champion xona",
+                gameStarted: "O'yin boshlandi",
+                waitingStart: "Kutilmoqda",
+                joinedRoom: "Xonaga qo'shildingiz!",
+                connectionError: "Ulanish xatosi: {error}",
+                joinError: "Qo'shilish xatosi: {error}",
+                leaveError: "Chiqish xatosi: {error}",
+                connectionNotReady: "Ulanish tayyor emas",
+                leftRoom: "Xonadan chiqdingiz",
+                playerJoined: "{name} qo'shildi",
+                playerLeft: "{name} chiqdi",
+                gameStartedMsg: "O'yin boshlandi! 🎮",
+                cardsDealt: "Kartalar tarqatildi!",
+                playerBet: "{name} {action}: {amount}₼",
+                betAction: "garov qildi",
+                showdownCallAction: "showdown chaqirdi",
+                playerRaised: "{name} ko'tardi: {amount}",
+                playerFolded: "{name} fold qildi",
+                playerAllIn: "{name} ALL-IN! {amount}",
+                showdownStarting: "Showdown boshlanmoqda...",
+                showdownCallError: "Showdown Call xatosi: {error}",
+                showdownError: "Showdown xatosi: {error}",
+                timeUpAutoFold: "Vaqtingiz tugadi! Avto-fold...",
+                enterValidAmount: "To'g'ri miqdor kiriting",
+                raiseRange: "Ko'tarish oralig'i: {min} - {max}",
+                leaveConfirm: "Xonadan chiqishni xohlaysizmi?",
+                allInConfirm: "ALL-IN qilishni xohlaysizmi?",
+                foldError: "Fold xatosi: {error}",
+                callError: "Call xatosi: {error}",
+                raiseError: "Ko'tarish xatosi: {error}",
+                allInError: "All-in xatosi: {error}",
+                betError: "Garov xatosi: {error}",
+                minBet: "Minimal garov: {amount}",
+                maxBet: "Maksimal garov: {amount}",
+                waiting: "Kutilmoqda...",
+                youLabel: " (Siz)",
+                foldTag: "[FOLD]",
+                betShortLabel: "Garov",
+                handWaiting: "Iltimos kuting...",
+                winnerBannerTitle: "{name} YUTDI!",
+                commissionLabel: "Komissiya: {amount}",
+                winnersLabel: "🎊 G'oliblar: {names} 🎊",
+                eachWon: "Har biri yutdi: {amount}",
+                winnerLabel: "🎊 G'olib: {name} 🎊",
+                earningsLabel: "Yutuq: {amount}",
+                commission20: "Komissiya (20%): {amount}",
+                callWithAmount: "CALL({amount}₼)",
+                callWithEntry: "Call({amount}₼)"
+            }
+        };
+
+        let currentLanguage = "en";
+
+        function normalizeLanguage(lang) {
+            if (!lang) return "en";
+            const value = String(lang).toLowerCase();
+            if (value.startsWith("tr") || value.includes("turkish") || value.includes("türk")) return "tr";
+            if (value.startsWith("hi") || value.startsWith("in") || value.includes("hindi") || value.includes("indian")) return "hi";
+            if (value.startsWith("ru") || value.includes("russian")) return "ru";
+            if (value.startsWith("ar") || value.includes("arabic")) return "ar";
+            if (value.startsWith("uz") || value.includes("uzbek")) return "uz";
+            if (value.startsWith("en") || value.includes("english")) return "en";
+            return "en";
+        }
+
+        function t(key, vars = {}) {
+            const dict = I18N[currentLanguage] || I18N.en;
+            const template = dict[key] || I18N.en[key] || key;
+            return template.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ""));
+        }
+
+        function applyStaticTranslations() {
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                const key = el.getAttribute("data-i18n");
+                if (key) el.textContent = t(key);
+            });
+
+            document.querySelectorAll("[data-i18n-attr]").forEach(el => {
+                const raw = el.getAttribute("data-i18n-attr");
+                if (!raw) return;
+                raw.split(";").forEach(pair => {
+                    const [attr, key] = pair.split(":").map(s => s && s.trim());
+                    if (!attr || !key) return;
+                    el.setAttribute(attr, t(key));
+                });
+            });
+        }
+
+        function setLanguage(langInput) {
+            currentLanguage = normalizeLanguage(langInput);
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = currentLanguage === "ar" ? "rtl" : "ltr";
+
+            applyStaticTranslations();
+            // const userNameEl = document.getElementById("userName");
+            // if (userNameEl && !currentUserData) userNameEl.textContent = t('loading');
+            if (typeof loadRoomList === "function") loadRoomList();
+            if (typeof displayHand === "function") displayHand();
+        }
 
 
         let currentUserToken = null;
@@ -193,6 +829,11 @@
 
         window.addEventListener('message', (event) => {
             console.log('📨 [SEKA] Message alındı:', event.data);
+
+            const incomingLanguage = event?.data?.payload?.language;
+            if (incomingLanguage) {
+                setLanguage(incomingLanguage);
+            }
 
             if (event.data && event.data.type === 'INIT_USER') {
                 console.log('✅ [SEKA] INIT_USER qəbul edildi');
@@ -204,7 +845,7 @@
                 console.log('🎫 [SEKA] Token:', currentUserToken ? 'VAR' : 'YOX');
 
                 // UI-ı yenilə
-                document.getElementById('userName').textContent = currentUserData.username;
+                // document.getElementById('userName').textContent = currentUserData.username;
                 document.getElementById('userBalance').textContent = currentUserData.balance.toFixed(2);
 
                 console.log('🚀 [SEKA] initializeSignalR() çağırılır...');
@@ -224,6 +865,7 @@
         // ✅ Əvəzinə bunu əlavə et:
         document.addEventListener('DOMContentLoaded', () => {
             console.log('📄 [SEKA] DOM loaded');
+            setLanguage(currentLanguage);
             setupEventListeners();
             console.log('✅ [SEKA] Event listeners quruldu, user data gözlənilir...');
         });
@@ -282,9 +924,9 @@
                 callBtn.disabled = !gameState.canCall;
                 callBtn.style.opacity = gameState.canCall ? '1' : '0.5';
                 if (gameState.canCall && gameState.callAmount > 0) {
-                    callBtn.innerHTML = `CALL(${gameState.callAmount.toFixed(2)}₼)`;
+                    callBtn.innerHTML = t('callWithAmount', { amount: gameState.callAmount.toFixed(2) });
                 } else {
-                    callBtn.innerHTML = `Call(${gameState.entryFee.toFixed(2)}₼)`;
+                    callBtn.innerHTML = t('callWithEntry', { amount: gameState.entryFee.toFixed(2) });
                 }
             }
 
@@ -401,7 +1043,7 @@
 
             } catch (error) {
                 console.error("❌ SignalR error:", error);
-                showMessage("Bağlantı xətası: " + error.message, "error");
+                showMessage(t('connectionError', { error: error.message }), "error");
 
                 // ✅ YENİDƏN CƏHD ET
                 setTimeout(() => initializeSignalR(), 3000);
@@ -422,9 +1064,9 @@
             connection.on("UserData", (data) => {
                 currentUserId = data.userId;
                 myBalance = data.balance;
-                const userNameEl = document.getElementById('userName');
+                // const userNameEl = document.getElementById('userName');
                 const userBalanceEl = document.getElementById('userBalance');
-                if (userNameEl) userNameEl.textContent = data.username;
+                // if (userNameEl) userNameEl.textContent = data.username;
                 if (userBalanceEl) userBalanceEl.textContent = data.balance.toFixed(2);
                 console.log('✅ UserData received:', data);
             });
@@ -483,7 +1125,7 @@
                 }
 
 
-                showMessage("Otağa qoşuldunuz!", "success");
+                showMessage(t('joinedRoom'), "success");
             });
 
             connection.on("RoomStartTimer", (remainingSeconds) => {
@@ -514,12 +1156,12 @@
             connection.on("LeaveError", (message) => showMessage(message, "error"));
 
             connection.on("PlayerJoined", (playerName) => {
-                showMessage(playerName + " qoşuldu", "info");
+                showMessage(t('playerJoined', { name: playerName }), "info");
                 loadRoomList();
             });
 
             connection.on("PlayerLeft", (playerName) => {
-                showMessage(playerName + " çıxdı", "info");
+                showMessage(t('playerLeft', { name: playerName }), "info");
                 loadRoomList();
             });
 
@@ -582,7 +1224,7 @@
             connection.on("GameStarted", () => {
                 const badge = document.getElementById('roomTimerBadge');
                 if (badge) badge.classList.add('hidden');
-                showMessage("Oyun başladı! 🎮", "success");
+                showMessage(t('gameStartedMsg'), "success");
                 resetGameUI();
                 raiseCount = 0;
                 lastRaiserId = 0;
@@ -591,7 +1233,7 @@
             connection.on("CardsDealt", (data) => {
                 myHand = data.hand;
                 displayHand();
-                showMessage("Kartlar paylandı!", "info");
+                showMessage(t('cardsDealt'), "info");
             });
 
             connection.on("PlayerBet", (data) => {
@@ -612,24 +1254,29 @@
                 }
 
                 // ✅ OYUNCU BET İNFOSU
-                const message = `${data.playerName} ${data.isShowdownCall ? '⭐ ShowdownCall' : 'Bet'} etti: ${data.amount.toFixed(2)}₼`;
+                const actionKey = data.isShowdownCall ? 'showdownCallAction' : 'betAction';
+                const message = t('playerBet', {
+                    name: data.playerName,
+                    action: t(actionKey),
+                    amount: data.amount.toFixed(2)
+                });
                 showMessage(message, "info");
 
                 console.log('💰 Pot şimdi: ' + potAmount.toFixed(2) + '₼');
             });
 
             connection.on("PlayerRaised", (data) => {
-                showMessage(`${data.playerName} raise etdi: ${data.amount.toFixed(2)}`, "info");
+                showMessage(t('playerRaised', { name: data.playerName, amount: data.amount.toFixed(2) }), "info");
                 raiseCount++;
                 lastRaiserId = data.userId;
             });
 
             connection.on("PlayerFolded", (playerName) => {
-                showMessage(`${playerName} fold etdi`, "info");
+                showMessage(t('playerFolded', { name: playerName }), "info");
             });
 
             connection.on("PlayerAllIn", (playerName, amount) => {
-                showMessage(`${playerName} ALL-IN! ${amount.toFixed(2)}`, "success");
+                showMessage(t('playerAllIn', { name: playerName, amount: amount.toFixed(2) }), "success");
             });
 
             connection.on("BetError", (message) => showMessage(message, "error"));
@@ -638,7 +1285,7 @@
             connection.on("RaiseError", (message) => showMessage(message, "error"));
 
             connection.on("ShowdownStart", (players) => showShowdown(players));
-            connection.on("ShowdownRequested", () => showMessage("Showdown başlayır...", "info"));
+            connection.on("ShowdownRequested", () => showMessage(t('showdownStarting'), "info"));
             connection.on("ShowdownCallMade", (data) => showMessage(data.message, "success"));
             connection.on("ForceShowdown", (data) => showMessage(data.message, "info"));
             connection.on("GameOver", (data) => handleGameOver(data));
@@ -661,7 +1308,7 @@
                 document.getElementsByClassName("header")[0].style.display = 'flex';
 
                 loadRoomList();
-                showMessage("Otaqdan çıxdınız", "info");
+                showMessage(t('leftRoom'), "info");
             });
 
             connection.on("PlayerEmoji", (data) => showFloatingEmoji(data.userId, data.emoji));
@@ -695,7 +1342,7 @@
 
                 const scoreDisplay = document.getElementById('handScore');
                 if (scoreDisplay && state.myHandScore > 0) {
-                    scoreDisplay.textContent = 'Xal: ' + state.myHandScore;
+                    scoreDisplay.textContent = `${t('score')} ${state.myHandScore}`;
                     scoreDisplay.style.display = 'block';
                 }
 
@@ -738,25 +1385,25 @@
                 console.log('📋 Loading quick join buttons...');
 
                 const templates = [
-                    { fee: 0.20, name: "Kiçik Otaq", maxPlayers: 5, isPotLimit: true },
-                    { fee: 0.50, name: "Standart Otaq", maxPlayers: 5, isPotLimit: true },
-                    { fee: 1.00, name: "Orta Otaq", maxPlayers: 5, isPotLimit: true },
-                    { fee: 2.00, name: "Yüksək Otaq", maxPlayers: 5, isPotLimit: false },
-                    { fee: 5.00, name: "Premium Otaq", maxPlayers: 5, isPotLimit: false },
-                    { fee: 10.00, name: "Elit Otaq", maxPlayers: 5, isPotLimit: false },
-                    { fee: 20.00, name: "Vip Otaq", maxPlayers: 5, isPotLimit: false },
-                    { fee: 50.00, name: "Master Otaq", maxPlayers: 5, isPotLimit: false },
-                    { fee: 100.00, name: "Champion Otaq", maxPlayers: 5, isPotLimit: false }
+                    { fee: 0.20, nameKey: "roomSmall", maxPlayers: 5, isPotLimit: true },
+                    { fee: 0.50, nameKey: "roomStandard", maxPlayers: 5, isPotLimit: true },
+                    { fee: 1.00, nameKey: "roomMedium", maxPlayers: 5, isPotLimit: true },
+                    { fee: 2.00, nameKey: "roomHigh", maxPlayers: 5, isPotLimit: false },
+                    { fee: 5.00, nameKey: "roomPremium", maxPlayers: 5, isPotLimit: false },
+                    { fee: 10.00, nameKey: "roomElite", maxPlayers: 5, isPotLimit: false },
+                    { fee: 20.00, nameKey: "roomVip", maxPlayers: 5, isPotLimit: false },
+                    { fee: 50.00, nameKey: "roomMaster", maxPlayers: 5, isPotLimit: false },
+                    { fee: 100.00, nameKey: "roomChampion", maxPlayers: 5, isPotLimit: false }
                 ];
 
-                grid.innerHTML = templates.map(t => `
-            <div class="quick-join-btn" onclick="quickJoin(${t.fee}, ${t.isPotLimit})">
-                <div class="name">${t.name}</div>
-                <div class="fee">${t.fee.toFixed(2)}</div>
-                <div class="players">Max: ${t.maxPlayers} oyunçu</div>
-                <div class="limit-type">${t.isPotLimit ? 'POT LIMIT' : 'NO LIMIT'}</div>
+                grid.innerHTML = templates.map(item => `
+            <div class="quick-join-btn" onclick="quickJoin(${item.fee}, ${item.isPotLimit})">
+                <div class="name">${t(item.nameKey)}</div>
+                <div class="fee">${item.fee.toFixed(2)}</div>
+                <div class="players">${t('maxPlayersLabel', { count: item.maxPlayers })}</div>
+                <div class="limit-type">${item.isPotLimit ? t('limitPot') : t('limitNo')}</div>
                 <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">
-                    Max bet: ${(t.fee * 20).toFixed(2)}
+                    ${t('maxBetLabel', { amount: (item.fee * 20).toFixed(2) })}
                 </div>
             </div>
         `).join('');
@@ -770,7 +1417,7 @@
             try {
                 await connection.invoke("QuickJoin", entryFee, isPotLimit);
             } catch (error) {
-                showMessage("Qoşulma xətası: " + error.message, "error");
+                showMessage(t('joinError', { error: error.message }), "error");
             }
         }
 
@@ -799,19 +1446,19 @@
                 // <div class="room-avatar">${('R').charAt(0).toUpperCase()}</div>
                 // <div class="limit-badge">NO LIMIT</div>
                 grid.innerHTML = filteredRooms.length === 0
-                    ? '<div class="loading">Uyğun otaq tapılmadı</div>'
+                    ? `<div class="loading">${t('noRooms')}</div>`
                     : filteredRooms.map(room => `
                 <div class="room-card ${room.isFull ? 'full' : ''}">
 
                     <div class="room-top">
                         <div style="flex:1">
-                            <h3 class="room-title">Seka Room</h3>
-                            <div class="room-sub">${room.maxPlayers} oyunçu • ${room.isGameStarted ? 'Oyun başladı' : 'Gözləyir'}</div>
+                            <h3 class="room-title">${t('sekaRoom')}</h3>
+                            <div class="room-sub">${room.maxPlayers} ${t('playersShort')} • ${room.isGameStarted ? t('gameStarted') : t('waitingStart')}</div>
                         </div>
                     </div>
 
                     <div class="room-info">
-                        <span>Oyunçular:</span>
+                        <span>${t('roomPlayersLabel')}</span>
                         <span class="room-players">${room.playerCount}/${room.maxPlayers}</span>
                     </div>
 
@@ -820,11 +1467,11 @@
                     </div>
 
                     <div class="room-info" style="margin-top:10px;">
-                        <span>Bet:</span>
+                        <span>${t('betLabel')}</span>
                         <span class="room-entry">${room.entryFee.toFixed(2)}</span>
                     </div>
                     <div class="room-info" style="margin-top:10px;">
-                        <span>Bahis Aralığı:</span>
+                        <span>${t('betRangeLabel')}</span>
                         <span class="room-entry">${(room.entryFee * 20).toFixed(2)} - ${(room.entryFee * 100).toFixed(2)}</span>
                     </div>
 
@@ -832,7 +1479,7 @@
 
                         <div style="flex:1;text-align:right;">
                             <button class="join-btn" onclick="joinRoom('${room.roomId}')" ${room.isFull || room.isGameStarted ? 'disabled' : ''}>
-                                ${room.isFull ? '❌ Dolu' : 'Qoşul'}
+                                ${room.isFull ? t('full') : t('join')}
                                 </button>
                                 </div>
                                 </div>
@@ -851,25 +1498,25 @@
         async function joinRoom(roomId) {
             try {
                 if (!connection || connection.state !== signalR.HubConnectionState.Connected) {
-                    showMessage("Bağlantı hazır deyil", "error");
+                    showMessage(t('connectionNotReady'), "error");
                     return;
                 }
                 await connection.invoke("JoinRoom", roomId, null);
             } catch (error) {
-                showMessage("Qoşulma xətası: " + error.message, "error");
+                showMessage(t('joinError', { error: error.message }), "error");
             }
         }
 
         async function leaveRoom() {
-            if (!currentRoomId || !confirm("Otaqdan çıxmak istədiyinizdən əminsiniz?")) return;
+            if (!currentRoomId || !confirm(t('leaveConfirm'))) return;
             try {
                 if (!connection || connection.state !== signalR.HubConnectionState.Connected) {
-                    showMessage("Bağlantı hazır deyil", "error");
+                    showMessage(t('connectionNotReady'), "error");
                     return;
                 }
                 await connection.invoke("LeaveRoom");
             } catch (error) {
-                showMessage("Çıxma xətası: " + error.message, "error");
+                showMessage(t('leaveError', { error: error.message }), "error");
             }
         }
         // ==================== GAME ACTIONS ====================
@@ -879,7 +1526,7 @@
                 await connection.invoke("Fold");
                 stopTurnTimer();
             } catch (error) {
-                showMessage("Fold xətası: " + error.message, "error");
+                showMessage(t('foldError', { error: error.message }), "error");
             }
         }
 
@@ -889,7 +1536,7 @@
                 await connection.invoke("Call");
                 stopTurnTimer();
             } catch (error) {
-                showMessage("Call xətası: " + error.message, "error");
+                showMessage(t('callError', { error: error.message }), "error");
             }
         }
 
@@ -898,7 +1545,7 @@
             const amount = parseFloat(slider.value);
 
             if (!amount || amount <= 0) {
-                showMessage("Düzgün məbləğ daxil edin", "error");
+                showMessage(t('enterValidAmount'), "error");
                 return;
             }
 
@@ -906,7 +1553,7 @@
             let maxRaise = roomLimitType === 'PotLimit' ? Math.min(potAmount + currentGameBet, myBalance) : myBalance;
 
             if (amount < minRaise || amount > maxRaise) {
-                showMessage(`Raise aralığı: ${minRaise.toFixed(2)} - ${maxRaise.toFixed(2)}`, "error");
+                showMessage(t('raiseRange', { min: minRaise.toFixed(2), max: maxRaise.toFixed(2) }), "error");
                 return;
             }
 
@@ -916,18 +1563,18 @@
                 slider.value = slider.min;
                 stopTurnTimer();
             } catch (error) {
-                showMessage("Raise xətası: " + error.message, "error");
+                showMessage(t('raiseError', { error: error.message }), "error");
             }
         }
 
         async function allIn() {
-            if (confirm("ALL-IN etmək istədiyinizdən əminsiniz?")) {
+            if (confirm(t('allInConfirm'))) {
                 try {
                     if (!connection || connection.state !== signalR.HubConnectionState.Connected) return;
                     await connection.invoke("AllIn");
                     stopTurnTimer();
                 } catch (error) {
-                    showMessage("All-in xətası: " + error.message, "error");
+                    showMessage(t('allInError', { error: error.message }), "error");
                 }
             }
         }
@@ -938,7 +1585,7 @@
                 await connection.invoke("ShowdownCall");
                 stopTurnTimer();
             } catch (error) {
-                showMessage("Showdown Call xətası: " + error.message, "error");
+                showMessage(t('showdownCallError', { error: error.message }), "error");
             }
         }
 
@@ -947,7 +1594,7 @@
                 await connection.invoke("RequestShowdown");
                 stopTurnTimer();
             } catch (error) {
-                showMessage("Showdown xətası: " + error.message, "error");
+                showMessage(t('showdownError', { error: error.message }), "error");
             }
         }
 
@@ -974,7 +1621,7 @@
                     stopTurnTimer();
                     // Avtomatik fold
                     if (currentTurnUserId === currentUserId) {
-                        showMessage("Vaxtınız bitdi! Avtomatik fold...", "error");
+                        showMessage(t('timeUpAutoFold'), "error");
                         fold(); // Avtomatik fold funksiyasını çağır
                     }
                 }
@@ -1043,12 +1690,12 @@
             const amount = parseFloat(slider.value);
 
             if (amount < roomEntryFee) {
-                showMessage(`Minimum bet: ${roomEntryFee.toFixed(2)}`, "error");
+                showMessage(t('minBet', { amount: roomEntryFee.toFixed(2) }), "error");
                 return;
             }
 
             if (amount > roomEntryFee * 20) {
-                showMessage(`Maksimum bet: ${(roomEntryFee * 20).toFixed(2)}`, "error");
+                showMessage(t('maxBet', { amount: (roomEntryFee * 20).toFixed(2) }), "error");
                 return;
             }
 
@@ -1056,7 +1703,7 @@
                 await connection.invoke("Bet", amount);
                 stopTurnTimer();
             } catch (error) {
-                showMessage("Bet xətası: " + error.message, "error");
+                showMessage(t('betError', { error: error.message }), "error");
             }
         }
         // ==================== SLIDER LIMITS ====================
@@ -1154,7 +1801,7 @@
     `).join('');
 
             if (scoreDisplay) {
-                scoreDisplay.textContent = `Xal: ${handScore}`;
+                scoreDisplay.textContent = `${t('score')} ${handScore}`;
                 scoreDisplay.style.display = 'block';
             }
 
@@ -1261,13 +1908,13 @@
         <div class="player-item">
             <div>
                 <strong style="color: ${p.userId === currentUserId ? '#ffd700' : '#fff'};">
-                    ${p.name}${p.userId === currentUserId ? ' (Siz)' : ''}
+                    ${p.name}${p.userId === currentUserId ? t('youLabel') : ''}
                 </strong>
-                ${p.hasFolded ? ' <span style="color: #dc2626;">[FOLD]</span>' : ''}
+                ${p.hasFolded ? ` <span style="color: #dc2626;">${t('foldTag')}</span>` : ''}
             </div>
             <div>
                 <span style="color: #4ade80;">${p.balance.toFixed(2)}</span>
-                ${p.currentBet > 0 ? `<span style="color: #ffd700;"> | Mərc: ${p.currentBet.toFixed(2)}</span>` : ''}
+                ${p.currentBet > 0 ? `<span style="color: #ffd700;"> | ${t('betShortLabel')}: ${p.currentBet.toFixed(2)}</span>` : ''}
             </div>
                 </div>
         `).join('');
@@ -1337,7 +1984,7 @@
                 border-radius: 8px;
             ">
                 ${playerData.handValue.handName}<br>
-                Xal: ${playerData.handScore}
+                ${t('score')} ${playerData.handScore}
             </div>
         `;
 
@@ -1420,7 +2067,7 @@
             banner.innerHTML = `
         <div style="font-size: 3rem; margin-bottom: 20px;">🏆</div>
         <div style="font-size: 2.5rem; font-weight: bold; color: #000; margin-bottom: 15px;">
-            ${data.winnerName} QAZANDI!
+            ${t('winnerBannerTitle', { name: data.winnerName })}
         </div>
         <div style="font-size: 2rem; color: #1a1a1a; margin-bottom: 10px;">
             ${data.amount.toFixed(2)}
@@ -1429,7 +2076,7 @@
             ${data.reason}
         </div>
         <div style="font-size: 0.9rem; color: #666; margin-top: 10px;">
-            Komissiya: ${data.commission.toFixed(2)}
+            ${t('commissionLabel', { amount: data.commission.toFixed(2) })}
         </div>
     `;
 
@@ -1638,7 +2285,7 @@
                         <div class="player-avatar" style="opacity: 0.3; cursor: default; background: rgba(255, 255, 255, 0.1);">
                             ?
                         </div>
-                        <div class="player-name" style="color: #64748b; font-style: italic;">Waiting...</div>
+                        <div class="player-name" style="color: #64748b; font-style: italic;">${t('waiting')}</div>
                     </div>
                 </div>
             `;
@@ -1661,7 +2308,7 @@
                             `).join('')}
                         </div>
                         <div style="color: #ffd700; font-size: 0.85rem; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);">
-                            Xal: ${handScore}
+                            ${t('score')} ${handScore}
                         </div>
                     </div>
                 `;
@@ -1760,10 +2407,10 @@
                 <div class="showdown-player-header">
                     <div class="showdown-player-name">${p.name}</div>
                     <div style="font-size: 1.5rem; color: #ffd700;">
-                        Xal: ${handScore}
+                        ${t('score')} ${handScore}
                     </div>
                 </div>
-                <div class="showdown-hand-name">${p.handValue?.rank || 'Gözləyin...'}</div>
+                <div class="showdown-hand-name">${p.handValue?.rank || t('handWaiting')}</div>
                 <div class="showdown-cards">
                     ${p.hand.map(card => `
                         <div class="showdown-card ${getSuitClass(card.suit)}">
@@ -1812,7 +2459,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <div class="showdown-hand-name">${p.handName}</div>
                         <div style="font-size: 1.3rem; color: #ffd700; font-weight: bold;">
-                            Xal: ${handScore}
+                            ${t('score')} ${handScore}
                         </div>
                     </div>
                     <div class="showdown-cards">
@@ -1830,15 +2477,15 @@
 
             if (data.winners) {
                 winnerDiv.innerHTML = `
-            🎊 Qaliblər: ${data.winners.join(', ')} 🎊<br>
-            Hər biri qazandı: ${data.amount.toFixed(2)}
-            <div class="commission-info">Komissiya (20%): ${data.commission.toFixed(2)}</div>
+            ${t('winnersLabel', { names: data.winners.join(', ') })}<br>
+            ${t('eachWon', { amount: data.amount.toFixed(2) })}
+            <div class="commission-info">${t('commission20', { amount: data.commission.toFixed(2) })}</div>
         `;
             } else {
                 winnerDiv.innerHTML = `
-            🎊 Qalib: ${data.winner} 🎊<br>
-            Qazanc: ${data.amount.toFixed(2)}
-            <div class="commission-info">Komissiya (20%): ${data.commission.toFixed(2)}</div>
+            ${t('winnerLabel', { name: data.winner })}<br>
+            ${t('earningsLabel', { amount: data.amount.toFixed(2) })}
+            <div class="commission-info">${t('commission20', { amount: data.commission.toFixed(2) })}</div>
         `;
             }
 

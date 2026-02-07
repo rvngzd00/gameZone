@@ -1,15 +1,76 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Durak - Kart Oyunu</title>
+    <title>Durak - Card Game</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     <link rel="stylesheet" href="./Durak.css">
 </head>
 
 <body>
+    <!-- Luxe casino-style loading screen -->
+    <div id="durakLoader" class="durak-loader">
+        <div class="loader-inner">
+            <div class="loader-title" data-i18n="loader_title">DURAK</div>
+            <div class="loader-subtitle" data-i18n="loader_subtitle">Shuffling decks • Seating players</div>
+            <div class="loader-table">
+                <div class="loader-card-fan">
+                    <div class="loader-card loader-card-red">
+                        <div class="loader-card-corner top-left">
+                            <span class="rank">A</span>
+                            <span class="suit">♥</span>
+                        </div>
+                        <div class="loader-card-center">♥</div>
+                        <div class="loader-card-corner bottom-right">
+                            <span class="rank">A</span>
+                            <span class="suit">♥</span>
+                        </div>
+                    </div>
+                    <div class="loader-card loader-card-black">
+                        <div class="loader-card-corner top-left">
+                            <span class="rank">K</span>
+                            <span class="suit">♠</span>
+                        </div>
+                        <div class="loader-card-center">♠</div>
+                        <div class="loader-card-corner bottom-right">
+                            <span class="rank">K</span>
+                            <span class="suit">♠</span>
+                        </div>
+                    </div>
+                    <div class="loader-card loader-card-red">
+                        <div class="loader-card-corner top-left">
+                            <span class="rank">Q</span>
+                            <span class="suit">♦</span>
+                        </div>
+                        <div class="loader-card-center">♦</div>
+                        <div class="loader-card-corner bottom-right">
+                            <span class="rank">Q</span>
+                            <span class="suit">♦</span>
+                        </div>
+                    </div>
+                    <div class="loader-card loader-card-black">
+                        <div class="loader-card-corner top-left">
+                            <span class="rank">J</span>
+                            <span class="suit">♣</span>
+                        </div>
+                        <div class="loader-card-center">♣</div>
+                        <div class="loader-card-corner bottom-right">
+                            <span class="rank">J</span>
+                            <span class="suit">♣</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="loader-progress"></div>
+            <div class="loader-ticker">
+                <span class="pulse-dot"></span>
+                <span data-i18n="loader_status">Game is loading...</span>
+            </div>
+        </div>
+    </div>
+
     <div class="messages" id="messages"></div>
 
     <div class="container">
@@ -17,7 +78,7 @@
             <button class="back-btn" onclick="backToGames()">
                 ←
             </button>
-            <h1 class="header-title">DURAK</h1>
+            <h1 class="header-title" data-i18n="header_title">DURAK</h1>
             <div class="user-info" id="userInfo">
                 <span id="userBalance">0</span>
             </div>
@@ -30,26 +91,26 @@
                 <div class="player-options">
                     <div class="player-option" data-count="2" onclick="selectPlayerCount(2)">
                         <div class="player-count">2</div>
-                        <div class="player-label">Oyunçu</div>
+                        <div class="player-label" data-i18n="player_label">Player</div>
                     </div>
                     <div class="player-option" data-count="3" onclick="selectPlayerCount(3)">
                         <div class="player-count">3</div>
-                        <div class="player-label">Oyunçu</div>
+                        <div class="player-label" data-i18n="player_label">Player</div>
                     </div>
                     <div class="player-option" data-count="4" onclick="selectPlayerCount(4)">
                         <div class="player-count">4</div>
-                        <div class="player-label">Oyunçu</div>
+                        <div class="player-label" data-i18n="player_label">Player</div>
                     </div>
                     <div class="player-option" data-count="6" onclick="selectPlayerCount(6)">
                         <div class="player-count">6</div>
-                        <div class="player-label">Oyunçu</div>
+                        <div class="player-label" data-i18n="player_label">Player</div>
                     </div>
                 </div>
             </div>
 
             <!-- Room options panel (deck size, bet, modes, start) -->
             <div class="room-options-panel" id="roomOptionsPanel" style="display:none;">
-                <h2>Otaq Parametrləri</h2>
+                <h2 data-i18n="room_options_title">Room Settings</h2>
                 <div class="deck-size-row">
                     <div class="deck-pill" data-size="24" onclick="toggleDeckSize(24)">24</div>
                     <div class="deck-pill selected" data-size="36" onclick="toggleDeckSize(36)">36</div>
@@ -57,7 +118,7 @@
                 </div>
 
                 <div class="bet-row">
-                    <label>Bet seçimi</label>
+                    <label data-i18n="bet_label">Bet Selection</label>
                     <div class="bet-presets">
                         <button class="bet-btn" onclick="selectBet(0.2)">0.2</button>
                         <button class="bet-btn" onclick="selectBet(0.5)">0.5</button>
@@ -72,43 +133,44 @@
                 </div>
 
                 <div class="modes-row">
-                    <label>Oyun rejimləri</label>
+                    <label data-i18n="modes_label">Game Modes</label>
                     <div class="modes-grid">
                         <div class="mode-col">
                             <!-- <div class="mode-title">Sütun 1</div> -->
                             <div class="mode-card selected" data-col="1" data-value="atilan"
-                                onclick="selectMode(1,'atilan')">atılan</div>
-                            <div class="mode-card" data-col="1" data-value="pas" onclick="selectMode(1,'pas')">pas</div>
+                                onclick="selectMode(1,'atilan')" data-i18n="mode_atilan">Discarded</div>
+                            <div class="mode-card" data-col="1" data-value="pas" onclick="selectMode(1,'pas')"
+                                data-i18n="mode_pas">Pass</div>
                         </div>
                         <div class="mode-col">
                             <!-- <div class="mode-title">Sütun 2</div> -->
                             <div class="mode-card selected" data-col="2" data-value="qonsular"
-                                onclick="selectMode(2,'qonsular')">qonşular </div>
-                            <div class="mode-card" data-col="2" data-value="hamisi" onclick="selectMode(2,'hamisi')">
-                                hamısı</div>
+                                onclick="selectMode(2,'qonsular')" data-i18n="mode_qonsular">Neighbors</div>
+                            <div class="mode-card" data-col="2" data-value="hamisi" onclick="selectMode(2,'hamisi')"
+                                data-i18n="mode_hamisi">All</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="start-row">
-                    <button class="btn btn-success" onclick="startMatch()">Başla</button>
-                    <button class="btn btn-sm" onclick="goBackToPlayerSelect()">← Geri</button>
+                    <button class="btn btn-success" onclick="startMatch()" data-i18n="start">Start</button>
+                    <button class="btn btn-sm" onclick="goBackToPlayerSelect()" data-i18n="back">← Back</button>
                 </div>
             </div>
 
             <div class="quick-rooms-section" id="roomsSection" style="display:none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0;">🎮 Hazır Otaqlar</h2>
+                    <h2 style="margin: 0;" data-i18n="ready_rooms">🎮 Ready Rooms</h2>
                     <button class="btn btn-sm" onclick="goBackToPlayerSelect()"
                         style="width: auto; padding: 10px 20px;">
-                        ← Geri
+                        <span data-i18n="back">← Back</span>
                     </button>
                 </div>
-                <p style="opacity: 0.8; margin-bottom: 20px;">Aşağıdakı otaqlardan birinə qoşulun</p>
+                <p style="opacity: 0.8; margin-bottom: 20px;" data-i18n="join_room_hint">Join one of the rooms below</p>
                 <div class="rooms-grid" id="quickRoomsList">
                     <div class="loading">
                         <div class="spinner"></div>
-                        <p>Otaqlar yüklənir...</p>
+                        <p data-i18n="rooms_loading">Loading rooms...</p>
                     </div>
                 </div>
             </div>
@@ -120,22 +182,22 @@
                 <div class="game-header">
                     <div class="game-info">
                         <div class="info-item">
-                            <div class="label">Mükafat Fondu</div>
+                            <div class="label" data-i18n="prize_pool">Prize Pool</div>
                             <div class="value" id="totalPrize">0 AZN</div>
                         </div>
                         <div class="info-item">
-                            <div class="label">Otaq</div>
+                            <div class="label" data-i18n="room">Room</div>
                             <div class="value" id="currentRoomName">-</div>
                         </div>
                         <div class="info-item">
-                            <div class="label">Göyərtədə</div>
+                            <div class="label" data-i18n="in_deck">In Deck</div>
                             <div class="value" id="deckCount">36</div>
                         </div>
                     </div>
                     <div class="game-actions">
-                        <button class="btn btn-sm btn-success hidden" id="beatenBtn">✅ Beaten</button>
-                        <button class="btn btn-sm btn-danger hidden" id="takeCardsBtn">📥 Kartları Götür</button>
-                        <button class="btn btn-sm btn-danger" id="leaveRoomBtn">Otaqdan Çıx</button>
+                        <button class="btn btn-sm btn-success hidden" id="beatenBtn" data-i18n="beaten">✅ Beaten</button>
+                        <button class="btn btn-sm btn-danger hidden" id="takeCardsBtn" data-i18n="take_cards">📥 Take Cards</button>
+                        <button class="btn btn-sm btn-danger" id="leaveRoomBtn" data-i18n="leave_room">Leave Room</button>
                     </div>
                 </div>
 
@@ -150,11 +212,11 @@
                             <div class="deck-count" id="deckCountDisplay">24</div>
                         </div>
 
-                        <div class="trump-label">Koz:</div>
+                        <div class="trump-label" data-i18n="trump">Trump:</div>
                         <div id="trumpCardContainer"></div>
                     </div>
                     <div class="table-cards" id="tableCards">
-                        <div class="empty-hand">Masa boşdur</div>
+                        <div class="empty-hand" data-i18n="table_empty">Table is empty</div>
                     </div>
                 </div>
 
@@ -173,9 +235,9 @@
                 </div> -->
 
                 <div class="player-hand">
-                    <div class="player-hand-title">Sizin Kartlarınız</div>
+                    <div class="player-hand-title" data-i18n="your_cards">Your Cards</div>
                     <div class="cards-container" id="playerCards">
-                        <div class="empty-hand">Kartlarınız yüklənir...</div>
+                        <div class="empty-hand" data-i18n="cards_loading">Loading your cards...</div>
                     </div>
                 </div>
             </div>
@@ -186,11 +248,605 @@
 
         let currentUserToken = null;
         let currentUserData = null;
+        let currentLanguage = 'en';
+
+        const translations = {
+            en: {
+                page_title: 'Durak - Card Game',
+                header_title: 'DURAK',
+                loader_title: 'DURAK',
+                loader_subtitle: 'Shuffling decks • Seating players',
+                loader_status: 'Game is loading...',
+                player_label: 'Player',
+                room_options_title: 'Room Settings',
+                bet_label: 'Bet Selection',
+                modes_label: 'Game Modes',
+                mode_atilan: 'Discarded',
+                mode_pas: 'Pass',
+                mode_qonsular: 'Neighbors',
+                mode_hamisi: 'All',
+                start: 'Start',
+                back: '← Back',
+                ready_rooms: '🎮 Ready Rooms',
+                join_room_hint: 'Join one of the rooms below',
+                rooms_loading: 'Loading rooms...',
+                prize_pool: 'Prize Pool',
+                room: 'Room',
+                in_deck: 'In Deck',
+                beaten: '✅ Beaten',
+                take_cards: '📥 Take Cards',
+                leave_room: 'Leave Room',
+                trump: 'Trump:',
+                table_empty: 'Table is empty',
+                your_cards: 'Your Cards',
+                cards_loading: 'Loading your cards...',
+                cards_none: 'You have no cards',
+                rooms_none: 'No suitable rooms available',
+                loading_error: 'Loading error',
+                deck_size_cards: '{{count}} cards',
+                transfer_on: 'Transfer ✓',
+                transfer_off: 'Transfer ✗',
+                room_waiting: '⏳ Waiting',
+                room_joined: 'You joined room {{room}}',
+                entry_fee: 'Entry fee: {{fee}} AZN',
+                player_joined: '{{name}} joined the game',
+                player_left: '{{name}} left the game',
+                game_started: 'Game started! 🎮',
+                cards_attacked: '{{name}} attacked',
+                cards_defended: '{{name}} defended',
+                cards_taken: '{{name}} took the cards',
+                cards_discarded: 'Cards burned 🔥',
+                rematch_vote: '{{name}} wants a rematch ({{votes}}/{{required}})',
+                rematch_question: 'Do you want to play again?',
+                rematch_title: '🔄 Play Again',
+                agree: '✅ Agree',
+                vote_recorded: 'Your vote is recorded! ⏳',
+                error_prefix: 'Error: {{err}}',
+                winner_prize: 'Prize: {{amount}} AZN',
+                commission: 'Commission: {{amount}} AZN',
+                server_connect_fail: 'Could not connect to server',
+                server_connect_fail_retry: 'Could not connect to server. Please try again.',
+                select_player_count: 'Select player count',
+                room_searching: 'Searching for room...',
+                room_create_success: 'New room created, joining...',
+                room_create_unsupported: 'Room not created: server does not support',
+                room_search_error: 'Error while searching for room',
+                join_room_failed: 'Failed to join room',
+                leave_room_failed: 'Failed to leave room',
+                defend_missing_attack: 'Error: Attack card not found',
+                defense_sent: 'Defense sent! ✅',
+                defense_failed: 'Defense failed ❌',
+                defender_cant_attack: 'Defender cannot attack',
+                only_attacker_first: 'Only the attacker can make the first attack',
+                attack_sent: 'Attack sent! ⚔️',
+                attack_added: 'Additional attack! ➕',
+                attack_failed: 'Attack failed: {{err}}',
+                transfer_not_possible: 'Transfer not possible',
+                transfer_sent: 'Transfer sent! 🔄',
+                transfer_failed: 'Transfer failed: {{err}}',
+                beaten_failed: 'Beaten failed',
+                take_cards_vote_failed: 'Failed to vote',
+                leave_room_confirm: 'Are you sure you want to leave the room?',
+                take_cards_defender: '📥 I want to take cards',
+                take_cards_attacker: '📥 I agree to take',
+                vote_action_beaten: '🔥 Beaten',
+                vote_action_take: '📥 Take',
+                attack_transferred: '🔄 {{from}} transferred → {{to}}',
+                card_count: '🃏 {{count}} cards',
+                role_attacker: '⚔️ Attacker',
+                role_defender: '🛡️ Defender',
+                rematch_fee: 'Entry fee: {{fee}} AZN',
+                quick_room_title: '⚡ {{room}}',
+                prize_display: '🏆 {{amount}} AZN',
+                take_cards_defender_btn: '📥 I want to take cards',
+                take_cards_attacker_btn: '📥 I agree to take',
+                beaten_btn: '✅ Beaten'
+            },
+            tr: {
+                page_title: 'Durak',
+                header_title: 'DURAK',
+                loader_title: 'DURAK',
+                loader_subtitle: 'Deste karıştırılıyor • Oyuncular yerleştiriliyor',
+                loader_status: 'Oyun yükleniyor...',
+                player_label: 'Oyuncu',
+                room_options_title: 'Oda Ayarları',
+                bet_label: 'Bahis Seçimi',
+                modes_label: 'Oyun Modları',
+                mode_atilan: 'Atılan',
+                mode_pas: 'Pas',
+                mode_qonsular: 'Komşular',
+                mode_hamisi: 'Hepsi',
+                start: 'Başla',
+                back: '← Geri',
+                ready_rooms: '🎮 Hazır Odalar',
+                join_room_hint: 'Aşağıdaki odalardan birine katılın',
+                rooms_loading: 'Odalar yükleniyor...',
+                prize_pool: 'Ödül Havuzu',
+                room: 'Oda',
+                in_deck: 'Destede',
+                beaten: '✅ Beaten',
+                take_cards: '📥 Kartları Al',
+                leave_room: 'Odadan Çık',
+                trump: 'Koz:',
+                table_empty: 'Masa boş',
+                your_cards: 'Kartlarınız',
+                cards_loading: 'Kartlarınız yükleniyor...',
+                cards_none: 'Kartınız yok',
+                rooms_none: 'Uygun oda yok',
+                loading_error: 'Yükleme hatası',
+                deck_size_cards: '{{count}} kart',
+                transfer_on: 'Transfer ✓',
+                transfer_off: 'Transfer ✗',
+                room_waiting: '⏳ Bekliyor',
+                room_joined: '{{room}} odasına katıldınız',
+                entry_fee: 'Giriş ücreti: {{fee}} AZN',
+                player_joined: '{{name}} oyuna katıldı',
+                player_left: '{{name}} oyundan ayrıldı',
+                game_started: 'Oyun başladı! 🎮',
+                cards_attacked: '{{name}} saldırdı',
+                cards_defended: '{{name}} savundu',
+                cards_taken: '{{name}} kartları aldı',
+                cards_discarded: 'Kartlar yakıldı 🔥',
+                rematch_vote: '{{name}} rövanş istiyor ({{votes}}/{{required}})',
+                rematch_question: 'Tekrar oynamak istiyor musunuz?',
+                rematch_title: '🔄 Tekrar Oyna',
+                agree: '✅ Kabul',
+                vote_recorded: 'Oyunuz kaydedildi! ⏳',
+                error_prefix: 'Hata: {{err}}',
+                winner_prize: 'Ödül: {{amount}} AZN',
+                commission: 'Komisyon: {{amount}} AZN',
+                server_connect_fail: 'Sunucuya bağlanılamadı',
+                server_connect_fail_retry: 'Sunucuya bağlanılamadı. Lütfen tekrar deneyin.',
+                select_player_count: 'Oyuncu sayısını seçin',
+                room_searching: 'Oda aranıyor...',
+                room_create_success: 'Yeni oda oluşturuldu, katılıyor...',
+                room_create_unsupported: 'Oda oluşturulmadı: sunucu desteklemiyor',
+                room_search_error: 'Oda aranırken hata oluştu',
+                join_room_failed: 'Odaya katılma başarısız',
+                leave_room_failed: 'Odadan çıkma başarısız',
+                defend_missing_attack: 'Hata: Saldırı kartı bulunamadı',
+                defense_sent: 'Savunma gönderildi! ✅',
+                defense_failed: 'Savunma başarısız ❌',
+                defender_cant_attack: 'Savunmacı saldırı yapamaz',
+                only_attacker_first: 'İlk saldırıyı yalnızca saldıran yapabilir',
+                attack_sent: 'Saldırı gönderildi! ⚔️',
+                attack_added: 'Ek saldırı! ➕',
+                attack_failed: 'Saldırı başarısız: {{err}}',
+                transfer_not_possible: 'Transfer mümkün değil',
+                transfer_sent: 'Transfer gönderildi! 🔄',
+                transfer_failed: 'Transfer başarısız: {{err}}',
+                beaten_failed: 'Beaten başarısız',
+                take_cards_vote_failed: 'Oylama başarısız',
+                leave_room_confirm: 'Odadan çıkmak istediğinize emin misiniz?',
+                take_cards_defender: '📥 Kartları almak istiyorum',
+                take_cards_attacker: '📥 Almasına razıyım',
+                vote_action_beaten: '🔥 Beaten',
+                vote_action_take: '📥 Al',
+                attack_transferred: '🔄 {{from}} transfer etti → {{to}}',
+                card_count: '🃏 {{count}} kart',
+                role_attacker: '⚔️ Saldıran',
+                role_defender: '🛡️ Savunan',
+                rematch_fee: 'Giriş ücreti: {{fee}} AZN',
+                quick_room_title: '⚡ {{room}}',
+                prize_display: '🏆 {{amount}} AZN',
+                take_cards_defender_btn: '📥 Kartları almak istiyorum',
+                take_cards_attacker_btn: '📥 Almasına razıyım',
+                beaten_btn: '✅ Beaten'
+            },
+            hi: {
+                page_title: 'Durak - कार्ड गेम',
+                header_title: 'DURAK',
+                loader_title: 'दुराक',
+                loader_subtitle: 'डेक शफ़ल हो रहे हैं • खिलाड़ियों की सीट तय हो रही है',
+                loader_status: 'गेम लोड हो रहा है...',
+                player_label: 'खिलाड़ी',
+                room_options_title: 'रूम सेटिंग्स',
+                bet_label: 'शर्त चयन',
+                modes_label: 'गेम मोड्स',
+                mode_atilan: 'फेंका गया',
+                mode_pas: 'पास',
+                mode_qonsular: 'पड़ोसी',
+                mode_hamisi: 'सभी',
+                start: 'शुरू करें',
+                back: '← वापस',
+                ready_rooms: '🎮 तैयार कमरे',
+                join_room_hint: 'नीचे दिए कमरों में से किसी एक में जुड़ें',
+                rooms_loading: 'कमरे लोड हो रहे हैं...',
+                prize_pool: 'इनाम पूल',
+                room: 'रूम',
+                in_deck: 'डेक में',
+                beaten: '✅ Beaten',
+                take_cards: '📥 कार्ड लें',
+                leave_room: 'रूम छोड़ें',
+                trump: 'ट्रम्प:',
+                table_empty: 'टेबल खाली है',
+                your_cards: 'आपके कार्ड',
+                cards_loading: 'आपके कार्ड लोड हो रहे हैं...',
+                cards_none: 'आपके पास कार्ड नहीं हैं',
+                rooms_none: 'कोई उपयुक्त रूम नहीं',
+                loading_error: 'लोडिंग त्रुटि',
+                deck_size_cards: '{{count}} कार्ड',
+                transfer_on: 'Transfer ✓',
+                transfer_off: 'Transfer ✗',
+                room_waiting: '⏳ प्रतीक्षा में',
+                room_joined: 'आप {{room}} रूम में जुड़े',
+                entry_fee: 'प्रवेश शुल्क: {{fee}} AZN',
+                player_joined: '{{name}} गेम में शामिल हुआ',
+                player_left: '{{name}} गेम छोड़ गया',
+                game_started: 'गेम शुरू हुआ! 🎮',
+                cards_attacked: '{{name}} ने हमला किया',
+                cards_defended: '{{name}} ने बचाव किया',
+                cards_taken: '{{name}} ने कार्ड ले लिए',
+                cards_discarded: 'कार्ड जला दिए गए 🔥',
+                rematch_vote: '{{name}} रीमैच चाहता है ({{votes}}/{{required}})',
+                rematch_question: 'क्या आप फिर से खेलना चाहते हैं?',
+                rematch_title: '🔄 फिर से खेलें',
+                agree: '✅ सहमत',
+                vote_recorded: 'आपका वोट दर्ज हो गया! ⏳',
+                error_prefix: 'त्रुटि: {{err}}',
+                winner_prize: 'इनाम: {{amount}} AZN',
+                commission: 'कमीशन: {{amount}} AZN',
+                server_connect_fail: 'सर्वर से कनेक्ट नहीं हो सका',
+                server_connect_fail_retry: 'सर्वर से कनेक्ट नहीं हो सका। फिर से प्रयास करें।',
+                select_player_count: 'खिलाड़ी संख्या चुनें',
+                room_searching: 'रूम खोजा जा रहा है...',
+                room_create_success: 'नया रूम बनाया गया, जुड़ रहे हैं...',
+                room_create_unsupported: 'रूम नहीं बना: सर्वर सपोर्ट नहीं करता',
+                room_search_error: 'रूम खोजते समय त्रुटि हुई',
+                join_room_failed: 'रूम में जुड़ना असफल',
+                leave_room_failed: 'रूम छोड़ना असफल',
+                defend_missing_attack: 'त्रुटि: हमला कार्ड नहीं मिला',
+                defense_sent: 'बचाव भेजा गया! ✅',
+                defense_failed: 'बचाव असफल ❌',
+                defender_cant_attack: 'रक्षक हमला नहीं कर सकता',
+                only_attacker_first: 'पहला हमला केवल आक्रमणकर्ता कर सकता है',
+                attack_sent: 'हमला भेजा गया! ⚔️',
+                attack_added: 'अतिरिक्त हमला! ➕',
+                attack_failed: 'हमला असफल: {{err}}',
+                transfer_not_possible: 'ट्रांसफर संभव नहीं',
+                transfer_sent: 'ट्रांसफर भेजा गया! 🔄',
+                transfer_failed: 'ट्रांसफर असफल: {{err}}',
+                beaten_failed: 'Beaten असफल',
+                take_cards_vote_failed: 'वोट असफल',
+                leave_room_confirm: 'क्या आप रूम छोड़ना चाहते हैं?',
+                take_cards_defender: '📥 मैं कार्ड लेना चाहता हूँ',
+                take_cards_attacker: '📥 मैं लेने से सहमत हूँ',
+                vote_action_beaten: '🔥 Beaten',
+                vote_action_take: '📥 लेना',
+                attack_transferred: '🔄 {{from}} ने ट्रांसफर किया → {{to}}',
+                card_count: '🃏 {{count}} कार्ड',
+                role_attacker: '⚔️ आक्रमणकर्ता',
+                role_defender: '🛡️ रक्षक',
+                rematch_fee: 'प्रवेश शुल्क: {{fee}} AZN',
+                quick_room_title: '⚡ {{room}}',
+                prize_display: '🏆 {{amount}} AZN',
+                take_cards_defender_btn: '📥 मैं कार्ड लेना चाहता हूँ',
+                take_cards_attacker_btn: '📥 मैं लेने से सहमत हूँ',
+                beaten_btn: '✅ Beaten'
+            },
+            ru: {
+                page_title: 'Durak - Карточная игра',
+                header_title: 'DURAK',
+                loader_title: 'ДУРАК',
+                loader_subtitle: 'Тасуем колоды • Рассаживаем игроков',
+                loader_status: 'Игра загружается...',
+                player_label: 'Игрок',
+                room_options_title: 'Параметры комнаты',
+                bet_label: 'Выбор ставки',
+                modes_label: 'Режимы игры',
+                mode_atilan: 'Сброшено',
+                mode_pas: 'Пас',
+                mode_qonsular: 'Соседи',
+                mode_hamisi: 'Все',
+                start: 'Начать',
+                back: '← Назад',
+                ready_rooms: '🎮 Готовые комнаты',
+                join_room_hint: 'Присоединитесь к одной из комнат ниже',
+                rooms_loading: 'Загрузка комнат...',
+                prize_pool: 'Призовой фонд',
+                room: 'Комната',
+                in_deck: 'В колоде',
+                beaten: '✅ Beaten',
+                take_cards: '📥 Взять карты',
+                leave_room: 'Выйти из комнаты',
+                trump: 'Козырь:',
+                table_empty: 'Стол пуст',
+                your_cards: 'Ваши карты',
+                cards_loading: 'Ваши карты загружаются...',
+                cards_none: 'У вас нет карт',
+                rooms_none: 'Подходящих комнат нет',
+                loading_error: 'Ошибка загрузки',
+                deck_size_cards: '{{count}} карт',
+                transfer_on: 'Transfer ✓',
+                transfer_off: 'Transfer ✗',
+                room_waiting: '⏳ Ожидание',
+                room_joined: 'Вы вошли в комнату {{room}}',
+                entry_fee: 'Взнос: {{fee}} AZN',
+                player_joined: '{{name}} присоединился к игре',
+                player_left: '{{name}} вышел из игры',
+                game_started: 'Игра началась! 🎮',
+                cards_attacked: '{{name}} атаковал',
+                cards_defended: '{{name}} защитился',
+                cards_taken: '{{name}} взял карты',
+                cards_discarded: 'Карты сожжены 🔥',
+                rematch_vote: '{{name}} хочет реванш ({{votes}}/{{required}})',
+                rematch_question: 'Хотите сыграть снова?',
+                rematch_title: '🔄 Сыграть снова',
+                agree: '✅ Согласен',
+                vote_recorded: 'Ваш голос учтён! ⏳',
+                error_prefix: 'Ошибка: {{err}}',
+                winner_prize: 'Приз: {{amount}} AZN',
+                commission: 'Комиссия: {{amount}} AZN',
+                server_connect_fail: 'Не удалось подключиться к серверу',
+                server_connect_fail_retry: 'Не удалось подключиться к серверу. Повторите попытку.',
+                select_player_count: 'Выберите число игроков',
+                room_searching: 'Поиск комнаты...',
+                room_create_success: 'Новая комната создана, подключаемся...',
+                room_create_unsupported: 'Комната не создана: сервер не поддерживает',
+                room_search_error: 'Ошибка при поиске комнаты',
+                join_room_failed: 'Не удалось войти в комнату',
+                leave_room_failed: 'Не удалось выйти из комнаты',
+                defend_missing_attack: 'Ошибка: карта атаки не найдена',
+                defense_sent: 'Защита отправлена! ✅',
+                defense_failed: 'Защита не удалась ❌',
+                defender_cant_attack: 'Защитник не может атаковать',
+                only_attacker_first: 'Первую атаку может сделать только атакующий',
+                attack_sent: 'Атака отправлена! ⚔️',
+                attack_added: 'Дополнительная атака! ➕',
+                attack_failed: 'Атака не удалась: {{err}}',
+                transfer_not_possible: 'Трансфер невозможен',
+                transfer_sent: 'Трансфер отправлен! 🔄',
+                transfer_failed: 'Трансфер не удался: {{err}}',
+                beaten_failed: 'Beaten не удался',
+                take_cards_vote_failed: 'Голосование не удалось',
+                leave_room_confirm: 'Вы уверены, что хотите выйти из комнаты?',
+                take_cards_defender: '📥 Хочу взять карты',
+                take_cards_attacker: '📥 Согласен взять',
+                vote_action_beaten: '🔥 Beaten',
+                vote_action_take: '📥 Взять',
+                attack_transferred: '🔄 {{from}} передал → {{to}}',
+                card_count: '🃏 {{count}} карт',
+                role_attacker: '⚔️ Атакующий',
+                role_defender: '🛡️ Защитник',
+                rematch_fee: 'Взнос: {{fee}} AZN',
+                quick_room_title: '⚡ {{room}}',
+                prize_display: '🏆 {{amount}} AZN',
+                take_cards_defender_btn: '📥 Хочу взять карты',
+                take_cards_attacker_btn: '📥 Согласен взять',
+                beaten_btn: '✅ Beaten'
+            },
+            ar: {
+                page_title: 'Durak - لعبة ورق',
+                header_title: 'DURAK',
+                loader_title: 'دوراك',
+                loader_subtitle: 'يتم خلط الأوراق • يتم جلوس اللاعبين',
+                loader_status: 'جاري تحميل اللعبة...',
+                player_label: 'لاعب',
+                room_options_title: 'إعدادات الغرفة',
+                bet_label: 'اختيار الرهان',
+                modes_label: 'أنماط اللعبة',
+                mode_atilan: 'مطروح',
+                mode_pas: 'تمرير',
+                mode_qonsular: 'الجيران',
+                mode_hamisi: 'الكل',
+                start: 'ابدأ',
+                back: '← رجوع',
+                ready_rooms: '🎮 غرف جاهزة',
+                join_room_hint: 'انضم إلى إحدى الغرف أدناه',
+                rooms_loading: 'جارٍ تحميل الغرف...',
+                prize_pool: 'صندوق الجوائز',
+                room: 'الغرفة',
+                in_deck: 'في الرزمة',
+                beaten: '✅ Beaten',
+                take_cards: '📥 أخذ البطاقات',
+                leave_room: 'مغادرة الغرفة',
+                trump: 'الترامب:',
+                table_empty: 'الطاولة فارغة',
+                your_cards: 'بطاقاتك',
+                cards_loading: 'جارٍ تحميل بطاقاتك...',
+                cards_none: 'لا توجد بطاقات لديك',
+                rooms_none: 'لا توجد غرف مناسبة',
+                loading_error: 'خطأ في التحميل',
+                deck_size_cards: '{{count}} بطاقة',
+                transfer_on: 'Transfer ✓',
+                transfer_off: 'Transfer ✗',
+                room_waiting: '⏳ انتظار',
+                room_joined: 'انضممت إلى غرفة {{room}}',
+                entry_fee: 'رسوم الدخول: {{fee}} AZN',
+                player_joined: '{{name}} انضم إلى اللعبة',
+                player_left: '{{name}} غادر اللعبة',
+                game_started: 'بدأت اللعبة! 🎮',
+                cards_attacked: '{{name}} هاجم',
+                cards_defended: '{{name}} دافع',
+                cards_taken: '{{name}} أخذ البطاقات',
+                cards_discarded: 'تم حرق البطاقات 🔥',
+                rematch_vote: '{{name}} يريد إعادة مباراة ({{votes}}/{{required}})',
+                rematch_question: 'هل تريد اللعب مرة أخرى؟',
+                rematch_title: '🔄 العب مرة أخرى',
+                agree: '✅ موافق',
+                vote_recorded: 'تم تسجيل صوتك! ⏳',
+                error_prefix: 'خطأ: {{err}}',
+                winner_prize: 'الجائزة: {{amount}} AZN',
+                commission: 'العمولة: {{amount}} AZN',
+                server_connect_fail: 'تعذر الاتصال بالخادم',
+                server_connect_fail_retry: 'تعذر الاتصال بالخادم. حاول مرة أخرى.',
+                select_player_count: 'اختر عدد اللاعبين',
+                room_searching: 'جارٍ البحث عن غرفة...',
+                room_create_success: 'تم إنشاء غرفة جديدة، جارٍ الانضمام...',
+                room_create_unsupported: 'لم يتم إنشاء الغرفة: الخادم غير مدعوم',
+                room_search_error: 'حدث خطأ أثناء البحث عن غرفة',
+                join_room_failed: 'تعذر الانضمام إلى الغرفة',
+                leave_room_failed: 'تعذر مغادرة الغرفة',
+                defend_missing_attack: 'خطأ: لم يتم العثور على بطاقة الهجوم',
+                defense_sent: 'تم إرسال الدفاع! ✅',
+                defense_failed: 'فشل الدفاع ❌',
+                defender_cant_attack: 'المدافع لا يمكنه الهجوم',
+                only_attacker_first: 'الهجوم الأول يقوم به المهاجم فقط',
+                attack_sent: 'تم إرسال الهجوم! ⚔️',
+                attack_added: 'هجوم إضافي! ➕',
+                attack_failed: 'فشل الهجوم: {{err}}',
+                transfer_not_possible: 'التحويل غير ممكن',
+                transfer_sent: 'تم إرسال التحويل! 🔄',
+                transfer_failed: 'فشل التحويل: {{err}}',
+                beaten_failed: 'فشل Beaten',
+                take_cards_vote_failed: 'فشل التصويت',
+                leave_room_confirm: 'هل أنت متأكد أنك تريد مغادرة الغرفة؟',
+                take_cards_defender: '📥 أريد أخذ البطاقات',
+                take_cards_attacker: '📥 أوافق على الأخذ',
+                vote_action_beaten: '🔥 Beaten',
+                vote_action_take: '📥 أخذ',
+                attack_transferred: '🔄 {{from}} نقل → {{to}}',
+                card_count: '🃏 {{count}} بطاقة',
+                role_attacker: '⚔️ مهاجم',
+                role_defender: '🛡️ مدافع',
+                rematch_fee: 'رسوم الدخول: {{fee}} AZN',
+                quick_room_title: '⚡ {{room}}',
+                prize_display: '🏆 {{amount}} AZN',
+                take_cards_defender_btn: '📥 أريد أخذ البطاقات',
+                take_cards_attacker_btn: '📥 أوافق على الأخذ',
+                beaten_btn: '✅ Beaten'
+            },
+            uz: {
+                page_title: 'Durak - Karta o‘yini',
+                header_title: 'DURAK',
+                loader_title: 'DURAK',
+                loader_subtitle: 'Kolodalar aralashtirilmoqda • O‘yinchilar joylashtirilmoqda',
+                loader_status: 'O‘yin yuklanmoqda...',
+                player_label: 'O‘yinchi',
+                room_options_title: 'Xona sozlamalari',
+                bet_label: 'Tikish tanlovi',
+                modes_label: 'O‘yin rejimlari',
+                mode_atilan: 'Tashlangan',
+                mode_pas: 'Pas',
+                mode_qonsular: 'Qo‘shnilar',
+                mode_hamisi: 'Hammasi',
+                start: 'Boshlash',
+                back: '← Orqaga',
+                ready_rooms: '🎮 Tayyor xonalar',
+                join_room_hint: 'Quyidagi xonalardan biriga qo‘shiling',
+                rooms_loading: 'Xonalar yuklanmoqda...',
+                prize_pool: 'Mukofot jamg‘armasi',
+                room: 'Xona',
+                in_deck: 'Dastada',
+                beaten: '✅ Beaten',
+                take_cards: '📥 Kartalarni olish',
+                leave_room: 'Xonadan chiqish',
+                trump: 'Kozir:',
+                table_empty: 'Stol bo‘sh',
+                your_cards: 'Kartalaringiz',
+                cards_loading: 'Kartalaringiz yuklanmoqda...',
+                cards_none: 'Kartangiz yo‘q',
+                rooms_none: 'Mos xona yo‘q',
+                loading_error: 'Yuklash xatosi',
+                deck_size_cards: '{{count}} karta',
+                transfer_on: 'Transfer ✓',
+                transfer_off: 'Transfer ✗',
+                room_waiting: '⏳ Kutilmoqda',
+                room_joined: '{{room}} xonasiga qo‘shildingiz',
+                entry_fee: 'Kirish to‘lovi: {{fee}} AZN',
+                player_joined: '{{name}} o‘yinga qo‘shildi',
+                player_left: '{{name}} o‘yindan chiqdi',
+                game_started: 'O‘yin boshlandi! 🎮',
+                cards_attacked: '{{name}} hujum qildi',
+                cards_defended: '{{name}} himoya qildi',
+                cards_taken: '{{name}} kartalarni oldi',
+                cards_discarded: 'Kartalar yoqildi 🔥',
+                rematch_vote: '{{name}} qayta o‘ynashni xohlaydi ({{votes}}/{{required}})',
+                rematch_question: 'Qayta o‘ynashni xohlaysizmi?',
+                rematch_title: '🔄 Qayta o‘ynash',
+                agree: '✅ Roziman',
+                vote_recorded: 'Ovozingiz qayd etildi! ⏳',
+                error_prefix: 'Xato: {{err}}',
+                winner_prize: 'Mukofot: {{amount}} AZN',
+                commission: 'Komissiya: {{amount}} AZN',
+                server_connect_fail: 'Serverga ulanib bo‘lmadi',
+                server_connect_fail_retry: 'Serverga ulanib bo‘lmadi. Qayta urinib ko‘ring.',
+                select_player_count: 'O‘yinchilar sonini tanlang',
+                room_searching: 'Xona qidirilmoqda...',
+                room_create_success: 'Yangi xona yaratildi, qo‘shilmoqda...',
+                room_create_unsupported: 'Xona yaratilmagan: server qo‘llab-quvvatlamaydi',
+                room_search_error: 'Xona qidirishda xato yuz berdi',
+                join_room_failed: 'Xonaga qo‘shilish muvaffaqiyatsiz',
+                leave_room_failed: 'Xonadan chiqish muvaffaqiyatsiz',
+                defend_missing_attack: 'Xato: Hujum kartasi topilmadi',
+                defense_sent: 'Himoya yuborildi! ✅',
+                defense_failed: 'Himoya muvaffaqiyatsiz ❌',
+                defender_cant_attack: 'Himoyachi hujum qila olmaydi',
+                only_attacker_first: 'Birinchi hujumni faqat hujumchi qiladi',
+                attack_sent: 'Hujum yuborildi! ⚔️',
+                attack_added: 'Qo‘shimcha hujum! ➕',
+                attack_failed: 'Hujum muvaffaqiyatsiz: {{err}}',
+                transfer_not_possible: 'Transfer mumkin emas',
+                transfer_sent: 'Transfer yuborildi! 🔄',
+                transfer_failed: 'Transfer muvaffaqiyatsiz: {{err}}',
+                beaten_failed: 'Beaten muvaffaqiyatsiz',
+                take_cards_vote_failed: 'Ovoz berish muvaffaqiyatsiz',
+                leave_room_confirm: 'Xonadan chiqishni xohlaysizmi?',
+                take_cards_defender: '📥 Kartalarni olishni xohlayman',
+                take_cards_attacker: '📥 Olishiga roziman',
+                vote_action_beaten: '🔥 Beaten',
+                vote_action_take: '📥 Olish',
+                attack_transferred: '🔄 {{from}} transfer qildi → {{to}}',
+                card_count: '🃏 {{count}} karta',
+                role_attacker: '⚔️ Hujumchi',
+                role_defender: '🛡️ Himoyachi',
+                rematch_fee: 'Kirish to‘lovi: {{fee}} AZN',
+                quick_room_title: '⚡ {{room}}',
+                prize_display: '🏆 {{amount}} AZN',
+                take_cards_defender_btn: '📥 Kartalarni olishni xohlayman',
+                take_cards_attacker_btn: '📥 Olishiga roziman',
+                beaten_btn: '✅ Beaten'
+            }
+        };
+
+        function normalizeLanguage(lang) {
+            if (!lang) return 'en';
+            const l = String(lang).toLowerCase().trim();
+            if (['en', 'eng', 'english'].includes(l)) return 'en';
+            if (['tr', 'tur', 'turkish', 'türkçe'].includes(l)) return 'tr';
+            if (['hi', 'in', 'hindi', 'indian'].includes(l)) return 'hi';
+            if (['ru', 'rus', 'russian'].includes(l)) return 'ru';
+            if (['ar', 'ara', 'arabic', 'عربي'].includes(l)) return 'ar';
+            if (['uz', 'uzb', 'uzbek', 'oʻzbek', 'ozbek'].includes(l)) return 'uz';
+            return translations[l] ? l : 'en';
+        }
+
+        function t(key, vars = {}) {
+            const dict = translations[currentLanguage] || translations.en;
+            const fallback = translations.en || {};
+            let text = dict[key] || fallback[key] || key;
+            Object.keys(vars).forEach(k => {
+                text = text.replace(new RegExp(`{{\\s*${k}\\s*}}`, 'g'), vars[k]);
+            });
+            return text;
+        }
+
+        function applyTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
+            });
+            document.title = t('page_title');
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = normalizeLanguage(lang);
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            applyTranslations();
+            if (typeof updateActionButtons === 'function' && typeof gameState !== 'undefined') {
+                updateActionButtons(gameState || {});
+            }
+        }
 
         console.log('🃏 [DURAK] Script yükləndi');
 
         window.addEventListener('message', (event) => {
             console.log('📨 [DURAK] Message alındı:', event.data);
+
+            if (event.data && event.data.payload.language) {
+                setLanguage(event.data.payload.language);
+            }
 
             if (event.data && event.data.type === 'INIT_USER') {
                 console.log('✅ [DURAK] INIT_USER qəbul edildi');
@@ -264,9 +920,10 @@
             try {
                 await connection.start();
                 console.log("✅ [DURAK] SignalR qoşuldu");
+                hideLoader();
             } catch (err) {
                 console.error("❌ [DURAK] SignalR xətası:", err);
-                showMessage("Serverə qoşulmaq alınmadı", "error");
+                // showMessage(t("server_connect_fail"), "error");
             }
         }
 
@@ -278,7 +935,7 @@
         // ... qalan bütün kod eyni qalır (setupEventHandlers və s.) ...
         // ✅ YENİ - Transfer event
         connection.on("AttackTransferred", (data) => {
-            showMessage(`🔄 ${data.playerName} transfer etdi → ${data.newDefender}`, "info");
+            showMessage(t("attack_transferred", { from: data.playerName, to: data.newDefender }), "info");
             console.log('🔄 Transfer:', data);
         });
         // ✅ YENİ - Player Vote notification
@@ -317,23 +974,23 @@
 
             document.getElementsByClassName("header")[0].style.display = "none";
 
-            let message = `${data.roomName} otağına qoşuldunuz`;
+            let message = t("room_joined", { room: data.roomName });
             if (data.entryFee > 0) {
-                message += ` (Giriş haqqı: ${data.entryFee} AZN)`;
+                message += ` (${t("entry_fee", { fee: data.entryFee })})`;
             }
             showMessage(message, "success");
         });
 
         connection.on("PlayerJoined", (playerName) => {
-            showMessage(`${playerName} oyuna qoşuldu`, "info");
+            showMessage(t("player_joined", { name: playerName }), "info");
         });
 
         connection.on("PlayerLeft", (playerName) => {
-            showMessage(`${playerName} oyunu tərk etdi`, "info");
+            showMessage(t("player_left", { name: playerName }), "info");
         });
 
         connection.on("GameStarted", (data) => {
-            showMessage("Oyun başladı! 🎮", "success");
+            showMessage(t("game_started"), "success");
             renderTrumpCard(data.trumpCard);
         });
 
@@ -354,16 +1011,16 @@
 
             // ✅ YENİ - Deck size və transfer info
             if (state.deckSize) {
-                document.getElementById("deckSizeInfo").textContent = `${state.deckSize} kart`;
+                document.getElementById("deckSizeInfo").textContent = t("deck_size_cards", { count: state.deckSize });
             }
 
             if (state.transferEnabled !== undefined) {
                 const transferBadge = document.getElementById("transferInfo");
                 if (state.transferEnabled) {
-                    transferBadge.textContent = "Transfer ✓";
+                    transferBadge.textContent = t("transfer_on");
                     transferBadge.classList.remove('disabled');
                 } else {
-                    transferBadge.textContent = "Transfer ✗";
+                    transferBadge.textContent = t("transfer_off");
                     transferBadge.classList.add('disabled');
                 }
             }
@@ -387,19 +1044,19 @@
         });
 
         connection.on("CardsAttacked", (data) => {
-            showMessage(`${data.playerName} hücum etdi`, "info");
+            showMessage(t("cards_attacked", { name: data.playerName }), "info");
         });
 
         connection.on("CardsDefended", (data) => {
-            showMessage(`${data.playerName} müdafiə etdi`, "success");
+            showMessage(t("cards_defended", { name: data.playerName }), "success");
         });
 
         connection.on("CardsTaken", (data) => {
-            showMessage(`${data.playerName} kartları götürdü`, "warning");
+            showMessage(t("cards_taken", { name: data.playerName }), "warning");
         });
 
         connection.on("CardsDiscarded", () => {
-            showMessage("Kartlar yandırıldı 🔥", "success");
+            showMessage(t("cards_discarded"), "success");
         });
 
         connection.on("GameOver", (data) => {
@@ -407,14 +1064,14 @@
 
             let alertMessage = data.message;
             if (data.winnerPrize) {
-                alertMessage += `\n\n💰 Mükafat: ${data.winnerPrize} AZN`;
-                alertMessage += `\n📊 Komissiya: ${data.commission} AZN`;
+                alertMessage += `\n\n💰 ${t("winner_prize", { amount: data.winnerPrize })}`;
+                alertMessage += `\n📊 ${t("commission", { amount: data.commission })}`;
             }
 
             if (data.canRematch) {
-                alertMessage += `\n\n🔄 Yenidən oynamaq istəyirsiniz?`;
+                alertMessage += `\n\n🔄 ${t("rematch_question")}`;
                 if (data.entryFee > 0) {
-                    alertMessage += `\n(Giriş haqqı: ${data.entryFee} AZN)`;
+                    alertMessage += `\n(${t("entry_fee", { fee: data.entryFee })})`;
                 }
             }
 
@@ -426,7 +1083,7 @@
         });
 
         connection.on("RematchVote", (data) => {
-            showMessage(`${data.playerName} yenidən oynamaq istəyir (${data.votes}/${data.required})`, "info");
+            showMessage(t("rematch_vote", { name: data.playerName, votes: data.votes, required: data.required }), "info");
         });
 
         connection.on("RematchFailed", (data) => {
@@ -472,8 +1129,8 @@
             notification.className = "vote-notification";
 
             const actionText = {
-                "Beaten": "🔥 Beaten",
-                "TakeCards": "📥 Götürmək"
+                "Beaten": t("vote_action_beaten"),
+                "TakeCards": t("vote_action_take")
                 // "Pass" silindi
             }[data.action] || data.action;
 
@@ -507,10 +1164,10 @@
                 `;
 
             rematchDiv.innerHTML = `
-                    <h2 style="margin-bottom: 20px; color: #fbbf24;">🔄 Yenidən Oyna</h2>
-                    ${entryFee > 0 ? `<p style="margin-bottom: 20px; font-size: 1.2em;">Giriş haqqı: ${entryFee} AZN</p>` : ''}
+                    <h2 style="margin-bottom: 20px; color: #fbbf24;">${t("rematch_title")}</h2>
+                    ${entryFee > 0 ? `<p style="margin-bottom: 20px; font-size: 1.2em;">${t("rematch_fee", { fee: entryFee })}</p>` : ''}
                     <button class="btn btn-success" onclick="voteRematch()" style="width: 200px; margin: 0 auto;">
-                        ✅ Razıyam
+                        ${t("agree")}
                     </button>
                 `;
 
@@ -525,9 +1182,9 @@
         async function voteRematch() {
             try {
                 await connection.invoke("VoteRematch");
-                showMessage("Səsiniz qeydə alındı! ⏳", "success");
+                showMessage(t("vote_recorded"), "success");
             } catch (err) {
-                showMessage("Xəta: " + err.toString(), "error");
+                showMessage(t("error_prefix", { err: err.toString() }), "error");
             }
         }
 
@@ -574,33 +1231,33 @@
                 const container = document.getElementById("quickRoomsList");
 
                 if (filtered.length === 0) {
-                    container.innerHTML = '<div class="empty-hand">Hazırda uyğun otaq yoxdur</div>';
+                    container.innerHTML = `<div class="empty-hand">${t("rooms_none")}</div>`;
                     return;
                 }
 
                 container.innerHTML = filtered.map(room => {
                     // ✅ YENİ - Deck size və transfer info (əgər backend göndərirsə)
-                    const deckInfo = room.deckSize ? `<span class="deck-badge">${room.deckSize} kart</span>` : '';
+                    const deckInfo = room.deckSize ? `<span class="deck-badge">${t("deck_size_cards", { count: room.deckSize })}</span>` : '';
                     const transferInfo = room.transferEnabled !== undefined
-                        ? `<span class="transfer-badge ${room.transferEnabled ? '' : 'disabled'}">${room.transferEnabled ? 'Transfer ✓' : 'Transfer ✗'}</span>`
+                        ? `<span class="transfer-badge ${room.transferEnabled ? '' : 'disabled'}">${room.transferEnabled ? t("transfer_on") : t("transfer_off")}</span>`
                         : '';
 
                     return `
                             <div class="room-card" onclick="joinRoom('${room.roomId}')">
-                                <h3>⚡ ${room.roomName}</h3>
+                                <h3>${t("quick_room_title", { room: room.roomName })}</h3>
                                 <div>${deckInfo} ${transferInfo}</div>
                                 <div class="room-info">
                                     <span>👥 ${room.playerCount}/${room.maxPlayers}</span>
                                     ${room.entryFee > 0 ? `<span>💰 ${room.entryFee} AZN</span>` : ''}
                                 </div>
-                                ${room.totalPrize > 0 ? `<p style="color: #fbbf24; font-weight: 600;">🏆 ${room.totalPrize} AZN</p>` : ''}
-                                <span class="room-status waiting">⏳ Gözləyir</span>
+                                ${room.totalPrize > 0 ? `<p style="color: #fbbf24; font-weight: 600;">${t("prize_display", { amount: room.totalPrize })}</p>` : ''}
+                                <span class="room-status waiting">${t("room_waiting")}</span>
                             </div>
                         `;
                 }).join('');
             } catch (err) {
                 console.error(err);
-                container.innerHTML = '<div class="empty-hand">Yükləmə xətası</div>';
+                container.innerHTML = `<div class="empty-hand">${t("loading_error")}</div>`;
             }
         }
 
@@ -640,15 +1297,15 @@
                 }
             } catch (connErr) {
                 console.error('Connection start failed before startMatch:', connErr);
-                showMessage('Serverə qoşulmaq alınmadı. Yenidən cəhd edin.', 'error');
+                showMessage(t('server_connect_fail_retry'), 'error');
                 return;
             }
             if (!selectedPlayerCount) {
-                showMessage('Oyunçu sayını seçin', 'warning');
+                showMessage(t('select_player_count'), 'warning');
                 return;
             }
 
-            showMessage('Otaq axtarılır...', 'info');
+            showMessage(t('room_searching'), 'info');
             try {
                 // Try to find an existing quick room that matches criteria
                 const quickRooms = await connection.invoke('GetQuickRooms');
@@ -662,19 +1319,19 @@
                 const createPayload = { maxPlayers: selectedPlayerCount, entryFee: selectedBet || 0, deckSize: selectedDeckSize, modes: [selectedModes.col1, selectedModes.col2] };
                 try {
                     await connection.invoke('CreateRoom', createPayload);
-                    showMessage('Yeni otaq yaradıldı, qoşulur...', 'success');
+                    showMessage(t('room_create_success'), 'success');
                 } catch (cErr) {
                     try {
                         await connection.invoke('CreateQuickRoom', createPayload);
-                        showMessage('Yeni otaq yaradıldı (quick), qoşulur...', 'success');
+                        showMessage(t('room_create_success'), 'success');
                     } catch (cErr2) {
-                        showMessage('Otaq yaradılmadı: server dəstəyi yoxdur', 'error');
+                        showMessage(t('room_create_unsupported'), 'error');
                         console.error('Create room errors:', cErr, cErr2);
                     }
                 }
             } catch (err) {
                 console.error('Start match error:', err);
-                showMessage('Otaq axtarılarkən xəta baş verdi', 'error');
+                showMessage(t('room_search_error'), 'error');
             }
         }
 
@@ -682,7 +1339,7 @@
             try {
                 await connection.invoke("JoinRoom", roomId);
             } catch (err) {
-                showMessage("Otağa qoşulmaq alınmadı", "error");
+                showMessage(t("join_room_failed"), "error");
             }
         }
 
@@ -712,16 +1369,16 @@
 
                 if (player.isAttacker) {
                     roleClass = 'attacker';
-                    roleText = '<span class="player-role attacker">⚔️ Saldıran</span>';
+                    roleText = `<span class="player-role attacker">${t("role_attacker")}</span>`;
                 } else if (player.isDefender) {
                     roleClass = 'defender';
-                    roleText = '<span class="player-role defender">🛡️ Müdafiəçi</span>';
+                    roleText = `<span class="player-role defender">${t("role_defender")}</span>`;
                 }
 
                 return `
                         <div class="player-card ${roleClass}">
                             <div class="player-name">${player.name}</div>
-                            <div class="player-cards-count">🃏 ${player.cardCount} kart</div>
+                            <div class="player-cards-count">${t("card_count", { count: player.cardCount })}</div>
                             ${roleText}
                         </div>
                     `;
@@ -735,7 +1392,7 @@
             const hasUndefended = state.tableCards && state.tableCards.length > 0;
 
             if (!hasDefended && !hasUndefended) {
-                container.innerHTML = '<div class="empty-hand">Masa boşdur</div>';
+                container.innerHTML = `<div class="empty-hand">${t("table_empty")}</div>`;
                 return;
             }
 
@@ -829,7 +1486,7 @@
             const container = document.getElementById("playerCards");
 
             if (myCards.length === 0) {
-                container.innerHTML = '<div class="empty-hand">Kartlarınız yoxdur</div>';
+                container.innerHTML = `<div class="empty-hand">${t("cards_none")}</div>`;
                 return;
             }
 
@@ -960,7 +1617,7 @@
             const attackSuit = dropZone.getAttribute('data-attack-suit');
 
             if (!attackRank || !attackSuit) {
-                showMessage("Xəta: Hücum kartı tapılmadı", "error");
+                showMessage(t("defend_missing_attack"), "error");
                 return;
             }
 
@@ -969,9 +1626,9 @@
                     AttackCard: { rank: attackRank, suit: attackSuit },
                     DefendCard: draggedCard
                 }]);
-                showMessage("Müdafiə göndərildi! ✅", "success");
+                showMessage(t("defense_sent"), "success");
             } catch (err) {
-                showMessage("Müdafiə alınmadı ❌", "error");
+                showMessage(t("defense_failed"), "error");
             }
 
             draggedCard = null;
@@ -986,7 +1643,7 @@
             if (!myPlayer) return;
 
             if (myPlayer.isDefender) {
-                showMessage("Müdafiəçi hücum edə bilməz", "warning");
+                showMessage(t("defender_cant_attack"), "warning");
                 return;
             }
 
@@ -994,30 +1651,30 @@
                 (gameState.defendedCards && gameState.defendedCards.length > 0);
 
             if (!hasCardsOnTable && !myPlayer.isAttacker) {
-                showMessage("İlk hücumu yalnız saldıran edə bilər", "warning");
+                showMessage(t("only_attacker_first"), "warning");
                 return;
             }
 
             try {
                 await connection.invoke("Attack", [card]);
-                showMessage(myPlayer.isAttacker ? "Hücum göndərildi! ⚔️" : "Əlavə hücum! ➕", "success");
+                showMessage(myPlayer.isAttacker ? t("attack_sent") : t("attack_added"), "success");
             } catch (err) {
-                showMessage("Hücum alınmadı: " + err.toString(), "error");
+                showMessage(t("attack_failed", { err: err.toString() }), "error");
             }
         }
 
         // ✅ YENİ - Transfer Function
         async function transferAttack(card) {
             if (!gameState || !gameState.transferEnabled) {
-                showMessage("Transfer mümkün deyil", "error");
+                showMessage(t("transfer_not_possible"), "error");
                 return;
             }
 
             try {
                 await connection.invoke("TransferAttack", card);
-                showMessage("Transfer göndərildi! 🔄", "success");
+                showMessage(t("transfer_sent"), "success");
             } catch (err) {
-                showMessage("Transfer alınmadı: " + err.toString(), "error");
+                showMessage(t("transfer_failed", { err: err.toString() }), "error");
             }
         }
         // ✅ YENİ - Update Action Buttons (Beaten + TakeCards + Pass)
@@ -1048,7 +1705,7 @@
             // ✅ BEATEN - Yalnız Attacker + Bütün kartlar müdafiə olunubsa
             if (isAttacker && !hasUndefendedCards && hasDefendedCards) {
                 beatenBtn.classList.remove("hidden");
-                beatenBtn.textContent = "✅ Beaten";
+                beatenBtn.textContent = t("beaten_btn");
             } else {
                 beatenBtn.classList.add("hidden");
             }
@@ -1058,9 +1715,9 @@
                 takeBtn.classList.remove("hidden");
 
                 if (isDefender) {
-                    takeBtn.textContent = "📥 Götürmək istəyirəm";
+                    takeBtn.textContent = t("take_cards_defender_btn");
                 } else if (isAttacker) {
-                    takeBtn.textContent = "📥 Götürməsinə razıyam";
+                    takeBtn.textContent = t("take_cards_attacker_btn");
                 }
             } else {
                 takeBtn.classList.add("hidden");
@@ -1080,7 +1737,7 @@
                 await connection.invoke("Beaten");
                 console.log('✅ Beaten sent');
             } catch (err) {
-                showMessage("Beaten alınmadı", "error");
+                showMessage(t("beaten_failed"), "error");
                 console.error(err);
             }
         });
@@ -1090,16 +1747,16 @@
                 await connection.invoke("TakeCards");
                 console.log('✅ TakeCards vote sent');
             } catch (err) {
-                showMessage("Səs vermək alınmadı", "error");
+                showMessage(t("take_cards_vote_failed"), "error");
                 console.error(err);
             }
         });
         document.getElementById("leaveRoomBtn").addEventListener("click", async () => {
-            if (!confirm("Otaqdan çıxmaq istədiyinizə əminsiniz?")) return;
+            if (!confirm(t("leave_room_confirm"))) return;
             try {
                 await connection.invoke("LeaveRoom");
             } catch (err) {
-                showMessage("Otaqdan çıxmaq alınmadı", "error");
+                showMessage(t("leave_room_failed"), "error");
             }
         });
 
@@ -1118,7 +1775,15 @@
         function backToGames() {
             window.parent.postMessage({ type: 'BACK_TO_GAMES', payload: {} }, '*');
         }
+        // Remove the casino loader once SignalR is ready
+        function hideLoader() {
+            const loader = document.getElementById('durakLoader');
+            if (!loader) return;
+            loader.classList.add('fade-out');
+            setTimeout(() => loader.remove(), 700);
+        }
         // init();
+        setLanguage('en');
         console.log('✅ Durak Game Ready! Drag & Drop + Beaten Active.');
     </script>
 </body>

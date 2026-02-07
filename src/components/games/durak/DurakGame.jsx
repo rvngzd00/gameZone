@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './DurakReact.css';
 
 function DurakGame() {
-  const { user, balance, isAuthenticated, token } = useAppContext();
+  const { user, balance, isAuthenticated, token,language } = useAppContext();
   const iframeRef = useRef(null);
   const navigate = useNavigate();
 
@@ -43,6 +43,7 @@ function DurakGame() {
             userId: user.id,
             username: user.username,
             fullName: user.fullName,
+            language: language,
             balance: balance,
             token: token
           }

@@ -9,7 +9,7 @@ const CharacterCreator = ({ onSave, onCancel }) => {
     const [uploadedImage, setUploadedImage] = useState(null);
     const [character, setCharacter] = useState({
         gender: 'man',
-        hairColor: 'brown'
+        hairColor: 'black'
     });
 
     const characterRef = useRef(null);
@@ -26,13 +26,15 @@ const CharacterCreator = ({ onSave, onCancel }) => {
 
     const hairColors = {
         man: [
-            { id: 'brown', name: 'Brown', color: '#8B4513' },
             { id: 'black', name: 'Black', color: '#1a1a1a' },
             { id: 'red', name: 'Red', color: '#DC143C' },
+            { id: 'blondie', name: 'Blondie', color: '#cbbf0e' },
             { id: 'blue', name: 'Blue', color: '#4169E1' }
         ],
         woman: [
+            { id: 'black', name: 'Black', color: '#1a1a1a' },
             { id: 'pink', name: 'Pink', color: '#FF69B4' },
+            { id: 'blondie', name: 'Blondie', color: '#cbbf0e' },
             { id: 'red', name: 'Red', color: '#DC143C' },
             { id: 'blue', name: 'Blue', color: '#4169E1' }
         ]
@@ -53,7 +55,7 @@ const CharacterCreator = ({ onSave, onCancel }) => {
     };
 
     const updateGender = (gender) => {
-        const defaultColor = gender === 'man' ? 'brown' : 'pink';
+        const defaultColor = gender === 'man' ? 'black' : 'pink';
         setCharacter({ gender, hairColor: defaultColor });
     };
 
@@ -62,7 +64,7 @@ const CharacterCreator = ({ onSave, onCancel }) => {
     };
 
     const resetCharacter = () => {
-        setCharacter({ gender: 'man', hairColor: 'brown' });
+        setCharacter({ gender: 'man', hairColor: 'black' });
     };
 
     const handleFileUpload = (e) => {

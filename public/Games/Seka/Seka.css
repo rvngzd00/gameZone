@@ -96,13 +96,13 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 10px 20px;
+    /* background: rgba(255, 255, 255, 0.05); */
+    /* padding: 10px 20px; */
     border-radius: 15px;
     /* margin-bottom: 20px; */
-    backdrop-filter: blur(10px);
+    /* backdrop-filter: blur(10px); */
     color: #fff;
-    border: 1px solid rgba(74, 222, 128, 0.2);
+    /* border: 1px solid rgba(74, 222, 128, 0.2); */
     gap: 7px;
 }
 
@@ -1151,13 +1151,537 @@ body::before {
 }
 
 .loading {
+    height: 370px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    /* padding: clamp(36px, 5vw, 56px); */
+    color: #fefcf6;
     text-align: center;
-    padding: 40px;
-    font-size: 1.5rem;
 }
 
+.loading--seka {
+    width: 100%;
+}
+
+.seka-loader {
+    position: relative;
+    height: 370px;
+    width: min(820px, 98vw);
+    aspect-ratio: 16 / 9;
+    border-radius: 36px;
+    background:
+        radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.16), transparent 45%),
+        linear-gradient(135deg, #7c0f19 0%, #520912 55%, #25050a 100%);
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 1px rgba(255, 215, 0, 0.15);
+    overflow: hidden;
+    padding: clamp(20px, 3vw, 34px);
+    isolation: isolate;
+}
+
+.seka-loader::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border-radius: 30px;
+    border: 1.5px solid rgba(255, 215, 0, 0.38);
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.seka-loader::after {
+    content: "";
+    position: absolute;
+    inset: -30%;
+    background:
+        radial-gradient(circle at 20% 40%, rgba(255, 255, 255, 0.08), transparent 18%),
+        radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1), transparent 20%),
+        radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.08), transparent 24%);
+    filter: blur(0.3px);
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.table-surface {
+    position: absolute;
+    inset: 8% 7%;
+    border-radius: 60% / 52%;
+    background:
+        radial-gradient(ellipse at 50% 32%, rgba(255, 255, 255, 0.18), transparent 46%),
+        linear-gradient(145deg, #c01622 0%, #9c0f1d 35%, #6f0b16 90%);
+    box-shadow:
+        inset 0 6px 20px rgba(0, 0, 0, 0.5),
+        inset 0 -12px 24px rgba(0, 0, 0, 0.65);
+}
+
+.table-surface::before {
+    content: "";
+    position: absolute;
+    inset: -12px;
+    border-radius: 60% / 52%;
+    background: linear-gradient(145deg, rgba(255, 215, 0, 0.45), rgba(150, 87, 26, 0.5), rgba(255, 215, 0, 0.3));
+    mix-blend-mode: screen;
+    opacity: 0.6;
+    filter: blur(2px);
+}
+
+.table-surface::after {
+    content: "";
+    position: absolute;
+    inset: 16px;
+    border-radius: 60% / 52%;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 22px rgba(255, 215, 0, 0.22);
+}
+
+.felt-sheen {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.18), transparent 55%);
+    mix-blend-mode: screen;
+    opacity: 0.7;
+    filter: blur(1px);
+}
+
+.felt-noise {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0.14;
+    mix-blend-mode: soft-light;
+}
+
+.table-light {
+    position: absolute;
+    inset: 18% 14%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 235, 190, 0.35) 0%, rgba(255, 235, 190, 0) 70%);
+    filter: blur(10px);
+    animation: glowPulse 3.6s ease-in-out infinite;
+}
+
+.card-fan {
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: clamp(10px, 2vw, 18px);
+    z-index: 2;
+}
+
+.ace-card {
+    --y: 0px;
+    --r: 0deg;
+    --s: 1;
+    margin: 0 -30px;
+    position: relative;
+    width: clamp(86px, 18vw, 126px);
+    aspect-ratio: 2 / 3;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff 0%, #f1f1f1 70%, #e1e1e1 100%);
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.08);
+    display: grid;
+    place-items: center;
+    color: #111;
+    font-weight: 800;
+    transform-origin: center 90%;
+    animation: cardFloat 3.8s ease-in-out infinite;
+}
+
+.ace-card::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.ace-card .corner {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: clamp(1rem, 2vw, 1.35rem);
+}
+
+.corner--br {
+    top: auto;
+    left: auto;
+    right: 8px;
+    bottom: 8px;
+    transform: rotate(180deg);
+}
+
+.ace-card .pip {
+    font-size: clamp(2.6rem, 5vw, 3.6rem);
+    text-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+}
+
+.ace-card.heart .pip,
+.ace-card.heart .corner {
+    color: #e22a45;
+}
+
+.ace-card.spade .pip,
+.ace-card.spade .corner {
+    color: #0f0f0f;
+}
+
+.ace-card.club .pip,
+.ace-card.club .corner {
+    color: #0c0c0c;
+}
+
+.ace-card:nth-child(1) {
+    --y: 6px;
+    --r: -14deg;
+    animation-delay: -0.2s;
+}
+
+.ace-card:nth-child(2) {
+    --y: -4px;
+    --s: 1.04;
+    animation-delay: -0.05s;
+}
+
+.ace-card:nth-child(3) {
+    --y: 6px;
+    --r: 14deg;
+    animation-delay: -0.35s;
+}
+
+.chip-tower {
+    position: absolute;
+    bottom: 17%;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    z-index: 2;
+}
+
+.chip-tower--left {
+    left: 18%;
+}
+
+.chip-tower--right {
+    right: 18%;
+}
+
+.chip {
+    width: clamp(42px, 10vw, 58px);
+    height: clamp(42px, 10vw, 58px);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+    animation: chipBounce 1.9s ease-in-out infinite;
+}
+
+.chip::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 255, 255, 0.55);
+    opacity: 0.85;
+}
+
+.chip::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.28);
+    mix-blend-mode: soft-light;
+}
+
+.chip--gold {
+    background: radial-gradient(circle at 30% 30%, #ffe89d, #d19d0f);
+    animation-delay: 0s;
+}
+
+.chip--ruby {
+    background: radial-gradient(circle at 30% 30%, #ff9fa6, #b3102c);
+    animation-delay: 0.1s;
+}
+
+.chip--emerald {
+    background: radial-gradient(circle at 30% 30%, #a3f5c8, #0d7a45);
+    animation-delay: 0.2s;
+}
+
+.chip--platinum {
+    background: radial-gradient(circle at 30% 30%, #e9f4ff, #8ea1ba);
+    animation-delay: 0.15s;
+}
+
+.cash-fan {
+    position: absolute;
+    bottom: 14%;
+    right: 8%;
+    display: flex;
+    gap: 10px;
+    z-index: 1;
+}
+
+.bill {
+    --rot: 0deg;
+    --y: 0px;
+    width: clamp(86px, 18vw, 118px);
+    height: clamp(44px, 10vw, 60px);
+    border-radius: 8px;
+    background: linear-gradient(135deg, #1f7a48, #0f5a32);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+    transform: translateY(var(--y)) rotate(var(--rot));
+    animation: billSway 3.4s ease-in-out infinite;
+}
+
+.bill::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.18);
+}
+
+.bill::after {
+    content: "₼";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 1px;
+}
+
+.bill-1 {
+    --rot: -10deg;
+    --y: 6px;
+    animation-delay: 0.1s;
+    background: linear-gradient(135deg, #228c54, #0f5a33);
+}
+
+.bill-2 {
+    --rot: 6deg;
+    animation-delay: 0.25s;
+    background: linear-gradient(135deg, #1c7c49, #0c4c2a);
+}
+
+.bill-3 {
+    --rot: -3deg;
+    --y: -6px;
+    animation-delay: 0.45s;
+    background: linear-gradient(135deg, #1a6f42, #0b3f23);
+}
+
+.coin-orbit {
+    position: absolute;
+    inset: 18% 20% auto auto;
+    width: clamp(160px, 34vw, 220px);
+    height: clamp(160px, 34vw, 220px);
+    pointer-events: none;
+    animation: orbit 8s linear infinite;
+    z-index: 0;
+}
+
+.coin {
+    position: absolute;
+    width: clamp(32px, 7vw, 46px);
+    height: clamp(32px, 7vw, 46px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ffeeb6, #d8a011 70%, #7e5409 100%);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.35);
+    animation: coinSpin 2.6s linear infinite;
+    opacity: 0.8;
+}
+
+.coin--near {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.coin--far {
+    bottom: 0;
+    right: 0;
+    transform-origin: -80px -40px;
+    animation-delay: 0.5s;
+}
+
+.loader-brand {
+    position: absolute;
+    bottom: 24%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 28px;
+    border-radius: 999px;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.14), rgba(255, 215, 0, 0.28), rgba(255, 255, 255, 0.1));
+    border: 1px solid rgba(255, 215, 0, 0.45);
+    color: #ffd700;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-weight: 900;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+    z-index: 3;
+    overflow: hidden;
+}
+
+.loader-brand::after {
+    content: "";
+    position: absolute;
+    inset: -10%;
+    background: linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.55) 45%, transparent 75%);
+    transform: translateX(-120%);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+.loader-progress {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(480px, 92vw);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    z-index: 3;
+}
+
+.progress-track {
+    width: 100%;
+    height: 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 215, 0, 0.32);
+    overflow: hidden;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.progress-fill {
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.95), rgba(255, 132, 0, 0.95));
+    animation: trackSlide 1.9s ease-in-out infinite;
+}
+
+.loader-status {
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    color: #fdf0d5;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes cardFloat {
+    0%,
+    100% {
+        transform: translateY(var(--y, 0)) rotate(var(--r, 0deg)) scale(var(--s, 1));
+        filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.35));
+    }
+
+    50% {
+        transform: translateY(calc(var(--y, 0) - 10px)) rotate(calc(var(--r, 0deg) * 1.05)) scale(1.04);
+        filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.45));
+    }
+}
+
+@keyframes chipBounce {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+@keyframes billSway {
+    0%,
+    100% {
+        transform: translateY(var(--y, 0)) rotate(var(--rot, 0deg));
+    }
+
+    50% {
+        transform: translateY(calc(var(--y, 0) - 8px)) rotate(calc(var(--rot, 0deg) + 3deg));
+    }
+}
+
+@keyframes coinSpin {
+    from {
+        transform: rotateY(0deg);
+    }
+
+    to {
+        transform: rotateY(360deg);
+    }
+}
+
+@keyframes orbit {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes trackSlide {
+    0% {
+        transform: translateX(-60%);
+    }
+
+    50% {
+        transform: translateX(55%);
+    }
+
+    100% {
+        transform: translateX(110%);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-120%);
+    }
+
+    50% {
+        transform: translateX(110%);
+    }
+
+    100% {
+        transform: translateX(110%);
+    }
+}
+
+@keyframes glowPulse {
+    0%,
+    100% {
+        opacity: 0.55;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.9;
+        transform: scale(1.04);
+    }
+}
+
+/* generic spinner used elsewhere (e.g., redirects) */
 .spinner {
-    border: 5px solid rgba(255, 255, 255, 0.1);
+    border: 5px solid rgba(255, 255, 255, 0.12);
     border-top: 5px solid #ffd700;
     border-radius: 50%;
     width: 60px;
