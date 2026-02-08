@@ -1168,7 +1168,7 @@ body::before {
 
 .seka-loader {
     position: relative;
-    height: 370px;
+    height: 457px;
     width: min(820px, 98vw);
     aspect-ratio: 16 / 9;
     border-radius: 36px;
@@ -1268,7 +1268,7 @@ body::before {
 
 .card-fan {
     position: absolute;
-    top: 12%;
+    top: 24%;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -1490,7 +1490,7 @@ body::before {
     height: clamp(160px, 34vw, 220px);
     pointer-events: none;
     animation: orbit 8s linear infinite;
-    z-index: 0;
+    z-index: 7;
 }
 
 .coin {
@@ -1519,7 +1519,7 @@ body::before {
 
 .loader-brand {
     position: absolute;
-    bottom: 24%;
+    /* bottom: 24%; */
     left: 50%;
     transform: translateX(-50%);
     padding: 10px 28px;
@@ -1559,7 +1559,7 @@ body::before {
 }
 
 .progress-track {
-    width: 100%;
+    width: 67%;
     height: 14px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.14);

@@ -20,7 +20,18 @@
                         ←
                     </button>
                     <!-- <h1>OKEY 51</h1> -->
+                    <div class="header-title-wrap">
+                        <div class="okey-tile header-title-tile yellow" aria-hidden="true">
+                            <span class="tile-number">7</span>
+                            <span class="tile-dot"></span>
+                        </div>
                         <div class="header-title" data-i18n="header_title">OKEY 51</div>
+                        <div class="okey-tile header-title-tile blue" aria-hidden="true">
+                            <div class="tile-joker-star-h">★</div>
+                            <!-- <span class="tile-number">8</span> -->
+                            <!-- <span class="tile-dot"></span> -->
+                        </div>
+                    </div>
                     <!-- <span class="user-name" id="userName">Yüklənir...</span> -->
                     <span class="user-balance" id="userBalance">0</span>
 
@@ -49,24 +60,24 @@
 
                             <div class="tile-stack tile-b">
                                 <div class="okey-tile blue">
-                                    <span class="tile-number">11</span>
+                                    <span class="tile-number">7</span>
                                     <span class="tile-dot"></span>
                                 </div>
                             </div>
 
                             <div class="tile-stack tile-c">
                                 <div class="okey-tile black">
-                                    <span class="tile-number">3</span>
+                                    <span class="tile-number">7</span>
                                     <span class="tile-dot"></span>
                                 </div>
                             </div>
 
-                            <div class="tile-stack tile-joker">
+                            <!-- <div class="tile-stack tile-joker">
                                 <div class="okey-tile joker">
                                     <span class="tile-star">★</span>
                                     <span class="tile-tag">OK</span>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
                         <p class="loading-text" data-i18n="loading_rooms">Dealing your tiles...</p>
@@ -109,7 +120,8 @@
                             <div class="player-deck-top" id="playerInfoTop">
                                 <div class="player-avatar">👤</div>
                                 <div class="player-details detail-sides">
-                                    <div id="topPlayerName" class="player-name" data-i18n-placeholder="waiting">Waiting</div>
+                                    <div id="topPlayerName" class="player-name" data-i18n-placeholder="waiting">Waiting
+                                    </div>
                                     <!-- <div class="player-score">101</div> -->
                                 </div>
                             </div>
@@ -128,7 +140,8 @@
                             <div class="player-deck-right" id="playerInfoRight">
                                 <div class="player-avatar avatar-right">👤</div>
                                 <div class="player-details detail-sides">
-                                    <div id="rightPlayerName" class="player-name" data-i18n-placeholder="waiting">Waiting</div>
+                                    <div id="rightPlayerName" class="player-name" data-i18n-placeholder="waiting">
+                                        Waiting</div>
                                     <!-- <div class="player-score">101</div> -->
                                 </div>
                             </div>
@@ -168,7 +181,8 @@
                             <div class="player-deck-left" id="playerInfoLeft">
                                 <div class="player-avatar avatar-left">👤</div>
                                 <div class="player-details detail-sides">
-                                    <div id="leftPlayerName" class="player-name" data-i18n-placeholder="waiting">Waiting</div>
+                                    <div id="leftPlayerName" class="player-name" data-i18n-placeholder="waiting">Waiting
+                                    </div>
                                     <!-- <div class="player-score">101</div> -->
                                 </div>
                             </div>
@@ -204,12 +218,63 @@
             </div>
         </div>
         <!-- <div id="notification" class="notification"></div> -->
-
+        <div id="rotateModal" style="display: none;">
+            <div class="modalContent">
+                <p data-i18n="rotate_phone">🎮 Rotate your phone to start the game</p>
+                <div class="phoneIcon">📱↩️</div>
+            </div>
+        </div>
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
     <script>
+        let isInGame = false;
+        const modal = document.getElementById("rotateModal");
+        const lobbyView = document.getElementById("roomListScreen");
+        const gameView = document.getElementById("gameScreen");
+
+        function isLobbyActive() {
+            return getComputedStyle(lobbyView).display !== "none";
+        }
+        function showLobby() {
+            document.getElementById('roomListScreen').style.display = 'block';
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('betModal').style.display = 'none';
+            checkOrientation();
+            isInGame = false;
+        }
+        function showGame() {
+            document.getElementById('lobbyView').style.display = 'none';
+            document.getElementById('gameView').style.display = 'block';
+            isInGame = true;
+            checkOrientation();
+        }
+
+        function checkOrientation() {
+            if (isLobbyActive()) {
+                // Lobbydəyiksə modal HEÇ VAXT görünməsin
+                modal.style.display = "none";
+                return;
+            }
+
+            if (window.innerWidth > window.innerHeight) {
+                // Landscape → OK
+                modal.style.display = "none";
+                gameView.style.display = "block";
+            } else {
+                // Portrait → BLOCK
+                modal.style.display = "flex";
+                gameView.style.display = "none";
+            }
+        }
+
+        checkOrientation();
+
+        // Telefon çevriləndə avtomatik yoxla
+        window.addEventListener("resize", checkOrientation);
+        window.addEventListener("orientationchange", checkOrientation);
+        // ============================================
 
         playerPositions = {
             top: topPlayerName,
@@ -477,16 +542,17 @@
         let IFRAME_USER = null;
 
         const translations = {
-                en: {
-                    app_title: 'Okey',
-                    header_title: 'OKEY 51',
+            en: {
+                app_title: 'Okey',
+                header_title: 'OKEY 51',
                 loading_rooms: 'Dealing your tiles...',
                 bet_select: 'Select Bet',
                 room_label: 'Room',
-                pot_label: 'Pot: {amount}₼',
+                pot_label: 'Pot: {amount}',
                 you: 'You',
                 leave: 'Leave',
                 waiting: 'Waiting',
+                rotate_phone: '🎮 Rotate your phone to start the game',
                 win_combo_title: '🏆 WINNING COMBINATION',
                 token_not_found: 'Token not found!',
                 connection_success: 'Connected successfully!',
@@ -529,7 +595,7 @@
                 auto_discarding: '🚨 AUTO DISCARDING!',
                 new_round_preparing: 'New round is being prepared...',
                 leave_confirm: 'Do you want to leave?',
-                deck_count: '📚 {count}',
+                deck_count: '{count}',
                 deck_empty: '❌ EMPTY',
                 last_tile_discarded_checking: 'Last tile discarded! Checking...',
                 last_tile_discarded: 'Last tile discarded!'
@@ -540,9 +606,10 @@
                 loading_rooms: 'Taşlar dağıtılıyor...',
                 bet_select: 'Bahis Seç',
                 room_label: 'Oda',
-                pot_label: 'Pot: {amount}₼',
+                pot_label: 'Pot: {amount}',
                 you: 'Sen',
                 leave: 'Çık',
+                rotate_phone: "🎮 Oyuna başlamak için telefonu çevirin",
                 waiting: 'Bekliyor',
                 win_combo_title: '🏆 KAZANAN KOMBİNASYON',
                 token_not_found: 'Token bulunamadı!',
@@ -586,7 +653,7 @@
                 auto_discarding: '🚨 OTOMATİK TAŞ ATILIYOR!',
                 new_round_preparing: 'Yeni tur hazırlanıyor...',
                 leave_confirm: 'Çıkmak istiyor musunuz?',
-                deck_count: '📚 {count}',
+                deck_count: '{count}',
                 deck_empty: '❌ BOŞ',
                 last_tile_discarded_checking: 'Son taş atıldı! Kontrol ediliyor...',
                 last_tile_discarded: 'Son taş atıldı!'
@@ -597,9 +664,10 @@
                 loading_rooms: 'टाइलें बाँटी जा रही हैं...',
                 bet_select: 'बेट चुनें',
                 room_label: 'कमरा',
-                pot_label: 'पॉट: {amount}₼',
+                pot_label: 'पॉट: {amount}',
                 you: 'आप',
                 leave: 'बाहर जाएं',
+                rotate_phone: "🎮 गेम शुरू करने के लिए फोन घुमाएं",
                 waiting: 'प्रतीक्षा',
                 win_combo_title: '🏆 विजेता संयोजन',
                 token_not_found: 'टोकन नहीं मिला!',
@@ -643,7 +711,7 @@
                 auto_discarding: '🚨 स्वचालित टाइल फेंकी जा रही है!',
                 new_round_preparing: 'नया राउंड तैयार हो रहा है...',
                 leave_confirm: 'क्या आप बाहर जाना चाहते हैं?',
-                deck_count: '📚 {count}',
+                deck_count: '{count}',
                 deck_empty: '❌ खाली',
                 last_tile_discarded_checking: 'आखिरी टाइल फेंकी गई! जांच हो रही है...',
                 last_tile_discarded: 'आखिरी टाइल फेंकी गई!'
@@ -654,10 +722,11 @@
                 loading_rooms: 'Раздаем кости...',
                 bet_select: 'Выберите ставку',
                 room_label: 'Комната',
-                pot_label: 'Банк: {amount}₼',
+                pot_label: 'Банк: {amount}',
                 you: 'Вы',
                 leave: 'Выйти',
                 waiting: 'Ожидание',
+                rotate_phone: "🎮 Поверните телефон, чтобы начать игру",
                 win_combo_title: '🏆 ПОБЕДНАЯ КОМБИНАЦИЯ',
                 token_not_found: 'Токен не найден!',
                 connection_success: 'Подключение успешно!',
@@ -700,7 +769,7 @@
                 auto_discarding: '🚨 АВТОСБРОС!',
                 new_round_preparing: 'Готовится новый раунд...',
                 leave_confirm: 'Выйти из игры?',
-                deck_count: '📚 {count}',
+                deck_count: '{count}',
                 deck_empty: '❌ ПУСТО',
                 last_tile_discarded_checking: 'Последняя фишка сброшена! Проверка...',
                 last_tile_discarded: 'Последняя фишка сброшена!'
@@ -711,12 +780,13 @@
                 loading_rooms: 'يتم توزيع القطع...',
                 bet_select: 'اختر الرهان',
                 room_label: 'غرفة',
-                pot_label: 'المجموع: {amount}₼',
+                pot_label: 'المجموع: {amount}',
                 you: 'أنت',
                 leave: 'خروج',
                 waiting: 'بانتظار',
                 win_combo_title: '🏆 التركيبة الفائزة',
                 token_not_found: 'لم يتم العثور على الرمز!',
+                rotate_phone: "🎮 أدر الهاتف لبدء اللعبة",
                 connection_success: 'تم الاتصال بنجاح!',
                 connection_error: 'خطأ في الاتصال',
                 connection_error_with: 'خطأ في الاتصال: {message}',
@@ -757,7 +827,7 @@
                 auto_discarding: '🚨 رمي تلقائي!',
                 new_round_preparing: 'يتم تجهيز جولة جديدة...',
                 leave_confirm: 'هل تريد الخروج؟',
-                deck_count: '📚 {count}',
+                deck_count: '{count}',
                 deck_empty: '❌ فارغ',
                 last_tile_discarded_checking: 'تم رمي آخر حجر! جارٍ التحقق...',
                 last_tile_discarded: 'تم رمي آخر حجر!'
@@ -768,11 +838,12 @@
                 loading_rooms: 'Toshlar tarqatilmoqda...',
                 bet_select: 'Tikishni tanlang',
                 room_label: 'Xona',
-                pot_label: 'Pot: {amount}₼',
+                pot_label: 'Pot: {amount}',
                 you: 'Siz',
                 leave: 'Chiqish',
                 waiting: 'Kutilmoqda',
                 win_combo_title: '🏆 G‘OLIB KOMBINATSIYA',
+                rotate_phone: "🎮 O'yinni boshlash uchun telefonni aylantiring",
                 token_not_found: 'Token topilmadi!',
                 connection_success: 'Ulanish muvaffaqiyatli!',
                 connection_error: 'Ulanish xatosi',
@@ -814,7 +885,7 @@
                 auto_discarding: '🚨 AVTO TASHLASH!',
                 new_round_preparing: 'Yangi raund tayyorlanmoqda...',
                 leave_confirm: 'Chiqishni xohlaysizmi?',
-                deck_count: '📚 {count}',
+                deck_count: '{count}',
                 deck_empty: '❌ BO‘SH',
                 last_tile_discarded_checking: 'Oxirgi tosh tashlandi! Tekshirilmoqda...',
                 last_tile_discarded: 'Oxirgi tosh tashlandi!'
@@ -959,7 +1030,7 @@
                     document.getElementById('userName').textContent = payload.username;
                 }
                 if (document.getElementById('userBalance')) {
-                    document.getElementById('userBalance').textContent = `${payload.balance}₼`;
+                    document.getElementById('userBalance').textContent = `${payload.balance}`;
                 }
                 if (document.getElementById('myPlayerName')) {
                     document.getElementById('myPlayerName').textContent = payload.username;
@@ -1164,6 +1235,7 @@
                     autoArrangeTiles();
                 }
                 showScreen('gameScreen');
+                checkOrientation();
                 showNotification(t('joined_room'), 'success');
             });
             connection.on("TurnTimerUpdate", (data) => {

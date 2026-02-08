@@ -36,7 +36,7 @@
                 <div style="margin-bottom: 20px;">
                     <label id="buyInLabel"
                         style="color: #94a3b8; font-size: 14px; display: block; margin-bottom: 8px; font-weight: 600;">
-                        Amount (Min: <span id="minBuyIn">0</span>₼ - Max: <span id="maxBuyIn">0</span>₼)
+                        Amount (Min: <span id="minBuyIn">0</span> - Max: <span id="maxBuyIn">0</span>)
                     </label>
                     <input type="number" id="buyInInput" style="
                     width: 100%;
@@ -135,8 +135,8 @@
                     <div style="margin-bottom: 20px;">
                         <label id="reBuyLabel"
                             style="color: #94a3b8; font-size: 14px; display: block; margin-bottom: 8px;">
-                            Amount (Min: <span id="reBuyMinAmount">0</span>₼ - Max: <span
-                                id="reBuyMaxAmount">0</span>₼)
+                            Amount (Min: <span id="reBuyMinAmount">0</span>- Max: <span
+                                id="reBuyMaxAmount">0</span>)
                         </label>
                         <input type="number" id="reBuyInput"
                             style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #334155; background: #0f172a; color: white; font-size: 16px; box-sizing: border-box;"
@@ -183,7 +183,33 @@
         <div id="roomListSection">
             <!-- <h2 style="margin-bottom: 15px;">Poker Otaqları</h2> -->
             <div class="room-grid" id="roomGrid">
-                <div style="text-align: center; padding: 40px;" data-i18n="loading">Loading...</div>
+                <div class="poker-loader" id="pokerLoader">
+                    <div class="poker-loader__table">
+                        <div class="poker-loader__spotlight"></div>
+                        <div class="poker-loader__glow"></div>
+
+                        <div class="loader-card card-left" data-rank="A" data-suit="♥">
+                            <!-- <span class="loader-card-rank">A</span> -->
+                            <span class="loader-card-suit red">♥</span>
+                        </div>
+                        <div class="loader-card card-right" data-rank="K" data-suit="♠">
+                            <!-- <span class="loader-card-rank">K</span> -->
+                            <span class="loader-card-suit black">♠</span>
+                        </div>
+
+                        <div class="loader-chip-stack chip-red"></div>
+                        <div class="loader-chip-stack chip-blue"></div>
+                        <div class="loader-chip-stack chip-gold"></div>
+                    </div>
+
+                    <div class="poker-loader__text">
+                        <div class="loader-eyebrow" data-i18n="loading_title">Game loading</div>
+
+                        <div class="loader-progress">
+                            <div class="loader-progress__bar"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -273,6 +299,10 @@
                 confirm: 'Confirm',
                 rebuy_time: '⏳ RE-BUY TIME',
                 loading: 'Loading...',
+                loading_title: 'Game loading',
+                loading_subtitle: 'Dealer is setting the felt...',
+                loading_charm: 'Two fresh cards, a stack of chips, and your moment to shine.',
+                loading_ready: 'Table ready — place your bets!',
                 balance_label: 'Balance',
                 chips_label: 'Chips',
                 pot_label: 'POT',
@@ -354,6 +384,10 @@
                 confirm: 'Onayla',
                 rebuy_time: '⏳ RE-BUY SÜRESİ',
                 loading: 'Yükleniyor...',
+                loading_title: 'Oyun yükleniyor',
+                loading_subtitle: 'Krupiye masayı hazırlıyor...',
+                loading_charm: 'İki taze kart, bir fiş yığını ve sahne senin.',
+                loading_ready: 'Masa hazır — bahislerini koy!',
                 balance_label: 'Bakiye',
                 chips_label: 'Fiş',
                 pot_label: 'POT',
@@ -435,6 +469,10 @@
                 confirm: 'पुष्टि करें',
                 rebuy_time: '⏳ री-बाय समय',
                 loading: 'लोड हो रहा है...',
+                loading_title: 'गेम लोड हो रहा है',
+                loading_subtitle: 'डीलर मेज़ सजा रहा है...',
+                loading_charm: 'दो नए पत्ते, चिप्स का ढेर, मौका आपका है।',
+                loading_ready: 'टेबल तैयार — दांव लगाएं!',
                 balance_label: 'बैलेंस',
                 chips_label: 'चिप्स',
                 pot_label: 'पॉट',
@@ -516,6 +554,10 @@
                 confirm: 'Подтвердить',
                 rebuy_time: '⏳ ВРЕМЯ RE-BUY',
                 loading: 'Загрузка...',
+                loading_title: 'Игра загружается',
+                loading_subtitle: 'Дилер готовит сукно...',
+                loading_charm: 'Две свежие карты, стопка фишек и ваш момент.',
+                loading_ready: 'Стол готов — делайте ставки!',
                 balance_label: 'Баланс',
                 chips_label: 'Фишки',
                 pot_label: 'БАНК',
@@ -597,6 +639,10 @@
                 confirm: 'تأكيد',
                 rebuy_time: '⏳ وقت إعادة الشراء',
                 loading: 'جار التحميل...',
+                loading_title: 'يتم تحميل اللعبة',
+                loading_subtitle: 'الموزع يجهّز الطاولة...',
+                loading_charm: 'ورقتان جديدتان، رزمة شرائح، ولحظتك المنتظرة.',
+                loading_ready: 'الطاولة جاهزة — ضع رهانك!',
                 balance_label: 'الرصيد',
                 chips_label: 'الشرائح',
                 pot_label: 'POT',
@@ -678,6 +724,10 @@
                 confirm: 'Tasdiqlash',
                 rebuy_time: '⏳ RE-BUY VAQTI',
                 loading: 'Yuklanmoqda...',
+                loading_title: 'O\'yin yuklanmoqda',
+                loading_subtitle: 'Diler stolni tayyorlamoqda...',
+                loading_charm: 'Ikki yangi karta, chiplar uyumi va navbatingiz.',
+                loading_ready: 'Stol tayyor — tikishingizni qo\'ying!',
                 balance_label: 'Balans',
                 chips_label: 'Chiplar',
                 pot_label: 'POT',

@@ -90,7 +90,8 @@
                     <div class="game-section">
                         <div class="section-header classic-header">
                             <div class="section-icon">
-                                <img class="domino-icon domino-1-1" src="images/headerTiles/domino11.svg" alt="Domino 1:1" />
+                                <img class="domino-icon domino-1-1" src="images/headerTiles/domino11.svg"
+                                    alt="Domino 1:1" />
                             </div>
                             <div class="section-title" data-i18n="classic_101">CLASSIC 101</div>
                         </div>
@@ -114,7 +115,8 @@
                     <div class="game-section">
                         <div class="section-header quick-header">
                             <div class="section-icon">
-                                <img class="domino-icon domino-6-6" src="images/headerTiles/domino66.svg" alt="Domino 6:6" />
+                                <img class="domino-icon domino-6-6" src="images/headerTiles/domino66.svg"
+                                    alt="Domino 6:6" />
                             </div>
                             <div class="section-title" data-i18n="quick_5">QUICK 5</div>
                         </div>
@@ -139,7 +141,8 @@
                 <div class="game-section">
                     <div class="section-header allfives-header">
                         <div class="section-icon">
-                            <img class="domino-icon domino-5-5" src="images/headerTiles/domino55.svg" alt="Domino 5:5" />
+                            <img class="domino-icon domino-5-5" src="images/headerTiles/domino55.svg"
+                                alt="Domino 5:5" />
                         </div>
                         <div class="section-title" data-i18n="all_fives">ALL FIVES</div>
                     </div>
@@ -190,7 +193,8 @@
                 <div class="status-bar" id="statusBar" data-i18n="waiting_players">Waiting for players...</div>
 
                 <div class="middle-header">
-                    <span class="badge"><span data-i18n="round_label">Round:</span> <span id="roundNumber">1</span></span>
+                    <span class="badge"><span data-i18n="round_label">Round:</span> <span
+                            id="roundNumber">1</span></span>
                     <span class="badge" id="scoreDisplay">0/101</span>
                 </div>
                 <!-- <div class="balance">💰 <span id="balance">0</span> coin</div> -->
@@ -205,7 +209,8 @@
                         <button class="stock-modal-close" onclick="closeStockModal()">✕</button>
                     </div>
                     <div class="stock-info">
-                        <span data-i18n="stock_info_prefix">There are</span> <strong id="stockModalCount">0</strong> <span data-i18n="stock_info_suffix">tiles in the stock. Choose one:</span>
+                        <span data-i18n="stock_info_prefix">There are</span> <strong id="stockModalCount">0</strong>
+                        <span data-i18n="stock_info_suffix">tiles in the stock. Choose one:</span>
                     </div>
                     <div id="stockTilesGrid" class="stock-tiles-grid">
                         <!-- Daşlar buraya gələcək -->
@@ -274,7 +279,8 @@
 
                     <div class="table-center" id="dropZone">
                         <div id="chain" class="chain">
-                            <div style="color: #64748b; text-align: center;" data-i18n="place_first_tile">🎯 Place first tile</div>
+                            <div style="color: #64748b; text-align: center;" data-i18n="place_first_tile">🎯 Place first
+                                tile</div>
                         </div>
                     </div>
 
@@ -1743,14 +1749,14 @@
                 const statusBar = document.getElementById('statusBar');
                 if (statusBar) {
                     if (isMyTurn) {
-                    statusBar.textContent = t("your_turn");
-                    statusBar.className = "status-bar your-turn";
-                } else {
-                    statusBar.textContent = t("waiting_turn", { name: state.currentPlayerName });
-                    statusBar.dataset.playerName = state.currentPlayerName;
-                    statusBar.className = "status-bar";
+                        statusBar.textContent = t("your_turn");
+                        statusBar.className = "status-bar your-turn";
+                    } else {
+                        statusBar.textContent = t("waiting_turn", { name: state.currentPlayerName });
+                        statusBar.dataset.playerName = state.currentPlayerName;
+                        statusBar.className = "status-bar";
+                    }
                 }
-            }
 
                 // 🔥 ACTIVE CLASS-I DÜZGÜN ƏLAVƏ ET
                 // Əvvəlcə hamısından sil

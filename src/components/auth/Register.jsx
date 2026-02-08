@@ -161,7 +161,7 @@ const Register = () => {
 
               <div className="image-actions">
                 <input type="file" accept="image/*" id="imageFile" style={{display:'none'}} onChange={handleFileInput} />
-                <button type="button" className="btn" onClick={() => document.getElementById('imageFile').click()}>{t('upload')}</button>
+                {/* <button type="button" className="btn" onClick={() => document.getElementById('imageFile').click()}>{t('upload')}</button> */}
                 <button type="button" className="btn" onClick={() => setShowEditProfile(true)}>{t('edit_profile_pic')}</button>
               </div>
             </div>

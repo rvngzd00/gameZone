@@ -19,7 +19,9 @@
                 ←
             </button>
             <div class="header-right">
-                <h1>LOTO</h1>
+                <span class="loto-number">1</span>
+                <h1 class="header-title">LOTO</h1>
+                <span class="loto-number">7</span>
             </div>
             <div class="balance-display">
                 💰 <span id="userBalance">0</span>
@@ -27,7 +29,7 @@
         </div>
     </div>
 
-     <div id="loadingContainer" class="loading-container">
+    <div id="loadingContainer" class="loading-container">
         <div class="loading-stage">
             <div class="loto-aurora"></div>
 
@@ -45,11 +47,11 @@
             <div class="ball-orbit">
                 <div class="orbit">
                     <div class="loto-ball">7</div>
-                    <div class="loto-ball">14</div>
-                    <div class="loto-ball">22</div>
-                    <div class="loto-ball">36</div>
-                    <div class="loto-ball">45</div>
-                    <div class="loto-ball">60</div>
+                    <div class="loto-ball">17</div>
+                    <div class="loto-ball">27</div>
+                    <div class="loto-ball">37</div>
+                    <div class="loto-ball">47</div>
+                    <div class="loto-ball">87</div>
                 </div>
             </div>
 
@@ -300,6 +302,7 @@
         }
 
         function renderRooms(rooms) {
+            console.log('🎲 [LOTO LOBBY] Otaqlar renderlənir:', rooms);
             const container = document.getElementById("roomsContainer");
             container.innerHTML = "";
             const dict = translations[currentLanguage] || translations.en;
@@ -322,6 +325,7 @@
                 card.innerHTML = `
                         <div class="room-header">
                             <div class="entry-fee">${room.entryFee.toFixed(2)}</div>
+                            ${room.entryFee==0.5 ? '<span class="status-badge badge-waiting">Entire Card</span>' : '<span class="status-badge badge-waiting">Single Line</span>'}
                             ${statusBadge}
                         </div>
 
